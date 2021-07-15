@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "description": "Interact with Qlik Sense Repository API (QSEoW)",
   "author": {
-    "email": "stefan.stoichev@gmail.com",
-    "name": "Stefan Stoichev @countnazgul",
-    "url": "https://sstoichev.eu"
+    "email": "info@informatiqal.com",
+    "name": "Informatiqal @informatiqal",
+    "url": "https://informatiqal.com"
   },
   "main": "dist/src/main.js",
   "scripts": {
@@ -30,11 +30,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/countnazgul/qlik-repo-api.git"
+    "url": "https://github.com/informatiqal/qlik-repo-api.git"
   },
   "bugs": {
-    "url": "https://github.com/countnazgul/qlik-repo-api/issues"
+    "url": "https://github.com/informatiqal/qlik-repo-api/issues"
   },
+  "homepage": "https://informatiqal.com/qlik-repo-api/",
   "devDependencies": {
     "@types/chai": "^4.2.19",
     "@types/mocha": "^8.2.2",
