@@ -1,0 +1,5 @@
+node_modules/
+dist/
+out/
+.env
+test/playground.spec.ts

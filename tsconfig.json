@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "target": "es5",
+        "esModuleInterop": true,
+        "declaration": true
+    }
+}

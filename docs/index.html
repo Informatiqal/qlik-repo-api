@@ -1,0 +1,458 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Qlik Repo API</title>
+	<meta name="description" content="Documentation for Qlik Repo API">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">Qlik Repo API</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>Qlik Repo API</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#under-development" id="under-development" style="color: inherit; text-decoration: none;">
+					<h2><strong>UNDER DEVELOPMENT!</strong></h2>
+				</a>
+				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+					<h2>Compatibility</h2>
+				</a>
+				<p>At the moment the module is compatible with <code>QSEoW</code> version <code>April 2019</code> (all patches)</p>
+				<p>In the next iterations the methods will be adapted to the latter version. Each iteration will be compatible with specific version of <code>QSEoW</code>.</p>
+				<hr>
+				<p><strong>NOT AFFILIATED WITH QLIK</strong></p>
+				<hr>
+				<a href="#objects" id="objects" style="color: inherit; text-decoration: none;">
+					<h2>Objects</h2>
+				</a>
+				<ul>
+					<li><p>Generics - generic clients that are not bound to specific method/object. Aka raw methods. For them at least <code>url</code> and <code>body</code> (for <code>Post</code> and <code>Put</code> methods) must be provided</p>
+						<ul>
+							<li>repoClient - client that uses <code>/qrs</code> as prefix. The required <code>url</code> should be passed without the prefix<ul>
+									<li>Get</li>
+									<li>Delete</li>
+									<li>Patch</li>
+									<li>Post</li>
+									<li>Put</li>
+								</ul>
+							</li>
+							<li>genericClient - client that have no prefix. Used for downloading temporary files (for example)<ul>
+									<li>Get</li>
+									<li>Delete</li>
+									<li>Patch</li>
+									<li>Post</li>
+									<li>Put</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+					<li><p><code>About</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> aboutGet</li>
+							<li><input checked="" disabled="" type="checkbox"> aboutEnums</li>
+							<li><input checked="" disabled="" type="checkbox"> aboutOpenApi</li>
+							<li><input checked="" disabled="" type="checkbox"> aboutApiRelations</li>
+							<li><input checked="" disabled="" type="checkbox"> aboutApiDescription</li>
+							<li><input checked="" disabled="" type="checkbox"> aboutApiDefaults</li>
+						</ul>
+					</li>
+					<li><p><code>App</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> appCopy</li>
+							<li><input checked="" disabled="" type="checkbox"> appExport</li>
+							<li><input checked="" disabled="" type="checkbox"> appGet</li>
+							<li><input checked="" disabled="" type="checkbox"> appGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> appImport</li>
+							<li><input checked="" disabled="" type="checkbox"> appPublish</li>
+							<li><input checked="" disabled="" type="checkbox"> appRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> appRemoveFilter</li>
+							<li><input disabled="" type="checkbox"> appSwitch</li>
+							<li><input checked="" disabled="" type="checkbox"> appUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Certificate</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> certificateExport</li>
+							<li><input disabled="" type="checkbox"> certificateDistributionPath</li>
+						</ul>
+					</li>
+					<li><p><code>Content</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> contentLibraryGet</li>
+							<li><input checked="" disabled="" type="checkbox"> contentLibraryGetFilter</li>
+							<li><input disabled="" type="checkbox"> contentLibraryImport</li>
+							<li><input disabled="" type="checkbox"> contentLibraryExport</li>
+							<li><input checked="" disabled="" type="checkbox"> contentLibraryCreate</li>
+							<li><input checked="" disabled="" type="checkbox"> contentLibraryRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> contentLibraryUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Custom property</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> customPropertyGet</li>
+							<li><input checked="" disabled="" type="checkbox"> customPropertyGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> customPropertyCreate</li>
+							<li><input checked="" disabled="" type="checkbox"> customPropertyRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> customPropertyUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Data connection</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> dataConnectionGet</li>
+							<li><input disabled="" type="checkbox"> dataConnectionCreate</li>
+							<li><input disabled="" type="checkbox"> dataConnectionRemove</li>
+							<li><input disabled="" type="checkbox"> dataConnectionUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Engine</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> engineGet</li>
+							<li><input checked="" disabled="" type="checkbox"> engineGetAll</li>
+							<li><input checked="" disabled="" type="checkbox"> engineGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> engineGetUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Extension</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> extensionGet</li>
+							<li><input checked="" disabled="" type="checkbox"> extensionFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> extensionImport</li>
+							<li><input checked="" disabled="" type="checkbox"> extensionRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> extensionUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>License</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> licenseAccessTypeInfoGet</li>
+							<li><input disabled="" type="checkbox"> licenseAnalyzerAccessTypeGet</li>
+							<li><input disabled="" type="checkbox"> licenseAnalyzerAccessTypeRemove</li>
+							<li><input disabled="" type="checkbox"> licenseGet</li>
+							<li><input disabled="" type="checkbox"> licenseSet</li>
+							<li><input disabled="" type="checkbox"> licenseAudit</li>
+							<li><input disabled="" type="checkbox"> licenseLoginAccessTypeGet</li>
+							<li><input disabled="" type="checkbox"> licenseProfessionalAccessTypeGet</li>
+							<li><input disabled="" type="checkbox"> licenseProfessionalAccessTypeRemove</li>
+							<li><input disabled="" type="checkbox"> licenseUserAccessTypeGet</li>
+							<li><input disabled="" type="checkbox"> licenseUserAccessTypeRemove</li>
+							<li><input disabled="" type="checkbox"> licenseProfessionalAccessGroupGet</li>
+							<li><input disabled="" type="checkbox"> licenseUserAccessGroupGet</li>
+						</ul>
+					</li>
+					<li><p><code>Node</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> nodeGet</li>
+							<li><input disabled="" type="checkbox"> nodeCreate</li>
+							<li><input disabled="" type="checkbox"> nodeRegister</li>
+							<li><input disabled="" type="checkbox"> nodeRemove</li>
+							<li><input disabled="" type="checkbox"> nodeUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Object</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> objectGet</li>
+							<li><input disabled="" type="checkbox"> objectPublish</li>
+							<li><input disabled="" type="checkbox"> objectRemove</li>
+							<li><input disabled="" type="checkbox"> objectUnPublish</li>
+							<li><input disabled="" type="checkbox"> objectUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Privileges</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> privilegesAssert</li>
+							<li><input disabled="" type="checkbox"> privilegesGet</li>
+						</ul>
+					</li>
+					<li><p><code>Proxy</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> proxyCreate</li>
+							<li><input disabled="" type="checkbox"> proxyGet</li>
+							<li><input disabled="" type="checkbox"> proxyUpdate</li>
+							<li><input disabled="" type="checkbox"> proxyMetaExport</li>
+							<li><input disabled="" type="checkbox"> proxyVirtualAdd</li>
+							<li><input disabled="" type="checkbox"> proxyVirtualCreate</li>
+							<li><input disabled="" type="checkbox"> proxyVirtualGet</li>
+							<li><input disabled="" type="checkbox"> proxyVirtualRemove</li>
+							<li><input disabled="" type="checkbox"> proxyVirtualUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Rule</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> ruleAuditGet</li>
+							<li><input checked="" disabled="" type="checkbox"> ruleGet</li>
+							<li><input checked="" disabled="" type="checkbox"> ruleGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> ruleCreate</li>
+							<li><input checked="" disabled="" type="checkbox"> ruleRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> ruleUpdate</li>
+							<li><input disabled="" type="checkbox"> ruleLicenseCreate</li>
+						</ul>
+					</li>
+					<li><p><code>Scheduler</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> schedulerGet</li>
+							<li><input disabled="" type="checkbox"> schedulerUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Service cluster</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> serviceClusterGet</li>
+							<li><input disabled="" type="checkbox"> serviceClusterUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Service status</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> serviceStatusGet</li>
+						</ul>
+					</li>
+					<li><p><code>Session</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> sessionGet</li>
+							<li><input disabled="" type="checkbox"> sessionRemove</li>
+						</ul>
+					</li>
+					<li><p><code>Shared content</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> sharedContentRemove</li>
+						</ul>
+					</li>
+					<li><p><code>Stream</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> streamGet</li>
+							<li><input checked="" disabled="" type="checkbox"> streamGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> streamCreate</li>
+							<li><input checked="" disabled="" type="checkbox"> streamRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> streamUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Table</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> tableCreate</li>
+						</ul>
+					</li>
+					<li><p><code>Tag</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> tagGet</li>
+							<li><input checked="" disabled="" type="checkbox"> tagGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> tagCreate</li>
+							<li><input checked="" disabled="" type="checkbox"> tagRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> tagRemoveFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> tagUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>Task</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> taskTriggerAdd</li>
+							<li><input disabled="" type="checkbox"> taskReloadGet</li>
+							<li><input disabled="" type="checkbox"> taskReloadUpdate</li>
+							<li><input disabled="" type="checkbox"> taskGet</li>
+							<li><input disabled="" type="checkbox"> taskCreate</li>
+							<li><input disabled="" type="checkbox"> taskRemove</li>
+							<li><input disabled="" type="checkbox"> taskStart</li>
+							<li><input disabled="" type="checkbox"> taskExecutionWait</li>
+							<li><input disabled="" type="checkbox"> taskScheduleCreate</li>
+							<li><input disabled="" type="checkbox"> taskScheduleRemove</li>
+							<li><input disabled="" type="checkbox"> taskScheduleGet</li>
+						</ul>
+					</li>
+					<li><p><code>User</code></p>
+						<ul>
+							<li><input checked="" disabled="" type="checkbox"> userGet</li>
+							<li><input checked="" disabled="" type="checkbox"> userGetFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> userCreate</li>
+							<li><input checked="" disabled="" type="checkbox"> userRemove</li>
+							<li><input checked="" disabled="" type="checkbox"> userRemoveFilter</li>
+							<li><input checked="" disabled="" type="checkbox"> userUpdate</li>
+						</ul>
+					</li>
+					<li><p><code>User directory</code></p>
+						<ul>
+							<li><input disabled="" type="checkbox"> userDirectoryGet</li>
+							<li><input disabled="" type="checkbox"> userDirectoryCreate</li>
+							<li><input disabled="" type="checkbox"> userDirectoryRemove</li>
+							<li><input disabled="" type="checkbox"> userDirectoryUpdate</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/QlikRepoApi.html" class="tsd-kind-icon">Qlik<wbr>Repo<wbr>Api</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IAbout.html" class="tsd-kind-icon">IAbout</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IApp.html" class="tsd-kind-icon">IApp</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IAppUpdate.html" class="tsd-kind-icon">IApp<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IContentLibrary.html" class="tsd-kind-icon">IContent<wbr>Library</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IContentLibraryUpdate.html" class="tsd-kind-icon">IContent<wbr>Library<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ICustomProperty.html" class="tsd-kind-icon">ICustom<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ICustomPropertyCreate.html" class="tsd-kind-icon">ICustom<wbr>Property<wbr>Create</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ICustomPropertyUpdate.html" class="tsd-kind-icon">ICustom<wbr>Property<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IEngine.html" class="tsd-kind-icon">IEngine</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IEngineUpdate.html" class="tsd-kind-icon">IEngine<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IExtension.html" class="tsd-kind-icon">IExtension</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IExtensionImport.html" class="tsd-kind-icon">IExtension<wbr>Import</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IExtensionUpdate.html" class="tsd-kind-icon">IExtension<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IHttpReturn.html" class="tsd-kind-icon">IHttp<wbr>Return</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IHttpReturnRemove.html" class="tsd-kind-icon">IHttp<wbr>Return<wbr>Remove</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IRemoveFilter.html" class="tsd-kind-icon">IRemove<wbr>Filter</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IStream.html" class="tsd-kind-icon">IStream</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IStreamCreate.html" class="tsd-kind-icon">IStream<wbr>Create</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IStreamUpdate.html" class="tsd-kind-icon">IStream<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ISystemRule.html" class="tsd-kind-icon">ISystem<wbr>Rule</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ISystemRuleCreate.html" class="tsd-kind-icon">ISystem<wbr>Rule<wbr>Create</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ISystemRuleUpdate.html" class="tsd-kind-icon">ISystem<wbr>Rule<wbr>Update</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITableCreate.html" class="tsd-kind-icon">ITable<wbr>Create</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITag.html" class="tsd-kind-icon">ITag</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITask.html" class="tsd-kind-icon">ITask</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITaskCreate.html" class="tsd-kind-icon">ITask<wbr>Create</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITaskCreateTriggerComposite.html" class="tsd-kind-icon">ITask<wbr>Create<wbr>Trigger<wbr>Composite</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITaskCreateTriggerSchema.html" class="tsd-kind-icon">ITask<wbr>Create<wbr>Trigger<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ITaskExecutionResult.html" class="tsd-kind-icon">ITask<wbr>Execution<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IUser.html" class="tsd-kind-icon">IUser</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IUserCreate.html" class="tsd-kind-icon">IUser<wbr>Create</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IUserUpdate.html" class="tsd-kind-icon">IUser<wbr>Update</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
