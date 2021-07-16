@@ -20,6 +20,8 @@ export class Extension {
     this: QlikRepoApi,
     id: string
   ): Promise<IExtension> {
+    if (!id) throw new Error(`extensionGet: "id" parameter is required`);
+
     return await this.repoClient
       .Get(`extension/${id}`)
       .then((res) => res.data as IExtension);
@@ -29,6 +31,9 @@ export class Extension {
     this: QlikRepoApi,
     filter: string
   ): Promise<IExtensionCondensed[]> {
+    if (!filter)
+      throw new Error(`extensionGetFilter: "filter" parameter is required`);
+
     return await this.repoClient
       .Get(`extension?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IExtension[]);
@@ -38,6 +43,8 @@ export class Extension {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpReturnRemove> {
+    if (!id) throw new Error(`extensionRemove: "id" parameter is required`);
+
     return await this.repoClient.Delete(`extension/${id}`).then((res) => {
       return { id, status: res.status as IHttpStatus };
     });
@@ -47,6 +54,8 @@ export class Extension {
     this: QlikRepoApi,
     arg: IExtensionUpdate
   ): Promise<IExtension> {
+    if (!arg.id) throw new Error(`extensionUpdate: "id" parameter is required`);
+
     let extension = await this.extensionGet(arg.id);
 
     if (arg.modifiedByUserName)
@@ -64,6 +73,9 @@ export class Extension {
     this: QlikRepoApi,
     arg: IExtensionImport
   ): Promise<IExtension[]> {
+    if (!arg.file)
+      throw new Error(`extensionImport: "file" parameter is required`);
+
     const urlBuild = new URLBuild(`extension/upload`);
     if (arg.password) urlBuild.addParam("password", arg.password);
 

@@ -8,6 +8,8 @@ export class Stream {
   constructor() {}
 
   public async streamGet(this: QlikRepoApi, id: string): Promise<IStream> {
+    if (!id) throw new Error(`streamGet: "id" parameter is required`);
+
     return await this.repoClient
       .Get(`stream/${id}`)
       .then((res) => res.data as IStream);
@@ -17,6 +19,8 @@ export class Stream {
     this: QlikRepoApi,
     filter: string
   ): Promise<IStream[]> {
+    if (!filter)
+      throw new Error(`streamGetFilter: "filter" parameter is required`);
     return await this.repoClient
       .Get(`stream?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IStream[]);
@@ -26,6 +30,9 @@ export class Stream {
     this: QlikRepoApi,
     arg: IStreamCreate
   ): Promise<IStream> {
+    if (!arg.name)
+      throw new Error(`streamCreate: "path" parameter is required`);
+
     return await this.repoClient
       .Post(`stream`, {
         name: arg.name,
@@ -37,6 +44,7 @@ export class Stream {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpStatus> {
+    if (!id) throw new Error(`streamRemove: "id" parameter is required`);
     return await this.repoClient
       .Delete(`stream/${id}`)
       .then((res) => res.status as IHttpStatus);
@@ -46,6 +54,8 @@ export class Stream {
     this: QlikRepoApi,
     arg: IStreamUpdate
   ): Promise<IStream> {
+    if (!arg.id) throw new Error(`streamUpdate: "id" parameter is required`);
+
     let stream = await this.streamGet(arg.id);
 
     if (arg.name) stream.name = arg.name;

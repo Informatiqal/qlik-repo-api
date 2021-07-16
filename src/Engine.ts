@@ -8,7 +8,8 @@ export class Engine {
   constructor() {}
 
   public async engineGet(this: QlikRepoApi, id: string): Promise<IEngine> {
-    if (!id) throw new Error(`"id" is required`);
+    if (!id) throw new Error(`engineGet: "id" is required`);
+
     isGUIDError(id);
 
     return await this.repoClient
@@ -26,7 +27,8 @@ export class Engine {
     this: QlikRepoApi,
     filter: string
   ): Promise<IEngine[]> {
-    if (!filter) throw new Error(`"Filter" is required`);
+    if (!filter) throw new Error(`engineGetFilter: "filter" is required`);
+
     let baseUrl = `engineservice/full`;
 
     return await this.repoClient
@@ -38,7 +40,8 @@ export class Engine {
     this: QlikRepoApi,
     arg: IEngineUpdate
   ): Promise<IEngine> {
-    if (!arg.id) throw new Error(`"id" is required`);
+    if (!arg.id) throw new Error(`engineUpdate: "id" is required`);
+
     isGUIDError(arg.id);
 
     let engine = await this.engineGet(arg.id);

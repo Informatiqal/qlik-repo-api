@@ -29,6 +29,8 @@ export class Task {
   }
 
   public async taskReloadGet(this: QlikRepoApi, id: string): Promise<ITask> {
+    if (!id) throw new Error(`taskReloadGet: "path" parameter is required`);
+
     return await this.repoClient
       .Get(`reloadtask/${id}`)
       .then((res) => res.data as ITask);
@@ -38,6 +40,8 @@ export class Task {
     this: QlikRepoApi,
     filter: string
   ): Promise<ITask[]> {
+    if (!filter) throw new Error(`taskGetFilter: "path" parameter is required`);
+
     return await this.repoClient
       .Get(`task/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ITask[]);
@@ -47,6 +51,9 @@ export class Task {
     this: QlikRepoApi,
     filter: string
   ): Promise<ITask[]> {
+    if (!filter)
+      throw new Error(`taskReloadGetFilter: "path" parameter is required`);
+
     return await this.repoClient
       .Get(`reloadtask/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ITask[]);
@@ -68,6 +75,8 @@ export class Task {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpStatus> {
+    if (!id) throw new Error(`taskReloadRemove: id" parameter is required`);
+
     return await this.repoClient
       .Delete(`reloadtask/${id}`)
       .then((res) => res.status as IHttpStatus);
@@ -77,12 +86,18 @@ export class Task {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpStatus> {
+    if (!id) throw new Error(`taskExternalRemove: "id" parameter is required`);
+
     return await this.repoClient
       .Delete(`externalprogramtask/${id}`)
       .then((res) => res.status as IHttpStatus);
   }
 
   public async taskCreate(this: QlikRepoApi, arg: ITaskCreate): Promise<ITask> {
+    if (!arg.appId)
+      throw new Error(`taskCreate: "appId" parameter is required`);
+    if (!arg.name) throw new Error(`taskCreate: "name" parameter is required`);
+
     let reloadTask = {
       schemaEvents: [],
       compositeEvents: [],
@@ -118,6 +133,8 @@ export class Task {
     this: QlikRepoApi,
     arg: IStreamUpdate
   ): Promise<ITask> {
+    if (!arg.id) throw new Error(`taskUpdate: "id" parameter is required`);
+
     let stream = await this.streamGet(arg.id);
 
     if (arg.name) stream.name = arg.name;
@@ -135,6 +152,8 @@ export class Task {
     id: string,
     wait: boolean = false
   ): Promise<IHttpStatus> {
+    if (!id) throw new Error(`taskStart: "id" parameter is required`);
+
     let url = `task/${id}/start`;
     if (wait) url += `/synchronous`;
 
@@ -145,12 +164,14 @@ export class Task {
 
   public async taskStartByName(
     this: QlikRepoApi,
-    taskName: string,
+    name: string,
     wait: boolean = false
   ): Promise<IHttpStatus> {
+    if (!name) throw new Error(`taskStartByName: "path" parameter is required`);
+
     let url = `task/start`;
     if (wait) url += `/synchronous`;
-    url += `?name=${taskName}`;
+    url += `?name=${name}`;
 
     return await this.repoClient
       .Post(`${url}`, {})
@@ -162,6 +183,8 @@ export class Task {
     taskId: string,
     executionId?: string
   ): Promise<ITaskExecutionResult> {
+    if (!taskId)
+      throw new Error(`taskWaitExecution: "taskId" parameter is required`);
     let taskStatusCode = -1;
     let resultId: string;
 
@@ -197,6 +220,7 @@ export class Task {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpStatus> {
+    if (!id) throw new Error(`taskScheduleRemove: "id" parameter is required`);
     return await this.repoClient
       .Delete(`schemaevent/${id}`)
       .then((res) => res.status as IHttpStatus);
@@ -207,6 +231,11 @@ export class Task {
     name: string,
     reloadTaskId: string
   ): Promise<IHttpStatus> {
+    if (!name)
+      throw new Error(`taskSchedulerGet: "path" parameter is required`);
+    if (!reloadTaskId)
+      throw new Error(`taskScheduleGet: "path" parameter is required`);
+
     let filter = `id eq ${reloadTaskId}`;
     let nameFilter = `name eq '${name}'`;
 
@@ -219,6 +248,23 @@ export class Task {
     this: QlikRepoApi,
     arg: ITaskCreateTriggerComposite
   ): Promise<IHttpStatus> {
+    if (!arg.eventTaskId)
+      throw new Error(
+        `taskTriggerCreateComposite: "eventTaskId" parameter is required`
+      );
+    if (!arg.state)
+      throw new Error(
+        `taskTriggerCreateComposite: "state" parameter is required`
+      );
+    if (!arg.taskId)
+      throw new Error(
+        `taskTriggerCreateComposite: "taskId" parameter is required`
+      );
+    if (!arg.triggerName)
+      throw new Error(
+        `taskTriggerCreateComposite: "triggerName" parameter is required`
+      );
+
     let ruleState = -1;
     if (arg.state == "fail") ruleState = 2;
     if (arg.state == "success") ruleState = 1;
@@ -262,6 +308,13 @@ export class Task {
     this: QlikRepoApi,
     arg: ITaskCreateTriggerSchema
   ) {
+    if (!arg.name)
+      throw new Error(`taskTriggerCreateSchema: "name" parameter is required`);
+    if (!arg.reloadTaskId)
+      throw new Error(
+        `taskTriggerCreateSchema: "reloadTaskId" parameter is required`
+      );
+
     let currentTimeStamp = new Date();
 
     let schemaRepeatOpt = schemaRepeat(
@@ -304,6 +357,9 @@ export class Task {
     this: QlikRepoApi,
     reloadTaskId: string
   ): Promise<boolean> {
+    if (!reloadTaskId)
+      throw new Error(`taskScriptLogGet: "reloadTaskId" parameter is required`);
+
     return true;
   }
 
@@ -311,6 +367,11 @@ export class Task {
     this: QlikRepoApi,
     reloadTaskId: string
   ): Promise<boolean> {
+    if (!reloadTaskId)
+      throw new Error(
+        `taskScriptLogFileGet: "reloadTaskId" parameter is required`
+      );
+
     return true;
   }
 }

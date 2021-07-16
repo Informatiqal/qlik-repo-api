@@ -40,6 +40,7 @@ export class Tag {
 
   public async tagCreate(this: QlikRepoApi, name: string): Promise<ITag> {
     if (!name) throw new Error(`"Name" is required`);
+
     return await this.repoClient
       .Post(`tag`, { name })
       .then((res) => res.data as ITag);
@@ -50,6 +51,7 @@ export class Tag {
     id: string
   ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`tagRemove: "id" parameter is required`);
+
     isGUIDError(id);
 
     return await this.repoClient.Delete(`tag/${id}`).then((res) => {

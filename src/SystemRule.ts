@@ -12,6 +12,8 @@ export class SystemRule {
   constructor() {}
 
   public async ruleGet(this: QlikRepoApi, id: string): Promise<ISystemRule> {
+    if (!id) throw new Error(`ruleGet: "id" parameter is required`);
+
     return await this.repoClient
       .Get(`systemrule/${id}`)
       .then((res) => res.data as ISystemRule);
@@ -21,6 +23,9 @@ export class SystemRule {
     this: QlikRepoApi,
     filter: string
   ): Promise<ISystemRule[]> {
+    if (!filter)
+      throw new Error(`ruleGetFilter: "filter" parameter is required`);
+
     return await this.repoClient
       .Get(`systemrule?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ISystemRule[]);
@@ -30,6 +35,15 @@ export class SystemRule {
     this: QlikRepoApi,
     arg: ISystemRuleCreate
   ): Promise<ISystemRule> {
+    if (!arg.actions)
+      throw new Error(`ruleCreate: "actions" parameter is required`);
+    if (!arg.category)
+      throw new Error(`ruleCreate: "category" parameter is required`);
+    if (!arg.name) throw new Error(`ruleCreate: "name" parameter is required`);
+    if (!arg.resourceFilter)
+      throw new Error(`ruleCreate: "resourceFilter" parameter is required`);
+    if (!arg.rule) throw new Error(`ruleCreate: "rule" parameter is required`);
+
     let rule: ISystemRule = {
       name: arg.name,
       disabled: arg.disabled || false,
@@ -57,6 +71,8 @@ export class SystemRule {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpReturnRemove> {
+    if (!id) throw new Error(`ruleRemove: "id" parameter is required`);
+
     return await this.repoClient.Delete(`systemrule/${id}`).then((res) => {
       return { id, status: res.status as IHttpStatus };
     });
@@ -66,6 +82,8 @@ export class SystemRule {
     this: QlikRepoApi,
     arg: ISystemRuleUpdate
   ): Promise<ISystemRule> {
+    if (!arg.id) throw new Error(`ruleUpdate: "id" parameter is required`);
+
     let rule = await this.ruleGet(arg.id);
 
     if (arg.name) rule.name = arg.name;

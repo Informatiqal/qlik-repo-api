@@ -86,7 +86,7 @@ export {
   IAppUpdate,
 };
 
-export class QlikRepoApi implements App, Stream {
+export class QlikRepoApi {
   public repoClient: QlikRepositoryClient;
   public genericClient: QlikGenericRestClient;
   constructor(public repoConfig: any) {

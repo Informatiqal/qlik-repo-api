@@ -16,6 +16,8 @@ export class ContentLibrary {
     this: QlikRepoApi,
     id: string
   ): Promise<IContentLibrary> {
+    if (!id) throw new Error(`contentLibraryGet: "id" parameter is required`);
+
     return await this.repoClient
       .Get(`contentlibrary/${id}`)
       .then((res) => res.data as IContentLibrary);
@@ -25,6 +27,11 @@ export class ContentLibrary {
     this: QlikRepoApi,
     filter: string
   ): Promise<IContentLibraryCondensed[]> {
+    if (!filter)
+      throw new Error(
+        `contentLibraryGetFilter: "filter" parameter is required`
+      );
+
     return await this.repoClient
       .Get(`contentlibrary?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IContentLibrary[]);
@@ -34,6 +41,9 @@ export class ContentLibrary {
     this: QlikRepoApi,
     name: string
   ): Promise<IContentLibrary> {
+    if (!name)
+      throw new Error(`contentLibraryCreate: "name" parameter is required`);
+
     return await this.repoClient
       .Post(`contentlibrary`, { name })
       .then((res) => res.data as IContentLibrary);
@@ -43,6 +53,9 @@ export class ContentLibrary {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpReturnRemove> {
+    if (!id)
+      throw new Error(`contentLibraryRemove: "id" parameter is required`);
+
     return await this.repoClient.Delete(`contentlibrary/${id}`).then((res) => {
       return { id, status: res.status as IHttpStatus };
     });
@@ -52,6 +65,9 @@ export class ContentLibrary {
     this: QlikRepoApi,
     arg: IContentLibraryUpdate
   ): Promise<IContentLibrary> {
+    if (!arg.id)
+      throw new Error(`contentLibraryUpdate: "id" parameter is required`);
+
     let contentLibrary = await this.contentLibraryGet(arg.id);
 
     if (arg.modifiedByUserName)

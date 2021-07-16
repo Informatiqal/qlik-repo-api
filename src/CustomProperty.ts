@@ -21,6 +21,8 @@ export class CustomProperty {
     this: QlikRepoApi,
     id: string
   ): Promise<ICustomProperty> {
+    if (!id) throw new Error(`customPropertyGet: "id" parameter is required`);
+
     return await this.repoClient
       .Get(`custompropertydefinition/${id}`)
       .then((res) => res.data as ICustomProperty);
@@ -30,6 +32,11 @@ export class CustomProperty {
     this: QlikRepoApi,
     filter: string
   ): Promise<ICustomPropertyCondensed[]> {
+    if (!filter)
+      throw new Error(
+        `customPropertyGetFilter: "filter" parameter is required`
+      );
+
     return await this.repoClient
       .Get(`custompropertydefinition?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ICustomPropertyCondensed[]);
@@ -39,6 +46,9 @@ export class CustomProperty {
     this: QlikRepoApi,
     arg: ICustomPropertyCreate
   ) {
+    if (!arg.name)
+      throw new Error(`customPropertyCreate: "name" parameter is required`);
+
     return await this.repoClient
       .Post(
         `custompropertydefinition`,
@@ -58,6 +68,9 @@ export class CustomProperty {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpReturnRemove> {
+    if (!id)
+      throw new Error(`customPropertyRemove: "id" parameter is required`);
+
     return await this.repoClient
       .Delete(`custompropertydefinition/${id}`)
       .then((res) => {
@@ -69,6 +82,11 @@ export class CustomProperty {
     this: QlikRepoApi,
     arg: ICustomPropertyUpdate
   ) {
+    if (!arg.id)
+      throw new Error(`customPropertyUpdate: "id" parameter is required`);
+    if (!arg.name)
+      throw new Error(`customPropertyUpdate: "name" parameter is required`);
+
     let customProperty = await this.customPropertyGet(arg.id);
 
     if (arg.name) customProperty.name = arg.name;

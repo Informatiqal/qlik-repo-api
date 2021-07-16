@@ -4,3 +4,4 @@ out/
 .env
 test/playground.spec.ts
 temp.md
+.VSCodeCounter

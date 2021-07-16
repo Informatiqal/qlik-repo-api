@@ -34,6 +34,8 @@ export class About {
   }
 
   public async aboutApiDefaults(this: QlikRepoApi, path: string): Promise<any> {
+    if (!path)
+      throw new Error(`aboutApiDefaults: "path" parameter is required`);
     return await this.repoClient
       .Get(`about/api/default/${path}`)
       .then((res) => res.data as any);

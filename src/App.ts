@@ -20,6 +20,8 @@ export class App {
     name?: string,
     includeCustomProperties?: boolean
   ): Promise<IApp> {
+    if (!id) throw new Error(`appCopy: "id" parameter is required`);
+
     const urlBuild = new URLBuild(`app/${id}`);
     if (name) urlBuild.addParam("name", name);
     if (includeCustomProperties)
@@ -31,6 +33,7 @@ export class App {
   }
 
   public async appRemove(this: QlikRepoApi, id: string): Promise<IHttpStatus> {
+    if (!id) throw new Error(`appRemove: "id" parameter is required`);
     return await this.repoClient
       .Delete(`app/${id}`)
       .then((res) => res.status as IHttpStatus);
@@ -40,6 +43,9 @@ export class App {
     this: QlikRepoApi,
     filter: string
   ): Promise<IRemoveFilter[]> {
+    if (!filter)
+      throw new Error(`appRemoveFilter: "filter" parameter is required`);
+
     const apps = await this.appGetFilter(filter);
     return Promise.all<IRemoveFilter>(
       apps.map((app: IApp) => {
@@ -58,6 +64,8 @@ export class App {
     fileName?: string,
     skipData?: boolean
   ): Promise<string> {
+    if (!id) throw new Error(`appExport: "id" parameter is required`);
+
     const token = uuid();
     const urlBuild = new URLBuild(`app/${id}/export/${token}`);
     if (!fileName) fileName = `${id}.qvf`;
@@ -77,6 +85,8 @@ export class App {
   }
 
   public async appGet(this: QlikRepoApi, id: string): Promise<IApp> {
+    if (!id) throw new Error(`appGet: "path" parameter is required`);
+
     return await this.repoClient
       .Get(`app/${id}`)
       .then((res) => res.data as IApp);
@@ -86,6 +96,8 @@ export class App {
     this: QlikRepoApi,
     filter: string
   ): Promise<IApp[]> {
+    if (!filter)
+      throw new Error(`appGetFilter: "filter" parameter is required`);
     return await this.repoClient
       .Get(`app?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IApp[]);
@@ -99,6 +111,9 @@ export class App {
     keepData?: boolean,
     excludeDataConnections?: boolean
   ): Promise<IApp> {
+    if (!name) throw new Error(`appImport: "name" parameter is required`);
+    if (!file) throw new Error(`appImport: "file" parameter is required`);
+
     const urlBuild = upload
       ? new URLBuild("app/upload")
       : new URLBuild("app/import");
@@ -118,6 +133,9 @@ export class App {
     stream: string,
     name?: string
   ): Promise<IApp> {
+    if (!id) throw new Error(`appPublish: "id" parameter is required`);
+    if (!stream) throw new Error(`appPublish: "stream" parameter is required`);
+
     const urlBuild = new URLBuild(`app/${id}/publish`);
 
     let streamId: string;
@@ -140,6 +158,8 @@ export class App {
   }
 
   public async appUpdate(this: QlikRepoApi, arg: IAppUpdate): Promise<IApp> {
+    if (!arg.id) throw new Error(`appUpdate: "id" parameter is required`);
+
     let app = await this.appGet(arg.id);
 
     if (arg.name) app.name = arg.name;

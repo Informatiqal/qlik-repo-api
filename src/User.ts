@@ -15,6 +15,8 @@ export class User {
   constructor() {}
 
   public async userGet(this: QlikRepoApi, id: string): Promise<IUser> {
+    if (!id) throw new Error(`userGet: "id" parameter is required`);
+
     return await this.repoClient
       .Get(`user/${id}`)
       .then((res) => res.data as IUser);
@@ -25,6 +27,9 @@ export class User {
     filter: string,
     full = true
   ): Promise<IUserCondensed[]> {
+    if (!filter)
+      throw new Error(`userGetFilter: "filter" parameter is required`);
+
     let baseUrl = `user`;
     if (full) baseUrl += `/full`;
     return await this.repoClient
@@ -33,6 +38,11 @@ export class User {
   }
 
   public async userCreate(this: QlikRepoApi, arg: IUserCreate): Promise<IUser> {
+    if (!arg.userId)
+      throw new Error(`userCreate: "userId" parameter is required`);
+    if (!arg.userDirectory)
+      throw new Error(`userCreate: "userDirectory" parameter is required`);
+
     return await this.repoClient
       .Post(`user`, {
         userId: arg.userId,
@@ -47,6 +57,8 @@ export class User {
     this: QlikRepoApi,
     id: string
   ): Promise<IHttpReturnRemove> {
+    if (!id) throw new Error(`userRemove: "id" parameter is required`);
+
     return await this.repoClient.Delete(`user/${id}`).then((res) => {
       return { id, status: res.status as IHttpStatus };
     });
@@ -56,6 +68,9 @@ export class User {
     this: QlikRepoApi,
     filter: string
   ): Promise<IRemoveFilter[]> {
+    if (!filter)
+      throw new Error(`userRemoveFilter: "filter" parameter is required`);
+
     const users = await this.userGetFilter(filter);
     return await Promise.all<IRemoveFilter>(
       users.map((user: IUser) => {
@@ -69,6 +84,8 @@ export class User {
   }
 
   public async userUpdate(this: QlikRepoApi, arg: IUserUpdate): Promise<IUser> {
+    if (!arg.id) throw new Error(`userUpdate: "id" parameter is required`);
+
     let user = await this.userGet(arg.id);
 
     if (arg.roles) user.roles = arg.roles;
