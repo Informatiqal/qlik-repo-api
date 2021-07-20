@@ -29,6 +29,8 @@ export interface IUserCreate {
   userDirectory: string;
   name?: string;
   roles?: string[];
+  tags?: string[];
+  customProperties?: string[];
 }
 
 export interface ICustomPropertyCreate {
@@ -84,7 +86,6 @@ export interface IExtensionUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IExtensionImport {
@@ -99,6 +100,16 @@ export interface ISystemRuleCreate {
   resourceFilter: string;
   context?: TSystemRuleContext;
   actions: TSystemRuleActions[];
+  comment?: string;
+  disabled?: boolean;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface ISystemRuleLicenseCreate {
+  name: string;
+  type: "Analyzer" | "Professional";
+  rule: string;
   comment?: string;
   disabled?: boolean;
   tags?: string[];
@@ -127,6 +138,17 @@ export interface ITaskCreate {
   customProperties?: string[];
 }
 
+export interface ITaskReloadUpdate {
+  id: string;
+  name?: string;
+  enabled?: boolean;
+  taskSessionTimeout?: number;
+  maxRetries?: number;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+}
+
 export interface ITaskCreateTriggerComposite {
   taskId: string;
   triggerName: string;
@@ -153,7 +175,7 @@ interface ITableColumnBase {
   name?: string;
 }
 
-interface ITableColumn {
+export interface ITableColumn {
   columnType: string;
   definition: string;
   name?: string;
@@ -197,3 +219,25 @@ export interface IEngineUpdate {
   sseLogVerbosity?: TRangeOf5;
   modifiedByUserName?: string;
 }
+
+export interface IEngineGetValid {
+  proxyID?: string;
+  proxyPrefix?: string;
+  appId?: string;
+  loadBalancingPurpose?: "Production" | "Development" | "Any";
+}
+
+export interface ISystemRuleAuditGet {
+  schemaPath?: string;
+  resourceType?: string;
+  resourceFilter?: string;
+  userFilter?: string;
+  environmentAttribute?: string;
+  userSkip?: number;
+  userTake?: number;
+  resourceSkip?: number;
+  resourceTake?: number;
+  includeNonGrantingRules?: boolean;
+}
+
+export interface ISystemRuleLicenseCreate {}

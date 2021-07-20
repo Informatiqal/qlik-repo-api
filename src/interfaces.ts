@@ -273,7 +273,7 @@ export interface ISystemRule {
   tags?: ITagCondensed[];
 }
 
-export interface ITaskExecutionResultDetails {
+export interface IExecutionResultDetailCondensed {
   privileges: string[];
   detailsType: number;
   id: string;
@@ -282,18 +282,18 @@ export interface ITaskExecutionResultDetails {
 }
 
 export interface ITaskExecutionResult {
-  duration: number;
+  id: string;
   privileges: string[];
   executingNodeName: string;
-  scriptLogLocation: string;
-  fileReferenceID: string;
+  status: {};
   startTime: string;
   stopTime: string;
+  duration: number;
+  fileReferenceID: string;
   scriptLogAvailable: boolean;
-  details: ITaskExecutionResultDetails[];
-  id: string;
-  status: {};
+  scriptLogLocation: string;
   scriptLogSize: number;
+  details: IExecutionResultDetailCondensed[];
 }
 
 export interface ITaskOperational {
@@ -431,4 +431,123 @@ export interface IEngine {
   schemaPath: string;
   settings: IEngineSettings;
   serverNodeConfiguration: IServerNodeConfiguration;
+}
+
+export interface ISelectionItem {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  type: string;
+  objectID: string;
+  objectName?: string;
+}
+
+export interface ISelection {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  items?: ISelectionItem[];
+}
+
+export interface IContentLibraryFile {
+  name: string;
+  file: string;
+}
+
+export interface IEngineGetValidResult {
+  schemaPath?: string;
+  loadBalancingResultCode?: number;
+  appID?: string;
+  validEngines?: string[];
+}
+
+export interface IAuditUserCondensed {
+  schemaPath?: string;
+  userId?: string;
+  userDirectory?: string;
+  name?: string;
+}
+export interface IAuditResourceCondensed {
+  schemaPath?: string;
+  id?: string;
+  name?: string;
+}
+
+export interface IAuditRuleCondensed {
+  schemaPath?: string;
+  id?: string;
+  name?: string;
+  actions?: number;
+  disabled?: boolean;
+}
+export interface ISystemRuleApplicationItemCondensed {
+  schemaPath?: string;
+  userID?: string;
+  resourceID?: string;
+  ruleID?: string;
+  allowed?: boolean;
+  errorAt?: number;
+  errorMessage?: string;
+  evaluationState?: number;
+}
+
+export interface IAudit {
+  schemaPath?: string;
+  users?: IAuditUserCondensed[];
+  resources?: IAuditResourceCondensed[];
+  rules?: IAuditRuleCondensed[];
+  ruleApplication?: ISystemRuleApplicationItemCondensed[];
+}
+
+export interface IExternalProgramTaskOperationalCondensed {
+  id?: string;
+  privileges?: string[];
+  timesTriggered?: number;
+  nextExecution?: string;
+  lastExecutionResult: ITaskExecutionResult;
+}
+
+export interface IExternalProgramTaskCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  taskType?: number;
+  enabled?: boolean;
+  taskSessionTimeout: number;
+  maxRetries: number;
+  operational: IExternalProgramTaskOperationalCondensed;
+}
+
+export interface ISchemaEventOperationalCondensed {
+  id?: string;
+  privileges?: string[];
+  timesTriggered?: number;
+  nextExecution?: string;
+}
+
+export interface ISchemaEvent {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name: string;
+  enabled?: boolean;
+  eventType?: number;
+  timeZone: string;
+  startDate: string;
+  expirationDate: string;
+  schemaFilterDescription: string[];
+  incrementalDescription: string;
+  incrementalOption: number;
+  operational: ISchemaEventOperationalCondensed;
+  externalProgramTask: IExternalProgramTaskCondensed;
+  reloadTask: IExternalProgramTaskCondensed;
+  userSyncTask: IExternalProgramTaskCondensed;
 }

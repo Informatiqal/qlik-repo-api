@@ -1,13 +1,8 @@
 import { QlikRepoApi } from "./main";
-import { URLBuild, isGUID, uuid } from "./util/generic";
+import { URLBuild, uuid } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import {
-  IApp,
-  IHttpStatus,
-  IAppExportResponse,
-  IRemoveFilter,
-} from "./interfaces";
+import { IApp, IHttpStatus, ISelection, IRemoveFilter } from "./interfaces";
 import { IAppUpdate } from "./interfaces/argument.interface";
 import { IHttpReturn } from "qlik-rest-api";
 
@@ -22,42 +17,17 @@ export class App {
   ): Promise<IApp> {
     if (!id) throw new Error(`appCopy: "id" parameter is required`);
 
-    const urlBuild = new URLBuild(`app/${id}`);
+    const urlBuild = new URLBuild(`app/${id}/copy`);
     if (name) urlBuild.addParam("name", name);
     if (includeCustomProperties)
       urlBuild.addParam("includecustomproperties", includeCustomProperties);
 
     return await this.repoClient
-      .Get(urlBuild.getUrl())
+      .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as IApp);
   }
 
-  public async appRemove(this: QlikRepoApi, id: string): Promise<IHttpStatus> {
-    if (!id) throw new Error(`appRemove: "id" parameter is required`);
-    return await this.repoClient
-      .Delete(`app/${id}`)
-      .then((res) => res.status as IHttpStatus);
-  }
-
-  public async appRemoveFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IRemoveFilter[]> {
-    if (!filter)
-      throw new Error(`appRemoveFilter: "filter" parameter is required`);
-
-    const apps = await this.appGetFilter(filter);
-    return Promise.all<IRemoveFilter>(
-      apps.map((app: IApp) => {
-        return this.repoClient
-          .Delete(`app/${app.id}`)
-          .then((res: IHttpReturn) => {
-            return { id: app.id, status: res.status };
-          });
-      })
-    );
-  }
-
+  // TODO: handle return file
   public async appExport(
     this: QlikRepoApi,
     id: string,
@@ -84,25 +54,31 @@ export class App {
     return "";
   }
 
-  public async appGet(this: QlikRepoApi, id: string): Promise<IApp> {
-    if (!id) throw new Error(`appGet: "path" parameter is required`);
+  public async appGet(this: QlikRepoApi, id?: string): Promise<IApp> {
+    let url = "app";
+    if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(`app/${id}`)
-      .then((res) => res.data as IApp);
+    return await this.repoClient.Get(url).then((res) => res.data as IApp);
   }
 
   public async appGetFilter(
     this: QlikRepoApi,
-    filter: string
+    filter: string,
+    orderBy?: string
   ): Promise<IApp[]> {
     if (!filter)
       throw new Error(`appGetFilter: "filter" parameter is required`);
+
+    const urlBuild = new URLBuild(`app/full`);
+    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("orderby", orderBy);
+
     return await this.repoClient
-      .Get(`app?filter=(${encodeURIComponent(filter)})`)
+      .Get(urlBuild.getUrl())
       .then((res) => res.data as IApp[]);
   }
 
+  // TODO: Handle the difference between import and upload
   public async appImport(
     this: QlikRepoApi,
     name: string,
@@ -136,27 +112,79 @@ export class App {
     if (!id) throw new Error(`appPublish: "id" parameter is required`);
     if (!stream) throw new Error(`appPublish: "stream" parameter is required`);
 
+    let streamRes = await this.repoClient.Get(
+      `stream?filter=(name eq '${stream}')`
+    );
+
+    if (streamRes.data.length == 0)
+      throw new Error(`appPublish: Stream "${stream}" not found`);
+
+    if (streamRes.data.length > 1)
+      throw new Error(`appPublish: Multiple streams found "${stream}"`);
+
     const urlBuild = new URLBuild(`app/${id}/publish`);
-
-    let streamId: string;
-    if (isGUID(stream)) {
-      streamId = stream;
-    } else {
-      streamId = await this.repoClient
-        .Get(`stream?filter=(name eq '${stream}')`)
-        .then((streams) => {
-          if (streams.data.length == 0) throw new Error("Stream not found");
-          return streams.data[0].id;
-        });
-    }
-
-    urlBuild.addParam("stream", streamId);
+    urlBuild.addParam("stream", streamRes.data[0].id);
     urlBuild.addParam("name", name);
+
     return await this.repoClient
       .Put(urlBuild.getUrl(), {})
       .then((res) => res.data as IApp);
   }
 
+  public async appRemove(this: QlikRepoApi, id: string): Promise<IHttpStatus> {
+    if (!id) throw new Error(`appRemove: "id" parameter is required`);
+    return await this.repoClient
+      .Delete(`app/${id}`)
+      .then((res) => res.status as IHttpStatus);
+  }
+
+  public async appRemoveFilter(
+    this: QlikRepoApi,
+    filter: string
+  ): Promise<IRemoveFilter[]> {
+    if (!filter)
+      throw new Error(`appRemoveFilter: "filter" parameter is required`);
+
+    const apps = await this.appGetFilter(filter);
+    return Promise.all<IRemoveFilter>(
+      apps.map((app: IApp) => {
+        return this.repoClient
+          .Delete(`app/${app.id}`)
+          .then((res: IHttpReturn) => {
+            return { id: app.id, status: res.status };
+          });
+      })
+    );
+  }
+
+  public async appSelect(
+    this: QlikRepoApi,
+    filter?: string
+  ): Promise<ISelection> {
+    const urlBuild = new URLBuild(`selection/app`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
+  public async appSwitch(
+    this: QlikRepoApi,
+    sourceAppId: string,
+    targetAppId: string
+  ): Promise<IApp> {
+    if (!sourceAppId)
+      throw new Error(`appSwitch: "sourceAppId" parameter is required`);
+    if (!targetAppId)
+      throw new Error(`appSwitch: "targetAppId" parameter is required`);
+
+    return await this.repoClient
+      .Put(`app/${sourceAppId}/replace?app=${targetAppId}`, {})
+      .then((res) => res.data as IApp);
+  }
+
+  // REVIEW: verify the logic here
   public async appUpdate(this: QlikRepoApi, arg: IAppUpdate): Promise<IApp> {
     if (!arg.id) throw new Error(`appUpdate: "id" parameter is required`);
 

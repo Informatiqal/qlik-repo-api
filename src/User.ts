@@ -1,5 +1,6 @@
 import { QlikRepoApi } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
+import { GetCommonProperties } from "./util/GetCommonProps";
 import {
   IHttpStatus,
   IUser,
@@ -14,12 +15,11 @@ import { IUserUpdate, IUserCreate } from "./interfaces/argument.interface";
 export class User {
   constructor() {}
 
-  public async userGet(this: QlikRepoApi, id: string): Promise<IUser> {
-    if (!id) throw new Error(`userGet: "id" parameter is required`);
+  public async userGet(this: QlikRepoApi, id?: string): Promise<IUser> {
+    let url = "user";
+    if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(`user/${id}`)
-      .then((res) => res.data as IUser);
+    return await this.repoClient.Get(url).then((res) => res.data as IUser);
   }
 
   public async userGetFilter(
@@ -43,12 +43,22 @@ export class User {
     if (!arg.userDirectory)
       throw new Error(`userCreate: "userDirectory" parameter is required`);
 
+    let getCommonProps = new GetCommonProperties(
+      this,
+      arg.customProperties,
+      arg.tags,
+      ""
+    );
+
+    let commonProps = await getCommonProps.getAll();
+
     return await this.repoClient
       .Post(`user`, {
         userId: arg.userId,
         userDirectory: arg.userDirectory,
         name: arg.name || arg.userId,
         roles: arg.roles || [],
+        ...commonProps,
       })
       .then((res) => res.data as IUser);
   }

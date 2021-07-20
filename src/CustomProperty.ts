@@ -1,10 +1,12 @@
 import { QlikRepoApi } from "./main";
+import { URLBuild } from "./util/generic";
 
 import {
   IHttpStatus,
   ICustomProperty,
   IHttpReturnRemove,
   ICustomPropertyCondensed,
+  ISelection,
 } from "./interfaces";
 
 import {
@@ -19,12 +21,13 @@ export class CustomProperty {
 
   public async customPropertyGet(
     this: QlikRepoApi,
-    id: string
+    id?: string
   ): Promise<ICustomProperty> {
-    if (!id) throw new Error(`customPropertyGet: "id" parameter is required`);
+    let url = "custompropertydefinition";
+    if (id) url += `/${id}`;
 
     return await this.repoClient
-      .Get(`custompropertydefinition/${id}`)
+      .Get(url)
       .then((res) => res.data as ICustomProperty);
   }
 
@@ -78,6 +81,19 @@ export class CustomProperty {
       });
   }
 
+  public async customPropertySelect(
+    this: QlikRepoApi,
+    filter?: string
+  ): Promise<ISelection> {
+    const urlBuild = new URLBuild(`selection/custompropertydefinition`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
+  // REVIEW: verify the logic here
   public async customPropertyUpdate(
     this: QlikRepoApi,
     arg: ICustomPropertyUpdate

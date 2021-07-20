@@ -109,18 +109,28 @@ export class QlikRepoApi {
   appCopy = App.prototype.appCopy;
   appExport = App.prototype.appExport;
   appPublish = App.prototype.appPublish;
+  appSelect = App.prototype.appSelect;
+  appSwitch = App.prototype.appSwitch;
   appUpdate = App.prototype.appUpdate;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
   contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;
   contentLibraryCreate = ContentLibrary.prototype.contentLibraryCreate;
+  contentLibraryExport = ContentLibrary.prototype.contentLibraryExport;
+  contentLibraryImport = ContentLibrary.prototype.contentLibraryImport;
+  contentLibraryImportForApp =
+    ContentLibrary.prototype.contentLibraryImportForApp;
   contentLibraryRemove = ContentLibrary.prototype.contentLibraryRemove;
+  contentLibraryRemoveFilter =
+    ContentLibrary.prototype.contentLibraryRemoveFilter;
+  contentLibrarySelect = ContentLibrary.prototype.contentLibrarySelect;
   contentLibraryUpdate = ContentLibrary.prototype.contentLibraryUpdate;
 
   customPropertyGet = CustomProperty.prototype.customPropertyGet;
   customPropertyGetFilter = CustomProperty.prototype.customPropertyGetFilter;
   customPropertyCreate = CustomProperty.prototype.customPropertyCreate;
   customPropertyRemove = CustomProperty.prototype.customPropertyRemove;
+  customPropertySelect = CustomProperty.prototype.customPropertySelect;
   customPropertyUpdate = CustomProperty.prototype.customPropertyUpdate;
 
   extensionGet = Extension.prototype.extensionGet;
@@ -133,6 +143,7 @@ export class QlikRepoApi {
   engineGet = Engine.prototype.engineGet;
   engineGetAll = Engine.prototype.engineGetAll;
   engineGetFilter = Engine.prototype.engineGetFilter;
+  engineGetValid = Engine.prototype.engineGetValid;
   engineUpdate = Engine.prototype.engineUpdate;
 
   streamGet = Stream.prototype.streamGet;
@@ -142,9 +153,11 @@ export class QlikRepoApi {
   streamUpdate = Stream.prototype.streamUpdate;
 
   ruleGet = SystemRule.prototype.ruleGet;
+  ruleGetAudit = SystemRule.prototype.ruleGetAudit;
   ruleGetFilter = SystemRule.prototype.ruleGetFilter;
   ruleCreate = SystemRule.prototype.ruleCreate;
   ruleRemove = SystemRule.prototype.ruleRemove;
+  ruleLicenseCreate = SystemRule.prototype.ruleLicenseCreate;
   ruleUpdate = SystemRule.prototype.ruleUpdate;
 
   tagGet = Tag.prototype.tagGet;
@@ -167,7 +180,7 @@ export class QlikRepoApi {
   taskCreate = Task.prototype.taskCreate;
   taskReloadRemove = Task.prototype.taskReloadRemove;
   taskExternalRemove = Task.prototype.taskExternalRemove;
-  taskUpdate = Task.prototype.taskUpdate;
+  taskReloadUpdate = Task.prototype.taskReloadUpdate;
   taskStart = Task.prototype.taskStart;
   taskStartByName = Task.prototype.taskStartByName;
   taskWaitExecution = Task.prototype.taskWaitExecution;

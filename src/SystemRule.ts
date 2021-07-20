@@ -1,22 +1,42 @@
 import { QlikRepoApi } from "./main";
 import { modifiedDateTime } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
+import { GetCommonProperties } from "./util/GetCommonProps";
 
-import { IHttpStatus, IHttpReturnRemove, ISystemRule } from "./interfaces";
+import {
+  IHttpStatus,
+  IHttpReturnRemove,
+  ISystemRule,
+  IAudit,
+  TSystemRuleActions,
+  TSystemRuleContext,
+} from "./interfaces";
 import {
   ISystemRuleCreate,
   ISystemRuleUpdate,
+  ISystemRuleAuditGet,
+  ISystemRuleLicenseCreate,
 } from "./interfaces/argument.interface";
 
 export class SystemRule {
   constructor() {}
 
-  public async ruleGet(this: QlikRepoApi, id: string): Promise<ISystemRule> {
-    if (!id) throw new Error(`ruleGet: "id" parameter is required`);
+  public async ruleGet(this: QlikRepoApi, id?: string): Promise<ISystemRule> {
+    let url = "systemrule";
+    if (id) url += `/${id}`;
 
     return await this.repoClient
-      .Get(`systemrule/${id}`)
+      .Get(url)
       .then((res) => res.data as ISystemRule);
+  }
+
+  public async ruleGetAudit(
+    this: QlikRepoApi,
+    arg: ISystemRuleAuditGet
+  ): Promise<IAudit> {
+    return await this.repoClient
+      .Post(`systemrule/security/audit`, { ...arg })
+      .then((res) => res.data as IAudit);
   }
 
   public async ruleGetFilter(
@@ -67,6 +87,46 @@ export class SystemRule {
       .then((res) => res.data as ISystemRule);
   }
 
+  public async ruleLicenseCreate(
+    this: QlikRepoApi,
+    arg: ISystemRuleLicenseCreate
+  ) {
+    let rule = {
+      name: arg.name,
+      type: "Custom",
+      rule: arg.rule || "",
+      disabled: arg.disabled || false,
+      comment: arg.comment || "",
+      resourceFilter: "",
+      actions: 1,
+      ruleContext: 1,
+      schemaPath: "SystemRule",
+      category: "License",
+      customProperties: [],
+      tags: [],
+    };
+
+    let commonProps = new GetCommonProperties(
+      this,
+      arg.customProperties || [],
+      arg.tags || [],
+      ""
+    );
+
+    let props = await commonProps.getAll();
+    rule.customProperties = props.customProperties;
+    rule.tags = props.tags;
+
+    let accessGroup = await this.repoClient.Post(
+      `license/${arg.type}accessgroup`,
+      { name: arg.name }
+    );
+
+    rule.resourceFilter = `License.${arg.type}AccessGroup_${accessGroup.data.id}`;
+
+    return await this.repoClient.Post(`systemrule`, rule);
+  }
+
   public async ruleRemove(
     this: QlikRepoApi,
     id: string
@@ -106,7 +166,7 @@ export class SystemRule {
   }
 }
 
-function calculateActions(actions): number {
+function calculateActions(actions: TSystemRuleActions[]): number {
   const actionsMeta = {
     None: 0,
     Create: 1,
@@ -127,7 +187,6 @@ function calculateActions(actions): number {
 
   const reducer = (accumulator: number, currentValue: number) =>
     accumulator + currentValue;
-
   return actions
     .map((t) => {
       return actionsMeta[t];
@@ -135,9 +194,13 @@ function calculateActions(actions): number {
     .reduce(reducer);
 }
 
-function getRuleContext(context) {
+function getRuleContext(context: TSystemRuleContext) {
   if (context == "both") return 0;
   if (context == "BothQlikSenseAndQMC") return 0;
   if (context == "hub") return 1;
   if (context == "qmc") return 2;
+
+  throw new Error(
+    `"${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
+  );
 }
