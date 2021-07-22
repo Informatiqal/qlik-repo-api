@@ -613,3 +613,41 @@ export interface IServiceStatus {
   timestamp?: string;
   serverNodeConfiguration: IServerNodeConfiguration;
 }
+
+export interface IUserDirectorySettings {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name: string;
+  category?: string;
+  userDirectorySettingType: number;
+  secret: boolean;
+  value?: string;
+  secretValue?: string;
+}
+
+export interface IUserDirectory {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name: string;
+  userDirectoryName?: string;
+  configured?: boolean;
+  operational?: boolean;
+  type: string;
+  syncOnlyLoggedInUsers: boolean;
+  syncStatus: boolean;
+  syncLastStarted?: string;
+  syncLastSuccessfulEnded?: string;
+  configuredError?: string;
+  operationalError?: string;
+  tags: ITagCondensed[];
+  creationType: number;
+  settings?: IUserDirectorySettings;
+}
