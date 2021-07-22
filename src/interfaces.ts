@@ -535,3 +535,68 @@ export interface ISchemaEvent {
   reloadTask: IExternalProgramTaskCondensed;
   userSyncTask: IExternalProgramTaskCondensed;
 }
+
+export interface IServiceClusterSettingsDbCredentials {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  userName?: string;
+  password?: string;
+}
+
+export interface ServiceClusterSettingsSharedPersistenceProperties {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  rootFolder?: string;
+  appFolder?: string;
+  staticContentRootFolder?: string;
+  connector32RootFolder?: string;
+  connector64RootFolder?: string;
+  archivedLogsRootFolder?: string;
+  databaseHost?: string;
+  databasePort?: number;
+  sSLPort?: number;
+  failoverTimeout?: number;
+}
+
+export interface IServiceClusterSettingsEncryption {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  enableEncryptQvf?: boolean;
+  enableEncryptQvd?: boolean;
+  encryptionKeyThumbprint?: string;
+}
+
+export interface IServiceClusterSettings {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  persistenceMode: number;
+  dataCollection?: boolean;
+  tasksImpersonation?: boolean;
+  databaseCredentials: IServiceClusterSettingsDbCredentials;
+  encryption: IServiceClusterSettingsEncryption;
+
+  sharedPersistenceProperties: ServiceClusterSettingsSharedPersistenceProperties;
+}
+
+export interface IServiceCluster {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name: string;
+  settings: IServiceClusterSettings;
+}

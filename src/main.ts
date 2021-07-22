@@ -7,6 +7,7 @@ import { Extension } from "./Extension";
 import { Engine } from "./Engine";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
+import { ServiceCluster } from "./ServiceCluster";
 import { Table } from "./Table";
 import { Tag } from "./Tag";
 import { Task } from "./Task";
@@ -23,6 +24,7 @@ import {
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
+  IServiceCluster,
   IStream,
   ITag,
   ITask,
@@ -40,6 +42,7 @@ export {
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
+  IServiceCluster,
   IStream,
   ITag,
   ITask,
@@ -56,6 +59,7 @@ import {
   ITaskCreateTriggerComposite,
   ITaskCreate,
   ITableCreate,
+  IServiceClusterUpdate,
   IStreamCreate,
   ISystemRuleUpdate,
   ISystemRuleCreate,
@@ -75,6 +79,7 @@ export {
   ITaskCreateTriggerComposite,
   ITaskCreate,
   ITableCreate,
+  IServiceClusterUpdate,
   IStreamCreate,
   ISystemRuleUpdate,
   ISystemRuleCreate,
@@ -154,6 +159,13 @@ export class QlikRepoApi {
   engineGetFilter = Engine.prototype.engineGetFilter;
   engineGetValid = Engine.prototype.engineGetValid;
   engineUpdate = Engine.prototype.engineUpdate;
+
+  serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
+  serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;
+  serviceClusterGetFilter = ServiceCluster.prototype.serviceClusterGetFilter;
+  serviceClusterRemove = ServiceCluster.prototype.serviceClusterRemove;
+  serviceClusterSetCentral = ServiceCluster.prototype.serviceClusterSetCentral;
+  serviceClusterUpdate = ServiceCluster.prototype.serviceClusterUpdate;
 
   streamGet = Stream.prototype.streamGet;
   streamGetFilter = Stream.prototype.streamGetFilter;
