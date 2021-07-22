@@ -21,7 +21,6 @@ export interface IUserUpdate {
   customProperties?: string[];
   name?: string;
   roles?: string[];
-  modifiedByUserName?: string;
 }
 
 export interface IUserCreate {
@@ -29,6 +28,8 @@ export interface IUserCreate {
   userDirectory: string;
   name?: string;
   roles?: string[];
+  tags?: string[];
+  customProperties?: string[];
 }
 
 export interface ICustomPropertyCreate {
@@ -41,7 +42,6 @@ export interface ICustomPropertyCreate {
 
 export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
   id: string;
-  modifiedByUserName?: string;
 }
 
 export interface IAppUpdate {
@@ -52,7 +52,6 @@ export interface IAppUpdate {
   customProperties?: string[];
   owner?: string;
   stream?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IStreamCreate {
@@ -68,7 +67,6 @@ export interface IStreamUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IContentLibraryUpdate {
@@ -76,7 +74,6 @@ export interface IContentLibraryUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IExtensionUpdate {
@@ -84,7 +81,6 @@ export interface IExtensionUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IExtensionImport {
@@ -105,6 +101,16 @@ export interface ISystemRuleCreate {
   customProperties?: string[];
 }
 
+export interface ISystemRuleLicenseCreate {
+  name: string;
+  type: "Analyzer" | "Professional";
+  rule: string;
+  comment?: string;
+  disabled?: boolean;
+  tags?: string[];
+  customProperties?: string[];
+}
+
 export interface ISystemRuleUpdate {
   id: string;
   name?: string;
@@ -117,7 +123,6 @@ export interface ISystemRuleUpdate {
   disabled?: boolean;
   tags?: string[];
   customProperties?: string[];
-  modifiedByUserName?: string;
 }
 
 export interface ITaskCreate {
@@ -125,6 +130,17 @@ export interface ITaskCreate {
   appId: string;
   tags?: string[];
   customProperties?: string[];
+}
+
+export interface ITaskReloadUpdate {
+  id: string;
+  name?: string;
+  enabled?: boolean;
+  taskSessionTimeout?: number;
+  maxRetries?: number;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
 }
 
 export interface ITaskCreateTriggerComposite {
@@ -153,7 +169,7 @@ interface ITableColumnBase {
   name?: string;
 }
 
-interface ITableColumn {
+export interface ITableColumn {
   columnType: string;
   definition: string;
   name?: string;
@@ -195,5 +211,26 @@ export interface IEngineUpdate {
   sessionLogVerbosity?: TRangeOf5;
   performanceLogVerbosity?: TRangeOf5;
   sseLogVerbosity?: TRangeOf5;
-  modifiedByUserName?: string;
 }
+
+export interface IEngineGetValid {
+  proxyID?: string;
+  proxyPrefix?: string;
+  appId?: string;
+  loadBalancingPurpose?: "Production" | "Development" | "Any";
+}
+
+export interface ISystemRuleAuditGet {
+  schemaPath?: string;
+  resourceType?: string;
+  resourceFilter?: string;
+  userFilter?: string;
+  environmentAttribute?: string;
+  userSkip?: number;
+  userTake?: number;
+  resourceSkip?: number;
+  resourceTake?: number;
+  includeNonGrantingRules?: boolean;
+}
+
+export interface ISystemRuleLicenseCreate {}

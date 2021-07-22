@@ -1,10 +1,16 @@
 import { QlikRepoApi } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IHttpStatus, ITask, ITaskExecutionResult } from "./interfaces";
+import {
+  IHttpStatus,
+  ITask,
+  ITaskExecutionResult,
+  ISchemaEvent,
+  IHttpReturnRemove,
+} from "./interfaces";
 import {
   ITaskCreate,
-  IStreamUpdate,
+  ITaskReloadUpdate,
   ITaskCreateTriggerComposite,
   ITaskCreateTriggerSchema,
 } from "./interfaces/argument.interface";
@@ -74,23 +80,25 @@ export class Task {
   public async taskReloadRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`taskReloadRemove: id" parameter is required`);
 
-    return await this.repoClient
-      .Delete(`reloadtask/${id}`)
-      .then((res) => res.status as IHttpStatus);
+    return await this.repoClient.Delete(`reloadtask/${id}`).then((res) => {
+      return { id, status: res.status as IHttpStatus };
+    });
   }
 
   public async taskExternalRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`taskExternalRemove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`externalprogramtask/${id}`)
-      .then((res) => res.status as IHttpStatus);
+      .then((res) => {
+        return { id, status: res.status as IHttpStatus };
+      });
   }
 
   public async taskCreate(this: QlikRepoApi, arg: ITaskCreate): Promise<ITask> {
@@ -129,21 +137,24 @@ export class Task {
       .then((res) => res.data as ITask);
   }
 
-  public async taskUpdate(
+  public async taskReloadUpdate(
     this: QlikRepoApi,
-    arg: IStreamUpdate
+    arg: ITaskReloadUpdate
   ): Promise<ITask> {
     if (!arg.id) throw new Error(`taskUpdate: "id" parameter is required`);
 
-    let stream = await this.streamGet(arg.id);
+    let reloadTask: ITask = await this.taskReloadGet(arg.id).then((s) => s[0]);
 
-    if (arg.name) stream.name = arg.name;
+    if (arg.enabled) reloadTask.enabled = arg.enabled;
+    if (arg.taskSessionTimeout)
+      reloadTask.taskSessionTimeout = arg.taskSessionTimeout;
+    if (arg.maxRetries) reloadTask.maxRetries = arg.maxRetries;
 
-    let updateCommon = new UpdateCommonProperties(this, stream, arg);
-    stream = await updateCommon.updateAll();
+    let updateCommon = new UpdateCommonProperties(this, reloadTask, arg);
+    reloadTask = await updateCommon.updateAll();
 
     return await this.repoClient
-      .Put(`stream/${arg.id}`, { ...stream })
+      .Put(`reloadtask/${arg.id}`, { ...reloadTask })
       .then((res) => res.data as ITask);
   }
 
@@ -219,29 +230,23 @@ export class Task {
   public async taskScheduleRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`taskScheduleRemove: "id" parameter is required`);
-    return await this.repoClient
-      .Delete(`schemaevent/${id}`)
-      .then((res) => res.status as IHttpStatus);
+    return await this.repoClient.Delete(`schemaevent/${id}`).then((res) => {
+      return { id, status: res.status as IHttpStatus };
+    });
   }
 
   public async taskScheduleGet(
     this: QlikRepoApi,
-    name: string,
-    reloadTaskId: string
-  ): Promise<IHttpStatus> {
-    if (!name)
-      throw new Error(`taskSchedulerGet: "path" parameter is required`);
-    if (!reloadTaskId)
-      throw new Error(`taskScheduleGet: "path" parameter is required`);
-
-    let filter = `id eq ${reloadTaskId}`;
-    let nameFilter = `name eq '${name}'`;
+    id?: string
+  ): Promise<ISchemaEvent> {
+    let url = "schemaevent";
+    if (id) url += `/${id}`;
 
     return await this.repoClient
-      .Delete(`schemaevent`)
-      .then((res) => res.status as IHttpStatus);
+      .Get(url)
+      .then((res) => res.data as ISchemaEvent);
   }
 
   public async taskTriggerCreateComposite(
@@ -355,24 +360,48 @@ export class Task {
 
   public async taskScriptLogGet(
     this: QlikRepoApi,
-    reloadTaskId: string
-  ): Promise<boolean> {
+    reloadTaskId: string,
+    fileReferenceId: string
+  ): Promise<string> {
     if (!reloadTaskId)
       throw new Error(`taskScriptLogGet: "reloadTaskId" parameter is required`);
+    if (!fileReferenceId)
+      throw new Error(
+        `taskScriptLogGet: "fileReferenceId" parameter is required`
+      );
 
-    return true;
+    return await this.repoClient
+      .Get(
+        `/reloadtask/${reloadTaskId}/scriptlog?filereferenceid=${encodeURIComponent(
+          fileReferenceId
+        )}
+    `
+      )
+      .then((res) => res.data as string);
   }
 
   public async taskScriptLogFileGet(
     this: QlikRepoApi,
-    reloadTaskId: string
-  ): Promise<boolean> {
+    reloadTaskId: string,
+    executionResultId: string
+  ): Promise<string> {
     if (!reloadTaskId)
       throw new Error(
         `taskScriptLogFileGet: "reloadTaskId" parameter is required`
       );
+    if (!executionResultId)
+      throw new Error(
+        `taskScriptLogFileGet: "executionResultId" parameter is required`
+      );
 
-    return true;
+    return await this.repoClient
+      .Get(
+        `/reloadtask/${reloadTaskId}/scriptlog?executionresultid =${encodeURIComponent(
+          executionResultId
+        )}
+  `
+      )
+      .then((res) => res.data as string);
   }
 }
 
@@ -430,6 +459,3 @@ function getWeekDayNumber(daysOfWeek: TDaysOfWeek): number {
   if (daysOfWeek == "Friday") return 5;
   if (daysOfWeek == "Saturday") return 6;
 }
-
-// get /reloadtask/{reloadtaskid}/scriptlog
-// get /reloadtask/{reloadtaskid}/scriptlogfile

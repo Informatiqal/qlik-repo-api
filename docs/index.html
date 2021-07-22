@@ -69,255 +69,72 @@
 				<hr>
 				<p><strong>NOT AFFILIATED WITH QLIK</strong></p>
 				<hr>
-				<a href="#objects" id="objects" style="color: inherit; text-decoration: none;">
-					<h2>Objects</h2>
+				<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
+					<h2>Methods</h2>
+				</a>
+				<p>Full list of available methods can be found <a href="https://informatiqal.github.io/qlik-repo-api/classes/QlikRepoApi.html">here</a></p>
+				<a href="#generic-clients" id="generic-clients" style="color: inherit; text-decoration: none;">
+					<h2>Generic clients</h2>
+				</a>
+				<p>The package expose two extra (generic) methods. Generic methods that are not bound to specific method/object. Aka raw methods. For them at least <code>url</code> and <code>body</code> (for <code>Post</code> and <code>Put</code> methods) must be provided</p>
+				<ul>
+					<li>repoClient - client that uses <code>/qrs</code> as prefix. The required <code>url</code> should be passed without the prefix</li>
+					<li>genericClient - client that have no prefix. Usually used for downloading temporary files</li>
+				</ul>
+				<a href="#development-phases" id="development-phases" style="color: inherit; text-decoration: none;">
+					<h2>Development phases</h2>
+				</a>
+				<p>Development will be done in few phases. The first few phases will deliver all methods. Followed by bug fixing and completing the tests phases.</p>
+				<a href="#phase-1" id="phase-1" style="color: inherit; text-decoration: none;">
+					<h3>Phase 1</h3>
+				</a>
+				<p>This is the base phase.
+					The code will be structured (but not finalized)
+				Methods for interacting with the following objects will be included:</p>
+				<ul>
+					<li><code>About</code></li>
+					<li><code>App</code></li>
+					<li><code>Content library</code></li>
+					<li><code>Custom property</code></li>
+					<li><code>Engine</code></li>
+					<li><code>Extension</code></li>
+					<li><code>Stream</code></li>
+					<li><code>System rule</code></li>
+					<li><code>Table</code></li>
+					<li><code>Tag</code></li>
+					<li><code>Task</code></li>
+					<li><code>User</code></li>
+				</ul>
+				<a href="#phase-2" id="phase-2" style="color: inherit; text-decoration: none;">
+					<h3>Phase 2</h3>
 				</a>
 				<ul>
-					<li><p>Generics - generic clients that are not bound to specific method/object. Aka raw methods. For them at least <code>url</code> and <code>body</code> (for <code>Post</code> and <code>Put</code> methods) must be provided</p>
-						<ul>
-							<li>repoClient - client that uses <code>/qrs</code> as prefix. The required <code>url</code> should be passed without the prefix<ul>
-									<li>Get</li>
-									<li>Delete</li>
-									<li>Patch</li>
-									<li>Post</li>
-									<li>Put</li>
-								</ul>
-							</li>
-							<li>genericClient - client that have no prefix. Used for downloading temporary files (for example)<ul>
-									<li>Get</li>
-									<li>Delete</li>
-									<li>Patch</li>
-									<li>Post</li>
-									<li>Put</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li><p><code>About</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> aboutGet</li>
-							<li><input checked="" disabled="" type="checkbox"> aboutEnums</li>
-							<li><input checked="" disabled="" type="checkbox"> aboutOpenApi</li>
-							<li><input checked="" disabled="" type="checkbox"> aboutApiRelations</li>
-							<li><input checked="" disabled="" type="checkbox"> aboutApiDescription</li>
-							<li><input checked="" disabled="" type="checkbox"> aboutApiDefaults</li>
-						</ul>
-					</li>
-					<li><p><code>App</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> appCopy</li>
-							<li><input checked="" disabled="" type="checkbox"> appExport</li>
-							<li><input checked="" disabled="" type="checkbox"> appGet</li>
-							<li><input checked="" disabled="" type="checkbox"> appGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> appImport</li>
-							<li><input checked="" disabled="" type="checkbox"> appPublish</li>
-							<li><input checked="" disabled="" type="checkbox"> appRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> appRemoveFilter</li>
-							<li><input disabled="" type="checkbox"> appSwitch</li>
-							<li><input checked="" disabled="" type="checkbox"> appUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Certificate</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> certificateExport</li>
-							<li><input disabled="" type="checkbox"> certificateDistributionPath</li>
-						</ul>
-					</li>
-					<li><p><code>Content</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> contentLibraryGet</li>
-							<li><input checked="" disabled="" type="checkbox"> contentLibraryGetFilter</li>
-							<li><input disabled="" type="checkbox"> contentLibraryImport</li>
-							<li><input disabled="" type="checkbox"> contentLibraryExport</li>
-							<li><input checked="" disabled="" type="checkbox"> contentLibraryCreate</li>
-							<li><input checked="" disabled="" type="checkbox"> contentLibraryRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> contentLibraryUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Custom property</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> customPropertyGet</li>
-							<li><input checked="" disabled="" type="checkbox"> customPropertyGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> customPropertyCreate</li>
-							<li><input checked="" disabled="" type="checkbox"> customPropertyRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> customPropertyUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Data connection</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> dataConnectionGet</li>
-							<li><input disabled="" type="checkbox"> dataConnectionCreate</li>
-							<li><input disabled="" type="checkbox"> dataConnectionRemove</li>
-							<li><input disabled="" type="checkbox"> dataConnectionUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Engine</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> engineGet</li>
-							<li><input checked="" disabled="" type="checkbox"> engineGetAll</li>
-							<li><input checked="" disabled="" type="checkbox"> engineGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> engineGetUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Extension</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> extensionGet</li>
-							<li><input checked="" disabled="" type="checkbox"> extensionFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> extensionImport</li>
-							<li><input checked="" disabled="" type="checkbox"> extensionRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> extensionUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>License</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> licenseAccessTypeInfoGet</li>
-							<li><input disabled="" type="checkbox"> licenseAnalyzerAccessTypeGet</li>
-							<li><input disabled="" type="checkbox"> licenseAnalyzerAccessTypeRemove</li>
-							<li><input disabled="" type="checkbox"> licenseGet</li>
-							<li><input disabled="" type="checkbox"> licenseSet</li>
-							<li><input disabled="" type="checkbox"> licenseAudit</li>
-							<li><input disabled="" type="checkbox"> licenseLoginAccessTypeGet</li>
-							<li><input disabled="" type="checkbox"> licenseProfessionalAccessTypeGet</li>
-							<li><input disabled="" type="checkbox"> licenseProfessionalAccessTypeRemove</li>
-							<li><input disabled="" type="checkbox"> licenseUserAccessTypeGet</li>
-							<li><input disabled="" type="checkbox"> licenseUserAccessTypeRemove</li>
-							<li><input disabled="" type="checkbox"> licenseProfessionalAccessGroupGet</li>
-							<li><input disabled="" type="checkbox"> licenseUserAccessGroupGet</li>
-						</ul>
-					</li>
-					<li><p><code>Node</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> nodeGet</li>
-							<li><input disabled="" type="checkbox"> nodeCreate</li>
-							<li><input disabled="" type="checkbox"> nodeRegister</li>
-							<li><input disabled="" type="checkbox"> nodeRemove</li>
-							<li><input disabled="" type="checkbox"> nodeUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Object</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> objectGet</li>
-							<li><input disabled="" type="checkbox"> objectPublish</li>
-							<li><input disabled="" type="checkbox"> objectRemove</li>
-							<li><input disabled="" type="checkbox"> objectUnPublish</li>
-							<li><input disabled="" type="checkbox"> objectUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Privileges</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> privilegesAssert</li>
-							<li><input disabled="" type="checkbox"> privilegesGet</li>
-						</ul>
-					</li>
-					<li><p><code>Proxy</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> proxyCreate</li>
-							<li><input disabled="" type="checkbox"> proxyGet</li>
-							<li><input disabled="" type="checkbox"> proxyUpdate</li>
-							<li><input disabled="" type="checkbox"> proxyMetaExport</li>
-							<li><input disabled="" type="checkbox"> proxyVirtualAdd</li>
-							<li><input disabled="" type="checkbox"> proxyVirtualCreate</li>
-							<li><input disabled="" type="checkbox"> proxyVirtualGet</li>
-							<li><input disabled="" type="checkbox"> proxyVirtualRemove</li>
-							<li><input disabled="" type="checkbox"> proxyVirtualUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Rule</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> ruleAuditGet</li>
-							<li><input checked="" disabled="" type="checkbox"> ruleGet</li>
-							<li><input checked="" disabled="" type="checkbox"> ruleGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> ruleCreate</li>
-							<li><input checked="" disabled="" type="checkbox"> ruleRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> ruleUpdate</li>
-							<li><input disabled="" type="checkbox"> ruleLicenseCreate</li>
-						</ul>
-					</li>
-					<li><p><code>Scheduler</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> schedulerGet</li>
-							<li><input disabled="" type="checkbox"> schedulerUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Service cluster</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> serviceClusterGet</li>
-							<li><input disabled="" type="checkbox"> serviceClusterUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Service status</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> serviceStatusGet</li>
-						</ul>
-					</li>
-					<li><p><code>Session</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> sessionGet</li>
-							<li><input disabled="" type="checkbox"> sessionRemove</li>
-						</ul>
-					</li>
-					<li><p><code>Shared content</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> sharedContentRemove</li>
-						</ul>
-					</li>
-					<li><p><code>Stream</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> streamGet</li>
-							<li><input checked="" disabled="" type="checkbox"> streamGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> streamCreate</li>
-							<li><input checked="" disabled="" type="checkbox"> streamRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> streamUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Table</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> tableCreate</li>
-						</ul>
-					</li>
-					<li><p><code>Tag</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> tagGet</li>
-							<li><input checked="" disabled="" type="checkbox"> tagGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> tagCreate</li>
-							<li><input checked="" disabled="" type="checkbox"> tagRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> tagRemoveFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> tagUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>Task</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> taskTriggerAdd</li>
-							<li><input disabled="" type="checkbox"> taskReloadGet</li>
-							<li><input disabled="" type="checkbox"> taskReloadUpdate</li>
-							<li><input disabled="" type="checkbox"> taskGet</li>
-							<li><input disabled="" type="checkbox"> taskCreate</li>
-							<li><input disabled="" type="checkbox"> taskRemove</li>
-							<li><input disabled="" type="checkbox"> taskStart</li>
-							<li><input disabled="" type="checkbox"> taskExecutionWait</li>
-							<li><input disabled="" type="checkbox"> taskScheduleCreate</li>
-							<li><input disabled="" type="checkbox"> taskScheduleRemove</li>
-							<li><input disabled="" type="checkbox"> taskScheduleGet</li>
-						</ul>
-					</li>
-					<li><p><code>User</code></p>
-						<ul>
-							<li><input checked="" disabled="" type="checkbox"> userGet</li>
-							<li><input checked="" disabled="" type="checkbox"> userGetFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> userCreate</li>
-							<li><input checked="" disabled="" type="checkbox"> userRemove</li>
-							<li><input checked="" disabled="" type="checkbox"> userRemoveFilter</li>
-							<li><input checked="" disabled="" type="checkbox"> userUpdate</li>
-						</ul>
-					</li>
-					<li><p><code>User directory</code></p>
-						<ul>
-							<li><input disabled="" type="checkbox"> userDirectoryGet</li>
-							<li><input disabled="" type="checkbox"> userDirectoryCreate</li>
-							<li><input disabled="" type="checkbox"> userDirectoryRemove</li>
-							<li><input disabled="" type="checkbox"> userDirectoryUpdate</li>
-						</ul>
-					</li>
+					<li><code>Data connection</code></li>
+					<li><code>License</code></li>
+					<li><code>Node</code></li>
+					<li><code>User directory</code></li>
+					<li><code>Service cluster</code></li>
+					<li><code>Service status</code></li>
+				</ul>
+				<a href="#phase-3" id="phase-3" style="color: inherit; text-decoration: none;">
+					<h3>Phase 3</h3>
+				</a>
+				<ul>
+					<li><code>Object</code></li>
+					<li><code>Proxy</code></li>
+					<li><code>Scheduler</code></li>
+					<li><code>Session</code></li>
+					<li><code>Shared content</code></li>
+					<li><code>Certificate</code></li>
+					<li><code>Privileges</code></li>
+				</ul>
+				<a href="#phase-4" id="phase-4" style="color: inherit; text-decoration: none;">
+					<h3>Phase 4</h3>
+				</a>
+				<ul>
+					<li>more complete tests</li>
+					<li>bug fixing</li>
+					<li>releasing <code>v1</code></li>
 				</ul>
 			</div>
 		</div>

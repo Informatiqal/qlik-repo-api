@@ -80,7 +80,6 @@ export interface IApp {
   lastReloadTime: string;
   createdDate: string;
   customProperties: ICustomPropertyObject[];
-  modifiedByUserName: string;
   stream: IStream;
   fileSize: number;
   appId: string;
@@ -97,7 +96,6 @@ export interface IStream {
   privileges: [];
   createdDate: string;
   customProperties: ICustomPropertyObject[];
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
   name: string;
@@ -113,7 +111,6 @@ export interface ITagCondensed {
 
 export interface ITag extends ITagCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
 }
@@ -128,7 +125,6 @@ export interface ICustomPropertyCondensed {
 
 export interface ICustomProperty extends ICustomPropertyCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
   description: string;
@@ -137,7 +133,6 @@ export interface ICustomProperty extends ICustomPropertyCondensed {
 
 export interface ICustomPropertyObject {
   createdDate: string;
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
   definition: {
@@ -161,7 +156,6 @@ export interface IAppExportResponse {
 
 export interface IUserAttributes {
   createdDate: string;
-  modifiedByUserName: string;
   attributeValue: string;
   attributeType: string;
   schemaPath: string;
@@ -189,7 +183,6 @@ export interface IUser extends IUserCondensed {
   createdDate: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   inactive: boolean;
-  modifiedByUserName: string;
   modifiedDate: string;
   attributes: IUserAttributes[];
 }
@@ -203,7 +196,6 @@ export interface IContentLibraryCondensed {
 
 export interface IContentLibrary extends IContentLibraryCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   modifiedDate: string;
   schemaPath: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
@@ -221,7 +213,6 @@ export interface IExtensionCondensed {
 
 export interface IExtension extends IExtensionCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   modifiedDate: string;
   schemaPath: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
@@ -254,7 +245,6 @@ export type TSystemRuleContext = "hub" | "qmc" | "both" | "BothQlikSenseAndQMC";
 export interface ISystemRule {
   id?: string;
   createdDate?: string;
-  modifiedByUserName?: string;
   modifiedDate?: string;
   schemaPath?: string;
   privileges?: string[];
@@ -273,7 +263,7 @@ export interface ISystemRule {
   tags?: ITagCondensed[];
 }
 
-export interface ITaskExecutionResultDetails {
+export interface IExecutionResultDetailCondensed {
   privileges: string[];
   detailsType: number;
   id: string;
@@ -282,18 +272,18 @@ export interface ITaskExecutionResultDetails {
 }
 
 export interface ITaskExecutionResult {
-  duration: number;
+  id: string;
   privileges: string[];
   executingNodeName: string;
-  scriptLogLocation: string;
-  fileReferenceID: string;
+  status: {};
   startTime: string;
   stopTime: string;
+  duration: number;
+  fileReferenceID: string;
   scriptLogAvailable: boolean;
-  details: ITaskExecutionResultDetails[];
-  id: string;
-  status: {};
+  scriptLogLocation: string;
   scriptLogSize: number;
+  details: IExecutionResultDetailCondensed[];
 }
 
 export interface ITaskOperational {
@@ -315,7 +305,6 @@ export interface ITask {
   maxRetries: number;
   createdDate: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
-  modifiedByUserName: string;
   modifiedDate: string;
   name: string;
   id: string;
@@ -347,7 +336,6 @@ export interface IEngineSettings {
   id: string;
   createdDate: string;
   modifiedDate: string;
-  modifiedByUserName: string;
   listenerPorts: number[];
   overlayDocuments: boolean;
   autosaveInterval: number;
@@ -424,11 +412,126 @@ export interface IEngine {
   id: string;
   createdDate: string;
   modifiedDate: string;
-  modifiedByUserName: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   tags: ITagCondensed[];
   privileges: string[];
   schemaPath: string;
   settings: IEngineSettings;
   serverNodeConfiguration: IServerNodeConfiguration;
+}
+
+export interface ISelectionItem {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
+  type: string;
+  objectID: string;
+  objectName?: string;
+}
+
+export interface ISelection {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  items?: ISelectionItem[];
+}
+
+export interface IContentLibraryFile {
+  name: string;
+  file: string;
+}
+
+export interface IEngineGetValidResult {
+  schemaPath?: string;
+  loadBalancingResultCode?: number;
+  appID?: string;
+  validEngines?: string[];
+}
+
+export interface IAuditUserCondensed {
+  schemaPath?: string;
+  userId?: string;
+  userDirectory?: string;
+  name?: string;
+}
+export interface IAuditResourceCondensed {
+  schemaPath?: string;
+  id?: string;
+  name?: string;
+}
+
+export interface IAuditRuleCondensed {
+  schemaPath?: string;
+  id?: string;
+  name?: string;
+  actions?: number;
+  disabled?: boolean;
+}
+export interface ISystemRuleApplicationItemCondensed {
+  schemaPath?: string;
+  userID?: string;
+  resourceID?: string;
+  ruleID?: string;
+  allowed?: boolean;
+  errorAt?: number;
+  errorMessage?: string;
+  evaluationState?: number;
+}
+
+export interface IAudit {
+  schemaPath?: string;
+  users?: IAuditUserCondensed[];
+  resources?: IAuditResourceCondensed[];
+  rules?: IAuditRuleCondensed[];
+  ruleApplication?: ISystemRuleApplicationItemCondensed[];
+}
+
+export interface IExternalProgramTaskOperationalCondensed {
+  id?: string;
+  privileges?: string[];
+  timesTriggered?: number;
+  nextExecution?: string;
+  lastExecutionResult: ITaskExecutionResult;
+}
+
+export interface IExternalProgramTaskCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  taskType?: number;
+  enabled?: boolean;
+  taskSessionTimeout: number;
+  maxRetries: number;
+  operational: IExternalProgramTaskOperationalCondensed;
+}
+
+export interface ISchemaEventOperationalCondensed {
+  id?: string;
+  privileges?: string[];
+  timesTriggered?: number;
+  nextExecution?: string;
+}
+
+export interface ISchemaEvent {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name: string;
+  enabled?: boolean;
+  eventType?: number;
+  timeZone: string;
+  startDate: string;
+  expirationDate: string;
+  schemaFilterDescription: string[];
+  incrementalDescription: string;
+  incrementalOption: number;
+  operational: ISchemaEventOperationalCondensed;
+  externalProgramTask: IExternalProgramTaskCondensed;
+  reloadTask: IExternalProgramTaskCondensed;
+  userSyncTask: IExternalProgramTaskCondensed;
 }

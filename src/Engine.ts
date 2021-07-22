@@ -1,26 +1,49 @@
 import { QlikRepoApi } from "./main";
 
 import { modifiedDateTime, isGUIDError } from "./util/generic";
-import { IEngine } from "./interfaces";
-import { IEngineUpdate } from "./interfaces/argument.interface";
+import { IEngine, IEngineGetValidResult } from "./interfaces";
+import {
+  IEngineUpdate,
+  IEngineGetValid,
+} from "./interfaces/argument.interface";
 
 export class Engine {
   constructor() {}
 
-  public async engineGet(this: QlikRepoApi, id: string): Promise<IEngine> {
-    if (!id) throw new Error(`engineGet: "id" is required`);
+  public async engineGet(this: QlikRepoApi, id?: string): Promise<IEngine[]> {
+    let url = "engineservice";
+    if (id) url += `/${id}`;
 
-    isGUIDError(id);
-
-    return await this.repoClient
-      .Get(`engineservice/${id}`)
-      .then((res) => res.data as IEngine);
+    return await this.repoClient.Get(url).then((res) => res.data as IEngine[]);
   }
 
   public async engineGetAll(this: QlikRepoApi): Promise<IEngine[]> {
     return await this.repoClient
       .Get(`engineservice/full`)
       .then((res) => res.data as IEngine[]);
+  }
+
+  public async engineGetValid(
+    this: QlikRepoApi,
+    arg?: IEngineGetValid
+  ): Promise<IEngineGetValidResult[]> {
+    let loadBalancingPurpose = 2;
+    if (arg && arg.loadBalancingPurpose == "Production")
+      loadBalancingPurpose = 0;
+    if (arg && arg.loadBalancingPurpose == "Development")
+      loadBalancingPurpose = 1;
+    if (arg && arg.loadBalancingPurpose == "Any") loadBalancingPurpose = 2;
+
+    const body = {
+      proxyId: arg.proxyID || "",
+      proxyPrefix: arg.proxyPrefix || "",
+      appId: arg.appId || "",
+      loadBalancingPurpose: loadBalancingPurpose,
+    };
+
+    return await this.repoClient
+      .Post(`loadbalancing/validengines"`, body)
+      .then((res) => res.data as IEngineGetValidResult[]);
   }
 
   public async engineGetFilter(
@@ -36,6 +59,7 @@ export class Engine {
       .then((res) => res.data as IEngine[]);
   }
 
+  // REVIEW: double check the whole logic here
   public async engineUpdate(
     this: QlikRepoApi,
     arg: IEngineUpdate
@@ -44,7 +68,7 @@ export class Engine {
 
     isGUIDError(arg.id);
 
-    let engine = await this.engineGet(arg.id);
+    let engine = await this.engineGet(arg.id).then((e) => e[0]);
 
     if (arg.workingSetSizeLoPct) {
       if (arg.workingSetSizeLoPct < 0 || arg.workingSetSizeLoPct > 100)
@@ -214,9 +238,6 @@ export class Engine {
         throw new Error("auditActivityLogVerbosity must be between 0 and 5");
       engine.settings.sseLogVerbosity = arg.sseLogVerbosity;
     }
-
-    if (arg.modifiedByUserName)
-      engine.modifiedByUserName = arg.modifiedByUserName;
 
     engine.modifiedDate = modifiedDateTime();
 

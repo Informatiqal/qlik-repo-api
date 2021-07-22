@@ -1,0 +1,169 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Qlik Repo API</title>
+	<meta name="description" content="Documentation for Qlik Repo API">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">Qlik Repo API</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>Qlik Repo API</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#under-development" id="under-development" style="color: inherit; text-decoration: none;">
+					<h2><strong>UNDER DEVELOPMENT!</strong></h2>
+				</a>
+				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+					<h2>Compatibility</h2>
+				</a>
+				<p>At the moment the module is compatible with <code>QSEoW</code> version <code>April 2019</code> (all patches)</p>
+				<p>In the next iterations the methods will be adapted to the latter version. Each iteration will be compatible with specific version of <code>QSEoW</code>.</p>
+				<hr>
+				<p><strong>NOT AFFILIATED WITH QLIK</strong></p>
+				<hr>
+				<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
+					<h2>Methods</h2>
+				</a>
+				<p>Full list of available methods can be found <a href="https://informatiqal.github.io/qlik-repo-api/classes/QlikRepoApi.html">here</a></p>
+				<a href="#generic-clients" id="generic-clients" style="color: inherit; text-decoration: none;">
+					<h2>Generic clients</h2>
+				</a>
+				<p>The package expose two extra (generic) methods. Generic methods that are not bound to specific method/object. Aka raw methods. For them at least <code>url</code> and <code>body</code> (for <code>Post</code> and <code>Put</code> methods) must be provided</p>
+				<ul>
+					<li>repoClient - client that uses <code>/qrs</code> as prefix. The required <code>url</code> should be passed without the prefix</li>
+					<li>genericClient - client that have no prefix. Usually used for downloading temporary files</li>
+				</ul>
+				<a href="#development-phases" id="development-phases" style="color: inherit; text-decoration: none;">
+					<h2>Development phases</h2>
+				</a>
+				<p>Development will be done in few phases. The first few phases will deliver all methods. Followed by bug fixing and completing the tests phases.</p>
+				<a href="#phase-1" id="phase-1" style="color: inherit; text-decoration: none;">
+					<h3>Phase 1</h3>
+				</a>
+				<p>This is the base phase.
+					The code will be structured (but not finalized)
+				Methods for interacting with the following objects will be included:</p>
+				<ul>
+					<li><code>About</code></li>
+					<li><code>App</code></li>
+					<li><code>Content library</code></li>
+					<li><code>Custom property</code></li>
+					<li><code>Engine</code></li>
+					<li><code>Extension</code></li>
+					<li><code>Stream</code></li>
+					<li><code>System rule</code></li>
+					<li><code>Table</code></li>
+					<li><code>Tag</code></li>
+					<li><code>Task</code></li>
+					<li><code>User</code></li>
+				</ul>
+				<a href="#phase-2" id="phase-2" style="color: inherit; text-decoration: none;">
+					<h3>Phase 2</h3>
+				</a>
+				<ul>
+					<li><code>Data connection</code></li>
+					<li><code>License</code></li>
+					<li><code>Node</code></li>
+					<li><code>User directory</code></li>
+					<li><code>Service cluster</code></li>
+					<li><code>Service status</code></li>
+				</ul>
+				<a href="#phase-3" id="phase-3" style="color: inherit; text-decoration: none;">
+					<h3>Phase 3</h3>
+				</a>
+				<ul>
+					<li><code>Object</code></li>
+					<li><code>Proxy</code></li>
+					<li><code>Scheduler</code></li>
+					<li><code>Session</code></li>
+					<li><code>Shared content</code></li>
+					<li><code>Certificate</code></li>
+					<li><code>Privileges</code></li>
+				</ul>
+				<a href="#phase-4" id="phase-4" style="color: inherit; text-decoration: none;">
+					<h3>Phase 4</h3>
+				</a>
+				<ul>
+					<li>more complete tests</li>
+					<li>bug fixing</li>
+					<li>releasing <code>v1</code></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

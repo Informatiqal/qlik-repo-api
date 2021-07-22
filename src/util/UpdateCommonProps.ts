@@ -45,7 +45,7 @@ export class UpdateCommonProperties {
         this.arg.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
           return await this.qlikUtil
-            .getCustomPropertyFilter(`name eq '${cpName}'`)
+            .customPropertyGetFilter(`name eq '${cpName}'`)
             .then((cpData) => {
               return {
                 definition: cpData[0] as ICustomPropertyCondensed,
@@ -63,7 +63,7 @@ export class UpdateCommonProperties {
       this.obj.tags = await Promise.all<ITagCondensed>(
         this.arg.tags.map(async (tag) => {
           return await this.qlikUtil
-            .getTagFilter(`name eq '${tag}'`)
+            .tagGetFilter(`name eq '${tag}'`)
             .then((tagsData) => tagsData[0] as ITagCondensed);
         })
       );
@@ -79,7 +79,7 @@ export class UpdateCommonProperties {
       let [userDirectory, userId] = (this.arg as IAppUpdate).owner.split("\\");
 
       this.obj.owner = await this.qlikUtil
-        .getUserFilter(
+        .userGetFilter(
           `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`
         )
         .then((u) => u[0]);
@@ -89,7 +89,7 @@ export class UpdateCommonProperties {
   async updateAppStream() {
     if ((this.arg as IAppUpdate).stream) {
       this.obj.stream = await this.qlikUtil
-        .getStreamFilter(`name eq '${(this.arg as IAppUpdate).stream}'`)
+        .streamGetFilter(`name eq '${(this.arg as IAppUpdate).stream}'`)
         .then((streams) => streams[0]);
     }
   }

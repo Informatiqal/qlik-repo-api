@@ -89,9 +89,18 @@ export {
 export class QlikRepoApi {
   public repoClient: QlikRepositoryClient;
   public genericClient: QlikGenericRestClient;
+  public genericRepoClient: QlikRepositoryClient;
+  public genericWESClient: QlikRepositoryClient;
   constructor(public repoConfig: any) {
     this.repoClient = new QlikRepositoryClient(repoConfig);
-    this.genericClient = new QlikGenericRestClient(repoConfig);
+
+    const genericConfig = { ...repoConfig };
+    delete genericConfig.port;
+    this.genericClient = new QlikGenericRestClient(genericConfig);
+
+    const genericRepoConfig = { ...repoConfig };
+    delete genericRepoConfig.port;
+    this.genericRepoClient = new QlikGenericRestClient(genericConfig);
   }
 
   aboutGet = About.prototype.aboutGet;
@@ -103,24 +112,35 @@ export class QlikRepoApi {
 
   appGet = App.prototype.appGet;
   appGetFilter = App.prototype.appGetFilter;
-  appImport = App.prototype.appImport;
+  appUpload = App.prototype.appUpload;
+  appUploadReplace = App.prototype.appUploadReplace;
   appRemove = App.prototype.appRemove;
   appRemoveFilter = App.prototype.appRemoveFilter;
   appCopy = App.prototype.appCopy;
   appExport = App.prototype.appExport;
   appPublish = App.prototype.appPublish;
+  appSelect = App.prototype.appSelect;
+  appSwitch = App.prototype.appSwitch;
   appUpdate = App.prototype.appUpdate;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
   contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;
   contentLibraryCreate = ContentLibrary.prototype.contentLibraryCreate;
+  contentLibraryExport = ContentLibrary.prototype.contentLibraryExport;
+  contentLibraryImport = ContentLibrary.prototype.contentLibraryImport;
+  contentLibraryImportForApp =
+    ContentLibrary.prototype.contentLibraryImportForApp;
   contentLibraryRemove = ContentLibrary.prototype.contentLibraryRemove;
+  contentLibraryRemoveFilter =
+    ContentLibrary.prototype.contentLibraryRemoveFilter;
+  contentLibrarySelect = ContentLibrary.prototype.contentLibrarySelect;
   contentLibraryUpdate = ContentLibrary.prototype.contentLibraryUpdate;
 
   customPropertyGet = CustomProperty.prototype.customPropertyGet;
   customPropertyGetFilter = CustomProperty.prototype.customPropertyGetFilter;
   customPropertyCreate = CustomProperty.prototype.customPropertyCreate;
   customPropertyRemove = CustomProperty.prototype.customPropertyRemove;
+  customPropertySelect = CustomProperty.prototype.customPropertySelect;
   customPropertyUpdate = CustomProperty.prototype.customPropertyUpdate;
 
   extensionGet = Extension.prototype.extensionGet;
@@ -128,11 +148,11 @@ export class QlikRepoApi {
   extensionRemove = Extension.prototype.extensionRemove;
   extensionUpdate = Extension.prototype.extensionUpdate;
   extensionImport = Extension.prototype.extensionImport;
-  extensionExport = Extension.prototype.extensionExport;
 
   engineGet = Engine.prototype.engineGet;
   engineGetAll = Engine.prototype.engineGetAll;
   engineGetFilter = Engine.prototype.engineGetFilter;
+  engineGetValid = Engine.prototype.engineGetValid;
   engineUpdate = Engine.prototype.engineUpdate;
 
   streamGet = Stream.prototype.streamGet;
@@ -142,9 +162,11 @@ export class QlikRepoApi {
   streamUpdate = Stream.prototype.streamUpdate;
 
   ruleGet = SystemRule.prototype.ruleGet;
+  ruleGetAudit = SystemRule.prototype.ruleGetAudit;
   ruleGetFilter = SystemRule.prototype.ruleGetFilter;
   ruleCreate = SystemRule.prototype.ruleCreate;
   ruleRemove = SystemRule.prototype.ruleRemove;
+  ruleLicenseCreate = SystemRule.prototype.ruleLicenseCreate;
   ruleUpdate = SystemRule.prototype.ruleUpdate;
 
   tagGet = Tag.prototype.tagGet;
@@ -167,7 +189,7 @@ export class QlikRepoApi {
   taskCreate = Task.prototype.taskCreate;
   taskReloadRemove = Task.prototype.taskReloadRemove;
   taskExternalRemove = Task.prototype.taskExternalRemove;
-  taskUpdate = Task.prototype.taskUpdate;
+  taskReloadUpdate = Task.prototype.taskReloadUpdate;
   taskStart = Task.prototype.taskStart;
   taskStartByName = Task.prototype.taskStartByName;
   taskWaitExecution = Task.prototype.taskWaitExecution;
