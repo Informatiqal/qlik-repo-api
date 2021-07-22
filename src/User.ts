@@ -100,8 +100,6 @@ export class User {
 
     if (arg.roles) user.roles = arg.roles;
     if (arg.name) user.name = arg.name;
-    if (arg.modifiedByUserName)
-      user.modifiedByUserName = arg.modifiedByUserName;
 
     let updateCommon = new UpdateCommonProperties(this, user, arg);
     user = await updateCommon.updateAll();

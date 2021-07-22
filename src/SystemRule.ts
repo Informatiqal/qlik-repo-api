@@ -154,8 +154,6 @@ export class SystemRule {
     if (arg.category) rule.category = arg.category;
     if (arg.actions) rule.actions = calculateActions(arg.actions);
     if (arg.context) rule.ruleContext = getRuleContext(arg.context);
-    if (arg.modifiedByUserName)
-      rule.modifiedByUserName = arg.modifiedByUserName;
 
     let updateCommon = new UpdateCommonProperties(this, rule, arg);
     rule = await updateCommon.updateAll();

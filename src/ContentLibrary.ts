@@ -225,9 +225,6 @@ export class ContentLibrary {
 
     let contentLibrary = await this.contentLibraryGet(arg.id);
 
-    if (arg.modifiedByUserName)
-      contentLibrary.modifiedByUserName = arg.modifiedByUserName;
-
     let updateCommon = new UpdateCommonProperties(this, contentLibrary, arg);
     contentLibrary = await updateCommon.updateAll();
 

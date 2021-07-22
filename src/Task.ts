@@ -6,6 +6,7 @@ import {
   ITask,
   ITaskExecutionResult,
   ISchemaEvent,
+  IHttpReturnRemove,
 } from "./interfaces";
 import {
   ITaskCreate,
@@ -79,23 +80,25 @@ export class Task {
   public async taskReloadRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`taskReloadRemove: id" parameter is required`);
 
-    return await this.repoClient
-      .Delete(`reloadtask/${id}`)
-      .then((res) => res.status as IHttpStatus);
+    return await this.repoClient.Delete(`reloadtask/${id}`).then((res) => {
+      return { id, status: res.status as IHttpStatus };
+    });
   }
 
   public async taskExternalRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`taskExternalRemove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`externalprogramtask/${id}`)
-      .then((res) => res.status as IHttpStatus);
+      .then((res) => {
+        return { id, status: res.status as IHttpStatus };
+      });
   }
 
   public async taskCreate(this: QlikRepoApi, arg: ITaskCreate): Promise<ITask> {
@@ -227,11 +230,11 @@ export class Task {
   public async taskScheduleRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`taskScheduleRemove: "id" parameter is required`);
-    return await this.repoClient
-      .Delete(`schemaevent/${id}`)
-      .then((res) => res.status as IHttpStatus);
+    return await this.repoClient.Delete(`schemaevent/${id}`).then((res) => {
+      return { id, status: res.status as IHttpStatus };
+    });
   }
 
   public async taskScheduleGet(

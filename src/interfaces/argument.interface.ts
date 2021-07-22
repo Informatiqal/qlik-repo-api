@@ -21,7 +21,6 @@ export interface IUserUpdate {
   customProperties?: string[];
   name?: string;
   roles?: string[];
-  modifiedByUserName?: string;
 }
 
 export interface IUserCreate {
@@ -43,7 +42,6 @@ export interface ICustomPropertyCreate {
 
 export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
   id: string;
-  modifiedByUserName?: string;
 }
 
 export interface IAppUpdate {
@@ -54,7 +52,6 @@ export interface IAppUpdate {
   customProperties?: string[];
   owner?: string;
   stream?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IStreamCreate {
@@ -70,7 +67,6 @@ export interface IStreamUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IContentLibraryUpdate {
@@ -78,7 +74,6 @@ export interface IContentLibraryUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-  modifiedByUserName?: string;
 }
 
 export interface IExtensionUpdate {
@@ -128,7 +123,6 @@ export interface ISystemRuleUpdate {
   disabled?: boolean;
   tags?: string[];
   customProperties?: string[];
-  modifiedByUserName?: string;
 }
 
 export interface ITaskCreate {
@@ -217,7 +211,6 @@ export interface IEngineUpdate {
   sessionLogVerbosity?: TRangeOf5;
   performanceLogVerbosity?: TRangeOf5;
   sseLogVerbosity?: TRangeOf5;
-  modifiedByUserName?: string;
 }
 
 export interface IEngineGetValid {

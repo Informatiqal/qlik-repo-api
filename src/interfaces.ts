@@ -80,7 +80,6 @@ export interface IApp {
   lastReloadTime: string;
   createdDate: string;
   customProperties: ICustomPropertyObject[];
-  modifiedByUserName: string;
   stream: IStream;
   fileSize: number;
   appId: string;
@@ -97,7 +96,6 @@ export interface IStream {
   privileges: [];
   createdDate: string;
   customProperties: ICustomPropertyObject[];
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
   name: string;
@@ -113,7 +111,6 @@ export interface ITagCondensed {
 
 export interface ITag extends ITagCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
 }
@@ -128,7 +125,6 @@ export interface ICustomPropertyCondensed {
 
 export interface ICustomProperty extends ICustomPropertyCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
   description: string;
@@ -137,7 +133,6 @@ export interface ICustomProperty extends ICustomPropertyCondensed {
 
 export interface ICustomPropertyObject {
   createdDate: string;
-  modifiedByUserName: string;
   schemaPath: string;
   modifiedDate: string;
   definition: {
@@ -161,7 +156,6 @@ export interface IAppExportResponse {
 
 export interface IUserAttributes {
   createdDate: string;
-  modifiedByUserName: string;
   attributeValue: string;
   attributeType: string;
   schemaPath: string;
@@ -189,7 +183,6 @@ export interface IUser extends IUserCondensed {
   createdDate: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   inactive: boolean;
-  modifiedByUserName: string;
   modifiedDate: string;
   attributes: IUserAttributes[];
 }
@@ -203,7 +196,6 @@ export interface IContentLibraryCondensed {
 
 export interface IContentLibrary extends IContentLibraryCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   modifiedDate: string;
   schemaPath: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
@@ -221,7 +213,6 @@ export interface IExtensionCondensed {
 
 export interface IExtension extends IExtensionCondensed {
   createdDate: string;
-  modifiedByUserName: string;
   modifiedDate: string;
   schemaPath: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
@@ -254,7 +245,6 @@ export type TSystemRuleContext = "hub" | "qmc" | "both" | "BothQlikSenseAndQMC";
 export interface ISystemRule {
   id?: string;
   createdDate?: string;
-  modifiedByUserName?: string;
   modifiedDate?: string;
   schemaPath?: string;
   privileges?: string[];
@@ -315,7 +305,6 @@ export interface ITask {
   maxRetries: number;
   createdDate: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
-  modifiedByUserName: string;
   modifiedDate: string;
   name: string;
   id: string;
@@ -347,7 +336,6 @@ export interface IEngineSettings {
   id: string;
   createdDate: string;
   modifiedDate: string;
-  modifiedByUserName: string;
   listenerPorts: number[];
   overlayDocuments: boolean;
   autosaveInterval: number;
@@ -424,7 +412,6 @@ export interface IEngine {
   id: string;
   createdDate: string;
   modifiedDate: string;
-  modifiedByUserName: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   tags: ITagCondensed[];
   privileges: string[];
@@ -437,7 +424,6 @@ export interface ISelectionItem {
   id?: string;
   createdDate?: string;
   modifiedDate?: string;
-  modifiedByUserName?: string;
   schemaPath?: string;
   type: string;
   objectID: string;
@@ -448,7 +434,6 @@ export interface ISelection {
   id?: string;
   createdDate?: string;
   modifiedDate?: string;
-  modifiedByUserName?: string;
   schemaPath?: string;
   privileges?: string[];
   items?: ISelectionItem[];
@@ -534,7 +519,6 @@ export interface ISchemaEvent {
   id?: string;
   createdDate?: string;
   modifiedDate?: string;
-  modifiedByUserName?: string;
   schemaPath?: string;
   privileges?: string[];
   name: string;

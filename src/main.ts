@@ -89,9 +89,18 @@ export {
 export class QlikRepoApi {
   public repoClient: QlikRepositoryClient;
   public genericClient: QlikGenericRestClient;
+  public genericRepoClient: QlikRepositoryClient;
+  public genericWESClient: QlikRepositoryClient;
   constructor(public repoConfig: any) {
     this.repoClient = new QlikRepositoryClient(repoConfig);
-    this.genericClient = new QlikGenericRestClient(repoConfig);
+
+    const genericConfig = { ...repoConfig };
+    delete genericConfig.port;
+    this.genericClient = new QlikGenericRestClient(genericConfig);
+
+    const genericRepoConfig = { ...repoConfig };
+    delete genericRepoConfig.port;
+    this.genericRepoClient = new QlikGenericRestClient(genericConfig);
   }
 
   aboutGet = About.prototype.aboutGet;
@@ -103,7 +112,8 @@ export class QlikRepoApi {
 
   appGet = App.prototype.appGet;
   appGetFilter = App.prototype.appGetFilter;
-  appImport = App.prototype.appImport;
+  appUpload = App.prototype.appUpload;
+  appUploadReplace = App.prototype.appUploadReplace;
   appRemove = App.prototype.appRemove;
   appRemoveFilter = App.prototype.appRemoveFilter;
   appCopy = App.prototype.appCopy;
@@ -138,7 +148,6 @@ export class QlikRepoApi {
   extensionRemove = Extension.prototype.extensionRemove;
   extensionUpdate = Extension.prototype.extensionUpdate;
   extensionImport = Extension.prototype.extensionImport;
-  extensionExport = Extension.prototype.extensionExport;
 
   engineGet = Engine.prototype.engineGet;
   engineGetAll = Engine.prototype.engineGetAll;

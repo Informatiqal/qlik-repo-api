@@ -2,7 +2,7 @@ import { QlikRepoApi } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
-import { IHttpStatus, IStream } from "./interfaces";
+import { IHttpStatus, IStream, IHttpReturnRemove } from "./interfaces";
 import { IStreamCreate, IStreamUpdate } from "./interfaces/argument.interface";
 
 export class Stream {
@@ -54,11 +54,11 @@ export class Stream {
   public async streamRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpStatus> {
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`streamRemove: "id" parameter is required`);
-    return await this.repoClient
-      .Delete(`stream/${id}`)
-      .then((res) => res.status as IHttpStatus);
+    return await this.repoClient.Delete(`stream/${id}`).then((res) => {
+      return { id, status: res.status };
+    });
   }
 
   public async streamUpdate(

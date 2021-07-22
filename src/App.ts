@@ -2,7 +2,13 @@ import { QlikRepoApi } from "./main";
 import { URLBuild, uuid } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IApp, IHttpStatus, ISelection, IRemoveFilter } from "./interfaces";
+import {
+  IApp,
+  IHttpStatus,
+  ISelection,
+  IRemoveFilter,
+  IHttpReturnRemove,
+} from "./interfaces";
 import { IAppUpdate } from "./interfaces/argument.interface";
 import { IHttpReturn } from "qlik-rest-api";
 
@@ -27,13 +33,12 @@ export class App {
       .then((res) => res.data as IApp);
   }
 
-  // TODO: handle return file
   public async appExport(
     this: QlikRepoApi,
     id: string,
     fileName?: string,
     skipData?: boolean
-  ): Promise<string> {
+  ): Promise<Buffer> {
     if (!id) throw new Error(`appExport: "id" parameter is required`);
 
     const token = uuid();
@@ -49,16 +54,20 @@ export class App {
         return data.downloadPath.replace("/tempcontent", "tempcontent");
       });
 
-    const file = await this.genericClient.Get(downloadPath);
-
-    return "";
+    return await this.genericRepoClient
+      .Get(downloadPath)
+      .then((r) => r.data as Buffer);
   }
 
-  public async appGet(this: QlikRepoApi, id?: string): Promise<IApp> {
+  public async appGet(this: QlikRepoApi, id?: string): Promise<IApp[]> {
     let url = "app";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res) => res.data as IApp);
+    return await this.repoClient.Get(url).then((res: any) => {
+      if (res.data.length > 0) return res.data as IApp[];
+
+      return [res.data];
+    });
   }
 
   public async appGetFilter(
@@ -78,25 +87,44 @@ export class App {
       .then((res) => res.data as IApp[]);
   }
 
-  // TODO: Handle the difference between import and upload
-  public async appImport(
+  public async appUpload(
     this: QlikRepoApi,
     name: string,
     file: Buffer,
-    upload?: true,
     keepData?: boolean,
     excludeDataConnections?: boolean
   ): Promise<IApp> {
-    if (!name) throw new Error(`appImport: "name" parameter is required`);
-    if (!file) throw new Error(`appImport: "file" parameter is required`);
+    if (!name) throw new Error(`appUpload: "name" parameter is required`);
+    if (!file) throw new Error(`appUpload: "file" parameter is required`);
 
-    const urlBuild = upload
-      ? new URLBuild("app/upload")
-      : new URLBuild("app/import");
-
+    const urlBuild = new URLBuild("app/upload");
     urlBuild.addParam("name", name);
     urlBuild.addParam("keepdata", keepData);
     urlBuild.addParam("excludeconnections", excludeDataConnections);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
+      .then((res) => res.data as IApp);
+  }
+
+  public async appUploadReplace(
+    this: QlikRepoApi,
+    name: string,
+    targetAppId: string,
+    file: Buffer,
+    keepData?: boolean
+  ): Promise<IApp> {
+    if (!name)
+      throw new Error(`appUploadReplace: "name" parameter is required`);
+    if (!file)
+      throw new Error(`appUploadReplace: "file" parameter is required`);
+    if (!targetAppId)
+      throw new Error(`appUploadReplace: "targetAppId" parameter is required`);
+
+    const urlBuild = new URLBuild("app/upload/replace");
+    urlBuild.addParam("name", name);
+    urlBuild.addParam("keepdata", keepData);
+    urlBuild.addParam("targetappid", targetAppId);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
@@ -131,11 +159,14 @@ export class App {
       .then((res) => res.data as IApp);
   }
 
-  public async appRemove(this: QlikRepoApi, id: string): Promise<IHttpStatus> {
+  public async appRemove(
+    this: QlikRepoApi,
+    id: string
+  ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`appRemove: "id" parameter is required`);
-    return await this.repoClient
-      .Delete(`app/${id}`)
-      .then((res) => res.status as IHttpStatus);
+    return await this.repoClient.Delete(`app/${id}`).then((res) => {
+      return { id, status: res.status };
+    });
   }
 
   public async appRemoveFilter(
@@ -184,15 +215,13 @@ export class App {
       .then((res) => res.data as IApp);
   }
 
-  // REVIEW: verify the logic here
   public async appUpdate(this: QlikRepoApi, arg: IAppUpdate): Promise<IApp> {
     if (!arg.id) throw new Error(`appUpdate: "id" parameter is required`);
 
-    let app = await this.appGet(arg.id);
+    let app = await this.appGet(arg.id).then((a) => a[0]);
 
     if (arg.name) app.name = arg.name;
     if (arg.description) app.description = arg.description;
-    if (arg.modifiedByUserName) app.modifiedByUserName = arg.modifiedByUserName;
 
     let updateCommon = new UpdateCommonProperties(this, app, arg);
     app = await updateCommon.updateAll();

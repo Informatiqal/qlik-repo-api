@@ -52,8 +52,6 @@ export class Tag {
   ): Promise<IHttpReturnRemove> {
     if (!id) throw new Error(`tagRemove: "id" parameter is required`);
 
-    isGUIDError(id);
-
     return await this.repoClient.Delete(`tag/${id}`).then((res) => {
       return { id, status: res.status as IHttpStatus };
     });
@@ -66,7 +64,12 @@ export class Tag {
     if (!filter)
       throw new Error(`tagRemoveFilter: "filter" parameter is required`);
 
-    const tags = await this.tagGetFilter(filter);
+    const tags = await this.tagGetFilter(filter).then((t: ITag[]) => {
+      if (t.length == 0)
+        throw new Error(`tagRemoveFilter: filter query return 0 items`);
+
+      return t;
+    });
     return await Promise.all<IRemoveFilter>(
       tags.map((tag: ITag) => {
         return this.repoClient
@@ -81,8 +84,7 @@ export class Tag {
   public async tagUpdate(
     this: QlikRepoApi,
     id: string,
-    name: string,
-    modifiedByUserName?: string
+    name: string
   ): Promise<ITag> {
     if (!id) throw new Error(`tagUpdate: "id" parameter is required`);
     isGUIDError(id);
@@ -91,7 +93,6 @@ export class Tag {
     let tag = await this.tagGet(id);
     tag.name = name;
     tag.modifiedDate = modifiedDateTime();
-    if (modifiedByUserName) tag.modifiedByUserName = modifiedByUserName;
 
     return await this.repoClient
       .Put(`tag/${id}`, { ...tag })

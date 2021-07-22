@@ -30,8 +30,10 @@
         "scriptlogfile",
         "skipdata",
         "systemrule",
+        "targetappid",
         "tempcontent",
         "temporaryfilepath",
+        "typedoc",
         "uploadfile",
         "validengines",
         "yxxx"

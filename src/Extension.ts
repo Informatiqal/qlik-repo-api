@@ -81,7 +81,4 @@ export class Extension {
       .Post(urlBuild.getUrl(), arg.file)
       .then((res) => res.data as IExtension[]);
   }
-
-  // TODO: implement the logic
-  public async extensionExport(this: QlikRepoApi, arg: IExtensionUpdate) {}
 }

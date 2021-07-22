@@ -239,9 +239,6 @@ export class Engine {
       engine.settings.sseLogVerbosity = arg.sseLogVerbosity;
     }
 
-    if (arg.modifiedByUserName)
-      engine.modifiedByUserName = arg.modifiedByUserName;
-
     engine.modifiedDate = modifiedDateTime();
 
     return await this.repoClient
