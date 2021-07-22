@@ -400,12 +400,12 @@ export interface IServerNodeConfiguration {
     id: string;
     name: string;
     privileges: string[];
-    roles: {
-      id: string;
-      definition: number;
-      privileges: string[];
-    }[];
   };
+  roles: {
+    id: string;
+    definition: number;
+    privileges: string[];
+  }[];
 }
 
 export interface IEngine {
@@ -599,4 +599,17 @@ export interface IServiceCluster {
   privileges?: string[];
   name: string;
   settings: IServiceClusterSettings;
+}
+
+export interface IServiceStatus {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  serviceType: number;
+  serviceState: number;
+  timestamp?: string;
+  serverNodeConfiguration: IServerNodeConfiguration;
 }

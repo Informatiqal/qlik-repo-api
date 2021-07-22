@@ -8,6 +8,7 @@ import { Engine } from "./Engine";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
+import { ServiceStatus } from "./ServiceStatus";
 import { Table } from "./Table";
 import { Tag } from "./Tag";
 import { Task } from "./Task";
@@ -25,6 +26,7 @@ import {
   IHttpReturn,
   IHttpReturnRemove,
   IServiceCluster,
+  IServiceStatus,
   IStream,
   ITag,
   ITask,
@@ -43,6 +45,7 @@ export {
   IHttpReturn,
   IHttpReturnRemove,
   IServiceCluster,
+  IServiceStatus,
   IStream,
   ITag,
   ITask,
@@ -166,6 +169,10 @@ export class QlikRepoApi {
   serviceClusterRemove = ServiceCluster.prototype.serviceClusterRemove;
   serviceClusterSetCentral = ServiceCluster.prototype.serviceClusterSetCentral;
   serviceClusterUpdate = ServiceCluster.prototype.serviceClusterUpdate;
+
+  serviceStatusCount = ServiceStatus.prototype.serviceStatusCount;
+  serviceStatusGet = ServiceStatus.prototype.serviceStatusGet;
+  serviceStatusGetFilter = ServiceStatus.prototype.serviceStatusGetFilter;
 
   streamGet = Stream.prototype.streamGet;
   streamGetFilter = Stream.prototype.streamGetFilter;
