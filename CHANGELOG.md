@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.4] - 2021-07-22
+
+### Added
+
+- `serviceClusterCount` method
+- `serviceClusterGet` method
+- `serviceClusterGetFilter` method
+- `serviceClusterRemove` method
+- `serviceClusterRemoveFilter` method
+- `serviceClusterSetCentral` method
+- `serviceClusterUpdate` method
+
+### Changed
+
+### Removed
+
 ## [0.0.3] - 2021-07-22
 
 ### Added

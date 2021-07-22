@@ -234,3 +234,19 @@ export interface ISystemRuleAuditGet {
 }
 
 export interface ISystemRuleLicenseCreate {}
+
+export interface IServiceClusterUpdate {
+  id: string;
+  name?: string;
+  persistenceMode?: number;
+  rootFolder?: string;
+  appFolder?: string;
+  staticContentRootFolder?: string;
+  connector32RootFolder?: string;
+  connector64RootFolder?: string;
+  archivedLogsRootFolder?: string;
+  failoverTimeout?: number;
+  enableEncryptQvf?: boolean;
+  enableEncryptQvd?: boolean;
+  encryptionKeyThumbprint?: string;
+}
