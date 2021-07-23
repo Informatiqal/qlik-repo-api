@@ -391,6 +391,37 @@ export interface IEngineSettings {
 }
 
 export interface IServerNodeConfiguration {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  customProperties?: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags?: ITagCondensed[];
+  name: string;
+  hostName: string;
+  isCentral?: boolean;
+  nodePurpose?: number;
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  printingEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  temporaryfilepath: string;
+  failoverCandidate?: boolean;
+  serviceCluster: {
+    id: string;
+    name: string;
+    privileges: string[];
+  };
+  roles: {
+    id: string;
+    definition: number;
+    privileges: string[];
+  }[];
+}
+
+export interface IServerNodeConfigurationCondensed {
   id: string;
   name: string;
   hostName: string;
@@ -417,7 +448,7 @@ export interface IEngine {
   privileges: string[];
   schemaPath: string;
   settings: IEngineSettings;
-  serverNodeConfiguration: IServerNodeConfiguration;
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
 }
 
 export interface ISelectionItem {
@@ -611,7 +642,7 @@ export interface IServiceStatus {
   serviceType: number;
   serviceState: number;
   timestamp?: string;
-  serverNodeConfiguration: IServerNodeConfiguration;
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
 }
 
 export interface IUserDirectorySettings {

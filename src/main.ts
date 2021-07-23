@@ -5,6 +5,7 @@ import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
 import { Extension } from "./Extension";
 import { Engine } from "./Engine";
+import { Node } from "./Node";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
@@ -22,6 +23,7 @@ import {
   IContentLibrary,
   ICustomProperty,
   IEngine,
+  IServerNodeConfiguration,
   IExtension,
   ISystemRule,
   IHttpReturn,
@@ -42,6 +44,7 @@ export {
   IContentLibrary,
   ICustomProperty,
   IEngine,
+  IServerNodeConfiguration,
   IExtension,
   ISystemRule,
   IHttpReturn,
@@ -75,6 +78,8 @@ import {
   ICustomPropertyCreate,
   IContentLibraryUpdate,
   IAppUpdate,
+  INodeUpdate,
+  INodeCreate,
 } from "./interfaces/argument.interface";
 export {
   IExtensionUpdate,
@@ -95,6 +100,8 @@ export {
   ICustomPropertyCreate,
   IContentLibraryUpdate,
   IAppUpdate,
+  INodeUpdate,
+  INodeCreate,
 };
 
 export class QlikRepoApi {
@@ -165,6 +172,15 @@ export class QlikRepoApi {
   engineGetFilter = Engine.prototype.engineGetFilter;
   engineGetValid = Engine.prototype.engineGetValid;
   engineUpdate = Engine.prototype.engineUpdate;
+
+  nodeCount = Node.prototype.nodeCount;
+  nodeGet = Node.prototype.nodeGet;
+  nodeGetFilter = Node.prototype.nodeGetFilter;
+  nodeRemove = Node.prototype.nodeRemove;
+  nodeRemoveFilter = Node.prototype.nodeRemoveFilter;
+  nodeUpdate = Node.prototype.nodeUpdate;
+  nodeCreate = Node.prototype.nodeCreate;
+  nodeRegister = Node.prototype.nodeRegister;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;

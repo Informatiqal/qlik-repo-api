@@ -29,6 +29,8 @@
         "schemaevent",
         "scriptlog",
         "scriptlogfile",
+        "servernodeconfiguration",
+        "servernoderegistration",
         "skipdata",
         "systemrule",
         "targetappid",

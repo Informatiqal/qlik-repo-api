@@ -263,3 +263,35 @@ export interface IUserDirectoryUpdate {
   tags?: string[];
   customProperties?: string[];
 }
+
+export interface INodeUpdate {
+  id: string;
+  name?: string;
+  nodePurpose?:
+    | "Production"
+    | "Development"
+    | "Both"
+    | "ProductionAndDevelopment";
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  printingEnabled?: boolean;
+  failoverCandidate?: boolean;
+}
+
+export interface INodeCreate {
+  hostName: string;
+  name?: string;
+  nodePurpose?:
+    | "Production"
+    | "Development"
+    | "Both"
+    | "ProductionAndDevelopment";
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  printingEnabled?: boolean;
+  failoverCandidate?: boolean;
+  tags?: string[];
+  customProperties?: string[];
+}
