@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IUserUpdate | Qlik Repo API</title>
+	<title>INodeUpdate | Qlik Repo API</title>
 	<meta name="description" content="Documentation for Qlik Repo API">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">Qlik Repo API</a>
 				</li>
 				<li>
-					<a href="IUserUpdate.html">IUserUpdate</a>
+					<a href="INodeUpdate.html">INodeUpdate</a>
 				</li>
 			</ul>
-			<h1>Interface IUserUpdate</h1>
+			<h1>Interface INodeUpdate</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IUserUpdate</span>
+						<span class="target">INodeUpdate</span>
 					</li>
 				</ul>
 			</section>
@@ -80,11 +80,14 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#roles" class="tsd-kind-icon">roles</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#tags" class="tsd-kind-icon">tags</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#engineEnabled" class="tsd-kind-icon">engine<wbr>Enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#failoverCandidate" class="tsd-kind-icon">failover<wbr>Candidate</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#nodePurpose" class="tsd-kind-icon">node<wbr>Purpose</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#printingEnabled" class="tsd-kind-icon">printing<wbr>Enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#proxyEnabled" class="tsd-kind-icon">proxy<wbr>Enabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="INodeUpdate.html#schedulerEnabled" class="tsd-kind-icon">scheduler<wbr>Enabled</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,12 +96,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="customProperties" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> custom<wbr>Properties</h3>
-					<div class="tsd-signature tsd-kind-icon">custom<wbr>Properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="engineEnabled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> engine<wbr>Enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">engine<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L21">interfaces/argument.interface.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L275">interfaces/argument.interface.ts:275</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="failoverCandidate" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> failover<wbr>Candidate</h3>
+					<div class="tsd-signature tsd-kind-icon">failover<wbr>Candidate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L279">interfaces/argument.interface.ts:279</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -108,7 +121,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L19">interfaces/argument.interface.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L268">interfaces/argument.interface.ts:268</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -118,27 +131,47 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L22">interfaces/argument.interface.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L269">interfaces/argument.interface.ts:269</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="roles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> roles</h3>
-					<div class="tsd-signature tsd-kind-icon">roles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="nodePurpose" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> node<wbr>Purpose</h3>
+					<div class="tsd-signature tsd-kind-icon">node<wbr>Purpose<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;Production&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;Development&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;Both&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;ProductionAndDevelopment&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L23">interfaces/argument.interface.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L270">interfaces/argument.interface.ts:270</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tags" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tags</h3>
-					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="printingEnabled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> printing<wbr>Enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">printing<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L20">interfaces/argument.interface.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L278">interfaces/argument.interface.ts:278</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="proxyEnabled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> proxy<wbr>Enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">proxy<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L276">interfaces/argument.interface.ts:276</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="schedulerEnabled" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> scheduler<wbr>Enabled</h3>
+					<div class="tsd-signature tsd-kind-icon">scheduler<wbr>Enabled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/ff948f7/src/interfaces/argument.interface.ts#L277">interfaces/argument.interface.ts:277</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -205,9 +238,39 @@
 					<li class=" tsd-kind-interface">
 						<a href="INodeCreate.html" class="tsd-kind-icon">INode<wbr>Create</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="INodeUpdate.html" class="tsd-kind-icon">INode<wbr>Update</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#engineEnabled" class="tsd-kind-icon">engine<wbr>Enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#failoverCandidate" class="tsd-kind-icon">failover<wbr>Candidate</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#nodePurpose" class="tsd-kind-icon">node<wbr>Purpose</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#printingEnabled" class="tsd-kind-icon">printing<wbr>Enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#proxyEnabled" class="tsd-kind-icon">proxy<wbr>Enabled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="INodeUpdate.html#schedulerEnabled" class="tsd-kind-icon">scheduler<wbr>Enabled</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="IRemoveFilter.html" class="tsd-kind-icon">IRemove<wbr>Filter</a>
 					</li>
@@ -271,30 +334,9 @@
 					<li class=" tsd-kind-interface">
 						<a href="IUserDirectory.html" class="tsd-kind-icon">IUser<wbr>Directory</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="IUserUpdate.html" class="tsd-kind-icon">IUser<wbr>Update</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#id" class="tsd-kind-icon">id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#roles" class="tsd-kind-icon">roles</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#tags" class="tsd-kind-icon">tags</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>

@@ -2,7 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.6] - 2021-07-XX
+## [0.0.7] - 2021-07-27
+
+### Added
+
+- `nodeCount` method
+- `nodeGet` method
+- `nodeGetFilter` method
+- `nodeRemove` method
+- `nodeRemoveFilter` method
+- `nodeUpdate` method
+- `nodeCreate` method
+
+## [0.0.6] - 2021-07-23
 
 ### Added
 
