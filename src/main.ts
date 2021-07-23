@@ -13,6 +13,7 @@ import { Table } from "./Table";
 import { Tag } from "./Tag";
 import { Task } from "./Task";
 import { User } from "./User";
+import { UserDirectory } from "./UserDirectory";
 
 import {
   IAbout,
@@ -32,6 +33,7 @@ import {
   ITask,
   ITaskExecutionResult,
   IUser,
+  IUserDirectory,
 } from "./interfaces";
 export {
   IAbout,
@@ -51,6 +53,7 @@ export {
   ITask,
   ITaskExecutionResult,
   IUser,
+  IUserDirectory,
 };
 
 import {
@@ -222,4 +225,10 @@ export class QlikRepoApi {
   userCreate = User.prototype.userCreate;
   userRemove = User.prototype.userRemove;
   userUpdate = User.prototype.userUpdate;
+
+  userDirectoryCount = UserDirectory.prototype.userDirectoryCount;
+  userDirectoryGet = UserDirectory.prototype.userDirectoryGet;
+  userDirectoryGetFilter = UserDirectory.prototype.userDirectoryGetFilter;
+  userDirectoryRemove = UserDirectory.prototype.userDirectoryRemove;
+  userDirectoryRemoveFilter = UserDirectory.prototype.userDirectoryRemoveFilter;
 }

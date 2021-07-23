@@ -19,6 +19,7 @@
         "filereferenceid",
         "includecustomproperties",
         "keepdata",
+        "ldap",
         "loadbalancing",
         "openapi",
         "prestart",
@@ -36,6 +37,7 @@
         "tonode",
         "typedoc",
         "uploadfile",
+        "userdirectory",
         "validengines",
         "yxxx"
     ]

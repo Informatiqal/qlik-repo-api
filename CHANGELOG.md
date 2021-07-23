@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.6] - 2021-07-XX
+
+### Added
+
+- `userDirectoryCount` method
+- `userDirectoryGet` method
+- `userDirectoryGetFilter` method
+- `userDirectoryRemove` method
+- `userDirectoryRemoveFilter` method
+- `userDirectorySync` method
+
 ## [0.0.5] - 2021-07-22
 
 ### Added
