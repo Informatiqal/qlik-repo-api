@@ -19,6 +19,7 @@
         "filereferenceid",
         "includecustomproperties",
         "keepdata",
+        "ldap",
         "loadbalancing",
         "openapi",
         "prestart",

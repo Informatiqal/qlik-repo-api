@@ -229,4 +229,6 @@ export class QlikRepoApi {
   userDirectoryCount = UserDirectory.prototype.userDirectoryCount;
   userDirectoryGet = UserDirectory.prototype.userDirectoryGet;
   userDirectoryGetFilter = UserDirectory.prototype.userDirectoryGetFilter;
+  userDirectoryRemove = UserDirectory.prototype.userDirectoryRemove;
+  userDirectoryRemoveFilter = UserDirectory.prototype.userDirectoryRemoveFilter;
 }

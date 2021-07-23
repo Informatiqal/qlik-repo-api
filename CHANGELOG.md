@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 - `userDirectoryCount` method
 - `userDirectoryGet` method
 - `userDirectoryGetFilter` method
+- `userDirectoryRemove` method
+- `userDirectoryRemoveFilter` method
+- `userDirectorySync` method
 
 ## [0.0.5] - 2021-07-22
 

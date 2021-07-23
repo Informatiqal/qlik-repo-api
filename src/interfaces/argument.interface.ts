@@ -250,3 +250,16 @@ export interface IServiceClusterUpdate {
   enableEncryptQvd?: boolean;
   encryptionKeyThumbprint?: string;
 }
+
+export interface IUserDirectoryUpdate {
+  id: string;
+  name: string;
+  path: string;
+  userName: string;
+  password: string;
+  ldapFilter: string;
+  timeout: string;
+  pageSize: string;
+  tags?: string[];
+  customProperties?: string[];
+}
