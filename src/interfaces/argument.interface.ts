@@ -347,3 +347,9 @@ export interface IDataConnectionUpdate {
   tags?: string[];
   customProperties?: string[];
 }
+
+export interface IAppObjectUpdate {
+  id: string;
+  owner?: string;
+  approved?: boolean;
+}

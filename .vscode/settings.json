@@ -42,6 +42,7 @@
         "temporaryfilepath",
         "tonode",
         "typedoc",
+        "unpublish",
         "uploadfile",
         "userdirectory",
         "validengines",
