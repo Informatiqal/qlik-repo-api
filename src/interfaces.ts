@@ -1,3 +1,5 @@
+import internal from "stream";
+
 export type TCustomPropObjectTypes =
   | "App"
   | "AnalyticConnection"
@@ -737,4 +739,27 @@ export interface ILicenseAccessGroup {
   schemaPath?: string;
   privileges?: string[];
   name?: string;
+}
+
+export interface IDataConnectionCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  connectionstring: string;
+  type?: string;
+  engineObjectId?: string;
+  username?: string;
+  password?: string;
+  logOn?: number;
+  architecture?: number;
+}
+
+export interface IDataConnection extends IDataConnectionCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags: ITagCondensed[];
+  owner: IUserCondensed;
 }

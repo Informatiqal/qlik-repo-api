@@ -3,6 +3,7 @@ import { About } from "./About";
 import { App } from "./App";
 import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
+import { DataConnection } from "./DataConnection";
 import { Extension } from "./Extension";
 import { Engine } from "./Engine";
 import { License } from "./License";
@@ -25,6 +26,8 @@ import {
   IRemoveFilter,
   IContentLibrary,
   ICustomProperty,
+  IDataConnection,
+  IDataConnectionCondensed,
   IEngine,
   IServerNodeConfiguration,
   IExtension,
@@ -51,6 +54,8 @@ export {
   IRemoveFilter,
   IContentLibrary,
   ICustomProperty,
+  IDataConnection,
+  IDataConnectionCondensed,
   IEngine,
   IServerNodeConfiguration,
   IExtension,
@@ -71,6 +76,8 @@ export {
 };
 
 import {
+  IDataConnectionCreate,
+  IDataConnectionUpdate,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -96,6 +103,8 @@ import {
   ILicenseSetSerial,
 } from "./interfaces/argument.interface";
 export {
+  IDataConnectionCreate,
+  IDataConnectionUpdate,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -177,6 +186,12 @@ export class QlikRepoApi {
   customPropertyRemove = CustomProperty.prototype.customPropertyRemove;
   customPropertySelect = CustomProperty.prototype.customPropertySelect;
   customPropertyUpdate = CustomProperty.prototype.customPropertyUpdate;
+
+  dataConnectionCreate = DataConnection.prototype.dataConnectionCreate;
+  dataConnectionGet = DataConnection.prototype.dataConnectionGet;
+  dataConnectionGetFilter = DataConnection.prototype.dataConnectionGetFilter;
+  dataConnectionRemove = DataConnection.prototype.dataConnectionRemove;
+  dataConnectionUpdate = DataConnection.prototype.dataConnectionUpdate;
 
   extensionGet = Extension.prototype.extensionGet;
   extensionGetFilter = Extension.prototype.extensionGetFilter;
