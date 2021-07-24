@@ -17,9 +17,10 @@ export class Tag {
     this: QlikRepoApi,
     id: string
   ): Promise<ITag[] | ITagCondensed[]> {
-    if (!id) throw new Error(`tagGet: "id" parameter is required`);
+    let url = "tag";
+    if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(`tag/${id}`).then((res) => {
+    return await this.repoClient.Get(url).then((res) => {
       if (!id) return res.data as ITagCondensed[];
 
       return [res.data] as ITag[];

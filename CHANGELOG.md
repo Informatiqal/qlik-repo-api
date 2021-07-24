@@ -2,9 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.10] - 2021-07-XX
+## [0.0.11] - 2021-07-XX
+
+- `appObjectGet` method
+- `appObjectGetFilter` method
+- `appObjectPublish` method
+- `appObjectUnPublish` method
+- `appObjectRemove` method
+- `appObjectUpdate` method
 
 ### Added
+
+## [0.0.10] - 2021-07-24
 
 ### Changed
 
@@ -22,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - `dataConnectionRemove` method
 - `dataConnectionCreate` method
 - `dataConnectionUpdate` method
+  `
 
 ## [0.0.8] - 2021-07-24
 

@@ -1,6 +1,7 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { About } from "./About";
 import { App } from "./App";
+import { AppObject } from "./AppObject";
 import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
 import { DataConnection } from "./DataConnection";
@@ -22,6 +23,8 @@ import {
   IAbout,
   IAccessTypeInfo,
   IApp,
+  IAppObject,
+  IAppObjectCondensed,
   IAudit,
   IRemoveFilter,
   IContentLibrary,
@@ -50,6 +53,8 @@ export {
   IAbout,
   IAccessTypeInfo,
   IApp,
+  IAppObject,
+  IAppObjectCondensed,
   IAudit,
   IRemoveFilter,
   IContentLibrary,
@@ -76,6 +81,7 @@ export {
 };
 
 import {
+  IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
   IAuditParameters,
@@ -103,6 +109,7 @@ import {
   ILicenseSetSerial,
 } from "./interfaces/argument.interface";
 export {
+  IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
   IAuditParameters,
@@ -166,6 +173,13 @@ export class QlikRepoApi {
   appSelect = App.prototype.appSelect;
   appSwitch = App.prototype.appSwitch;
   appUpdate = App.prototype.appUpdate;
+
+  appObjectGet = AppObject.prototype.appObjectGet;
+  appObjectGetFilter = AppObject.prototype.appObjectGetFilter;
+  appObjectPublish = AppObject.prototype.appObjectPublish;
+  appObjectUnPublish = AppObject.prototype.appObjectUnPublish;
+  appObjectRemove = AppObject.prototype.appObjectRemove;
+  appObjectUpdate = AppObject.prototype.appObjectUpdate;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
   contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;
