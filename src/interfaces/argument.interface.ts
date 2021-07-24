@@ -324,3 +324,26 @@ export interface ILicenseSetSerial extends ILicense {
 export interface ILicenseSetKey extends ILicense {
   key: string;
 }
+
+export interface IDataConnectionCreate {
+  name: string;
+  connectionString: string;
+  owner: string;
+  type?: string;
+  username?: string;
+  password?: string;
+  architecture?: "x86" | "x64" | "Undefined";
+  logOn?: "Current user" | "Service user";
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface IDataConnectionUpdate {
+  id: string;
+  connectionString?: string;
+  username?: string;
+  password?: string;
+  owner?: string;
+  tags?: string[];
+  customProperties?: string[];
+}
