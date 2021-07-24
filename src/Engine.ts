@@ -1,7 +1,7 @@
 import { QlikRepoApi } from "./main";
 
-import { modifiedDateTime, isGUIDError } from "./util/generic";
-import { IEngine, IEngineGetValidResult } from "./interfaces";
+import { modifiedDateTime } from "./util/generic";
+import { IEngine, IEngineCondensed, IEngineGetValidResult } from "./interfaces";
 import {
   IEngineUpdate,
   IEngineGetValid,
@@ -10,11 +10,18 @@ import {
 export class Engine {
   constructor() {}
 
-  public async engineGet(this: QlikRepoApi, id?: string): Promise<IEngine[]> {
+  public async engineGet(
+    this: QlikRepoApi,
+    id?: string
+  ): Promise<IEngine[] | IEngineCondensed[]> {
     let url = "engineservice";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res) => res.data as IEngine[]);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IEngineCondensed[];
+
+      return [res.data] as IEngine[];
+    });
   }
 
   public async engineGetAll(this: QlikRepoApi): Promise<IEngine[]> {
@@ -66,9 +73,7 @@ export class Engine {
   ): Promise<IEngine> {
     if (!arg.id) throw new Error(`engineUpdate: "id" is required`);
 
-    isGUIDError(arg.id);
-
-    let engine = await this.engineGet(arg.id).then((e) => e[0]);
+    let engine = await this.engineGet(arg.id).then((e) => e[0] as IEngine);
 
     if (arg.workingSetSizeLoPct) {
       if (arg.workingSetSizeLoPct < 0 || arg.workingSetSizeLoPct > 100)

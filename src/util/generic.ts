@@ -21,23 +21,6 @@ export class URLBuild {
   }
 }
 
-export function isGUID(value: string): boolean {
-  const match = value.match(
-    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-  );
-  if (match === null) {
-    return false;
-  }
-  return true;
-}
-
-export function isGUIDError(value: string): boolean {
-  let isGuid = isGUID(value);
-  if (!isGUID) throw new Error("Expected string in UUID/GUID format");
-
-  return isGuid;
-}
-
 export function uuid(): string {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,

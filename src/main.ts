@@ -3,51 +3,82 @@ import { About } from "./About";
 import { App } from "./App";
 import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
+import { DataConnection } from "./DataConnection";
 import { Extension } from "./Extension";
 import { Engine } from "./Engine";
+import { License } from "./License";
+import { Node } from "./Node";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
+import { ServiceCluster } from "./ServiceCluster";
+import { ServiceStatus } from "./ServiceStatus";
 import { Table } from "./Table";
 import { Tag } from "./Tag";
 import { Task } from "./Task";
 import { User } from "./User";
+import { UserDirectory } from "./UserDirectory";
 
 import {
   IAbout,
+  IAccessTypeInfo,
   IApp,
+  IAudit,
   IRemoveFilter,
   IContentLibrary,
   ICustomProperty,
+  IDataConnection,
+  IDataConnectionCondensed,
   IEngine,
+  IServerNodeConfiguration,
   IExtension,
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
+  ILicense,
+  ILicenseAccessGroup,
+  ILicenseAccessTypeCondensed,
+  IServiceCluster,
+  IServiceStatus,
   IStream,
   ITag,
   ITask,
   ITaskExecutionResult,
   IUser,
+  IUserDirectory,
 } from "./interfaces";
 export {
   IAbout,
+  IAccessTypeInfo,
   IApp,
+  IAudit,
   IRemoveFilter,
   IContentLibrary,
   ICustomProperty,
+  IDataConnection,
+  IDataConnectionCondensed,
   IEngine,
+  IServerNodeConfiguration,
   IExtension,
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
+  ILicense,
+  ILicenseAccessTypeCondensed,
+  ILicenseAccessGroup,
+  IServiceCluster,
+  IServiceStatus,
   IStream,
   ITag,
   ITask,
   ITaskExecutionResult,
   IUser,
+  IUserDirectory,
 };
 
 import {
+  IDataConnectionCreate,
+  IDataConnectionUpdate,
+  IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
   IUserCreate,
@@ -56,6 +87,7 @@ import {
   ITaskCreateTriggerComposite,
   ITaskCreate,
   ITableCreate,
+  IServiceClusterUpdate,
   IStreamCreate,
   ISystemRuleUpdate,
   ISystemRuleCreate,
@@ -65,8 +97,15 @@ import {
   ICustomPropertyCreate,
   IContentLibraryUpdate,
   IAppUpdate,
+  INodeUpdate,
+  INodeCreate,
+  ILicenseSetKey,
+  ILicenseSetSerial,
 } from "./interfaces/argument.interface";
 export {
+  IDataConnectionCreate,
+  IDataConnectionUpdate,
+  IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
   IUserCreate,
@@ -75,6 +114,7 @@ export {
   ITaskCreateTriggerComposite,
   ITaskCreate,
   ITableCreate,
+  IServiceClusterUpdate,
   IStreamCreate,
   ISystemRuleUpdate,
   ISystemRuleCreate,
@@ -84,6 +124,10 @@ export {
   ICustomPropertyCreate,
   IContentLibraryUpdate,
   IAppUpdate,
+  INodeUpdate,
+  INodeCreate,
+  ILicenseSetKey,
+  ILicenseSetSerial,
 };
 
 export class QlikRepoApi {
@@ -143,6 +187,12 @@ export class QlikRepoApi {
   customPropertySelect = CustomProperty.prototype.customPropertySelect;
   customPropertyUpdate = CustomProperty.prototype.customPropertyUpdate;
 
+  dataConnectionCreate = DataConnection.prototype.dataConnectionCreate;
+  dataConnectionGet = DataConnection.prototype.dataConnectionGet;
+  dataConnectionGetFilter = DataConnection.prototype.dataConnectionGetFilter;
+  dataConnectionRemove = DataConnection.prototype.dataConnectionRemove;
+  dataConnectionUpdate = DataConnection.prototype.dataConnectionUpdate;
+
   extensionGet = Extension.prototype.extensionGet;
   extensionGetFilter = Extension.prototype.extensionGetFilter;
   extensionRemove = Extension.prototype.extensionRemove;
@@ -154,6 +204,46 @@ export class QlikRepoApi {
   engineGetFilter = Engine.prototype.engineGetFilter;
   engineGetValid = Engine.prototype.engineGetValid;
   engineUpdate = Engine.prototype.engineUpdate;
+
+  licenseGet = License.prototype.licenseGet;
+  licenseAccessTypeInfoGet = License.prototype.licenseAccessTypeInfoGet;
+  licenseAnalyzerAccessTypeGet = License.prototype.licenseAnalyzerAccessTypeGet;
+  licenseAnalyzerAccessTypeRemove =
+    License.prototype.licenseAnalyzerAccessTypeRemove;
+  licenseAuditGet = License.prototype.licenseAuditGet;
+  licenseLoginAccessTypeGet = License.prototype.licenseLoginAccessTypeGet;
+  licenseLoginAccessTypeRemove = License.prototype.licenseLoginAccessTypeRemove;
+  licenseProfessionalAccessTypeGet =
+    License.prototype.licenseProfessionalAccessTypeGet;
+  licenseProfessionalAccessTypeRemove =
+    License.prototype.licenseProfessionalAccessTypeRemove;
+  licenseUserAccessTypeGet = License.prototype.licenseUserAccessTypeGet;
+  licenseUserAccessTypeRemove = License.prototype.licenseUserAccessTypeRemove;
+  licenseSetSerial = License.prototype.licenseSetSerial;
+  licenseSetKey = License.prototype.licenseSetKey;
+  licenseProfessionalAccessGroupCreate =
+    License.prototype.licenseProfessionalAccessGroupCreate;
+  licenseUserAccessGroupCreate = License.prototype.licenseUserAccessGroupCreate;
+
+  nodeCount = Node.prototype.nodeCount;
+  nodeGet = Node.prototype.nodeGet;
+  nodeGetFilter = Node.prototype.nodeGetFilter;
+  nodeRemove = Node.prototype.nodeRemove;
+  nodeRemoveFilter = Node.prototype.nodeRemoveFilter;
+  nodeUpdate = Node.prototype.nodeUpdate;
+  nodeCreate = Node.prototype.nodeCreate;
+  nodeRegister = Node.prototype.nodeRegister;
+
+  serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
+  serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;
+  serviceClusterGetFilter = ServiceCluster.prototype.serviceClusterGetFilter;
+  serviceClusterRemove = ServiceCluster.prototype.serviceClusterRemove;
+  serviceClusterSetCentral = ServiceCluster.prototype.serviceClusterSetCentral;
+  serviceClusterUpdate = ServiceCluster.prototype.serviceClusterUpdate;
+
+  serviceStatusCount = ServiceStatus.prototype.serviceStatusCount;
+  serviceStatusGet = ServiceStatus.prototype.serviceStatusGet;
+  serviceStatusGetFilter = ServiceStatus.prototype.serviceStatusGetFilter;
 
   streamGet = Stream.prototype.streamGet;
   streamGetFilter = Stream.prototype.streamGetFilter;
@@ -203,4 +293,10 @@ export class QlikRepoApi {
   userCreate = User.prototype.userCreate;
   userRemove = User.prototype.userRemove;
   userUpdate = User.prototype.userUpdate;
+
+  userDirectoryCount = UserDirectory.prototype.userDirectoryCount;
+  userDirectoryGet = UserDirectory.prototype.userDirectoryGet;
+  userDirectoryGetFilter = UserDirectory.prototype.userDirectoryGetFilter;
+  userDirectoryRemove = UserDirectory.prototype.userDirectoryRemove;
+  userDirectoryRemoveFilter = UserDirectory.prototype.userDirectoryRemoveFilter;
 }

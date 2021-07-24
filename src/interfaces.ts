@@ -1,3 +1,5 @@
+import internal from "stream";
+
 export type TCustomPropObjectTypes =
   | "App"
   | "AnalyticConnection"
@@ -53,53 +55,48 @@ export interface IOwner {
   userId: string;
 }
 
-export interface ITag {
-  privileges: [];
+export interface IAppCondensed {
+  id?: string;
+  privileges?: string[];
   name: string;
-  id: string;
-}
-
-export interface IStream {
-  privileges: [];
-  name: string;
-  id: string;
-}
-
-export interface IApp {
-  owner: IOwner;
-  privileges: [];
+  appId: string;
+  published: boolean;
   publishTime: string;
+  stream: IStream;
+  savedInProductVersion: string;
   migrationHash: string;
+  availabilityStatus: {};
+}
+
+export interface IApp extends IAppCondensed {
+  owner: IOwner;
   thumbnail: string;
   schemaPath: string;
   description: string;
-  savedInProductVersion: string;
   sourceAppId: string;
-  published: boolean;
   tags: ITagCondensed[];
   lastReloadTime: string;
   createdDate: string;
   customProperties: ICustomPropertyObject[];
-  stream: IStream;
   fileSize: number;
-  appId: string;
   modifiedDate: string;
-  name: string;
   dynamicColor: string;
-  id: string;
-  availabilityStatus: {};
   targetAppId: string;
 }
 
-export interface IStream {
-  owner: IOwner;
-  privileges: [];
-  createdDate: string;
-  customProperties: ICustomPropertyObject[];
-  schemaPath: string;
-  modifiedDate: string;
-  name: string;
+export interface IStreamCondensed {
   id: string;
+  name: string;
+  privileges: [];
+}
+
+export interface IStream extends IStreamCondensed {
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName?: string;
+  schemaPath: string;
+  customProperties: ICustomPropertyObject[];
+  owner: IOwner;
   tags: ITagCondensed[];
 }
 
@@ -242,11 +239,8 @@ export type TSystemRuleActions =
 export type TSystemRuleCategory = "License" | "Security" | "Sync";
 export type TSystemRuleContext = "hub" | "qmc" | "both" | "BothQlikSenseAndQMC";
 
-export interface ISystemRule {
+export interface ISystemRuleCondensed {
   id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  schemaPath?: string;
   privileges?: string[];
   category: TSystemRuleCategory;
   subcategory?: string;
@@ -257,6 +251,12 @@ export interface ISystemRule {
   actions: number;
   comment?: string;
   disabled?: boolean;
+}
+
+export interface ISystemRule extends ISystemRuleCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
   ruleContext: number;
   seedId?: string;
   version?: number;
@@ -391,6 +391,37 @@ export interface IEngineSettings {
 }
 
 export interface IServerNodeConfiguration {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  customProperties?: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags?: ITagCondensed[];
+  name: string;
+  hostName: string;
+  isCentral?: boolean;
+  nodePurpose?: number;
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  printingEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  temporaryfilepath: string;
+  failoverCandidate?: boolean;
+  serviceCluster: {
+    id: string;
+    name: string;
+    privileges: string[];
+  };
+  roles: {
+    id: string;
+    definition: number;
+    privileges: string[];
+  }[];
+}
+
+export interface IServerNodeConfigurationCondensed {
   id: string;
   name: string;
   hostName: string;
@@ -400,12 +431,12 @@ export interface IServerNodeConfiguration {
     id: string;
     name: string;
     privileges: string[];
-    roles: {
-      id: string;
-      definition: number;
-      privileges: string[];
-    }[];
   };
+  roles: {
+    id: string;
+    definition: number;
+    privileges: string[];
+  }[];
 }
 
 export interface IEngine {
@@ -417,7 +448,7 @@ export interface IEngine {
   privileges: string[];
   schemaPath: string;
   settings: IEngineSettings;
-  serverNodeConfiguration: IServerNodeConfiguration;
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
 }
 
 export interface ISelectionItem {
@@ -515,23 +546,230 @@ export interface ISchemaEventOperationalCondensed {
   nextExecution?: string;
 }
 
-export interface ISchemaEvent {
+export interface ISchemaEventCondensed {
   id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  schemaPath?: string;
   privileges?: string[];
   name: string;
   enabled?: boolean;
   eventType?: number;
+  operational: ISchemaEventOperationalCondensed;
+}
+
+export interface ISchemaEvent extends ISchemaEventCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
   timeZone: string;
   startDate: string;
   expirationDate: string;
   schemaFilterDescription: string[];
   incrementalDescription: string;
   incrementalOption: number;
-  operational: ISchemaEventOperationalCondensed;
   externalProgramTask: IExternalProgramTaskCondensed;
   reloadTask: IExternalProgramTaskCondensed;
   userSyncTask: IExternalProgramTaskCondensed;
+}
+
+export interface IServiceClusterSettingsDbCredentials {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  userName?: string;
+  password?: string;
+}
+
+export interface ServiceClusterSettingsSharedPersistenceProperties {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  rootFolder?: string;
+  appFolder?: string;
+  staticContentRootFolder?: string;
+  connector32RootFolder?: string;
+  connector64RootFolder?: string;
+  archivedLogsRootFolder?: string;
+  databaseHost?: string;
+  databasePort?: number;
+  sSLPort?: number;
+  failoverTimeout?: number;
+}
+
+export interface IServiceClusterSettingsEncryption {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  enableEncryptQvf?: boolean;
+  enableEncryptQvd?: boolean;
+  encryptionKeyThumbprint?: string;
+}
+
+export interface IServiceClusterSettings {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  persistenceMode: number;
+  dataCollection?: boolean;
+  tasksImpersonation?: boolean;
+  databaseCredentials: IServiceClusterSettingsDbCredentials;
+  encryption: IServiceClusterSettingsEncryption;
+
+  sharedPersistenceProperties: ServiceClusterSettingsSharedPersistenceProperties;
+}
+
+export interface IServiceClusterCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+}
+
+export interface IServiceCluster extends IServiceClusterCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  settings: IServiceClusterSettings;
+}
+
+export interface IServiceStatusCondensed {
+  id?: string;
+  privileges?: string[];
+}
+
+export interface IServiceStatus extends IServiceStatusCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  serviceType: number;
+  serviceState: number;
+  timestamp?: string;
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
+}
+
+export interface IUserDirectorySettings {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name: string;
+  category?: string;
+  userDirectorySettingType: number;
+  secret: boolean;
+  value?: string;
+  secretValue?: string;
+}
+
+export interface IUserDirectoryCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  type: string;
+}
+
+export interface IUserDirectory extends IUserDirectoryCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  userDirectoryName?: string;
+  configured?: boolean;
+  operational?: boolean;
+  syncOnlyLoggedInUsers: boolean;
+  syncStatus: boolean;
+  syncLastStarted?: string;
+  syncLastSuccessfulEnded?: string;
+  configuredError?: string;
+  operationalError?: string;
+  tags: ITagCondensed[];
+  creationType: number;
+  settings?: IUserDirectorySettings;
+}
+
+export interface IAccessTypesInfoAccessTypeCondensed {
+  schemaPath?: string;
+  tokenCost?: number;
+  allocatedTokens?: number;
+  usedTokens?: number;
+  quarantinedTokens?: number;
+}
+export interface IAccessTypeInfo {
+  schemaPath?: string;
+  totalTokens?: number;
+  availableTokens?: number;
+  professionalAccessType?: IAccessTypesInfoAccessTypeCondensed;
+  userAccessType?: IAccessTypesInfoAccessTypeCondensed;
+  loginAccessType?: IAccessTypesInfoAccessTypeCondensed;
+  analyzerAccessType?: IAccessTypesInfoAccessTypeCondensed;
+}
+
+export interface ILicense {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  lef?: string;
+  serial?: string;
+  check?: string;
+  key?: string;
+  name?: string;
+  organization?: string;
+  product?: number;
+  numberOfCores?: number;
+  isExpired?: boolean;
+  expiredReason?: string;
+  isBlacklisted?: boolean;
+  isInvalid?: boolean;
+  isSubscription?: boolean;
+  isCloudServices?: boolean;
+  isElastic?: boolean;
+}
+
+export interface ILicenseAccessTypeCondensed {
+  id?: string;
+  privileges?: string[];
+}
+
+export interface ILicenseAccessGroup {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  name?: string;
+}
+
+export interface IDataConnectionCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  connectionstring: string;
+  type?: string;
+  engineObjectId?: string;
+  username?: string;
+  password?: string;
+  logOn?: number;
+  architecture?: number;
+}
+
+export interface IDataConnection extends IDataConnectionCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags: ITagCondensed[];
+  owner: IUserCondensed;
 }

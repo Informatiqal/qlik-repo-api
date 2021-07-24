@@ -4,7 +4,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import {
   IApp,
-  IHttpStatus,
+  IAppCondensed,
   ISelection,
   IRemoveFilter,
   IHttpReturnRemove,
@@ -59,14 +59,17 @@ export class App {
       .then((r) => r.data as Buffer);
   }
 
-  public async appGet(this: QlikRepoApi, id?: string): Promise<IApp[]> {
+  public async appGet(
+    this: QlikRepoApi,
+    id?: string
+  ): Promise<IApp[] | IAppCondensed[]> {
     let url = "app";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res: any) => {
-      if (res.data.length > 0) return res.data as IApp[];
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IAppCondensed[];
 
-      return [res.data];
+      return [res.data] as IApp[];
     });
   }
 
@@ -218,7 +221,7 @@ export class App {
   public async appUpdate(this: QlikRepoApi, arg: IAppUpdate): Promise<IApp> {
     if (!arg.id) throw new Error(`appUpdate: "id" parameter is required`);
 
-    let app = await this.appGet(arg.id).then((a) => a[0]);
+    let app = await this.appGet(arg.id).then((a) => a[0] as IApp);
 
     if (arg.name) app.name = arg.name;
     if (arg.description) app.description = arg.description;

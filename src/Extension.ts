@@ -19,13 +19,15 @@ export class Extension {
   public async extensionGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<IExtension[]> {
+  ): Promise<IExtension[] | IExtensionCondensed[]> {
     let url = "extension";
     if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(url)
-      .then((res) => res.data as IExtension[]);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IExtensionCondensed[];
+
+      return [res.data] as IExtension[];
+    });
   }
 
   public async extensionGetFilter(
@@ -57,7 +59,9 @@ export class Extension {
   ): Promise<IExtension> {
     if (!arg.id) throw new Error(`extensionUpdate: "id" parameter is required`);
 
-    let extension = await this.extensionGet(arg.id);
+    let extension = await this.extensionGet(arg.id).then(
+      (e) => e[0] as IExtension
+    );
 
     let updateCommon = new UpdateCommonProperties(this, extension, arg);
     extension = await updateCommon.updateAll();

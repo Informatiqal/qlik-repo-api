@@ -38,6 +38,6 @@ export class About {
       throw new Error(`aboutApiDefaults: "path" parameter is required`);
     return await this.repoClient
       .Get(`about/api/default/${path}`)
-      .then((res) => res.data as any);
+      .then((res) => res.data);
   }
 }

@@ -1,3 +1,4 @@
+import internal from "stream";
 import {
   TCustomPropObjectTypes,
   TSystemRuleCategory,
@@ -234,3 +235,115 @@ export interface ISystemRuleAuditGet {
 }
 
 export interface ISystemRuleLicenseCreate {}
+
+export interface IServiceClusterUpdate {
+  id: string;
+  name?: string;
+  persistenceMode?: number;
+  rootFolder?: string;
+  appFolder?: string;
+  staticContentRootFolder?: string;
+  connector32RootFolder?: string;
+  connector64RootFolder?: string;
+  archivedLogsRootFolder?: string;
+  failoverTimeout?: number;
+  enableEncryptQvf?: boolean;
+  enableEncryptQvd?: boolean;
+  encryptionKeyThumbprint?: string;
+}
+
+export interface IUserDirectoryUpdate {
+  id: string;
+  name: string;
+  path: string;
+  userName: string;
+  password: string;
+  ldapFilter: string;
+  timeout: string;
+  pageSize: string;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface INodeUpdate {
+  id: string;
+  name?: string;
+  nodePurpose?:
+    | "Production"
+    | "Development"
+    | "Both"
+    | "ProductionAndDevelopment";
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  printingEnabled?: boolean;
+  failoverCandidate?: boolean;
+}
+
+export interface INodeCreate {
+  hostName: string;
+  name?: string;
+  nodePurpose?:
+    | "Production"
+    | "Development"
+    | "Both"
+    | "ProductionAndDevelopment";
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  printingEnabled?: boolean;
+  failoverCandidate?: boolean;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface IAuditParameters {
+  resourceId?: string;
+  resourceType?: string;
+  resourceFilter?: string;
+  userFilter?: string;
+  environmentAttributes?: string;
+  userSkip?: number;
+  userTake?: number;
+  resourceSkip?: number;
+  resourceTake?: number;
+  includeNonGrantingRules?: boolean;
+}
+
+interface ILicense {
+  name: string;
+  organization?: string;
+}
+
+export interface ILicenseSetSerial extends ILicense {
+  serial: string;
+  control: string;
+  lef: string;
+}
+
+export interface ILicenseSetKey extends ILicense {
+  key: string;
+}
+
+export interface IDataConnectionCreate {
+  name: string;
+  connectionString: string;
+  owner: string;
+  type?: string;
+  username?: string;
+  password?: string;
+  architecture?: "x86" | "x64" | "Undefined";
+  logOn?: "Current user" | "Service user";
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface IDataConnectionUpdate {
+  id: string;
+  connectionString?: string;
+  username?: string;
+  password?: string;
+  owner?: string;
+  tags?: string[];
+  customProperties?: string[];
+}

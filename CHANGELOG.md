@@ -2,6 +2,90 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.10] - 2021-07-XX
+
+### Added
+
+### Changed
+
+- `xxxGet` if `id` is provided the returned data is `Ixxx[]` if not `IxxxCondensed[]`
+- all `xxxGet` are returning an array
+- for all `xxxGet` `id` is optional
+- uuid checks are removed (including the methods for them)
+
+## [0.0.9] - 2021-07-24
+
+### Added
+
+- `dataConnectionGet` method
+- `dataConnectionGetFilter` method
+- `dataConnectionRemove` method
+- `dataConnectionCreate` method
+- `dataConnectionUpdate` method
+
+## [0.0.8] - 2021-07-24
+
+### Added
+
+- `licenseAccessTypeInfoGet` method
+- `licenseGet` method
+- `licenseAnalyzerAccessTypeGet` method
+- `licenseAnalyzerAccessTypeRemove` method
+- `licenseProfessionalAccessTypeGet` method
+- `licenseProfessionalAccessTypeRemove` method
+- `licenseUserAccessTypeGet` method
+- `licenseUserAccessTypeRemove` method
+- `licenseLoginAccessTypeGet` method
+- `licenseLoginAccessTypeRemove` method
+- `licenseAuditGet` method
+- `licenseSetSerial` method
+- `licenseSetKey` method
+- `licenseProfessionalAccessGroupCreate` method
+- `licenseUserAccessGroupCreate` method
+
+## [0.0.7] - 2021-07-27
+
+### Added
+
+- `nodeCount` method
+- `nodeGet` method
+- `nodeGetFilter` method
+- `nodeRemove` method
+- `nodeRemoveFilter` method
+- `nodeUpdate` method
+- `nodeCreate` method
+
+## [0.0.6] - 2021-07-23
+
+### Added
+
+- `userDirectoryCount` method
+- `userDirectoryGet` method
+- `userDirectoryGetFilter` method
+- `userDirectoryRemove` method
+- `userDirectoryRemoveFilter` method
+- `userDirectorySync` method
+
+## [0.0.5] - 2021-07-22
+
+### Added
+
+- `serviceStatusCount` method
+- `serviceStatusGet` method
+- `serviceStatusGetFilter` method
+
+## [0.0.4] - 2021-07-22
+
+### Added
+
+- `serviceClusterCount` method
+- `serviceClusterGet` method
+- `serviceClusterGetFilter` method
+- `serviceClusterRemove` method
+- `serviceClusterRemoveFilter` method
+- `serviceClusterSetCentral` method
+- `serviceClusterUpdate` method
+
 ## [0.0.3] - 2021-07-22
 
 ### Added
