@@ -5,6 +5,7 @@ import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
 import { Extension } from "./Extension";
 import { Engine } from "./Engine";
+import { License } from "./License";
 import { Node } from "./Node";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
@@ -18,7 +19,9 @@ import { UserDirectory } from "./UserDirectory";
 
 import {
   IAbout,
+  IAccessTypeInfo,
   IApp,
+  IAudit,
   IRemoveFilter,
   IContentLibrary,
   ICustomProperty,
@@ -28,6 +31,9 @@ import {
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
+  ILicense,
+  ILicenseAccessGroup,
+  ILicenseAccessTypeCondensed,
   IServiceCluster,
   IServiceStatus,
   IStream,
@@ -39,7 +45,9 @@ import {
 } from "./interfaces";
 export {
   IAbout,
+  IAccessTypeInfo,
   IApp,
+  IAudit,
   IRemoveFilter,
   IContentLibrary,
   ICustomProperty,
@@ -49,6 +57,9 @@ export {
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
+  ILicense,
+  ILicenseAccessTypeCondensed,
+  ILicenseAccessGroup,
   IServiceCluster,
   IServiceStatus,
   IStream,
@@ -60,6 +71,7 @@ export {
 };
 
 import {
+  IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
   IUserCreate,
@@ -80,8 +92,11 @@ import {
   IAppUpdate,
   INodeUpdate,
   INodeCreate,
+  ILicenseSetKey,
+  ILicenseSetSerial,
 } from "./interfaces/argument.interface";
 export {
+  IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
   IUserCreate,
@@ -102,6 +117,8 @@ export {
   IAppUpdate,
   INodeUpdate,
   INodeCreate,
+  ILicenseSetKey,
+  ILicenseSetSerial,
 };
 
 export class QlikRepoApi {
@@ -172,6 +189,26 @@ export class QlikRepoApi {
   engineGetFilter = Engine.prototype.engineGetFilter;
   engineGetValid = Engine.prototype.engineGetValid;
   engineUpdate = Engine.prototype.engineUpdate;
+
+  licenseGet = License.prototype.licenseGet;
+  licenseAccessTypeInfoGet = License.prototype.licenseAccessTypeInfoGet;
+  licenseAnalyzerAccessTypeGet = License.prototype.licenseAnalyzerAccessTypeGet;
+  licenseAnalyzerAccessTypeRemove =
+    License.prototype.licenseAnalyzerAccessTypeRemove;
+  licenseAuditGet = License.prototype.licenseAuditGet;
+  licenseLoginAccessTypeGet = License.prototype.licenseLoginAccessTypeGet;
+  licenseLoginAccessTypeRemove = License.prototype.licenseLoginAccessTypeRemove;
+  licenseProfessionalAccessTypeGet =
+    License.prototype.licenseProfessionalAccessTypeGet;
+  licenseProfessionalAccessTypeRemove =
+    License.prototype.licenseProfessionalAccessTypeRemove;
+  licenseUserAccessTypeGet = License.prototype.licenseUserAccessTypeGet;
+  licenseUserAccessTypeRemove = License.prototype.licenseUserAccessTypeRemove;
+  licenseSetSerial = License.prototype.licenseSetSerial;
+  licenseSetKey = License.prototype.licenseSetKey;
+  licenseProfessionalAccessGroupCreate =
+    License.prototype.licenseProfessionalAccessGroupCreate;
+  licenseUserAccessGroupCreate = License.prototype.licenseUserAccessGroupCreate;
 
   nodeCount = Node.prototype.nodeCount;
   nodeGet = Node.prototype.nodeGet;
