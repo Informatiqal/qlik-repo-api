@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.8] - 2021-07-XX
+
+### Added
+
+- `licenseAccessTypeInfoGet` method
+- `licenseGet` method
+- `licenseAnalyzerAccessTypeGet` method
+- `licenseAnalyzerAccessTypeRemove` method
+- `licenseProfessionalAccessTypeGet` method
+- `licenseProfessionalAccessTypeRemove` method
+- `licenseUserAccessTypeGet` method
+- `licenseUserAccessTypeRemove` method
+- `licenseLoginAccessTypeGet` method
+- `licenseLoginAccessTypeRemove` method
+- `licenseAuditGet` method
+- `licenseSetSerial` method
+- `licenseSetKey` method
+- `licenseProfessionalAccessGroupCreate` method
+- `licenseUserAccessGroupCreate` method
+
 ## [0.0.7] - 2021-07-27
 
 ### Added

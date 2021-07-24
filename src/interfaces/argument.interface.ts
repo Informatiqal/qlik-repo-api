@@ -1,3 +1,4 @@
+import internal from "stream";
 import {
   TCustomPropObjectTypes,
   TSystemRuleCategory,
@@ -294,4 +295,32 @@ export interface INodeCreate {
   failoverCandidate?: boolean;
   tags?: string[];
   customProperties?: string[];
+}
+
+export interface IAuditParameters {
+  resourceId?: string;
+  resourceType?: string;
+  resourceFilter?: string;
+  userFilter?: string;
+  environmentAttributes?: string;
+  userSkip?: number;
+  userTake?: number;
+  resourceSkip?: number;
+  resourceTake?: number;
+  includeNonGrantingRules?: boolean;
+}
+
+interface ILicense {
+  name: string;
+  organization?: string;
+}
+
+export interface ILicenseSetSerial extends ILicense {
+  serial: string;
+  control: string;
+  lef: string;
+}
+
+export interface ILicenseSetKey extends ILicense {
+  key: string;
 }
