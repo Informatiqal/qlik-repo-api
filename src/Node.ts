@@ -7,6 +7,8 @@ import {
   IHttpReturnRemove,
   IHttpStatus,
   IServerNodeConfiguration,
+  IServerNodeConfigurationCondensed,
+  IEngine,
 } from "./interfaces";
 
 import { INodeUpdate, INodeCreate } from "./interfaces/argument.interface";
@@ -67,14 +69,13 @@ export class Node {
   public async nodeGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<IServerNodeConfiguration[]> {
+  ): Promise<IServerNodeConfiguration[] | IServerNodeConfigurationCondensed[]> {
     let url = "servernodeconfiguration";
     if (id) url += `/${id}`;
 
     return await this.repoClient.Get(url).then((res) => {
-      if (res.data.length > 0) return res.data as IServerNodeConfiguration[];
-
-      return [res.data];
+      if (!id) return res.data as IServerNodeConfigurationCondensed[];
+      return [res.data] as IServerNodeConfiguration[];
     });
   }
 
@@ -138,7 +139,9 @@ export class Node {
   ): Promise<IServerNodeConfiguration> {
     if (!arg.id) throw new Error(`nodeUpdate: "id" parameter is required`);
 
-    let node = await this.nodeGet(arg.id).then((n) => n[0]);
+    let node = await this.nodeGet(arg.id).then(
+      (n) => n[0] as IServerNodeConfiguration
+    );
     if (arg.name) node.name;
     if (arg.nodePurpose) {
       if (arg.nodePurpose == "Production") node.nodePurpose = 0;

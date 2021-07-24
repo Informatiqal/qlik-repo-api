@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.10] - 2021-07-XX
+
+### Added
+
+### Changed
+
+- `xxxGet` if `id` is provided the returned data is `Ixxx[]` if not `IxxxCondensed[]`
+- all `xxxGet` are returning an array
+- for all `xxxGet` `id` is optional
+- uuid checks are removed (including the methods for them)
+
 ## [0.0.9] - 2021-07-24
 
 ### Added

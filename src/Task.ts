@@ -6,6 +6,7 @@ import {
   ITask,
   ITaskExecutionResult,
   ISchemaEvent,
+  ISchemaEventCondensed,
   IHttpReturnRemove,
 } from "./interfaces";
 import {
@@ -20,26 +21,26 @@ import { TRepeatOptions, TDaysOfMonth, TDaysOfWeek } from "./interfaces/ranges";
 export class Task {
   constructor() {}
 
-  public async taskGetAll(this: QlikRepoApi): Promise<any> {
+  public async taskGetAll(this: QlikRepoApi): Promise<ITask[]> {
     return await this.repoClient
       .Get(`task/full`)
-      .then((res) => res.data as any);
+      .then((res) => res.data as ITask[]);
   }
 
-  public async taskReloadGetAll(this: QlikRepoApi): Promise<any> {
+  public async taskReloadGetAll(this: QlikRepoApi): Promise<ITask[]> {
     return await this.taskGetFilter("taskType eq 0");
   }
 
-  public async taskExternalGetAll(this: QlikRepoApi): Promise<any> {
+  public async taskExternalGetAll(this: QlikRepoApi): Promise<ITask[]> {
     return await this.taskGetFilter("taskType eq 2");
   }
 
-  public async taskReloadGet(this: QlikRepoApi, id: string): Promise<ITask> {
+  public async taskReloadGet(this: QlikRepoApi, id: string): Promise<ITask[]> {
     if (!id) throw new Error(`taskReloadGet: "path" parameter is required`);
 
     return await this.repoClient
       .Get(`reloadtask/${id}`)
-      .then((res) => res.data as ITask);
+      .then((res) => [res.data] as ITask[]);
   }
 
   public async taskGetFilter(
@@ -240,13 +241,15 @@ export class Task {
   public async taskScheduleGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<ISchemaEvent> {
+  ): Promise<ISchemaEvent[] | ISchemaEventCondensed[]> {
     let url = "schemaevent";
     if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(url)
-      .then((res) => res.data as ISchemaEvent);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as ISchemaEventCondensed[];
+
+      return [res.data] as ISchemaEvent[];
+    });
   }
 
   public async taskTriggerCreateComposite(

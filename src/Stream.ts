@@ -2,17 +2,29 @@ import { QlikRepoApi } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
-import { IHttpStatus, IStream, IHttpReturnRemove } from "./interfaces";
+import {
+  IHttpStatus,
+  IStream,
+  IHttpReturnRemove,
+  IStreamCondensed,
+} from "./interfaces";
 import { IStreamCreate, IStreamUpdate } from "./interfaces/argument.interface";
 
 export class Stream {
   constructor() {}
 
-  public async streamGet(this: QlikRepoApi, id?: string): Promise<IStream[]> {
+  public async streamGet(
+    this: QlikRepoApi,
+    id?: string
+  ): Promise<IStream[] | IStreamCondensed[]> {
     let url = "stream";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res) => res.data as IStream[]);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IStreamCondensed[];
+
+      return [res.data] as IStream[];
+    });
   }
 
   public async streamGetFilter(
@@ -67,7 +79,7 @@ export class Stream {
   ): Promise<IStream> {
     if (!arg.id) throw new Error(`streamUpdate: "id" parameter is required`);
 
-    let stream = await this.streamGet(arg.id).then((s) => s[0]);
+    let stream = await this.streamGet(arg.id).then((s) => s[0] as IStream);
 
     if (arg.name) stream.name = arg.name;
 

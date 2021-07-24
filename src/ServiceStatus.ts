@@ -1,6 +1,6 @@
 import { QlikRepoApi } from "./main";
 
-import { IServiceStatus } from "./interfaces";
+import { IServiceStatus, IServiceStatusCondensed } from "./interfaces";
 
 export class ServiceStatus {
   constructor() {}
@@ -8,20 +8,19 @@ export class ServiceStatus {
   public async serviceStatusCount(this: QlikRepoApi): Promise<number> {
     return await this.repoClient
       .Get(`ServiceStatus/count`)
-      .then((res: any) => res.data as number);
+      .then((res) => res.data as number);
   }
 
   public async serviceStatusGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<IServiceStatus[]> {
+  ): Promise<IServiceStatus[] | IServiceStatusCondensed[]> {
     let url = "ServiceStatus";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res: any) => {
-      if (res.data.length > 0) return res.data as IServiceStatus[];
-
-      return [res.data];
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IServiceStatusCondensed[];
+      return [res.data] as IServiceStatus[];
     });
   }
 

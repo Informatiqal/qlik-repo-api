@@ -8,18 +8,22 @@ import {
   IHttpReturn,
   IRemoveFilter,
 } from "./interfaces";
-import { modifiedDateTime, isGUIDError } from "./util/generic";
+import { modifiedDateTime } from "./util/generic";
 
 export class Tag {
   constructor() {}
 
-  public async tagGet(this: QlikRepoApi, id: string): Promise<ITag> {
+  public async tagGet(
+    this: QlikRepoApi,
+    id: string
+  ): Promise<ITag[] | ITagCondensed[]> {
     if (!id) throw new Error(`tagGet: "id" parameter is required`);
-    isGUIDError(id);
 
-    return await this.repoClient
-      .Get(`tag/${id}`)
-      .then((res) => res.data as ITag);
+    return await this.repoClient.Get(`tag/${id}`).then((res) => {
+      if (!id) return res.data as ITagCondensed[];
+
+      return [res.data] as ITag[];
+    });
   }
 
   public async tagGetAll(this: QlikRepoApi): Promise<ITag[]> {
@@ -87,10 +91,9 @@ export class Tag {
     name: string
   ): Promise<ITag> {
     if (!id) throw new Error(`tagUpdate: "id" parameter is required`);
-    isGUIDError(id);
     if (!name) throw new Error(`tagUpdate: "name" parameter is required`);
 
-    let tag = await this.tagGet(id);
+    let tag = await this.tagGet(id).then((t) => t[0] as ITag);
     tag.name = name;
     tag.modifiedDate = modifiedDateTime();
 

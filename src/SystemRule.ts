@@ -10,6 +10,8 @@ import {
   IAudit,
   TSystemRuleActions,
   TSystemRuleContext,
+  ISystemRuleCondensed,
+  IStreamCondensed,
 } from "./interfaces";
 import {
   ISystemRuleCreate,
@@ -21,13 +23,18 @@ import {
 export class SystemRule {
   constructor() {}
 
-  public async ruleGet(this: QlikRepoApi, id?: string): Promise<ISystemRule> {
+  public async ruleGet(
+    this: QlikRepoApi,
+    id?: string
+  ): Promise<ISystemRule[] | ISystemRuleCondensed[]> {
     let url = "systemrule";
     if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(url)
-      .then((res) => res.data as ISystemRule);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as ISystemRuleCondensed[];
+
+      return [res.data] as ISystemRule[];
+    });
   }
 
   public async ruleGetAudit(
@@ -144,7 +151,7 @@ export class SystemRule {
   ): Promise<ISystemRule> {
     if (!arg.id) throw new Error(`ruleUpdate: "id" parameter is required`);
 
-    let rule = await this.ruleGet(arg.id);
+    let rule = await this.ruleGet(arg.id).then((s) => s[0] as ISystemRule);
 
     if (arg.name) rule.name = arg.name;
     if (arg.rule) rule.rule = arg.rule;

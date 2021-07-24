@@ -22,13 +22,15 @@ export class CustomProperty {
   public async customPropertyGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<ICustomProperty> {
+  ): Promise<ICustomProperty[] | ICustomPropertyCondensed[]> {
     let url = "custompropertydefinition";
     if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(url)
-      .then((res) => res.data as ICustomProperty);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as ICustomPropertyCondensed[];
+
+      return [res.data] as ICustomProperty[];
+    });
   }
 
   public async customPropertyGetFilter(
@@ -103,7 +105,9 @@ export class CustomProperty {
     if (!arg.name)
       throw new Error(`customPropertyUpdate: "name" parameter is required`);
 
-    let customProperty = await this.customPropertyGet(arg.id);
+    let customProperty = await this.customPropertyGet(arg.id).then(
+      (c) => c[0] as ICustomProperty
+    );
 
     if (arg.name) customProperty.name = arg.name;
     if (arg.description) customProperty.description = arg.description;
