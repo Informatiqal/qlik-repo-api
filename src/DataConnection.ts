@@ -24,7 +24,7 @@ export class DataConnection {
     let url = `dataconnection`;
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res: any) => {
+    return await this.repoClient.Get(url).then((res) => {
       if (!id) return res.data as IDataConnectionCondensed[];
 
       return [res.data] as IDataConnection[];
@@ -118,7 +118,9 @@ export class DataConnection {
     if (!arg.id)
       throw new Error(`dataConnectionUpdate: "id" parameter is required`);
 
-    let dataConnection = await this.dataConnectionGet(arg.id);
+    let dataConnection = await this.dataConnectionGet(arg.id).then(
+      (d) => d[0] as IDataConnection
+    );
 
     let updateCommon = new UpdateCommonProperties(this, dataConnection, arg);
     dataConnection = await updateCommon.updateAll();

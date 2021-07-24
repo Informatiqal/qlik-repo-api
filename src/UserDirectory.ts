@@ -2,6 +2,7 @@ import { QlikRepoApi } from "./main";
 
 import {
   IUserDirectory,
+  IUserDirectoryCondensed,
   IRemoveFilter,
   IHttpReturnRemove,
   IHttpStatus,
@@ -13,20 +14,20 @@ export class UserDirectory {
   public async userDirectoryCount(this: QlikRepoApi): Promise<number> {
     return await this.repoClient
       .Get(`userdirectory/count`)
-      .then((res: any) => res.data as number);
+      .then((res) => res.data as number);
   }
 
   public async userDirectoryGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<IUserDirectory[]> {
+  ): Promise<IUserDirectory[] | IUserDirectoryCondensed[]> {
     let url = "userdirectory";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res: any) => {
-      if (res.data.length > 0) return res.data as IUserDirectory[];
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IUserDirectoryCondensed[];
 
-      return [res.data];
+      return [res.data] as IUserDirectory[];
     });
   }
 

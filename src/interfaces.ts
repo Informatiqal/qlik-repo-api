@@ -55,53 +55,48 @@ export interface IOwner {
   userId: string;
 }
 
-export interface ITag {
-  privileges: [];
+export interface IAppCondensed {
+  id?: string;
+  privileges?: string[];
   name: string;
-  id: string;
-}
-
-export interface IStream {
-  privileges: [];
-  name: string;
-  id: string;
-}
-
-export interface IApp {
-  owner: IOwner;
-  privileges: [];
+  appId: string;
+  published: boolean;
   publishTime: string;
+  stream: IStream;
+  savedInProductVersion: string;
   migrationHash: string;
+  availabilityStatus: {};
+}
+
+export interface IApp extends IAppCondensed {
+  owner: IOwner;
   thumbnail: string;
   schemaPath: string;
   description: string;
-  savedInProductVersion: string;
   sourceAppId: string;
-  published: boolean;
   tags: ITagCondensed[];
   lastReloadTime: string;
   createdDate: string;
   customProperties: ICustomPropertyObject[];
-  stream: IStream;
   fileSize: number;
-  appId: string;
   modifiedDate: string;
-  name: string;
   dynamicColor: string;
-  id: string;
-  availabilityStatus: {};
   targetAppId: string;
 }
 
-export interface IStream {
-  owner: IOwner;
-  privileges: [];
-  createdDate: string;
-  customProperties: ICustomPropertyObject[];
-  schemaPath: string;
-  modifiedDate: string;
-  name: string;
+export interface IStreamCondensed {
   id: string;
+  name: string;
+  privileges: [];
+}
+
+export interface IStream extends IStreamCondensed {
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName?: string;
+  schemaPath: string;
+  customProperties: ICustomPropertyObject[];
+  owner: IOwner;
   tags: ITagCondensed[];
 }
 
@@ -244,11 +239,8 @@ export type TSystemRuleActions =
 export type TSystemRuleCategory = "License" | "Security" | "Sync";
 export type TSystemRuleContext = "hub" | "qmc" | "both" | "BothQlikSenseAndQMC";
 
-export interface ISystemRule {
+export interface ISystemRuleCondensed {
   id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  schemaPath?: string;
   privileges?: string[];
   category: TSystemRuleCategory;
   subcategory?: string;
@@ -259,6 +251,12 @@ export interface ISystemRule {
   actions: number;
   comment?: string;
   disabled?: boolean;
+}
+
+export interface ISystemRule extends ISystemRuleCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
   ruleContext: number;
   seedId?: string;
   version?: number;
@@ -548,22 +546,25 @@ export interface ISchemaEventOperationalCondensed {
   nextExecution?: string;
 }
 
-export interface ISchemaEvent {
+export interface ISchemaEventCondensed {
   id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  schemaPath?: string;
   privileges?: string[];
   name: string;
   enabled?: boolean;
   eventType?: number;
+  operational: ISchemaEventOperationalCondensed;
+}
+
+export interface ISchemaEvent extends ISchemaEventCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  schemaPath?: string;
   timeZone: string;
   startDate: string;
   expirationDate: string;
   schemaFilterDescription: string[];
   incrementalDescription: string;
   incrementalOption: number;
-  operational: ISchemaEventOperationalCondensed;
   externalProgramTask: IExternalProgramTaskCondensed;
   reloadTask: IExternalProgramTaskCondensed;
   userSyncTask: IExternalProgramTaskCondensed;
@@ -623,24 +624,30 @@ export interface IServiceClusterSettings {
   sharedPersistenceProperties: ServiceClusterSettingsSharedPersistenceProperties;
 }
 
-export interface IServiceCluster {
+export interface IServiceClusterCondensed {
   id?: string;
+  privileges?: string[];
+  name: string;
+}
+
+export interface IServiceCluster extends IServiceClusterCondensed {
   createdDate?: string;
   modifiedDate?: string;
   modifiedByUserName?: string;
   schemaPath?: string;
-  privileges?: string[];
-  name: string;
   settings: IServiceClusterSettings;
 }
 
-export interface IServiceStatus {
+export interface IServiceStatusCondensed {
   id?: string;
+  privileges?: string[];
+}
+
+export interface IServiceStatus extends IServiceStatusCondensed {
   createdDate?: string;
   modifiedDate?: string;
   modifiedByUserName?: string;
   schemaPath?: string;
-  privileges?: string[];
   serviceType: number;
   serviceState: number;
   timestamp?: string;
@@ -662,18 +669,21 @@ export interface IUserDirectorySettings {
   secretValue?: string;
 }
 
-export interface IUserDirectory {
+export interface IUserDirectoryCondensed {
   id?: string;
+  privileges?: string[];
+  name: string;
+  type: string;
+}
+
+export interface IUserDirectory extends IUserDirectoryCondensed {
   createdDate?: string;
   modifiedDate?: string;
   modifiedByUserName?: string;
   schemaPath?: string;
-  privileges?: string[];
-  name: string;
   userDirectoryName?: string;
   configured?: boolean;
   operational?: boolean;
-  type: string;
   syncOnlyLoggedInUsers: boolean;
   syncStatus: boolean;
   syncLastStarted?: string;

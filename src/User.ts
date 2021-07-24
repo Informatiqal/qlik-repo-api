@@ -15,11 +15,18 @@ import { IUserUpdate, IUserCreate } from "./interfaces/argument.interface";
 export class User {
   constructor() {}
 
-  public async userGet(this: QlikRepoApi, id?: string): Promise<IUser> {
+  public async userGet(
+    this: QlikRepoApi,
+    id?: string
+  ): Promise<IUser[] | IUserCondensed[]> {
     let url = "user";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res) => res.data as IUser);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IUserCondensed[];
+
+      return [res.data] as IUser[];
+    });
   }
 
   public async userGetFilter(
@@ -96,7 +103,7 @@ export class User {
   public async userUpdate(this: QlikRepoApi, arg: IUserUpdate): Promise<IUser> {
     if (!arg.id) throw new Error(`userUpdate: "id" parameter is required`);
 
-    let user = await this.userGet(arg.id);
+    let user = await this.userGet(arg.id).then((u) => u[0] as IUser);
 
     if (arg.roles) user.roles = arg.roles;
     if (arg.name) user.name = arg.name;

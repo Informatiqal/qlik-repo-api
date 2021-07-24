@@ -6,6 +6,7 @@ import {
   IHttpReturn,
   IRemoveFilter,
   IServiceCluster,
+  IServiceClusterCondensed,
 } from "./interfaces";
 
 import { IServiceClusterUpdate } from "./interfaces/argument.interface";
@@ -16,20 +17,19 @@ export class ServiceCluster {
   public async serviceClusterCount(this: QlikRepoApi): Promise<number> {
     return await this.repoClient
       .Get(`ServiceCluster/count`)
-      .then((res: any) => res.data as number);
+      .then((res) => res.data as number);
   }
 
   public async serviceClusterGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<IServiceCluster[]> {
+  ): Promise<IServiceCluster[] | IServiceClusterCondensed[]> {
     let url = "ServiceCluster";
     if (id) url += `/${id}`;
 
-    return await this.repoClient.Get(url).then((res: any) => {
-      if (res.data.length > 0) return res.data as IServiceCluster[];
-
-      return [res.data];
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IServiceClusterCondensed[];
+      return [res.data] as IServiceCluster[];
     });
   }
 
@@ -106,7 +106,9 @@ export class ServiceCluster {
     if (arg && !arg.id)
       throw new Error(`serviceClusterUpdate: "id" parameter is required`);
 
-    let serviceCluster = await this.serviceClusterGet(arg.id).then((s) => s[0]);
+    let serviceCluster = await this.serviceClusterGet(arg.id).then(
+      (s) => s[0] as IServiceCluster
+    );
 
     if (arg.name) serviceCluster.name = arg.name;
     if (arg.persistenceMode)

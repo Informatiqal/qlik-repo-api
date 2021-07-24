@@ -48,13 +48,15 @@ export class ContentLibrary {
   public async contentLibraryGet(
     this: QlikRepoApi,
     id?: string
-  ): Promise<IContentLibrary> {
+  ): Promise<IContentLibrary[] | IContentLibraryCondensed[]> {
     let url = "contentlibrary";
     if (id) url += `/${id}`;
 
-    return await this.repoClient
-      .Get(url)
-      .then((res) => res.data as IContentLibrary);
+    return await this.repoClient.Get(url).then((res) => {
+      if (!id) return res.data as IContentLibraryCondensed[];
+
+      return [res.data] as IContentLibrary[];
+    });
   }
 
   public async contentLibraryGetFilter(
@@ -223,7 +225,9 @@ export class ContentLibrary {
     if (!arg.id)
       throw new Error(`contentLibraryUpdate: "id" parameter is required`);
 
-    let contentLibrary = await this.contentLibraryGet(arg.id);
+    let contentLibrary = await this.contentLibraryGet(arg.id).then(
+      (c) => c[0] as IContentLibrary
+    );
 
     let updateCommon = new UpdateCommonProperties(this, contentLibrary, arg);
     contentLibrary = await updateCommon.updateAll();
