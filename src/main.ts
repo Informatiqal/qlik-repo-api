@@ -9,6 +9,7 @@ import { Extension } from "./Extension";
 import { Engine } from "./Engine";
 import { License } from "./License";
 import { Node } from "./Node";
+import { Privileges } from "./Privileges";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
@@ -32,8 +33,9 @@ import {
   IDataConnection,
   IDataConnectionCondensed,
   IEngine,
-  IServerNodeConfiguration,
   IExtension,
+  IObject,
+  IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
@@ -62,8 +64,9 @@ export {
   IDataConnection,
   IDataConnectionCondensed,
   IEngine,
-  IServerNodeConfiguration,
   IExtension,
+  IObject,
+  IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
@@ -247,6 +250,9 @@ export class QlikRepoApi {
   nodeUpdate = Node.prototype.nodeUpdate;
   nodeCreate = Node.prototype.nodeCreate;
   nodeRegister = Node.prototype.nodeRegister;
+
+  privilegesGet = Privileges.prototype.privilegesGet;
+  privilegesAssert = Privileges.prototype.privilegesAssert;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;
