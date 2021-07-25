@@ -802,3 +802,19 @@ export interface IAppObject extends IAppObjectCondensed {
   draftObject: string;
   appObjectBlobId: string;
 }
+
+export type IObject =
+  | IApp
+  | IAppObject
+  | IContentLibrary
+  | ICustomProperty
+  | IDataConnection
+  | IEngine
+  | IExtension
+  | IStream
+  | ISystemRule
+  | ITag
+  | ITask
+  | IUser
+  | IUserDirectory
+  | any;

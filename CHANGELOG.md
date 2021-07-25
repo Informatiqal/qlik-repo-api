@@ -2,7 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.11] - 2021-07-XX
+## [0.0.12] - 2021-07-25
+
+### Added
+
+- `privilegesGet` method
+- `privilegesAssert` method
+
+## [0.0.11] - 2021-07-24
+
+### Added
 
 - `appObjectGet` method
 - `appObjectGetFilter` method
@@ -10,8 +19,6 @@ All notable changes to this project will be documented in this file.
 - `appObjectUnPublish` method
 - `appObjectRemove` method
 - `appObjectUpdate` method
-
-### Added
 
 ## [0.0.10] - 2021-07-24
 
@@ -53,7 +60,7 @@ All notable changes to this project will be documented in this file.
 - `licenseProfessionalAccessGroupCreate` method
 - `licenseUserAccessGroupCreate` method
 
-## [0.0.7] - 2021-07-27
+## [0.0.7] - 2021-07-23
 
 ### Added
 
