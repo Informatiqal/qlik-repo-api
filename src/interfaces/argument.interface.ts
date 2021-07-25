@@ -353,3 +353,11 @@ export interface IAppObjectUpdate {
   owner?: string;
   approved?: boolean;
 }
+
+export interface ICertificateExportParameters {
+  machineNames: string[];
+  certificatePassword?: string;
+  includeSecretsKey?: boolean;
+  exportFormat?: "Windows" | "Pem";
+  includeCa?: boolean;
+}
