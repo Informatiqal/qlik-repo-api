@@ -2,6 +2,7 @@ import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { About } from "./About";
 import { App } from "./App";
 import { AppObject } from "./AppObject";
+import { Certificate } from "./Certificate";
 import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
 import { DataConnection } from "./DataConnection";
@@ -87,6 +88,7 @@ import {
   IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
+  ICertificateExportParameters,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -115,6 +117,7 @@ export {
   IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
+  ICertificateExportParameters,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -183,6 +186,10 @@ export class QlikRepoApi {
   appObjectUnPublish = AppObject.prototype.appObjectUnPublish;
   appObjectRemove = AppObject.prototype.appObjectRemove;
   appObjectUpdate = AppObject.prototype.appObjectUpdate;
+
+  certificateDistributionPathGet =
+    Certificate.prototype.certificateDistributionPathGet;
+  certificateExport = Certificate.prototype.certificateExport;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
   contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;

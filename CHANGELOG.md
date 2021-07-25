@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.13] - 2021-07-25
+
+### Added
+
+- `certificateExport` method
+- `certificateDistributionPathGet` method
+
 ## [0.0.12] - 2021-07-25
 
 ### Added
