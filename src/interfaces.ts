@@ -821,7 +821,7 @@ export type IObject =
 
 export interface IVirtualProxyConfigAttributeMapItem {
   id?: string;
-  privileges: string[];
+  privileges?: string[];
   createdDate?: string;
   modifiedDate?: string;
   modifiedByUserName?: string;
@@ -854,7 +854,7 @@ export interface IVirtualProxyConfigCondensed {
   sessionModuleBaseUri?: string;
   loadBalancingModuleBaseUri?: string;
   useStickyLoadBalancing?: boolean;
-  loadBalancingServerNodes: IServerNodeConfigurationCondensed;
+  loadBalancingServerNodes: IServerNodeConfigurationCondensed[];
   authenticationMethod?: number;
   headerAuthenticationMode?: number;
   headerAuthenticationHeaderName?: string;

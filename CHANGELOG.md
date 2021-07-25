@@ -8,10 +8,12 @@ All notable changes to this project will be documented in this file.
 
 - `proxyGet` method
 - `proxyGetFilter` method
+- `proxyMetadataExport` method
+- `proxyAdd` method
 - `virtualProxyGet` method
 - `virtualProxyGetFilter` method
 - `virtualProxyRemove` method
-- `proxyMetadataExport` method
+- `virtualProxyUpdate` method
 
 ## [0.0.13] - 2021-07-25
 

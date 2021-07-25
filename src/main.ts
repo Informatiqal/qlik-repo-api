@@ -121,6 +121,7 @@ import {
   INodeCreate,
   ILicenseSetKey,
   ILicenseSetSerial,
+  IVirtualProxyUpdate,
 } from "./interfaces/argument.interface";
 export {
   IAppObjectUpdate,
@@ -150,6 +151,7 @@ export {
   INodeCreate,
   ILicenseSetKey,
   ILicenseSetSerial,
+  IVirtualProxyUpdate,
 };
 
 export class QlikRepoApi {
@@ -270,12 +272,14 @@ export class QlikRepoApi {
   privilegesGet = Privileges.prototype.privilegesGet;
   privilegesAssert = Privileges.prototype.privilegesAssert;
 
+  proxyAdd = Proxy.prototype.proxyAdd;
   proxyGet = Proxy.prototype.proxyGet;
   proxyGetFilter = Proxy.prototype.proxyGetFilter;
-  virtualProxyGet = Proxy.prototype.virtualProxyGet;
   proxyMetadataExport = Proxy.prototype.proxyMetadataExport;
+  virtualProxyGet = Proxy.prototype.virtualProxyGet;
   virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
   virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
+  virtualProxyUpdate = Proxy.prototype.virtualProxyUpdate;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;

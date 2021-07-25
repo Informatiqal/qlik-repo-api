@@ -361,3 +361,40 @@ export interface ICertificateExportParameters {
   exportFormat?: "Windows" | "Pem";
   includeCa?: boolean;
 }
+
+export interface IVirtualProxyUpdate {
+  id: string;
+  prefix?: string;
+  description?: string;
+  sessionCookieHeaderName?: string;
+  authenticationModuleRedirectUri?: string;
+  windowsAuthenticationEnabledDevicePattern?: string;
+  loadBalancingServerNodes?: string[];
+  websocketCrossOriginWhiteList?: string[];
+  additionalResponseHeaders?: string;
+  anonymousAccessMode?: number;
+  magicLinkHostUri?: string;
+  magicLinkFriendlyName?: string;
+  authenticationMethod?:
+    | "Ticket"
+    | "HeaderStaticUserDirectory"
+    | "HeaderDynamicUserDirectory"
+    | "static"
+    | "dynamic"
+    | "SAML"
+    | "JWT";
+  samlMetadataIdP?: string;
+  samlHostUri?: string;
+  samlEntityId?: string;
+  samlAttributeUserId?: string;
+  samlAttributeUserDirectory?: string;
+  samlAttributeMap?: string[];
+  samlSlo?: boolean;
+  jwtPublicKeyCertificate?: string;
+  jwtAttributeUserId?: string;
+  jwtAttributeUserDirectory?: string;
+  jwtAttributeMap?: string[];
+  sessionInactivityTimeout?: number;
+  tags?: string[];
+  customProperties?: string[];
+}

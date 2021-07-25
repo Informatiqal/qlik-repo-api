@@ -44,7 +44,7 @@ export class Tag {
   }
 
   public async tagCreate(this: QlikRepoApi, name: string): Promise<ITag> {
-    if (!name) throw new Error(`"Name" is required`);
+    if (!name) throw new Error(`tagCreate: "name" is required`);
 
     return await this.repoClient
       .Post(`tag`, { name })
