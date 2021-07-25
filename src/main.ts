@@ -11,6 +11,7 @@ import { Engine } from "./Engine";
 import { License } from "./License";
 import { Node } from "./Node";
 import { Privileges } from "./Privileges";
+import { Proxy } from "./Proxy";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
@@ -36,6 +37,8 @@ import {
   IEngine,
   IExtension,
   IObject,
+  IProxyService,
+  IProxyServiceCondensed,
   IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
@@ -51,6 +54,8 @@ import {
   ITaskExecutionResult,
   IUser,
   IUserDirectory,
+  IVirtualProxyConfig,
+  IVirtualProxyConfigCondensed,
 } from "./interfaces";
 export {
   IAbout,
@@ -67,6 +72,8 @@ export {
   IEngine,
   IExtension,
   IObject,
+  IProxyService,
+  IProxyServiceCondensed,
   IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
@@ -82,6 +89,8 @@ export {
   ITaskExecutionResult,
   IUser,
   IUserDirectory,
+  IVirtualProxyConfig,
+  IVirtualProxyConfigCondensed,
 };
 
 import {
@@ -260,6 +269,13 @@ export class QlikRepoApi {
 
   privilegesGet = Privileges.prototype.privilegesGet;
   privilegesAssert = Privileges.prototype.privilegesAssert;
+
+  proxyGet = Proxy.prototype.proxyGet;
+  proxyGetFilter = Proxy.prototype.proxyGetFilter;
+  virtualProxyGet = Proxy.prototype.virtualProxyGet;
+  proxyMetadataExport = Proxy.prototype.proxyMetadataExport;
+  virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
+  virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;

@@ -25,11 +25,14 @@
         "keepdata",
         "ldap",
         "loadbalancing",
+        "oidc",
         "openapi",
         "prestart",
+        "proxyservice",
         "qrac",
         "reloadtask",
         "reloadtaskid",
+        "samlmetadata",
         "schemaevent",
         "scriptlog",
         "scriptlogfile",
@@ -42,10 +45,12 @@
         "temporaryfilepath",
         "tonode",
         "typedoc",
+        "unencrypted",
         "unpublish",
         "uploadfile",
         "userdirectory",
         "validengines",
+        "virtualproxyconfig",
         "yxxx"
     ]
 }

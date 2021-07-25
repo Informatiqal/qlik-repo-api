@@ -818,3 +818,154 @@ export type IObject =
   | IUser
   | IUserDirectory
   | any;
+
+export interface IVirtualProxyConfigAttributeMapItem {
+  id?: string;
+  privileges: string[];
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  senseAttribute: string;
+  isMandatory: boolean;
+}
+
+export interface IVirtualProxyConfigSamlAttributeMapItem
+  extends IVirtualProxyConfigAttributeMapItem {
+  samlAttribute: string;
+}
+
+export interface IVirtualProxyConfigJwtAttributeMapItem
+  extends IVirtualProxyConfigAttributeMapItem {
+  jwtAttribute: string;
+}
+
+export interface IVirtualProxyConfigOidcAttributeMapItem
+  extends IVirtualProxyConfigAttributeMapItem {
+  oidcAttribute: string;
+}
+
+export interface IVirtualProxyConfigCondensed {
+  id?: string;
+  privileges?: string[];
+  prefix?: string;
+  description?: string;
+  authenticationModuleRedirectUri?: string;
+  sessionModuleBaseUri?: string;
+  loadBalancingModuleBaseUri?: string;
+  useStickyLoadBalancing?: boolean;
+  loadBalancingServerNodes: IServerNodeConfigurationCondensed;
+  authenticationMethod?: number;
+  headerAuthenticationMode?: number;
+  headerAuthenticationHeaderName?: string;
+  headerAuthenticationStaticUserDirectory?: string;
+  headerAuthenticationDynamicUserDirectory?: string;
+  anonymousAccessMode?: number;
+  windowsAuthenticationEnabledDevicePattern?: string;
+  sessionCookieHeaderName: string;
+  sessionCookieDomain?: string;
+  hasSecureAttributeHttps?: boolean;
+  sameSiteAttributeHttps?: number;
+  hasSecureAttributeHttp?: boolean;
+  sameSiteAttributeHttp?: number;
+  additionalResponseHeaders?: string;
+  sessionInactivityTimeout?: number;
+  extendedSecurityEnvironment?: boolean;
+  websocketCrossOriginWhiteList?: string[];
+  defaultVirtualProxy: boolean;
+  tags?: ITagCondensed[];
+  samlMetadataIdP?: string;
+  samlHostUri?: string;
+  samlEntityId?: string;
+  samlAttributeUserId?: string;
+  samlAttributeUserDirectory?: string;
+  samlAttributeSigningAlgorithm?: number;
+  samlAttributeMap?: IVirtualProxyConfigSamlAttributeMapItem[];
+  jwtAttributeUserId?: string;
+  jwtAttributeUserDirectory?: string;
+  jwtAudience?: string;
+  jwtPublicKeyCertificate?: string;
+  jwtAttributeMap?: IVirtualProxyConfigJwtAttributeMapItem[];
+  magicLinkHostUri?: string;
+  magicLinkFriendlyName?: string;
+  samlSlo?: boolean;
+  oidcConfigurationEndpointUri?: string;
+  oidcClientId?: string;
+  oidcClientSecret?: string;
+  oidcRealm?: string;
+  oidcAttributeSub?: string;
+  oidcAttributeName?: string;
+  oidcAttributeGroups?: string;
+  oidcAttributeEmail?: string;
+  oidcAttributeClientId?: string;
+  oidcAttributePicture?: string;
+  oidcScope?: string;
+  oidcAttributeMap?: IVirtualProxyConfigOidcAttributeMapItem[];
+}
+
+export interface IVirtualProxyConfig extends IVirtualProxyConfigCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+}
+
+export interface IProxyServiceSettingsLogVerbosity {
+  id?: string;
+  privileges: string[];
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  logVerbosityAuditActivity?: number;
+  logVerbosityAuditSecurity?: number;
+  logVerbosityService?: number;
+  logVerbosityAudit?: number;
+  logVerbosityPerformance?: number;
+  logVerbositySecurity?: number;
+  logVerbositySystem?: number;
+}
+
+export interface IProxyServiceSettings {
+  id?: string;
+  privileges: string[];
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  listenPort: number;
+  allowHttp?: boolean;
+  unencryptedListenPort: number;
+  authenticationListenPort: number;
+  kerberosAuthentication?: boolean;
+  unencryptedAuthenticationListenPort: number;
+  sslBrowserCertificateThumbprint?: string;
+  keepAliveTimeoutSeconds?: number;
+  maxHeaderSizeBytes?: number;
+  maxHeaderLines?: number;
+  logVerbosity: IProxyServiceSettingsLogVerbosity;
+  useWsTrace?: boolean;
+  performanceLoggingInterval?: number;
+  restListenPort: number;
+  virtualProxies?: IVirtualProxyConfigCondensed[];
+  formAuthenticationPageTemplate?: string;
+  loggedOutPageTemplate?: string;
+  errorPageTemplate?: string;
+}
+
+export interface IProxyServiceCondensed {
+  id?: string;
+  privileges: string[];
+}
+
+export interface IProxyService extends IProxyServiceCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties?: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags?: ITagCondensed[];
+  serverNodeConfiguration: IServerNodeConfiguration;
+  settings: IProxyServiceSettings;
+}
