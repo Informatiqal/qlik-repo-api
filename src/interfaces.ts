@@ -1004,3 +1004,35 @@ export interface ISchedulerService extends ISchedulerServiceCondensed {
   serverNodeConfiguration: IServerNodeConfigurationCondensed;
   settings: ISchedulerServiceSettings;
 }
+
+export interface ISharedContentMetaData {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  key?: string;
+  value?: string;
+}
+
+export interface ISharedContentCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  type: string;
+  description?: string;
+  uri?: string;
+  metaData?: ISharedContentMetaData[];
+}
+
+export interface ISharedContent extends ISharedContentCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties?: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags?: ITagCondensed[];
+  owner: IOwner;
+  whiteList: IFileExtensionWhiteListCondensed;
+  references?: IStaticContentReferenceCondensed[];
+}

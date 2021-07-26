@@ -407,3 +407,22 @@ export interface ISchedulerServiceUpdate {
   tags?: string[];
   customProperties?: string[];
 }
+
+export interface ISharedContentUpdate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+  name?: string;
+  type?: string;
+  description?: string;
+}
+
+export interface ISharedContentCreate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  name?: string;
+  type?: string;
+  description?: string;
+}

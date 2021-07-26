@@ -12,8 +12,9 @@ import { License } from "./License";
 import { Node } from "./Node";
 import { Privileges } from "./Privileges";
 import { Proxy } from "./Proxy";
-import { Stream } from "./Stream";
+import { SharedContent } from "./SharedContent";
 import { Scheduler } from "./Scheduler";
+import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
 import { ServiceStatus } from "./ServiceStatus";
@@ -47,6 +48,8 @@ import {
   ILicense,
   ILicenseAccessGroup,
   ILicenseAccessTypeCondensed,
+  ISharedContent,
+  ISharedContentCondensed,
   ISchedulerService,
   ISchedulerServiceCondensed,
   IServiceCluster,
@@ -77,6 +80,8 @@ export {
   IObject,
   IProxyService,
   IProxyServiceCondensed,
+  ISharedContent,
+  ISharedContentCondensed,
   IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
@@ -128,6 +133,8 @@ import {
   ILicenseSetKey,
   ILicenseSetSerial,
   IVirtualProxyUpdate,
+  ISharedContentUpdate,
+  ISharedContentCreate,
 } from "./interfaces/argument.interface";
 export {
   IAppObjectUpdate,
@@ -159,6 +166,8 @@ export {
   ILicenseSetKey,
   ILicenseSetSerial,
   IVirtualProxyUpdate,
+  ISharedContentUpdate,
+  ISharedContentCreate,
 };
 
 export class QlikRepoApi {
@@ -287,6 +296,14 @@ export class QlikRepoApi {
   virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
   virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
   virtualProxyUpdate = Proxy.prototype.virtualProxyUpdate;
+
+  sharedContentGet = SharedContent.prototype.sharedContentGet;
+  sharedContentGetFilter = SharedContent.prototype.sharedContentGetFilter;
+  sharedContentDeleteFile = SharedContent.prototype.sharedContentDeleteFile;
+  sharedContentRemove = SharedContent.prototype.sharedContentRemove;
+  sharedContentUpdate = SharedContent.prototype.sharedContentUpdate;
+  sharedContentUploadFile = SharedContent.prototype.sharedContentUploadFile;
+  sharedContentCreate = SharedContent.prototype.sharedContentCreate;
 
   schedulerGet = Scheduler.prototype.schedulerGet;
   schedulerGetFilter = Scheduler.prototype.schedulerGetFilter;
