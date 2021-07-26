@@ -969,3 +969,38 @@ export interface IProxyService extends IProxyServiceCondensed {
   serverNodeConfiguration: IServerNodeConfiguration;
   settings: IProxyServiceSettings;
 }
+
+export interface ISchedulerServiceSettingsLogVerbosity
+  extends IProxyServiceSettingsLogVerbosity {
+  logVerbosityApplication?: number;
+  logVerbosityTaskExecution?: number;
+}
+
+export interface ISchedulerServiceSettings {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  schedulerServiceType?: number;
+  maxConcurrentEngines?: number;
+  engineTimeout?: number;
+  logVerbosity;
+  SchedulerServiceSettingsLogVerbosity;
+}
+
+export interface ISchedulerServiceCondensed {
+  id?: string;
+  privileges?: string[];
+}
+
+export interface ISchedulerService extends ISchedulerServiceCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties?: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags?: ITagCondensed[];
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
+  settings: ISchedulerServiceSettings;
+}

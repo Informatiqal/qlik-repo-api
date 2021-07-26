@@ -33,6 +33,7 @@
         "reloadtask",
         "reloadtaskid",
         "samlmetadata",
+        "schedulerservice",
         "schemaevent",
         "scriptlog",
         "scriptlogfile",

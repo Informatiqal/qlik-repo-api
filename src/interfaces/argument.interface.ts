@@ -398,3 +398,12 @@ export interface IVirtualProxyUpdate {
   tags?: string[];
   customProperties?: string[];
 }
+
+export interface ISchedulerServiceUpdate {
+  id: string;
+  schedulerServiceType?: "Master" | "Slave" | "MasterAndSlave";
+  maxConcurrentEngines?: number;
+  engineTimeout?: number;
+  tags?: string[];
+  customProperties?: string[];
+}

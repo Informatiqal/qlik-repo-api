@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.14] - 2021-07-XX
+## [0.0.15] - 2021-07-XX
 
 ### Added
 
@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 - `virtualProxyGetFilter` method
 - `virtualProxyRemove` method
 - `virtualProxyUpdate` method
+- `schedulerGet` method
+- `schedulerGetFilter` method
+- `schedulerUpdate` method
 
 ## [0.0.13] - 2021-07-25
 
