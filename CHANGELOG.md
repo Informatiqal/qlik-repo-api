@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.17] - 2021-07-26
+
+### Added
+
+- `proxyCreate` method
+- `proxyUpdate` method
+
 ## [0.0.16] - 2021-07-26
 
 ### Added

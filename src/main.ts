@@ -135,6 +135,7 @@ import {
   IVirtualProxyUpdate,
   ISharedContentUpdate,
   ISharedContentCreate,
+  IProxyCreate,
 } from "./interfaces/argument.interface";
 export {
   IAppObjectUpdate,
@@ -168,6 +169,7 @@ export {
   IVirtualProxyUpdate,
   ISharedContentUpdate,
   ISharedContentCreate,
+  IProxyCreate,
 };
 
 export class QlikRepoApi {
@@ -289,9 +291,11 @@ export class QlikRepoApi {
   privilegesAssert = Privileges.prototype.privilegesAssert;
 
   proxyAdd = Proxy.prototype.proxyAdd;
+  proxyCreate = Proxy.prototype.proxyCreate;
   proxyGet = Proxy.prototype.proxyGet;
   proxyGetFilter = Proxy.prototype.proxyGetFilter;
   proxyMetadataExport = Proxy.prototype.proxyMetadataExport;
+  proxyUpdate = Proxy.prototype.proxyUpdate;
   virtualProxyGet = Proxy.prototype.virtualProxyGet;
   virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
   virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
