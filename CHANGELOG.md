@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.17] - 2021-07-26
+
+### Added
+
+- `proxyCreate` method
+- `proxyUpdate` method
+
+## [0.0.16] - 2021-07-26
+
+### Added
+
+- `sharedContentGet` method
+- `sharedContentGetFilter` method
+- `sharedContentRemove` method
+- `sharedContentUploadFile` method
+- `sharedContentDeleteFile` method
+- `sharedContentUpdate` method
+- `sharedContentCreate` method
+
+## [0.0.15] - 2021-07-26
+
+### Added
+
+- `proxyGet` method
+- `proxyGetFilter` method
+- `proxyMetadataExport` method
+- `proxyAdd` method
+- `virtualProxyGet` method
+- `virtualProxyGetFilter` method
+- `virtualProxyRemove` method
+- `virtualProxyUpdate` method
+- `schedulerGet` method
+- `schedulerGetFilter` method
+- `schedulerUpdate` method
+
 ## [0.0.13] - 2021-07-25
 
 ### Added

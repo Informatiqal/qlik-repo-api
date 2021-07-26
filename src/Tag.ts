@@ -15,7 +15,7 @@ export class Tag {
 
   public async tagGet(
     this: QlikRepoApi,
-    id: string
+    id?: string
   ): Promise<ITag[] | ITagCondensed[]> {
     let url = "tag";
     if (id) url += `/${id}`;
@@ -40,11 +40,11 @@ export class Tag {
 
     return await this.repoClient
       .Get(`tag/full?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as ITag[]);
+      .then((res) => res.data as ITagCondensed[]);
   }
 
   public async tagCreate(this: QlikRepoApi, name: string): Promise<ITag> {
-    if (!name) throw new Error(`"Name" is required`);
+    if (!name) throw new Error(`tagCreate: "name" is required`);
 
     return await this.repoClient
       .Post(`tag`, { name })

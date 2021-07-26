@@ -361,3 +361,117 @@ export interface ICertificateExportParameters {
   exportFormat?: "Windows" | "Pem";
   includeCa?: boolean;
 }
+
+export interface IVirtualProxyUpdate {
+  id: string;
+  prefix?: string;
+  description?: string;
+  sessionCookieHeaderName?: string;
+  authenticationModuleRedirectUri?: string;
+  windowsAuthenticationEnabledDevicePattern?: string;
+  loadBalancingServerNodes?: string[];
+  websocketCrossOriginWhiteList?: string[];
+  additionalResponseHeaders?: string;
+  anonymousAccessMode?: number;
+  magicLinkHostUri?: string;
+  magicLinkFriendlyName?: string;
+  authenticationMethod?:
+    | "Ticket"
+    | "HeaderStaticUserDirectory"
+    | "HeaderDynamicUserDirectory"
+    | "static"
+    | "dynamic"
+    | "SAML"
+    | "JWT";
+  samlMetadataIdP?: string;
+  samlHostUri?: string;
+  samlEntityId?: string;
+  samlAttributeUserId?: string;
+  samlAttributeUserDirectory?: string;
+  samlAttributeMap?: string[];
+  samlSlo?: boolean;
+  jwtPublicKeyCertificate?: string;
+  jwtAttributeUserId?: string;
+  jwtAttributeUserDirectory?: string;
+  jwtAttributeMap?: string[];
+  sessionInactivityTimeout?: number;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface ISchedulerServiceUpdate {
+  id: string;
+  schedulerServiceType?: "Master" | "Slave" | "MasterAndSlave";
+  maxConcurrentEngines?: number;
+  engineTimeout?: number;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface ISharedContentUpdate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+  name?: string;
+  type?: string;
+  description?: string;
+}
+
+export interface ISharedContentCreate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  name?: string;
+  type?: string;
+  description?: string;
+}
+
+export interface IProxyCreate {
+  prefix?: string;
+  description: string;
+  sessionCookieHeaderName: string;
+  authenticationModuleRedirectUri?: string;
+  loadBalancingServerNodes?: string[];
+  websocketCrossOriginWhiteList?: string;
+  additionalResponseHeaders?: string;
+  authenticationMethod?:
+    | "Ticket"
+    | "HeaderStaticUserDirectory"
+    | "HeaderDynamicUserDirectory"
+    | "static"
+    | "dynamic"
+    | "SAML"
+    | "JWT";
+  samlMetadataIdP?: string;
+  samlHostUri?: string;
+  samlEntityId?: string;
+  samlAttributeUserId?: string;
+  samlAttributeUserDirectory?: string;
+  samlAttributeMap?: string[];
+  samlSlo?: boolean;
+  // samlSigningAlgorithm?: "sha1" | "sha256",
+  jwtPublicKeyCertificate?: string;
+  jwtAttributeUserId?: string;
+  jwtAttributeUserDirectory?: string;
+  jwtAttributeMap?: string[];
+  sessionInactivityTimeout?: number;
+}
+
+export interface IProxyUpdate {
+  id: string;
+  listenPort?: number;
+  allowHttp?: boolean;
+  unencryptedListenPort?: number;
+  authenticationListenPort?: number;
+  kerberosAuthentication?: boolean;
+  unencryptedAuthenticationListenPort?: number;
+  sslBrowserCertificateThumbprint?: string;
+  keepAliveTimeoutSeconds?: number;
+  maxHeaderSizeBytes?: number;
+  maxHeaderLines?: number;
+  restListenPort?: number;
+  customProperties?: string[];
+  tags?: string[];
+  virtualProxies?: string[];
+}
