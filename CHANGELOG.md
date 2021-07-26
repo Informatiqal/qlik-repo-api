@@ -2,7 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.15] - 2021-07-XX
+## [0.0.16] - 2021-07-26
+
+### Added
+
+- `sharedContentGet` method
+- `sharedContentGetFilter` method
+- `sharedContentRemove` method
+- `sharedContentUploadFile` method
+- `sharedContentDeleteFile` method
+- `sharedContentUpdate` method
+- `sharedContentCreate` method
+
+## [0.0.15] - 2021-07-26
 
 ### Added
 
