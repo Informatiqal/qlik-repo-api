@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IServiceStatus | Qlik Repo API</title>
+	<title>ISchedulerService | Qlik Repo API</title>
 	<meta name="description" content="Documentation for Qlik Repo API">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">Qlik Repo API</a>
 				</li>
 				<li>
-					<a href="IServiceStatus.html">IServiceStatus</a>
+					<a href="ISchedulerService.html">ISchedulerService</a>
 				</li>
 			</ul>
-			<h1>Interface IServiceStatus</h1>
+			<h1>Interface ISchedulerService</h1>
 		</div>
 	</div>
 </header>
@@ -69,10 +69,10 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">IServiceStatusCondensed</span>
+						<a href="ISchedulerServiceCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ISchedulerServiceCondensed</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">IServiceStatus</span>
+								<span class="target">ISchedulerService</span>
 							</li>
 						</ul>
 					</li>
@@ -85,16 +85,16 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#createdDate" class="tsd-kind-icon">created<wbr>Date</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="IServiceStatus.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#modifiedByUserName" class="tsd-kind-icon">modified<wbr>ByUser<wbr>Name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#modifiedDate" class="tsd-kind-icon">modified<wbr>Date</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="IServiceStatus.html#privileges" class="tsd-kind-icon">privileges</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#schemaPath" class="tsd-kind-icon">schema<wbr>Path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#serverNodeConfiguration" class="tsd-kind-icon">server<wbr>Node<wbr>Configuration</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#serviceState" class="tsd-kind-icon">service<wbr>State</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#serviceType" class="tsd-kind-icon">service<wbr>Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IServiceStatus.html#timestamp" class="tsd-kind-icon">timestamp</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#createdDate" class="tsd-kind-icon">created<wbr>Date</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ISchedulerService.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#modifiedByUserName" class="tsd-kind-icon">modified<wbr>ByUser<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#modifiedDate" class="tsd-kind-icon">modified<wbr>Date</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="ISchedulerService.html#privileges" class="tsd-kind-icon">privileges</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#schemaPath" class="tsd-kind-icon">schema<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#serverNodeConfiguration" class="tsd-kind-icon">server<wbr>Node<wbr>Configuration</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#settings" class="tsd-kind-icon">settings</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISchedulerService.html#tags" class="tsd-kind-icon">tags</a></li>
 							</ul>
 						</section>
 					</div>
@@ -108,7 +108,17 @@
 					<div class="tsd-signature tsd-kind-icon">created<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L647">interfaces.ts:647</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L998">interfaces.ts:998</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="customProperties" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> custom<wbr>Properties</h3>
+					<div class="tsd-signature tsd-kind-icon">custom<wbr>Properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ICustomPropertyCondensed</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ICustomPropertyObject</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L1002">interfaces.ts:1002</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -117,9 +127,9 @@
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> id</h3>
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from IServiceStatusCondensed.id</p>
+						<p>Inherited from <a href="ISchedulerServiceCondensed.html">ISchedulerServiceCondensed</a>.<a href="ISchedulerServiceCondensed.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L642">interfaces.ts:642</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L993">interfaces.ts:993</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -129,7 +139,7 @@
 					<div class="tsd-signature tsd-kind-icon">modified<wbr>ByUser<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L649">interfaces.ts:649</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L1000">interfaces.ts:1000</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -139,7 +149,7 @@
 					<div class="tsd-signature tsd-kind-icon">modified<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L648">interfaces.ts:648</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L999">interfaces.ts:999</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -148,9 +158,9 @@
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> privileges</h3>
 					<div class="tsd-signature tsd-kind-icon">privileges<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from IServiceStatusCondensed.privileges</p>
+						<p>Inherited from <a href="ISchedulerServiceCondensed.html">ISchedulerServiceCondensed</a>.<a href="ISchedulerServiceCondensed.html#privileges">privileges</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L643">interfaces.ts:643</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L994">interfaces.ts:994</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,7 +170,7 @@
 					<div class="tsd-signature tsd-kind-icon">schema<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L650">interfaces.ts:650</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L1001">interfaces.ts:1001</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -170,37 +180,27 @@
 					<div class="tsd-signature tsd-kind-icon">server<wbr>Node<wbr>Configuration<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">IServerNodeConfigurationCondensed</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L654">interfaces.ts:654</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L1004">interfaces.ts:1004</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="serviceState" class="tsd-anchor"></a>
-					<h3>service<wbr>State</h3>
-					<div class="tsd-signature tsd-kind-icon">service<wbr>State<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="settings" class="tsd-anchor"></a>
+					<h3>settings</h3>
+					<div class="tsd-signature tsd-kind-icon">settings<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ISchedulerServiceSettings</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L652">interfaces.ts:652</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L1005">interfaces.ts:1005</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="serviceType" class="tsd-anchor"></a>
-					<h3>service<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">service<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="tags" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> tags</h3>
+					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ITagCondensed</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L651">interfaces.ts:651</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="timestamp" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> timestamp</h3>
-					<div class="tsd-signature tsd-kind-icon">timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L653">interfaces.ts:653</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces.ts#L1003">interfaces.ts:1003</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -219,37 +219,37 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="IServiceStatus.html" class="tsd-kind-icon">IService<wbr>Status</a>
+						<a href="ISchedulerService.html" class="tsd-kind-icon">IScheduler<wbr>Service</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#createdDate" class="tsd-kind-icon">created<wbr>Date</a>
+								<a href="ISchedulerService.html#createdDate" class="tsd-kind-icon">created<wbr>Date</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="ISchedulerService.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="IServiceStatus.html#id" class="tsd-kind-icon">id</a>
+								<a href="ISchedulerService.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#modifiedByUserName" class="tsd-kind-icon">modified<wbr>ByUser<wbr>Name</a>
+								<a href="ISchedulerService.html#modifiedByUserName" class="tsd-kind-icon">modified<wbr>ByUser<wbr>Name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#modifiedDate" class="tsd-kind-icon">modified<wbr>Date</a>
+								<a href="ISchedulerService.html#modifiedDate" class="tsd-kind-icon">modified<wbr>Date</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="IServiceStatus.html#privileges" class="tsd-kind-icon">privileges</a>
+								<a href="ISchedulerService.html#privileges" class="tsd-kind-icon">privileges</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#schemaPath" class="tsd-kind-icon">schema<wbr>Path</a>
+								<a href="ISchedulerService.html#schemaPath" class="tsd-kind-icon">schema<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#serverNodeConfiguration" class="tsd-kind-icon">server<wbr>Node<wbr>Configuration</a>
+								<a href="ISchedulerService.html#serverNodeConfiguration" class="tsd-kind-icon">server<wbr>Node<wbr>Configuration</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#serviceState" class="tsd-kind-icon">service<wbr>State</a>
+								<a href="ISchedulerService.html#settings" class="tsd-kind-icon">settings</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#serviceType" class="tsd-kind-icon">service<wbr>Type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IServiceStatus.html#timestamp" class="tsd-kind-icon">timestamp</a>
+								<a href="ISchedulerService.html#tags" class="tsd-kind-icon">tags</a>
 							</li>
 						</ul>
 					</li>

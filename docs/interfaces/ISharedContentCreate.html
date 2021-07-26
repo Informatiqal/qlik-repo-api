@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IUserUpdate | Qlik Repo API</title>
+	<title>ISharedContentCreate | Qlik Repo API</title>
 	<meta name="description" content="Documentation for Qlik Repo API">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">Qlik Repo API</a>
 				</li>
 				<li>
-					<a href="IUserUpdate.html">IUserUpdate</a>
+					<a href="ISharedContentCreate.html">ISharedContentCreate</a>
 				</li>
 			</ul>
-			<h1>Interface IUserUpdate</h1>
+			<h1>Interface ISharedContentCreate</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IUserUpdate</span>
+						<span class="target">ISharedContentCreate</span>
 					</li>
 				</ul>
 			</section>
@@ -80,11 +80,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#roles" class="tsd-kind-icon">roles</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserUpdate.html#tags" class="tsd-kind-icon">tags</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISharedContentCreate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISharedContentCreate.html#description" class="tsd-kind-icon">description</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISharedContentCreate.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISharedContentCreate.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISharedContentCreate.html#tags" class="tsd-kind-icon">tags</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ISharedContentCreate.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,7 +99,17 @@
 					<div class="tsd-signature tsd-kind-icon">custom<wbr>Properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L22">interfaces/argument.interface.ts:22</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L424">interfaces/argument.interface.ts:424</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="description" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> description</h3>
+					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L427">interfaces/argument.interface.ts:427</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -108,7 +119,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L20">interfaces/argument.interface.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L422">interfaces/argument.interface.ts:422</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -118,17 +129,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L23">interfaces/argument.interface.ts:23</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="roles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> roles</h3>
-					<div class="tsd-signature tsd-kind-icon">roles<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L24">interfaces/argument.interface.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L425">interfaces/argument.interface.ts:425</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -138,7 +139,17 @@
 					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L21">interfaces/argument.interface.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L423">interfaces/argument.interface.ts:423</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="type" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> type</h3>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c493b8/src/interfaces/argument.interface.ts#L426">interfaces/argument.interface.ts:426</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -157,22 +168,25 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="IUserUpdate.html" class="tsd-kind-icon">IUser<wbr>Update</a>
+						<a href="ISharedContentCreate.html" class="tsd-kind-icon">IShared<wbr>Content<wbr>Create</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
+								<a href="ISharedContentCreate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#id" class="tsd-kind-icon">id</a>
+								<a href="ISharedContentCreate.html#description" class="tsd-kind-icon">description</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#name" class="tsd-kind-icon">name</a>
+								<a href="ISharedContentCreate.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#roles" class="tsd-kind-icon">roles</a>
+								<a href="ISharedContentCreate.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserUpdate.html#tags" class="tsd-kind-icon">tags</a>
+								<a href="ISharedContentCreate.html#tags" class="tsd-kind-icon">tags</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="ISharedContentCreate.html#type" class="tsd-kind-icon">type</a>
 							</li>
 						</ul>
 					</li>
