@@ -13,6 +13,7 @@ import { Node } from "./Node";
 import { Privileges } from "./Privileges";
 import { Proxy } from "./Proxy";
 import { Stream } from "./Stream";
+import { Scheduler } from "./Scheduler";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
 import { ServiceStatus } from "./ServiceStatus";
@@ -46,6 +47,8 @@ import {
   ILicense,
   ILicenseAccessGroup,
   ILicenseAccessTypeCondensed,
+  ISchedulerService,
+  ISchedulerServiceCondensed,
   IServiceCluster,
   IServiceStatus,
   IStream,
@@ -81,6 +84,8 @@ export {
   ILicense,
   ILicenseAccessTypeCondensed,
   ILicenseAccessGroup,
+  ISchedulerService,
+  ISchedulerServiceCondensed,
   IServiceCluster,
   IServiceStatus,
   IStream,
@@ -107,6 +112,7 @@ import {
   ITaskCreateTriggerComposite,
   ITaskCreate,
   ITableCreate,
+  ISchedulerServiceUpdate,
   IServiceClusterUpdate,
   IStreamCreate,
   ISystemRuleUpdate,
@@ -132,6 +138,7 @@ export {
   IExtensionUpdate,
   IUserUpdate,
   IUserCreate,
+  ISchedulerServiceUpdate,
   IStreamUpdate,
   ITaskCreateTriggerSchema,
   ITaskCreateTriggerComposite,
@@ -280,6 +287,10 @@ export class QlikRepoApi {
   virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
   virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
   virtualProxyUpdate = Proxy.prototype.virtualProxyUpdate;
+
+  schedulerGet = Scheduler.prototype.schedulerGet;
+  schedulerGetFilter = Scheduler.prototype.schedulerGetFilter;
+  schedulerUpdate = Scheduler.prototype.schedulerUpdate;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;
