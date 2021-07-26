@@ -13,15 +13,20 @@ export class ServiceStatus {
 
   public async serviceStatusGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<IServiceStatus[] | IServiceStatusCondensed[]> {
-    let url = "ServiceStatus";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<IServiceStatus> {
+    if (!id) throw new Error(`serviceStatusGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`ServiceStatus/${id}`)
+      .then((res) => res.data as IServiceStatus);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IServiceStatusCondensed[];
-      return [res.data] as IServiceStatus[];
-    });
+  public async serviceStatusGetAll(
+    this: QlikRepoApi
+  ): Promise<IServiceStatusCondensed[]> {
+    return await this.repoClient
+      .Get(`ServiceStatus`)
+      .then((res) => res.data as IServiceStatusCondensed[]);
   }
 
   public async serviceStatusGetFilter(

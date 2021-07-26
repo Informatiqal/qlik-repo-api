@@ -68,15 +68,20 @@ export class Node {
 
   public async nodeGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<IServerNodeConfiguration[] | IServerNodeConfigurationCondensed[]> {
-    let url = "servernodeconfiguration";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<IServerNodeConfiguration> {
+    if (!id) throw new Error(`nodeGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`servernodeconfiguration/${id}`)
+      .then((res) => res.data as IServerNodeConfiguration);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IServerNodeConfigurationCondensed[];
-      return [res.data] as IServerNodeConfiguration[];
-    });
+  public async nodeGetAll(
+    this: QlikRepoApi
+  ): Promise<IServerNodeConfigurationCondensed[]> {
+    return await this.repoClient
+      .Get(`servernodeconfiguration`)
+      .then((res) => res.data as IServerNodeConfigurationCondensed[]);
   }
 
   public async nodeGetFilter(
@@ -118,7 +123,7 @@ export class Node {
     if (!filter)
       throw new Error(`nodeRemoveFilter: "filter" parameter is required`);
 
-    const nodes = await this.nodeGet(filter).then(
+    const nodes = await this.nodeGetAll().then(
       (n: IServerNodeConfiguration[]) => {
         if (n.length == 0)
           throw new Error(`nodeRemoveFilter: filter query return 0 items`);
@@ -139,9 +144,7 @@ export class Node {
   ): Promise<IServerNodeConfiguration> {
     if (!arg.id) throw new Error(`nodeUpdate: "id" parameter is required`);
 
-    let node = await this.nodeGet(arg.id).then(
-      (n) => n[0] as IServerNodeConfiguration
-    );
+    let node = await this.nodeGet(arg.id);
     if (arg.name) node.name;
     if (arg.nodePurpose) {
       if (arg.nodePurpose == "Production") node.nodePurpose = 0;

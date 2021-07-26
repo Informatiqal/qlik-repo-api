@@ -19,16 +19,21 @@ export class DataConnection {
 
   public async dataConnectionGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<IDataConnection[] | IDataConnectionCondensed[]> {
-    let url = `dataconnection`;
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<IDataConnection> {
+    if (!id) throw new Error(`dataConnectionGet: "id" parameter is required`);
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IDataConnectionCondensed[];
+    return await this.repoClient
+      .Get(`dataconnection/${id}`)
+      .then((res) => res.data as IDataConnection);
+  }
 
-      return [res.data] as IDataConnection[];
-    });
+  public async dataConnectionGetAll(
+    this: QlikRepoApi
+  ): Promise<IDataConnectionCondensed[]> {
+    return await this.repoClient
+      .Get(`dataconnection`)
+      .then((res) => res.data as IDataConnectionCondensed[]);
   }
 
   public async dataConnectionGetFilter(
@@ -118,9 +123,7 @@ export class DataConnection {
     if (!arg.id)
       throw new Error(`dataConnectionUpdate: "id" parameter is required`);
 
-    let dataConnection = await this.dataConnectionGet(arg.id).then(
-      (d) => d[0] as IDataConnection
-    );
+    let dataConnection = await this.dataConnectionGet(arg.id);
 
     let updateCommon = new UpdateCommonProperties(this, dataConnection, arg);
     dataConnection = await updateCommon.updateAll();

@@ -20,16 +20,20 @@ export class SharedContent {
 
   public async sharedContentGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<ISharedContent[] | ISharedContentCondensed[]> {
-    let url = "sharedcontent";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<ISharedContent> {
+    if (!id) throw new Error(`sharedContentGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`sharedcontent/${id}`)
+      .then((res) => res.data as ISharedContent);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as ISharedContentCondensed[];
-
-      return [res.data] as ISharedContent[];
-    });
+  public async sharedContentGetAll(
+    this: QlikRepoApi
+  ): Promise<ISharedContentCondensed[]> {
+    return await this.repoClient
+      .Get(`sharedcontent`)
+      .then((res) => res.data as ISharedContentCondensed[]);
   }
 
   public async sharedContentGetFilter(
@@ -105,9 +109,7 @@ export class SharedContent {
     if (!arg.id)
       throw new Error(`sharedContentUpdate: "id" parameter is required`);
 
-    let sharedContent = await this.sharedContentGet(arg.id).then(
-      (t) => t[0] as ISharedContent
-    );
+    let sharedContent = await this.sharedContentGet(arg.id);
 
     if (arg.name) sharedContent.name = arg.name;
     if (arg.description) sharedContent.description = arg.description;

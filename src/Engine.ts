@@ -10,24 +10,17 @@ import {
 export class Engine {
   constructor() {}
 
-  public async engineGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<IEngine[] | IEngineCondensed[]> {
-    let url = "engineservice";
-    if (id) url += `/${id}`;
-
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IEngineCondensed[];
-
-      return [res.data] as IEngine[];
-    });
+  public async engineGet(this: QlikRepoApi, id: string): Promise<IEngine> {
+    if (!id) throw new Error(`engineGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`engineservice`)
+      .then((res) => res.data as IEngine);
   }
 
-  public async engineGetAll(this: QlikRepoApi): Promise<IEngine[]> {
+  public async engineGetAll(this: QlikRepoApi): Promise<IEngineCondensed[]> {
     return await this.repoClient
-      .Get(`engineservice/full`)
-      .then((res) => res.data as IEngine[]);
+      .Get(`engineservice`)
+      .then((res) => res.data as IEngineCondensed[]);
   }
 
   public async engineGetValid(
@@ -73,7 +66,7 @@ export class Engine {
   ): Promise<IEngine> {
     if (!arg.id) throw new Error(`engineUpdate: "id" is required`);
 
-    let engine = await this.engineGet(arg.id).then((e) => e[0] as IEngine);
+    let engine = await this.engineGet(arg.id);
 
     if (arg.workingSetSizeLoPct) {
       if (arg.workingSetSizeLoPct < 0 || arg.workingSetSizeLoPct > 100)

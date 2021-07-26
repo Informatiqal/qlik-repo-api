@@ -22,15 +22,20 @@ export class ServiceCluster {
 
   public async serviceClusterGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<IServiceCluster[] | IServiceClusterCondensed[]> {
-    let url = "ServiceCluster";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<IServiceCluster> {
+    if (!id) throw new Error(`serviceClusterGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`ServiceCluster/${id}`)
+      .then((res) => res.data as IServiceCluster);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IServiceClusterCondensed[];
-      return [res.data] as IServiceCluster[];
-    });
+  public async serviceClusterGetAll(
+    this: QlikRepoApi
+  ): Promise<IServiceClusterCondensed[]> {
+    return await this.repoClient
+      .Get(`ServiceCluster`)
+      .then((res) => res.data as IServiceClusterCondensed[]);
   }
 
   public async serviceClusterGetFilter(
@@ -106,9 +111,7 @@ export class ServiceCluster {
     if (arg && !arg.id)
       throw new Error(`serviceClusterUpdate: "id" parameter is required`);
 
-    let serviceCluster = await this.serviceClusterGet(arg.id).then(
-      (s) => s[0] as IServiceCluster
-    );
+    let serviceCluster = await this.serviceClusterGet(arg.id);
 
     if (arg.name) serviceCluster.name = arg.name;
     if (arg.persistenceMode)

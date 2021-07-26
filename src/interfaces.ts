@@ -1,5 +1,3 @@
-import internal from "stream";
-
 export type TCustomPropObjectTypes =
   | "App"
   | "AnalyticConnection"
@@ -293,22 +291,25 @@ export interface ITaskOperational {
   nextExecution: string;
 }
 
-export interface ITask {
+export interface ITaskCondensed {
+  id: string;
+  name: string;
+  taskType: number;
+  enabled: boolean;
+  maxRetries: number;
+  taskSessionTimeout: number;
+}
+
+export interface ITask extends ITaskCondensed {
   app: IApp;
   privileges: string[];
   isManuallyTriggered: boolean;
   schemaPath: string;
   operational: ITaskOperational;
-  enabled: boolean;
   tags: ITagCondensed[];
-  taskType: number;
-  maxRetries: number;
   createdDate: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   modifiedDate: string;
-  name: string;
-  id: string;
-  taskSessionTimeout: number;
 }
 
 export interface IAbout {

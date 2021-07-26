@@ -16,15 +16,20 @@ export class AppObject {
   public async appObjectGet(
     this: QlikRepoApi,
     id: string
-  ): Promise<IAppObject[] | IAppObjectCondensed[]> {
-    let url = "app/object";
-    if (id) url += `/${id}`;
+  ): Promise<IAppObject> {
+    if (!id) throw new Error(`appObjectGet: "id" parameter is required`);
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IAppObjectCondensed[];
+    return await this.repoClient
+      .Get(`app/object/${id}`)
+      .then((res) => res.data as IAppObject);
+  }
 
-      return [res.data] as IAppObject[];
-    });
+  public async appObjectGetAll(
+    this: QlikRepoApi
+  ): Promise<IAppObjectCondensed[]> {
+    return await this.repoClient
+      .Get(`app/object`)
+      .then((res) => res.data as IAppObjectCondensed[]);
   }
 
   public async appObjectGetFilter(
@@ -78,9 +83,7 @@ export class AppObject {
   ): Promise<IAppObject> {
     if (!arg.id) throw new Error(`appObjectUpdate: "id" parameter is required`);
 
-    let appObject = await this.appObjectGet(arg.id).then(
-      (t) => t[0] as IAppObject
-    );
+    let appObject = await this.appObjectGet(arg.id);
     if (arg.approved) appObject.approved = arg.approved;
 
     let updateCommon = new UpdateCommonProperties(this, appObject, arg);

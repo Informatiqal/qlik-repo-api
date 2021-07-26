@@ -13,22 +13,17 @@ import { modifiedDateTime } from "./util/generic";
 export class Tag {
   constructor() {}
 
-  public async tagGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<ITag[] | ITagCondensed[]> {
-    let url = "tag";
-    if (id) url += `/${id}`;
-
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as ITagCondensed[];
-
-      return [res.data] as ITag[];
-    });
+  public async tagGet(this: QlikRepoApi, id: string): Promise<ITag> {
+    if (!id) throw new Error(`tagGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`tag/${id}`)
+      .then((res) => res.data as ITag);
   }
 
-  public async tagGetAll(this: QlikRepoApi): Promise<ITag[]> {
-    return await this.repoClient.Get(`tag`).then((res) => res.data as ITag[]);
+  public async tagGetAll(this: QlikRepoApi): Promise<ITagCondensed[]> {
+    return await this.repoClient
+      .Get(`tag`)
+      .then((res) => res.data as ITagCondensed[]);
   }
 
   public async tagGetFilter(
