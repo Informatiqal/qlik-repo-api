@@ -90,11 +90,7 @@ export class User {
     const users = await this.userGetFilter(filter);
     return await Promise.all<IRemoveFilter>(
       users.map((user: IUser) => {
-        return this.repoClient
-          .Delete(`user/${user.id}`)
-          .then((res: IHttpReturn) => {
-            return { id: user.id, status: res.status };
-          });
+        return this.userRemove(user.id);
       })
     );
   }

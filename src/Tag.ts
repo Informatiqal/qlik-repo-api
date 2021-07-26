@@ -72,11 +72,7 @@ export class Tag {
     });
     return await Promise.all<IRemoveFilter>(
       tags.map((tag: ITag) => {
-        return this.repoClient
-          .Delete(`tag/${tag.id}`)
-          .then((res: IHttpReturn) => {
-            return { id: tag.id, status: res.status };
-          });
+        return this.tagRemove(tag.id);
       })
     );
   }

@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.18] - 2021-07-XX
+## [0.0.19] - 2021-07-26
+
+### Changed
+
+- all `xxxRemoveFilter` methods internally are using `xxxRemove` instead duplicating the url request
+
+## [0.0.18] - 2021-07-26
 
 ### Added
 

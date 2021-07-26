@@ -81,11 +81,7 @@ export class ServiceCluster {
     );
     return await Promise.all<IRemoveFilter>(
       serviceClusters.map((serviceCluster: IServiceCluster) => {
-        return this.repoClient
-          .Delete(`ServiceCluster/${serviceCluster.id}`)
-          .then((res: IHttpReturn) => {
-            return { id: serviceCluster.id, status: res.status };
-          });
+        return this.serviceClusterRemove(serviceCluster.id);
       })
     );
   }
