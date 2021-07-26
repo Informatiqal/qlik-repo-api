@@ -19,16 +19,20 @@ export class UserDirectory {
 
   public async userDirectoryGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<IUserDirectory[] | IUserDirectoryCondensed[]> {
-    let url = "userdirectory";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<IUserDirectory> {
+    if (!id) throw new Error(`userDirectoryGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`userdirectory/${id}`)
+      .then((res) => res.data as IUserDirectory);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IUserDirectoryCondensed[];
-
-      return [res.data] as IUserDirectory[];
-    });
+  public async userDirectoryGetAll(
+    this: QlikRepoApi
+  ): Promise<IUserDirectoryCondensed[]> {
+    return await this.repoClient
+      .Get(`userdirectory`)
+      .then((res) => res.data as IUserDirectoryCondensed[]);
   }
 
   public async userDirectoryGetFilter(
@@ -63,7 +67,7 @@ export class UserDirectory {
         `userDirectoryRemoveFilter: "filter" parameter is required`
       );
 
-    const userDirectories = await this.userDirectoryGet(filter).then(
+    const userDirectories = await this.userDirectoryGetAll().then(
       (u: IUserDirectory[]) => {
         if (u.length == 0)
           throw new Error(`tagRemoveFilter: filter query return 0 items`);

@@ -9,16 +9,20 @@ export class Scheduler {
 
   public async schedulerGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<ISchedulerService[] | ISchedulerServiceCondensed[]> {
-    let url = "schedulerservice";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<ISchedulerService> {
+    if (!id) throw new Error(`schedulerGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`schedulerservice/${id}`)
+      .then((res) => res.data as ISchedulerService);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as ISchedulerServiceCondensed[];
-
-      return [res.data] as ISchedulerService[];
-    });
+  public async schedulerGetAll(
+    this: QlikRepoApi
+  ): Promise<ISchedulerServiceCondensed[]> {
+    return await this.repoClient
+      .Get(`schedulerservice`)
+      .then((res) => res.data as ISchedulerServiceCondensed[]);
   }
 
   public async schedulerGetFilter(
@@ -39,9 +43,7 @@ export class Scheduler {
   ): Promise<ISchedulerService[]> {
     if (!arg.id) throw new Error(`schedulerUpdate: "id" parameter is required`);
 
-    let scheduler = await this.schedulerGet(arg.id).then(
-      (s) => s[0] as ISchedulerService
-    );
+    let scheduler = await this.schedulerGet(arg.id);
 
     if (arg.schedulerServiceType) {
       if (arg.schedulerServiceType == "Master")

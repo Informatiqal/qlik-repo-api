@@ -197,6 +197,7 @@ export class QlikRepoApi {
   aboutApiDefaults = About.prototype.aboutApiDefaults;
 
   appGet = App.prototype.appGet;
+  appGetAll = App.prototype.appGetAll;
   appGetFilter = App.prototype.appGetFilter;
   appUpload = App.prototype.appUpload;
   appUploadReplace = App.prototype.appUploadReplace;
@@ -210,6 +211,7 @@ export class QlikRepoApi {
   appUpdate = App.prototype.appUpdate;
 
   appObjectGet = AppObject.prototype.appObjectGet;
+  appObjectGetAll = AppObject.prototype.appObjectGetAll;
   appObjectGetFilter = AppObject.prototype.appObjectGetFilter;
   appObjectPublish = AppObject.prototype.appObjectPublish;
   appObjectUnPublish = AppObject.prototype.appObjectUnPublish;
@@ -221,6 +223,7 @@ export class QlikRepoApi {
   certificateExport = Certificate.prototype.certificateExport;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
+  contentLibraryGetAll = ContentLibrary.prototype.contentLibraryGetAll;
   contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;
   contentLibraryCreate = ContentLibrary.prototype.contentLibraryCreate;
   contentLibraryExport = ContentLibrary.prototype.contentLibraryExport;
@@ -234,6 +237,7 @@ export class QlikRepoApi {
   contentLibraryUpdate = ContentLibrary.prototype.contentLibraryUpdate;
 
   customPropertyGet = CustomProperty.prototype.customPropertyGet;
+  customPropertyGetAll = CustomProperty.prototype.customPropertyGetAll;
   customPropertyGetFilter = CustomProperty.prototype.customPropertyGetFilter;
   customPropertyCreate = CustomProperty.prototype.customPropertyCreate;
   customPropertyRemove = CustomProperty.prototype.customPropertyRemove;
@@ -242,11 +246,13 @@ export class QlikRepoApi {
 
   dataConnectionCreate = DataConnection.prototype.dataConnectionCreate;
   dataConnectionGet = DataConnection.prototype.dataConnectionGet;
+  dataConnectionGetAll = DataConnection.prototype.dataConnectionGetAll;
   dataConnectionGetFilter = DataConnection.prototype.dataConnectionGetFilter;
   dataConnectionRemove = DataConnection.prototype.dataConnectionRemove;
   dataConnectionUpdate = DataConnection.prototype.dataConnectionUpdate;
 
   extensionGet = Extension.prototype.extensionGet;
+  extensionGetAll = Extension.prototype.extensionGetAll;
   extensionGetFilter = Extension.prototype.extensionGetFilter;
   extensionRemove = Extension.prototype.extensionRemove;
   extensionUpdate = Extension.prototype.extensionUpdate;
@@ -280,6 +286,7 @@ export class QlikRepoApi {
 
   nodeCount = Node.prototype.nodeCount;
   nodeGet = Node.prototype.nodeGet;
+  nodeGetAll = Node.prototype.nodeGetAll;
   nodeGetFilter = Node.prototype.nodeGetFilter;
   nodeRemove = Node.prototype.nodeRemove;
   nodeRemoveFilter = Node.prototype.nodeRemoveFilter;
@@ -293,15 +300,18 @@ export class QlikRepoApi {
   proxyAdd = Proxy.prototype.proxyAdd;
   proxyCreate = Proxy.prototype.proxyCreate;
   proxyGet = Proxy.prototype.proxyGet;
+  proxyGetAll = Proxy.prototype.proxyGetAll;
   proxyGetFilter = Proxy.prototype.proxyGetFilter;
   proxyMetadataExport = Proxy.prototype.proxyMetadataExport;
   proxyUpdate = Proxy.prototype.proxyUpdate;
   virtualProxyGet = Proxy.prototype.virtualProxyGet;
+  virtualProxyGetAll = Proxy.prototype.virtualProxyGetAll;
   virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
   virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
   virtualProxyUpdate = Proxy.prototype.virtualProxyUpdate;
 
   sharedContentGet = SharedContent.prototype.sharedContentGet;
+  sharedContentGetAll = SharedContent.prototype.sharedContentGetAll;
   sharedContentGetFilter = SharedContent.prototype.sharedContentGetFilter;
   sharedContentDeleteFile = SharedContent.prototype.sharedContentDeleteFile;
   sharedContentRemove = SharedContent.prototype.sharedContentRemove;
@@ -310,11 +320,13 @@ export class QlikRepoApi {
   sharedContentCreate = SharedContent.prototype.sharedContentCreate;
 
   schedulerGet = Scheduler.prototype.schedulerGet;
+  schedulerGetAll = Scheduler.prototype.schedulerGetAll;
   schedulerGetFilter = Scheduler.prototype.schedulerGetFilter;
   schedulerUpdate = Scheduler.prototype.schedulerUpdate;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;
+  serviceClusterGetAll = ServiceCluster.prototype.serviceClusterGetAll;
   serviceClusterGetFilter = ServiceCluster.prototype.serviceClusterGetFilter;
   serviceClusterRemove = ServiceCluster.prototype.serviceClusterRemove;
   serviceClusterSetCentral = ServiceCluster.prototype.serviceClusterSetCentral;
@@ -322,15 +334,18 @@ export class QlikRepoApi {
 
   serviceStatusCount = ServiceStatus.prototype.serviceStatusCount;
   serviceStatusGet = ServiceStatus.prototype.serviceStatusGet;
+  serviceStatusGetAll = ServiceStatus.prototype.serviceStatusGetAll;
   serviceStatusGetFilter = ServiceStatus.prototype.serviceStatusGetFilter;
 
   streamGet = Stream.prototype.streamGet;
+  streamGetAll = Stream.prototype.streamGetAll;
   streamGetFilter = Stream.prototype.streamGetFilter;
   streamCreate = Stream.prototype.streamCreate;
   streamRemove = Stream.prototype.streamRemove;
   streamUpdate = Stream.prototype.streamUpdate;
 
   ruleGet = SystemRule.prototype.ruleGet;
+  ruleGetAll = SystemRule.prototype.ruleGetAll;
   ruleGetAudit = SystemRule.prototype.ruleGetAudit;
   ruleGetFilter = SystemRule.prototype.ruleGetFilter;
   ruleCreate = SystemRule.prototype.ruleCreate;
@@ -364,10 +379,12 @@ export class QlikRepoApi {
   taskWaitExecution = Task.prototype.taskWaitExecution;
   taskScheduleRemove = Task.prototype.taskScheduleRemove;
   taskScheduleGet = Task.prototype.taskScheduleGet;
+  taskScheduleGetAll = Task.prototype.taskScheduleGetAll;
   taskTriggerCreateComposite = Task.prototype.taskTriggerCreateComposite;
   taskTriggerCreateSchema = Task.prototype.taskTriggerCreateSchema;
 
   userGet = User.prototype.userGet;
+  userGetAll = User.prototype.userGetAll;
   userGetFilter = User.prototype.userGetFilter;
   userCreate = User.prototype.userCreate;
   userRemove = User.prototype.userRemove;
@@ -375,6 +392,7 @@ export class QlikRepoApi {
 
   userDirectoryCount = UserDirectory.prototype.userDirectoryCount;
   userDirectoryGet = UserDirectory.prototype.userDirectoryGet;
+  userDirectoryGetAll = UserDirectory.prototype.userDirectoryGetAll;
   userDirectoryGetFilter = UserDirectory.prototype.userDirectoryGetFilter;
   userDirectoryRemove = UserDirectory.prototype.userDirectoryRemove;
   userDirectoryRemoveFilter = UserDirectory.prototype.userDirectoryRemoveFilter;

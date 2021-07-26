@@ -11,7 +11,7 @@ describe("App operations", function () {
 
   // Used methods: appGet, appGetFilter, appSelect
   it("List apps", async function () {
-    let allApps = await repoApi.appGet();
+    let allApps = await repoApi.appGetAll();
     let singleApp = await repoApi.appGet(allApps[0].id);
     let filterApp = await repoApi.appGetFilter(
       `name eq '${singleApp[0].name}'`
@@ -19,7 +19,7 @@ describe("App operations", function () {
     let selectApp = await repoApi.appSelect(`name eq '${singleApp[0].name}'`);
 
     expect(allApps.length).to.be.greaterThan(0) &&
-      expect(singleApp.length).to.be.equal(1) &&
+      expect(singleApp.id).to.be.equal(allApps[0].id) &&
       expect(filterApp[0].id).to.be.equal(singleApp[0].id) &&
       expect(selectApp.items.length).to.be.equal(1);
   });

@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.18] - 2021-07-XX
+
+### Added
+
+- `appGetAll` method
+- `appObjectGetAll` method
+- `contentLibraryGetAll` method
+- `customPropertyGetAll` method
+- `dataConnectionGetAll` method
+- `extensionGetAll` method
+- `engineGetAll` method
+- `nodeGetAll` method
+- `proxyGetAll` method
+- `virtualProxyGetAll` method
+- `sharedContentGetAll` method
+- `schedulerGetAll` method
+- `serviceClusterGetAll` method
+- `serviceStatusGetAll` method
+- `streamGetAll` method
+- `ruleGetAll` method
+- `tagGetAll` method
+- `taskGetAll` method
+- `taskReloadGetAll` method
+- `taskExternalGetAll` method
+- `taskScheduleGetAll` method
+- `userGetAll` method
+- `userDirectoryGetAll` method
+
+### Changed
+
+- for all `xxxGet` methods the `id` parameter is mandatory
+- all `xxGet` methods are returning `Ixxx`
+
 ## [0.0.17] - 2021-07-26
 
 ### Added

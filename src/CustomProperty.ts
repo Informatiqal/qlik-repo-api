@@ -21,16 +21,20 @@ export class CustomProperty {
 
   public async customPropertyGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<ICustomProperty[] | ICustomPropertyCondensed[]> {
-    let url = "custompropertydefinition";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<ICustomProperty> {
+    if (!id) throw new Error(`customPropertyGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`custompropertydefinition/${id}`)
+      .then((res) => res.data as ICustomProperty);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as ICustomPropertyCondensed[];
-
-      return [res.data] as ICustomProperty[];
-    });
+  public async customPropertyGetAll(
+    this: QlikRepoApi
+  ): Promise<ICustomPropertyCondensed[]> {
+    return await this.repoClient
+      .Get(`custompropertydefinition`)
+      .then((res) => res.data as ICustomPropertyCondensed[]);
   }
 
   public async customPropertyGetFilter(
@@ -105,9 +109,7 @@ export class CustomProperty {
     if (!arg.name)
       throw new Error(`customPropertyUpdate: "name" parameter is required`);
 
-    let customProperty = await this.customPropertyGet(arg.id).then(
-      (c) => c[0] as ICustomProperty
-    );
+    let customProperty = await this.customPropertyGet(arg.id);
 
     if (arg.name) customProperty.name = arg.name;
     if (arg.description) customProperty.description = arg.description;

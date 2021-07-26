@@ -43,18 +43,19 @@ export class Proxy {
       .then((res) => res.data as IProxyService);
   }
 
-  public async proxyGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<IProxyService[] | IProxyServiceCondensed[]> {
-    let url = "proxyservice";
-    if (id) url += `/${id}`;
+  public async proxyGet(this: QlikRepoApi, id: string): Promise<IProxyService> {
+    if (!id) throw new Error(`proxyGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`proxyservice/${id}`)
+      .then((res) => res.data as IProxyService);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IProxyServiceCondensed[];
-
-      return [res.data] as IProxyService[];
-    });
+  public async proxyGetAll(
+    this: QlikRepoApi
+  ): Promise<IProxyServiceCondensed[]> {
+    return await this.repoClient
+      .Get(`proxyservice`)
+      .then((res) => res.data as IProxyServiceCondensed[]);
   }
 
   public async proxyGetFilter(
@@ -165,7 +166,7 @@ export class Proxy {
 
     validateRanges(arg);
 
-    let proxy = await this.proxyGet(arg.id).then((v) => v[0] as IProxyService);
+    let proxy = await this.proxyGet(arg.id);
 
     if (arg.listenPort) proxy.settings.listenPort = arg.listenPort;
     if (arg.unencryptedListenPort)
@@ -221,16 +222,20 @@ export class Proxy {
 
   public async virtualProxyGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<IVirtualProxyConfig[] | IVirtualProxyConfigCondensed[]> {
-    let url = "virtualproxyconfig";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<IVirtualProxyConfig> {
+    if (!id) throw new Error(`virtualProxyGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`virtualproxyconfig/${id}`)
+      .then((res) => res.data as IVirtualProxyConfig);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as IVirtualProxyConfigCondensed[];
-
-      return [res.data] as IVirtualProxyConfig[];
-    });
+  public async virtualProxyGetAll(
+    this: QlikRepoApi
+  ): Promise<IVirtualProxyConfigCondensed[]> {
+    return await this.repoClient
+      .Get(`virtualproxyconfig`)
+      .then((res) => res.data as IVirtualProxyConfigCondensed[]);
   }
 
   public async virtualProxyGetFilter(
@@ -264,9 +269,7 @@ export class Proxy {
     if (!arg.id)
       throw new Error(`virtualProxyUpdate: "id" parameter is required`);
 
-    let virtualProxy = await this.virtualProxyGet(arg.id).then(
-      (v) => v[0] as IVirtualProxyConfig
-    );
+    let virtualProxy = await this.virtualProxyGet(arg.id);
 
     if (arg.prefix) virtualProxy.prefix = arg.prefix;
     if (arg.description) virtualProxy.description = arg.description;
@@ -361,7 +364,7 @@ async function parseLoadBalancingNodes(
   repoApi: QlikRepoApi,
   nodes: string[]
 ): Promise<IServerNodeConfigurationCondensed[]> {
-  let existingNodes = await repoApi.nodeGet();
+  let existingNodes = await repoApi.nodeGetAll();
 
   return nodes.map((n) => {
     let nodeCondensed = (
@@ -422,7 +425,7 @@ async function parseVirtualProxies(
   repoApi: QlikRepoApi,
   vpArg: string[]
 ): Promise<IVirtualProxyConfigCondensed[]> {
-  let allVP = await repoApi.virtualProxyGet();
+  let allVP = await repoApi.virtualProxyGetAll();
   let vpToAdd = allVP.filter((v) => {
     return vpArg.includes(v.prefix);
   });

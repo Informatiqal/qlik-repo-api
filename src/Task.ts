@@ -4,6 +4,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import {
   IHttpStatus,
   ITask,
+  ITaskCondensed,
   ITaskExecutionResult,
   ISchemaEvent,
   ISchemaEventCondensed,
@@ -21,10 +22,10 @@ import { TRepeatOptions, TDaysOfMonth, TDaysOfWeek } from "./interfaces/ranges";
 export class Task {
   constructor() {}
 
-  public async taskGetAll(this: QlikRepoApi): Promise<ITask[]> {
+  public async taskGetAll(this: QlikRepoApi): Promise<ITaskCondensed[]> {
     return await this.repoClient
-      .Get(`task/full`)
-      .then((res) => res.data as ITask[]);
+      .Get(`task`)
+      .then((res) => res.data as ITaskCondensed[]);
   }
 
   public async taskReloadGetAll(this: QlikRepoApi): Promise<ITask[]> {
@@ -35,12 +36,12 @@ export class Task {
     return await this.taskGetFilter("taskType eq 2");
   }
 
-  public async taskReloadGet(this: QlikRepoApi, id: string): Promise<ITask[]> {
-    if (!id) throw new Error(`taskReloadGet: "path" parameter is required`);
+  public async taskReloadGet(this: QlikRepoApi, id: string): Promise<ITask> {
+    if (!id) throw new Error(`taskReloadGet: "id" parameter is required`);
 
     return await this.repoClient
       .Get(`reloadtask/${id}`)
-      .then((res) => [res.data] as ITask[]);
+      .then((res) => res.data as ITask);
   }
 
   public async taskGetFilter(
@@ -144,7 +145,7 @@ export class Task {
   ): Promise<ITask> {
     if (!arg.id) throw new Error(`taskUpdate: "id" parameter is required`);
 
-    let reloadTask: ITask = await this.taskReloadGet(arg.id).then((s) => s[0]);
+    let reloadTask: ITask = await this.taskReloadGet(arg.id);
 
     if (arg.enabled) reloadTask.enabled = arg.enabled;
     if (arg.taskSessionTimeout)
@@ -240,16 +241,20 @@ export class Task {
 
   public async taskScheduleGet(
     this: QlikRepoApi,
-    id?: string
-  ): Promise<ISchemaEvent[] | ISchemaEventCondensed[]> {
-    let url = "schemaevent";
-    if (id) url += `/${id}`;
+    id: string
+  ): Promise<ISchemaEvent> {
+    if (!id) throw new Error(`taskScheduleGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`schemaevent/${id}`)
+      .then((res) => res.data as ISchemaEvent);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as ISchemaEventCondensed[];
-
-      return [res.data] as ISchemaEvent[];
-    });
+  public async taskScheduleGetAll(
+    this: QlikRepoApi
+  ): Promise<ISchemaEventCondensed[]> {
+    return await this.repoClient
+      .Get(`schemaevent`)
+      .then((res) => res.data as ISchemaEventCondensed[]);
   }
 
   public async taskTriggerCreateComposite(

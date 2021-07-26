@@ -23,18 +23,17 @@ import {
 export class SystemRule {
   constructor() {}
 
-  public async ruleGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<ISystemRule[] | ISystemRuleCondensed[]> {
-    let url = "systemrule";
-    if (id) url += `/${id}`;
+  public async ruleGet(this: QlikRepoApi, id: string): Promise<ISystemRule> {
+    if (!id) throw new Error(`ruleGet: "id" parameter is required`);
+    return await this.repoClient
+      .Get(`systemrule/${id}`)
+      .then((res) => res.data as ISystemRule);
+  }
 
-    return await this.repoClient.Get(url).then((res) => {
-      if (!id) return res.data as ISystemRuleCondensed[];
-
-      return [res.data] as ISystemRule[];
-    });
+  public async ruleGetAll(this: QlikRepoApi): Promise<ISystemRuleCondensed[]> {
+    return await this.repoClient
+      .Get(`systemrule`)
+      .then((res) => res.data as ISystemRuleCondensed[]);
   }
 
   public async ruleGetAudit(
@@ -151,7 +150,7 @@ export class SystemRule {
   ): Promise<ISystemRule> {
     if (!arg.id) throw new Error(`ruleUpdate: "id" parameter is required`);
 
-    let rule = await this.ruleGet(arg.id).then((s) => s[0] as ISystemRule);
+    let rule = await this.ruleGet(arg.id);
 
     if (arg.name) rule.name = arg.name;
     if (arg.rule) rule.rule = arg.rule;
