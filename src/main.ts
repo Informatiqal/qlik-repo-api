@@ -1,6 +1,8 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { About } from "./About";
 import { App } from "./App";
+import { AppObject } from "./AppObject";
+import { Certificate } from "./Certificate";
 import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
 import { DataConnection } from "./DataConnection";
@@ -8,6 +10,10 @@ import { Extension } from "./Extension";
 import { Engine } from "./Engine";
 import { License } from "./License";
 import { Node } from "./Node";
+import { Privileges } from "./Privileges";
+import { Proxy } from "./Proxy";
+import { SharedContent } from "./SharedContent";
+import { Scheduler } from "./Scheduler";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
 import { ServiceCluster } from "./ServiceCluster";
@@ -22,6 +28,8 @@ import {
   IAbout,
   IAccessTypeInfo,
   IApp,
+  IAppObject,
+  IAppObjectCondensed,
   IAudit,
   IRemoveFilter,
   IContentLibrary,
@@ -29,14 +37,21 @@ import {
   IDataConnection,
   IDataConnectionCondensed,
   IEngine,
-  IServerNodeConfiguration,
   IExtension,
+  IObject,
+  IProxyService,
+  IProxyServiceCondensed,
+  IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
   ILicense,
   ILicenseAccessGroup,
   ILicenseAccessTypeCondensed,
+  ISharedContent,
+  ISharedContentCondensed,
+  ISchedulerService,
+  ISchedulerServiceCondensed,
   IServiceCluster,
   IServiceStatus,
   IStream,
@@ -45,11 +60,15 @@ import {
   ITaskExecutionResult,
   IUser,
   IUserDirectory,
+  IVirtualProxyConfig,
+  IVirtualProxyConfigCondensed,
 } from "./interfaces";
 export {
   IAbout,
   IAccessTypeInfo,
   IApp,
+  IAppObject,
+  IAppObjectCondensed,
   IAudit,
   IRemoveFilter,
   IContentLibrary,
@@ -57,14 +76,21 @@ export {
   IDataConnection,
   IDataConnectionCondensed,
   IEngine,
-  IServerNodeConfiguration,
   IExtension,
+  IObject,
+  IProxyService,
+  IProxyServiceCondensed,
+  ISharedContent,
+  ISharedContentCondensed,
+  IServerNodeConfiguration,
   ISystemRule,
   IHttpReturn,
   IHttpReturnRemove,
   ILicense,
   ILicenseAccessTypeCondensed,
   ILicenseAccessGroup,
+  ISchedulerService,
+  ISchedulerServiceCondensed,
   IServiceCluster,
   IServiceStatus,
   IStream,
@@ -73,11 +99,15 @@ export {
   ITaskExecutionResult,
   IUser,
   IUserDirectory,
+  IVirtualProxyConfig,
+  IVirtualProxyConfigCondensed,
 };
 
 import {
+  IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
+  ICertificateExportParameters,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -87,6 +117,7 @@ import {
   ITaskCreateTriggerComposite,
   ITaskCreate,
   ITableCreate,
+  ISchedulerServiceUpdate,
   IServiceClusterUpdate,
   IStreamCreate,
   ISystemRuleUpdate,
@@ -101,14 +132,21 @@ import {
   INodeCreate,
   ILicenseSetKey,
   ILicenseSetSerial,
+  IVirtualProxyUpdate,
+  ISharedContentUpdate,
+  ISharedContentCreate,
+  IProxyCreate,
 } from "./interfaces/argument.interface";
 export {
+  IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
+  ICertificateExportParameters,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
   IUserCreate,
+  ISchedulerServiceUpdate,
   IStreamUpdate,
   ITaskCreateTriggerSchema,
   ITaskCreateTriggerComposite,
@@ -128,6 +166,10 @@ export {
   INodeCreate,
   ILicenseSetKey,
   ILicenseSetSerial,
+  IVirtualProxyUpdate,
+  ISharedContentUpdate,
+  ISharedContentCreate,
+  IProxyCreate,
 };
 
 export class QlikRepoApi {
@@ -166,6 +208,17 @@ export class QlikRepoApi {
   appSelect = App.prototype.appSelect;
   appSwitch = App.prototype.appSwitch;
   appUpdate = App.prototype.appUpdate;
+
+  appObjectGet = AppObject.prototype.appObjectGet;
+  appObjectGetFilter = AppObject.prototype.appObjectGetFilter;
+  appObjectPublish = AppObject.prototype.appObjectPublish;
+  appObjectUnPublish = AppObject.prototype.appObjectUnPublish;
+  appObjectRemove = AppObject.prototype.appObjectRemove;
+  appObjectUpdate = AppObject.prototype.appObjectUpdate;
+
+  certificateDistributionPathGet =
+    Certificate.prototype.certificateDistributionPathGet;
+  certificateExport = Certificate.prototype.certificateExport;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
   contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;
@@ -233,6 +286,32 @@ export class QlikRepoApi {
   nodeUpdate = Node.prototype.nodeUpdate;
   nodeCreate = Node.prototype.nodeCreate;
   nodeRegister = Node.prototype.nodeRegister;
+
+  privilegesGet = Privileges.prototype.privilegesGet;
+  privilegesAssert = Privileges.prototype.privilegesAssert;
+
+  proxyAdd = Proxy.prototype.proxyAdd;
+  proxyCreate = Proxy.prototype.proxyCreate;
+  proxyGet = Proxy.prototype.proxyGet;
+  proxyGetFilter = Proxy.prototype.proxyGetFilter;
+  proxyMetadataExport = Proxy.prototype.proxyMetadataExport;
+  proxyUpdate = Proxy.prototype.proxyUpdate;
+  virtualProxyGet = Proxy.prototype.virtualProxyGet;
+  virtualProxyGetFilter = Proxy.prototype.virtualProxyGetFilter;
+  virtualProxyRemove = Proxy.prototype.virtualProxyRemove;
+  virtualProxyUpdate = Proxy.prototype.virtualProxyUpdate;
+
+  sharedContentGet = SharedContent.prototype.sharedContentGet;
+  sharedContentGetFilter = SharedContent.prototype.sharedContentGetFilter;
+  sharedContentDeleteFile = SharedContent.prototype.sharedContentDeleteFile;
+  sharedContentRemove = SharedContent.prototype.sharedContentRemove;
+  sharedContentUpdate = SharedContent.prototype.sharedContentUpdate;
+  sharedContentUploadFile = SharedContent.prototype.sharedContentUploadFile;
+  sharedContentCreate = SharedContent.prototype.sharedContentCreate;
+
+  schedulerGet = Scheduler.prototype.schedulerGet;
+  schedulerGetFilter = Scheduler.prototype.schedulerGetFilter;
+  schedulerUpdate = Scheduler.prototype.schedulerUpdate;
 
   serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
   serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;

@@ -2,9 +2,67 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.0.10] - 2021-07-XX
+## [0.0.17] - 2021-07-26
 
 ### Added
+
+- `proxyCreate` method
+- `proxyUpdate` method
+
+## [0.0.16] - 2021-07-26
+
+### Added
+
+- `sharedContentGet` method
+- `sharedContentGetFilter` method
+- `sharedContentRemove` method
+- `sharedContentUploadFile` method
+- `sharedContentDeleteFile` method
+- `sharedContentUpdate` method
+- `sharedContentCreate` method
+
+## [0.0.15] - 2021-07-26
+
+### Added
+
+- `proxyGet` method
+- `proxyGetFilter` method
+- `proxyMetadataExport` method
+- `proxyAdd` method
+- `virtualProxyGet` method
+- `virtualProxyGetFilter` method
+- `virtualProxyRemove` method
+- `virtualProxyUpdate` method
+- `schedulerGet` method
+- `schedulerGetFilter` method
+- `schedulerUpdate` method
+
+## [0.0.13] - 2021-07-25
+
+### Added
+
+- `certificateExport` method
+- `certificateDistributionPathGet` method
+
+## [0.0.12] - 2021-07-25
+
+### Added
+
+- `privilegesGet` method
+- `privilegesAssert` method
+
+## [0.0.11] - 2021-07-24
+
+### Added
+
+- `appObjectGet` method
+- `appObjectGetFilter` method
+- `appObjectPublish` method
+- `appObjectUnPublish` method
+- `appObjectRemove` method
+- `appObjectUpdate` method
+
+## [0.0.10] - 2021-07-24
 
 ### Changed
 
@@ -22,6 +80,7 @@ All notable changes to this project will be documented in this file.
 - `dataConnectionRemove` method
 - `dataConnectionCreate` method
 - `dataConnectionUpdate` method
+  `
 
 ## [0.0.8] - 2021-07-24
 
@@ -43,7 +102,7 @@ All notable changes to this project will be documented in this file.
 - `licenseProfessionalAccessGroupCreate` method
 - `licenseUserAccessGroupCreate` method
 
-## [0.0.7] - 2021-07-27
+## [0.0.7] - 2021-07-23
 
 ### Added
 
