@@ -181,11 +181,7 @@ export class App {
     const apps = await this.appGetFilter(filter);
     return Promise.all<IRemoveFilter>(
       apps.map((app: IApp) => {
-        return this.repoClient
-          .Delete(`app/${app.id}`)
-          .then((res: IHttpReturn) => {
-            return { id: app.id, status: res.status };
-          });
+        return this.appRemove(app.id);
       })
     );
   }

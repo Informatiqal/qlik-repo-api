@@ -200,11 +200,7 @@ export class ContentLibrary {
     const contentLibraries = await this.contentLibraryGetFilter(filter);
     return Promise.all<IRemoveFilter>(
       contentLibraries.map((contentLib: IContentLibrary) => {
-        return this.repoClient
-          .Delete(`contentlibrary/${contentLib.id}`)
-          .then((res: IHttpReturn) => {
-            return { id: contentLib.id, status: res.status };
-          });
+        return this.contentLibraryRemove(contentLib.id);
       })
     );
   }
