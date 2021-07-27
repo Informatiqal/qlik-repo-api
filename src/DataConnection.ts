@@ -6,7 +6,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import {
   IDataConnection,
   IDataConnectionCondensed,
-  IHttpReturnRemove,
+  IEntityRemove,
 } from "./interfaces";
 
 import {
@@ -58,11 +58,11 @@ export class DataConnection {
   public async dataConnectionRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id)
       throw new Error(`dataConnectionRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`dataconnection/${id}`).then((res) => {
-      return { id, status: res.status };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 

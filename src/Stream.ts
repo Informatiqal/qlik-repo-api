@@ -5,7 +5,7 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import {
   IHttpStatus,
   IStream,
-  IHttpReturnRemove,
+  IEntityRemove,
   IStreamCondensed,
 } from "./interfaces";
 import { IStreamCreate, IStreamUpdate } from "./interfaces/argument.interface";
@@ -65,10 +65,10 @@ export class Stream {
   public async streamRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id) throw new Error(`streamRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`stream/${id}`).then((res) => {
-      return { id, status: res.status };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 

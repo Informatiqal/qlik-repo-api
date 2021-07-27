@@ -3,8 +3,7 @@ import { QlikRepoApi } from "./main";
 import {
   IUserDirectory,
   IUserDirectoryCondensed,
-  IRemoveFilter,
-  IHttpReturnRemove,
+  IEntityRemove,
   IHttpStatus,
 } from "./interfaces";
 
@@ -50,18 +49,18 @@ export class UserDirectory {
   public async userDirectoryRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id) throw new Error(`userDirectoryRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`userdirectory/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
   public async userDirectoryRemoveFilter(
     this: QlikRepoApi,
     filter: string
-  ): Promise<IRemoveFilter[]> {
+  ): Promise<IEntityRemove[]> {
     if (!filter)
       throw new Error(
         `userDirectoryRemoveFilter: "filter" parameter is required`
@@ -75,7 +74,7 @@ export class UserDirectory {
         return u;
       }
     );
-    return await Promise.all<IRemoveFilter>(
+    return await Promise.all<IEntityRemove>(
       userDirectories.map((ud) => {
         return this.userDirectoryRemove(ud.id);
       })

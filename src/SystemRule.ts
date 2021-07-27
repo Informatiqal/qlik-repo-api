@@ -5,7 +5,7 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
   IHttpStatus,
-  IHttpReturnRemove,
+  IEntityRemove,
   ISystemRule,
   IAudit,
   TSystemRuleActions,
@@ -136,11 +136,11 @@ export class SystemRule {
   public async ruleRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id) throw new Error(`ruleRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`systemrule/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 

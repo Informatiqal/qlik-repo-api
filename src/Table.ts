@@ -1,16 +1,42 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { IHttpReturn } from "./interfaces";
-import { ITableCreate } from "./interfaces/argument.interface";
+
+interface ITableColumnBase {
+  columnType: string;
+  definition: string;
+  name?: string;
+}
+
+export interface ITableColumn {
+  columnType: string;
+  definition: string;
+  name?: string;
+  list?: ITableColumnBase[];
+}
+
+export interface ITableCreate {
+  type: string;
+  columns: ITableColumn[];
+  filter?: string;
+  skip?: number;
+  take?: number;
+  sortColumn?: string;
+  orderAscending?: boolean;
+}
+
+export interface IClassTable {
+  create(arg: ITableCreate): Promise<IHttpReturn>;
+}
 
 export class Table {
-  constructor() {}
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
 
-  public async tableCreate(
-    this: QlikRepoApi,
-    arg: ITableCreate
-  ): Promise<IHttpReturn> {
+  public async create(arg: ITableCreate) {
     if (!arg.columns)
       throw new Error(`tableCreate: "columns" parameter is required`);
     if (!arg.type) throw new Error(`tableCreate: "type" parameter is required`);

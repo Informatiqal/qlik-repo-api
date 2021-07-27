@@ -3,8 +3,7 @@ import { QlikRepoApi } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import {
-  IRemoveFilter,
-  IHttpReturnRemove,
+  IEntityRemove,
   IHttpStatus,
   IServerNodeConfiguration,
   IServerNodeConfigurationCondensed,
@@ -106,20 +105,20 @@ export class Node {
   public async nodeRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id) throw new Error(`nodeRemove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`servernodeconfiguration/${id}`)
       .then((res) => {
-        return { id, status: res.status as IHttpStatus };
+        return { id, status: res.status } as IEntityRemove;
       });
   }
 
   public async nodeRemoveFilter(
     this: QlikRepoApi,
     filter: string
-  ): Promise<IRemoveFilter[]> {
+  ): Promise<IEntityRemove[]> {
     if (!filter)
       throw new Error(`nodeRemoveFilter: "filter" parameter is required`);
 
@@ -131,7 +130,7 @@ export class Node {
         return n;
       }
     );
-    return await Promise.all<IRemoveFilter>(
+    return await Promise.all<IEntityRemove>(
       nodes.map((ud) => {
         return this.nodeRemove(ud.id);
       })

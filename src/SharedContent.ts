@@ -7,7 +7,7 @@ import {
   IHttpStatus,
   ISharedContent,
   ISharedContentCondensed,
-  IHttpReturnRemove,
+  IEntityRemove,
 } from "./interfaces";
 
 import {
@@ -51,11 +51,11 @@ export class SharedContent {
   public async sharedContentRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id) throw new Error(`sharedContentRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`sharedcontent/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
@@ -86,7 +86,7 @@ export class SharedContent {
     this: QlikRepoApi,
     id: string,
     externalPath: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id)
       throw new Error(`sharedContentDeleteFile: "id" parameter is required`);
     if (!externalPath)
@@ -98,7 +98,7 @@ export class SharedContent {
     urlBuild.addParam("externalpath", externalPath);
 
     return await this.repoClient.Delete(urlBuild.getUrl()).then((res) => {
-      return { id, status: res.status };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 

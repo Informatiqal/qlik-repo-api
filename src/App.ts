@@ -2,13 +2,12 @@ import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
+import { ITagCondensed } from "./Tag";
 import {
   ISelection,
-  IRemoveFilter,
-  IHttpReturnRemove,
+  IEntityRemove,
   IStream,
   IOwner,
-  ITagCondensed,
   ICustomPropertyObject,
 } from "./interfaces";
 
@@ -63,8 +62,8 @@ export interface IClassApp {
   getAll(): Promise<IAppCondensed[]>;
   getFilter(filter: string, orderBy?: string): Promise<IApp[]>;
   publish(id: string, stream: string, name?: string): Promise<IApp>;
-  remove(id: string): Promise<IHttpReturnRemove>;
-  removeFilter(filter: string): Promise<IHttpReturnRemove[]>;
+  remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
   select(filter?: string): Promise<ISelection>;
   switch(sourceAppId: string, targetAppId: string): Promise<IApp>;
   update(arg: IAppUpdate): Promise<IApp>;
@@ -225,7 +224,7 @@ export class App implements IClassApp {
   public async remove(id: string) {
     if (!id) throw new Error(`appRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`app/${id}`).then((res) => {
-      return { id, status: res.status };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
@@ -234,7 +233,7 @@ export class App implements IClassApp {
       throw new Error(`appRemoveFilter: "filter" parameter is required`);
 
     const apps = await this.getFilter(filter);
-    return Promise.all<IRemoveFilter>(
+    return Promise.all<IEntityRemove>(
       apps.map((app: IApp) => {
         return this.remove(app.id);
       })

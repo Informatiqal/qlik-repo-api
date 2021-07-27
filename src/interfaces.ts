@@ -1,25 +1,10 @@
 import { ITag, ITagCondensed } from "./Tag";
-export { ITag, ITagCondensed };
-import { IApp, IAppCondensed } from "./App";
-export { IApp, IAppCondensed };
-
-export type TCustomPropObjectTypes =
-  | "App"
-  | "AnalyticConnection"
-  | "ContentLibrary"
-  | "DataConnection"
-  | "EngineService"
-  | "Extension"
-  | "ServerNodeConfiguration"
-  | "PrintingService"
-  | "ProxyService"
-  | "ReloadTask"
-  | "RepositoryService"
-  | "SchedulerService"
-  | "Stream"
-  | "UserSyncTask"
-  | "User"
-  | "VirtualProxyConfig";
+import { IApp } from "./App";
+import { IAppObject } from "./AppObject";
+import { IContentLibrary } from "./ContentLibrary";
+import { ICustomPropertyCondensed, ICustomProperty } from "./CustomProperty";
+import { IExtension } from "./Extension";
+import { IUser, IUserCondensed } from "./User";
 
 export type IHttpStatus = number;
 
@@ -29,8 +14,14 @@ export interface IHttpReturn {
   data: any;
 }
 
-export interface IHttpReturnRemove {
+export interface IEntityRemove {
+  /**
+   * `ID` of the removed object
+   */
   id: string;
+  /**
+   * `HTTP` response status. If the object is successfully removed the status will be `204`
+   */
   status: IHttpStatus;
 }
 
@@ -74,22 +65,6 @@ export interface IStream extends IStreamCondensed {
   tags: ITagCondensed[];
 }
 
-export interface ICustomPropertyCondensed {
-  privileges: string[];
-  valueType: string;
-  name: string;
-  choiceValues: string[];
-  id: string;
-}
-
-export interface ICustomProperty extends ICustomPropertyCondensed {
-  createdDate: string;
-  schemaPath: string;
-  modifiedDate: string;
-  description: string;
-  objectTypes: TCustomPropObjectTypes[];
-}
-
 export interface ICustomPropertyObject {
   createdDate: string;
   schemaPath: string;
@@ -111,74 +86,6 @@ export interface IAppExportResponse {
   schemaPath: string;
   appId: string;
   cancelled: boolean;
-}
-
-export interface IUserAttributes {
-  createdDate: string;
-  attributeValue: string;
-  attributeType: string;
-  schemaPath: string;
-  modifiedDate: string;
-  externalId: string;
-  id: string;
-}
-
-export interface IUserCondensed {
-  privileges: string[];
-  userDirectoryConnectorName: string;
-  userDirectory: string;
-  userId: string;
-  name: string;
-  id: string;
-}
-
-export interface IUser extends IUserCondensed {
-  removedExternally: boolean;
-  schemaPath: string;
-  roles: string[];
-  deleteProhibited: boolean;
-  tags: ITagCondensed[];
-  blacklisted: boolean;
-  createdDate: string;
-  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
-  inactive: boolean;
-  modifiedDate: string;
-  attributes: IUserAttributes[];
-}
-
-export interface IContentLibraryCondensed {
-  privileges: string[];
-  name: string;
-  id: string;
-  type: string;
-}
-
-export interface IContentLibrary extends IContentLibraryCondensed {
-  createdDate: string;
-  modifiedDate: string;
-  schemaPath: string;
-  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
-  owner: IOwner;
-  tags: ITagCondensed[];
-  whiteList: IFileExtensionWhiteListCondensed;
-  references: IStaticContentReferenceCondensed[];
-}
-
-export interface IExtensionCondensed {
-  id: string;
-  privileges: string[];
-  name: string;
-}
-
-export interface IExtension extends IExtensionCondensed {
-  createdDate: string;
-  modifiedDate: string;
-  schemaPath: string;
-  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
-  owner: IOwner;
-  tags: ITagCondensed[];
-  whiteList: IFileExtensionWhiteListCondensed;
-  references: IStaticContentReferenceCondensed[];
 }
 
 export type TSystemRuleActions =
@@ -275,12 +182,6 @@ export interface ITask extends ITaskCondensed {
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   modifiedDate: string;
 }
-
-export interface IRemoveFilter {
-  id: string;
-  status: number;
-}
-
 export interface IEngineCondensed {
   id: string;
   privileges: string[];
@@ -424,11 +325,6 @@ export interface ISelection {
   items?: ISelectionItem[];
 }
 
-export interface IContentLibraryFile {
-  name: string;
-  file: string;
-}
-
 export interface IEngineGetValidResult {
   schemaPath?: string;
   loadBalancingResultCode?: number;
@@ -522,90 +418,6 @@ export interface ISchemaEvent extends ISchemaEventCondensed {
   externalProgramTask: IExternalProgramTaskCondensed;
   reloadTask: IExternalProgramTaskCondensed;
   userSyncTask: IExternalProgramTaskCondensed;
-}
-
-export interface IServiceClusterSettingsDbCredentials {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  userName?: string;
-  password?: string;
-}
-
-export interface ServiceClusterSettingsSharedPersistenceProperties {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  rootFolder?: string;
-  appFolder?: string;
-  staticContentRootFolder?: string;
-  connector32RootFolder?: string;
-  connector64RootFolder?: string;
-  archivedLogsRootFolder?: string;
-  databaseHost?: string;
-  databasePort?: number;
-  sSLPort?: number;
-  failoverTimeout?: number;
-}
-
-export interface IServiceClusterSettingsEncryption {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  enableEncryptQvf?: boolean;
-  enableEncryptQvd?: boolean;
-  encryptionKeyThumbprint?: string;
-}
-
-export interface IServiceClusterSettings {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  persistenceMode: number;
-  dataCollection?: boolean;
-  tasksImpersonation?: boolean;
-  databaseCredentials: IServiceClusterSettingsDbCredentials;
-  encryption: IServiceClusterSettingsEncryption;
-
-  sharedPersistenceProperties: ServiceClusterSettingsSharedPersistenceProperties;
-}
-
-export interface IServiceClusterCondensed {
-  id?: string;
-  privileges?: string[];
-  name: string;
-}
-
-export interface IServiceCluster extends IServiceClusterCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  settings: IServiceClusterSettings;
-}
-
-export interface IServiceStatusCondensed {
-  id?: string;
-  privileges?: string[];
-}
-
-export interface IServiceStatus extends IServiceStatusCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  serviceType: number;
-  serviceState: number;
-  timestamp?: string;
-  serverNodeConfiguration: IServerNodeConfigurationCondensed;
 }
 
 export interface IUserDirectorySettings {
@@ -726,35 +538,6 @@ export interface IDataConnection extends IDataConnectionCondensed {
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   tags: ITagCondensed[];
   owner: IUserCondensed;
-}
-
-export interface IAppObjectCondensed {
-  id?: string;
-  privileges?: string[];
-  name?: string;
-  engineObjectId?: string;
-  contentHash?: string;
-  engineObjectType?: string;
-  description?: string;
-  objectType?: string;
-  publishTime?: string;
-  published?: boolean;
-}
-
-export interface IAppObject extends IAppObjectCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  owner: IUserCondensed;
-  tags: ITagCondensed[];
-  app: IAppCondensed;
-  size?: number;
-  attributes: string;
-  approved?: boolean;
-  sourceObject: string;
-  draftObject: string;
-  appObjectBlobId: string;
 }
 
 export type IObject =

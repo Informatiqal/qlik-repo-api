@@ -1,6 +1,4 @@
-import internal from "stream";
 import {
-  TCustomPropObjectTypes,
   TSystemRuleCategory,
   TSystemRuleActions,
   TSystemRuleContext,
@@ -16,35 +14,6 @@ import {
   TRepeatOptions,
 } from "./ranges";
 
-export interface IUserUpdate {
-  id: string;
-  tags?: string[];
-  customProperties?: string[];
-  name?: string;
-  roles?: string[];
-}
-
-export interface IUserCreate {
-  userId: string;
-  userDirectory: string;
-  name?: string;
-  roles?: string[];
-  tags?: string[];
-  customProperties?: string[];
-}
-
-export interface ICustomPropertyCreate {
-  name: string;
-  description?: string;
-  choiceValues?: string[];
-  objectTypes?: TCustomPropObjectTypes[];
-  valueType?: string;
-}
-
-export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
-  id: string;
-}
-
 export interface IStreamCreate {
   name: string;
   tags?: string[];
@@ -58,25 +27,6 @@ export interface IStreamUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
-}
-
-export interface IContentLibraryUpdate {
-  id: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
-
-export interface IExtensionUpdate {
-  id: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
-
-export interface IExtensionImport {
-  file: Buffer;
-  password?: string;
 }
 
 export interface ISystemRuleCreate {
@@ -154,29 +104,6 @@ export interface ITaskCreateTriggerSchema {
   daylightSavingTime?: boolean;
 }
 
-interface ITableColumnBase {
-  columnType: string;
-  definition: string;
-  name?: string;
-}
-
-export interface ITableColumn {
-  columnType: string;
-  definition: string;
-  name?: string;
-  list?: ITableColumnBase[];
-}
-
-export interface ITableCreate {
-  type: string;
-  columns: ITableColumn[];
-  filter?: string;
-  skip?: number;
-  take?: number;
-  sortColumn?: string;
-  orderAscending?: boolean;
-}
-
 export interface IEngineUpdate {
   id: string;
   workingSetSizeMode?: "IgnoreMaxLimit" | "SoftMaxLimit" | "HardMaxLimit";
@@ -225,22 +152,6 @@ export interface ISystemRuleAuditGet {
 }
 
 export interface ISystemRuleLicenseCreate {}
-
-export interface IServiceClusterUpdate {
-  id: string;
-  name?: string;
-  persistenceMode?: number;
-  rootFolder?: string;
-  appFolder?: string;
-  staticContentRootFolder?: string;
-  connector32RootFolder?: string;
-  connector64RootFolder?: string;
-  archivedLogsRootFolder?: string;
-  failoverTimeout?: number;
-  enableEncryptQvf?: boolean;
-  enableEncryptQvd?: boolean;
-  encryptionKeyThumbprint?: string;
-}
 
 export interface IUserDirectoryUpdate {
   id: string;
@@ -336,12 +247,6 @@ export interface IDataConnectionUpdate {
   owner?: string;
   tags?: string[];
   customProperties?: string[];
-}
-
-export interface IAppObjectUpdate {
-  id: string;
-  owner?: string;
-  approved?: boolean;
 }
 
 export interface IVirtualProxyUpdate {

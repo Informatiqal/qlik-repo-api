@@ -1,38 +1,56 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 
-import { IServiceStatus, IServiceStatusCondensed } from "./interfaces";
+import { IServerNodeConfigurationCondensed } from "./interfaces";
 
-export class ServiceStatus {
-  constructor() {}
+export interface IServiceStatusCondensed {
+  id?: string;
+  privileges?: string[];
+}
 
-  public async serviceStatusCount(this: QlikRepoApi): Promise<number> {
+export interface IServiceStatus extends IServiceStatusCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  serviceType: number;
+  serviceState: number;
+  timestamp?: string;
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
+}
+
+export interface IClassServiceStatus {
+  count(id: string): Promise<number>;
+  get(id: string): Promise<IServiceStatus>;
+  getAll(): Promise<IServiceStatusCondensed[]>;
+  getFilter(filter: string, full?: boolean): Promise<IServiceStatus[]>;
+}
+
+export class ServiceStatus implements IClassServiceStatus {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async count(): Promise<number> {
     return await this.repoClient
       .Get(`ServiceStatus/count`)
       .then((res) => res.data as number);
   }
 
-  public async serviceStatusGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IServiceStatus> {
+  public async get(id: string) {
     if (!id) throw new Error(`serviceStatusGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`ServiceStatus/${id}`)
       .then((res) => res.data as IServiceStatus);
   }
 
-  public async serviceStatusGetAll(
-    this: QlikRepoApi
-  ): Promise<IServiceStatusCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`ServiceStatus`)
       .then((res) => res.data as IServiceStatusCondensed[]);
   }
 
-  public async serviceStatusGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IServiceStatus[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`serviceStatusGetFilter: "filter" parameter is required`);
 

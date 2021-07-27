@@ -1,4 +1,3 @@
-import { QlikRepoApi } from "./main";
 import { IHttpStatus } from "./interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
 

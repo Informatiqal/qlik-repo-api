@@ -3,7 +3,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import {
   IHttpStatus,
-  IHttpReturnRemove,
+  IEntityRemove,
   IProxyService,
   IProxyServiceCondensed,
   IVirtualProxyConfig,
@@ -253,11 +253,11 @@ export class Proxy {
   public async virtualProxyRemove(
     this: QlikRepoApi,
     id: string
-  ): Promise<IHttpReturnRemove> {
+  ): Promise<IEntityRemove> {
     if (!id) throw new Error(`virtualProxyRemove: "id" parameter is required`);
 
     return await this.repoClient.Get(`virtualproxyconfig/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 

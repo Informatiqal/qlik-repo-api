@@ -1,22 +1,62 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import {
-  IHttpStatus,
-  IAppObject,
-  IAppObjectCondensed,
-  IHttpReturnRemove,
-} from "./interfaces";
+import { IHttpStatus, IEntityRemove } from "./interfaces";
+import { IAppCondensed } from "./App";
+import { ITagCondensed } from "./Tag";
+import { IUserCondensed } from "./User";
 
-import { IAppObjectUpdate } from "./interfaces/argument.interface";
+export interface IAppObjectCondensed {
+  id?: string;
+  privileges?: string[];
+  name?: string;
+  engineObjectId?: string;
+  contentHash?: string;
+  engineObjectType?: string;
+  description?: string;
+  objectType?: string;
+  publishTime?: string;
+  published?: boolean;
+}
 
-export class AppObject {
-  constructor() {}
+export interface IAppObject extends IAppObjectCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  owner: IUserCondensed;
+  tags: ITagCondensed[];
+  app: IAppCondensed;
+  size?: number;
+  attributes: string;
+  approved?: boolean;
+  sourceObject: string;
+  draftObject: string;
+  appObjectBlobId: string;
+}
 
-  public async appObjectGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IAppObject> {
+export interface IAppObjectUpdate {
+  id: string;
+  owner?: string;
+  approved?: boolean;
+}
+
+export interface IClassAppObject {
+  get(id: string): Promise<IAppObject>;
+  getAll(): Promise<IAppObjectCondensed[]>;
+  getFilter(filter: string): Promise<IAppObject[]>;
+  publish(id: string): Promise<IAppObject[]>;
+  remove(id: string): Promise<IEntityRemove>;
+  unPublish(id: string): Promise<IAppObject[]>;
+  update(arg: IAppObjectUpdate): Promise<IAppObject>;
+}
+export class AppObject implements IClassAppObject {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`appObjectGet: "id" parameter is required`);
 
     return await this.repoClient
@@ -24,18 +64,13 @@ export class AppObject {
       .then((res) => res.data as IAppObject);
   }
 
-  public async appObjectGetAll(
-    this: QlikRepoApi
-  ): Promise<IAppObjectCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`app/object`)
       .then((res) => res.data as IAppObjectCondensed[]);
   }
 
-  public async appObjectGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IAppObject[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`appObjectFilter: "filter" parameter is required`);
 
@@ -44,10 +79,7 @@ export class AppObject {
       .then((res) => res.data as IAppObject[]);
   }
 
-  public async appObjectPublish(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IAppObject[]> {
+  public async publish(id: string) {
     if (!id) throw new Error(`appObjectPublish: "id" parameter is required`);
 
     return await this.repoClient
@@ -55,10 +87,7 @@ export class AppObject {
       .then((res) => res.data as IAppObject[]);
   }
 
-  public async appObjectUnPublish(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IAppObject[]> {
+  public async unPublish(id: string) {
     if (!id) throw new Error(`appObjectUnPublish: "id" parameter is required`);
 
     return await this.repoClient
@@ -66,24 +95,18 @@ export class AppObject {
       .then((res) => res.data as IAppObject[]);
   }
 
-  public async appObjectRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpReturnRemove> {
+  public async remove(id: string) {
     if (!id) throw new Error(`appObjectRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`app/object/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async appObjectUpdate(
-    this: QlikRepoApi,
-    arg: IAppObjectUpdate
-  ): Promise<IAppObject> {
+  public async update(arg: IAppObjectUpdate) {
     if (!arg.id) throw new Error(`appObjectUpdate: "id" parameter is required`);
 
-    let appObject = await this.appObjectGet(arg.id);
+    let appObject = await this.get(arg.id);
     if (arg.approved) appObject.approved = arg.approved;
 
     let updateCommon = new UpdateCommonProperties(this, appObject, arg);

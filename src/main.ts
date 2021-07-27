@@ -1,12 +1,18 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { About, IClassAbout } from "./About";
 import { App, IClassApp } from "./App";
-import { AppObject } from "./AppObject";
+import { AppObject, IClassAppObject } from "./AppObject";
 import { Certificate, IClassCertificate } from "./Certificate";
-import { ContentLibrary } from "./ContentLibrary";
-import { CustomProperty } from "./CustomProperty";
+import { ContentLibrary, IClassContentLibrary } from "./ContentLibrary";
+import { CustomProperty, IClassCustomProperty } from "./CustomProperty";
+import { Extension, IClassExtension } from "./Extension";
+import { ServiceCluster, IClassServiceCluster } from "./ServiceCluster";
+import { ServiceStatus, IClassServiceStatus } from "./ServiceStatus";
+import { Table, IClassTable } from "./Table";
+import { Tag, IClassTag } from "./Tag";
+import { User, IClassUser } from "./User";
+
 import { DataConnection } from "./DataConnection";
-import { Extension } from "./Extension";
 import { Engine } from "./Engine";
 import { License } from "./License";
 import { Node } from "./Node";
@@ -16,161 +22,37 @@ import { SharedContent } from "./SharedContent";
 import { Scheduler } from "./Scheduler";
 import { Stream } from "./Stream";
 import { SystemRule } from "./SystemRule";
-import { ServiceCluster } from "./ServiceCluster";
-import { ServiceStatus } from "./ServiceStatus";
-import { Table } from "./Table";
-import { Tag } from "./Tag";
 import { Task } from "./Task";
-import { User } from "./User";
 import { UserDirectory } from "./UserDirectory";
 
-import {
-  IAccessTypeInfo,
-  // IApp,
-  IAppObject,
-  IAppObjectCondensed,
-  IAudit,
-  IRemoveFilter,
-  IContentLibrary,
-  ICustomProperty,
-  IDataConnection,
-  IDataConnectionCondensed,
-  IEngine,
-  IExtension,
-  IObject,
-  IProxyService,
-  IProxyServiceCondensed,
-  IServerNodeConfiguration,
-  ISystemRule,
-  IHttpReturn,
-  IHttpReturnRemove,
-  ILicense,
-  ILicenseAccessGroup,
-  ILicenseAccessTypeCondensed,
-  ISharedContent,
-  ISharedContentCondensed,
-  ISchedulerService,
-  ISchedulerServiceCondensed,
-  IServiceCluster,
-  IServiceStatus,
-  IStream,
-  ITask,
-  ITaskExecutionResult,
-  IUser,
-  IUserDirectory,
-  IVirtualProxyConfig,
-  IVirtualProxyConfigCondensed,
-} from "./interfaces";
-export {
-  IAccessTypeInfo,
-  IAppObject,
-  IAppObjectCondensed,
-  IAudit,
-  IRemoveFilter,
-  IContentLibrary,
-  ICustomProperty,
-  IDataConnection,
-  IDataConnectionCondensed,
-  IEngine,
-  IExtension,
-  IObject,
-  IProxyService,
-  IProxyServiceCondensed,
-  ISharedContent,
-  ISharedContentCondensed,
-  IServerNodeConfiguration,
-  ISystemRule,
-  IHttpReturn,
-  IHttpReturnRemove,
-  ILicense,
-  ILicenseAccessTypeCondensed,
-  ILicenseAccessGroup,
-  ISchedulerService,
-  ISchedulerServiceCondensed,
-  IServiceCluster,
-  IServiceStatus,
-  IStream,
-  ITask,
-  ITaskExecutionResult,
-  IUser,
-  IUserDirectory,
-  IVirtualProxyConfig,
-  IVirtualProxyConfigCondensed,
-};
+export * from "./interfaces";
+export * from "./interfaces/argument.interface";
 
-import {
-  IAppObjectUpdate,
-  IDataConnectionCreate,
-  IDataConnectionUpdate,
-  IAuditParameters,
-  IExtensionUpdate,
-  IUserUpdate,
-  IUserCreate,
-  IStreamUpdate,
-  ITaskCreateTriggerSchema,
-  ITaskCreateTriggerComposite,
-  ITaskCreate,
-  ITableCreate,
-  ISchedulerServiceUpdate,
-  IServiceClusterUpdate,
-  IStreamCreate,
-  ISystemRuleUpdate,
-  ISystemRuleCreate,
-  IExtensionImport,
-  IEngineUpdate,
-  ICustomPropertyUpdate,
-  ICustomPropertyCreate,
-  IContentLibraryUpdate,
-  INodeUpdate,
-  INodeCreate,
-  ILicenseSetKey,
-  ILicenseSetSerial,
-  IVirtualProxyUpdate,
-  ISharedContentUpdate,
-  ISharedContentCreate,
-  IProxyCreate,
-} from "./interfaces/argument.interface";
+export * from "./About";
+export * from "./App";
+export * from "./AppObject";
+export * from "./Certificate";
+export * from "./ContentLibrary";
+export * from "./CustomProperty";
+export * from "./Extension";
+export * from "./ServiceCluster";
+export * from "./ServiceCluster.interface";
+export * from "./ServiceStatus";
+export * from "./Table";
+export * from "./Tag";
+export * from "./User";
 export {
-  IAppObjectUpdate,
-  IDataConnectionCreate,
-  IDataConnectionUpdate,
-  IAuditParameters,
-  IExtensionUpdate,
-  IUserUpdate,
-  IUserCreate,
-  ISchedulerServiceUpdate,
-  IStreamUpdate,
-  ITaskCreateTriggerSchema,
-  ITaskCreateTriggerComposite,
-  ITaskCreate,
-  ITableCreate,
-  IServiceClusterUpdate,
-  IStreamCreate,
-  ISystemRuleUpdate,
-  ISystemRuleCreate,
-  IExtensionImport,
-  IEngineUpdate,
-  ICustomPropertyUpdate,
-  ICustomPropertyCreate,
-  IContentLibraryUpdate,
-  INodeUpdate,
-  INodeCreate,
-  ILicenseSetKey,
-  ILicenseSetSerial,
-  IVirtualProxyUpdate,
-  ISharedContentUpdate,
-  ISharedContentCreate,
-  IProxyCreate,
-};
-
-export { About, IAbout, IClassAbout } from "./About";
-export { Tag, ITag, ITagCondensed } from "./Tag";
-export {
-  Certificate,
-  ICertificateExportParameters,
-  IClassCertificate,
-} from "./Certificate";
-export { App, IApp, IAppCondensed, IClassApp, IAppUpdate } from "./App";
+  IHttpReturn,
+  IConfig,
+  IConfigFull,
+  QlikGenericRestClient,
+  QlikRepositoryClient,
+  IHeaderConfig,
+  IJWTConfig,
+  ISessionConfig,
+  ITicketConfig,
+  ICertUser,
+} from "qlik-rest-api";
 export class QlikRepoApi {
   public repoClient: QlikRepositoryClient;
   public genericClient: QlikGenericRestClient;
@@ -179,8 +61,16 @@ export class QlikRepoApi {
 
   public about: IClassAbout;
   public app: IClassApp;
+  public appObject: IClassAppObject;
   public certificate: IClassCertificate;
-  public tag;
+  public contentLibrary: IClassContentLibrary;
+  public customProperty: IClassCustomProperty;
+  public extension: IClassExtension;
+  public serviceCluster: IClassServiceCluster;
+  public serviceStatus: IClassServiceStatus;
+  public table: IClassTable;
+  public tag: IClassTag;
+  public user: IClassUser;
   constructor(public repoConfig: any) {
     this.repoClient = new QlikRepositoryClient(repoConfig);
 
@@ -193,39 +83,20 @@ export class QlikRepoApi {
     this.genericRepoClient = new QlikGenericRestClient(genericConfig);
     this.about = new About(this.repoClient);
     this.app = new App(this.repoClient, this.genericClient);
+    this.appObject = new AppObject(this.repoClient);
     this.certificate = new Certificate(this.repoClient);
-    this.tag = new Tag(this);
+    this.customProperty = new CustomProperty(this.repoClient);
+    this.extension = new Extension(this.repoClient);
+    this.serviceStatus = new ServiceStatus(this.repoClient);
+    this.serviceCluster = new ServiceCluster(this.repoClient);
+    this.table = new Table(this.repoClient);
+    this.tag = new Tag(this.repoClient);
+    this.user = new User(this.repoClient);
+    this.contentLibrary = new ContentLibrary(
+      this.repoClient,
+      this.genericClient
+    );
   }
-
-  appObjectGet = AppObject.prototype.appObjectGet;
-  appObjectGetAll = AppObject.prototype.appObjectGetAll;
-  appObjectGetFilter = AppObject.prototype.appObjectGetFilter;
-  appObjectPublish = AppObject.prototype.appObjectPublish;
-  appObjectUnPublish = AppObject.prototype.appObjectUnPublish;
-  appObjectRemove = AppObject.prototype.appObjectRemove;
-  appObjectUpdate = AppObject.prototype.appObjectUpdate;
-
-  contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
-  contentLibraryGetAll = ContentLibrary.prototype.contentLibraryGetAll;
-  contentLibraryGetFilter = ContentLibrary.prototype.contentLibraryGetFilter;
-  contentLibraryCreate = ContentLibrary.prototype.contentLibraryCreate;
-  contentLibraryExport = ContentLibrary.prototype.contentLibraryExport;
-  contentLibraryImport = ContentLibrary.prototype.contentLibraryImport;
-  contentLibraryImportForApp =
-    ContentLibrary.prototype.contentLibraryImportForApp;
-  contentLibraryRemove = ContentLibrary.prototype.contentLibraryRemove;
-  contentLibraryRemoveFilter =
-    ContentLibrary.prototype.contentLibraryRemoveFilter;
-  contentLibrarySelect = ContentLibrary.prototype.contentLibrarySelect;
-  contentLibraryUpdate = ContentLibrary.prototype.contentLibraryUpdate;
-
-  customPropertyGet = CustomProperty.prototype.customPropertyGet;
-  customPropertyGetAll = CustomProperty.prototype.customPropertyGetAll;
-  customPropertyGetFilter = CustomProperty.prototype.customPropertyGetFilter;
-  customPropertyCreate = CustomProperty.prototype.customPropertyCreate;
-  customPropertyRemove = CustomProperty.prototype.customPropertyRemove;
-  customPropertySelect = CustomProperty.prototype.customPropertySelect;
-  customPropertyUpdate = CustomProperty.prototype.customPropertyUpdate;
 
   dataConnectionCreate = DataConnection.prototype.dataConnectionCreate;
   dataConnectionGet = DataConnection.prototype.dataConnectionGet;
@@ -233,13 +104,6 @@ export class QlikRepoApi {
   dataConnectionGetFilter = DataConnection.prototype.dataConnectionGetFilter;
   dataConnectionRemove = DataConnection.prototype.dataConnectionRemove;
   dataConnectionUpdate = DataConnection.prototype.dataConnectionUpdate;
-
-  extensionGet = Extension.prototype.extensionGet;
-  extensionGetAll = Extension.prototype.extensionGetAll;
-  extensionGetFilter = Extension.prototype.extensionGetFilter;
-  extensionRemove = Extension.prototype.extensionRemove;
-  extensionUpdate = Extension.prototype.extensionUpdate;
-  extensionImport = Extension.prototype.extensionImport;
 
   engineGet = Engine.prototype.engineGet;
   engineGetAll = Engine.prototype.engineGetAll;
@@ -307,19 +171,6 @@ export class QlikRepoApi {
   schedulerGetFilter = Scheduler.prototype.schedulerGetFilter;
   schedulerUpdate = Scheduler.prototype.schedulerUpdate;
 
-  serviceClusterCount = ServiceCluster.prototype.serviceClusterCount;
-  serviceClusterGet = ServiceCluster.prototype.serviceClusterGet;
-  serviceClusterGetAll = ServiceCluster.prototype.serviceClusterGetAll;
-  serviceClusterGetFilter = ServiceCluster.prototype.serviceClusterGetFilter;
-  serviceClusterRemove = ServiceCluster.prototype.serviceClusterRemove;
-  serviceClusterSetCentral = ServiceCluster.prototype.serviceClusterSetCentral;
-  serviceClusterUpdate = ServiceCluster.prototype.serviceClusterUpdate;
-
-  serviceStatusCount = ServiceStatus.prototype.serviceStatusCount;
-  serviceStatusGet = ServiceStatus.prototype.serviceStatusGet;
-  serviceStatusGetAll = ServiceStatus.prototype.serviceStatusGetAll;
-  serviceStatusGetFilter = ServiceStatus.prototype.serviceStatusGetFilter;
-
   streamGet = Stream.prototype.streamGet;
   streamGetAll = Stream.prototype.streamGetAll;
   streamGetFilter = Stream.prototype.streamGetFilter;
@@ -335,16 +186,6 @@ export class QlikRepoApi {
   ruleRemove = SystemRule.prototype.ruleRemove;
   ruleLicenseCreate = SystemRule.prototype.ruleLicenseCreate;
   ruleUpdate = SystemRule.prototype.ruleUpdate;
-
-  // tagGet = Tag.prototype.tagGet;
-  // tagGetAll = Tag.prototype.tagGetAll;
-  // tagGetFilter = Tag.prototype.tagGetFilter;
-  // tagCreate = Tag.prototype.tagCreate;
-  // tagRemove = Tag.prototype.tagRemove;
-  // tagRemoveFilter = Tag.prototype.tagRemoveFilter;
-  // tagUpdate = Tag.prototype.tagUpdate;
-
-  tableCreate = Table.prototype.tableCreate;
 
   taskGetAll = Task.prototype.taskGetAll;
   taskReloadGetAll = Task.prototype.taskReloadGetAll;
@@ -365,13 +206,6 @@ export class QlikRepoApi {
   taskScheduleGetAll = Task.prototype.taskScheduleGetAll;
   taskTriggerCreateComposite = Task.prototype.taskTriggerCreateComposite;
   taskTriggerCreateSchema = Task.prototype.taskTriggerCreateSchema;
-
-  userGet = User.prototype.userGet;
-  userGetAll = User.prototype.userGetAll;
-  userGetFilter = User.prototype.userGetFilter;
-  userCreate = User.prototype.userCreate;
-  userRemove = User.prototype.userRemove;
-  userUpdate = User.prototype.userUpdate;
 
   userDirectoryCount = UserDirectory.prototype.userDirectoryCount;
   userDirectoryGet = UserDirectory.prototype.userDirectoryGet;
