@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ITaskCreateTriggerComposite | Qlik Repo API</title>
+	<title>ITagCondensed | Qlik Repo API</title>
 	<meta name="description" content="Documentation for Qlik Repo API">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">Qlik Repo API</a>
 				</li>
 				<li>
-					<a href="ITaskCreateTriggerComposite.html">ITaskCreateTriggerComposite</a>
+					<a href="ITagCondensed.html">ITagCondensed</a>
 				</li>
 			</ul>
-			<h1>Interface ITaskCreateTriggerComposite</h1>
+			<h1>Interface ITagCondensed</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ITaskCreateTriggerComposite</span>
+						<span class="target">ITagCondensed</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="ITag.html" class="tsd-signature-type" data-tsd-kind="Interface">ITag</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -80,10 +85,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreateTriggerComposite.html#eventTaskId" class="tsd-kind-icon">event<wbr>Task<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreateTriggerComposite.html#state" class="tsd-kind-icon">state</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreateTriggerComposite.html#taskId" class="tsd-kind-icon">task<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreateTriggerComposite.html#triggerName" class="tsd-kind-icon">trigger<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITagCondensed.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITagCondensed.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITagCondensed.html#privileges" class="tsd-kind-icon">privileges</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,42 +96,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="eventTaskId" class="tsd-anchor"></a>
-					<h3>event<wbr>Task<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">event<wbr>Task<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/interfaces/argument.interface.ts#L140">interfaces/argument.interface.ts:140</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/Tag.ts#L7">Tag.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="state" class="tsd-anchor"></a>
-					<h3>state</h3>
-					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;fail&quot;</span></div>
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/interfaces/argument.interface.ts#L141">interfaces/argument.interface.ts:141</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/Tag.ts#L6">Tag.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="taskId" class="tsd-anchor"></a>
-					<h3>task<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">task<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="privileges" class="tsd-anchor"></a>
+					<h3>privileges</h3>
+					<div class="tsd-signature tsd-kind-icon">privileges<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/interfaces/argument.interface.ts#L138">interfaces/argument.interface.ts:138</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="triggerName" class="tsd-anchor"></a>
-					<h3>trigger<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">trigger<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/interfaces/argument.interface.ts#L139">interfaces/argument.interface.ts:139</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/fe3c555/src/Tag.ts#L5">Tag.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -146,19 +140,16 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ITaskCreateTriggerComposite.html" class="tsd-kind-icon">ITask<wbr>Create<wbr>Trigger<wbr>Composite</a>
+						<a href="ITagCondensed.html" class="tsd-kind-icon">ITag<wbr>Condensed</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreateTriggerComposite.html#eventTaskId" class="tsd-kind-icon">event<wbr>Task<wbr>Id</a>
+								<a href="ITagCondensed.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreateTriggerComposite.html#state" class="tsd-kind-icon">state</a>
+								<a href="ITagCondensed.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreateTriggerComposite.html#taskId" class="tsd-kind-icon">task<wbr>Id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreateTriggerComposite.html#triggerName" class="tsd-kind-icon">trigger<wbr>Name</a>
+								<a href="ITagCondensed.html#privileges" class="tsd-kind-icon">privileges</a>
 							</li>
 						</ul>
 					</li>

@@ -1,3 +1,8 @@
+import { ITag, ITagCondensed } from "./Tag";
+export { ITag, ITagCondensed };
+import { IApp, IAppCondensed } from "./App";
+export { IApp, IAppCondensed };
+
 export type TCustomPropObjectTypes =
   | "App"
   | "AnalyticConnection"
@@ -53,35 +58,6 @@ export interface IOwner {
   userId: string;
 }
 
-export interface IAppCondensed {
-  id?: string;
-  privileges?: string[];
-  name: string;
-  appId: string;
-  published: boolean;
-  publishTime: string;
-  stream: IStream;
-  savedInProductVersion: string;
-  migrationHash: string;
-  availabilityStatus: {};
-}
-
-export interface IApp extends IAppCondensed {
-  owner: IOwner;
-  thumbnail: string;
-  schemaPath: string;
-  description: string;
-  sourceAppId: string;
-  tags: ITagCondensed[];
-  lastReloadTime: string;
-  createdDate: string;
-  customProperties: ICustomPropertyObject[];
-  fileSize: number;
-  modifiedDate: string;
-  dynamicColor: string;
-  targetAppId: string;
-}
-
 export interface IStreamCondensed {
   id: string;
   name: string;
@@ -96,18 +72,6 @@ export interface IStream extends IStreamCondensed {
   customProperties: ICustomPropertyObject[];
   owner: IOwner;
   tags: ITagCondensed[];
-}
-
-export interface ITagCondensed {
-  privileges: string[];
-  name: string;
-  id: string;
-}
-
-export interface ITag extends ITagCondensed {
-  createdDate: string;
-  schemaPath: string;
-  modifiedDate: string;
 }
 
 export interface ICustomPropertyCondensed {
@@ -310,17 +274,6 @@ export interface ITask extends ITaskCondensed {
   createdDate: string;
   customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
   modifiedDate: string;
-}
-
-export interface IAbout {
-  buildVersion: string;
-  requiresBootstrap: boolean;
-  schemaPath: string;
-  sharedPersistence: boolean;
-  singleNodeOnly: boolean;
-  buildDate: string;
-  databaseProvider: string;
-  nodeType: number;
 }
 
 export interface IRemoveFilter {

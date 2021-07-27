@@ -5,9 +5,10 @@ import {
   ICustomPropertyCondensed,
 } from "../interfaces";
 
+import { IAppUpdate } from "../App";
+
 import {
   IUserUpdate,
-  IAppUpdate,
   IStreamUpdate,
   ISystemRuleCreate,
   ITaskCreate,

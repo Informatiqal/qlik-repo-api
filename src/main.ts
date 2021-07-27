@@ -1,8 +1,8 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
-import { About } from "./About";
-import { App } from "./App";
+import { About, IClassAbout } from "./About";
+import { App, IClassApp } from "./App";
 import { AppObject } from "./AppObject";
-import { Certificate } from "./Certificate";
+import { Certificate, IClassCertificate } from "./Certificate";
 import { ContentLibrary } from "./ContentLibrary";
 import { CustomProperty } from "./CustomProperty";
 import { DataConnection } from "./DataConnection";
@@ -25,9 +25,8 @@ import { User } from "./User";
 import { UserDirectory } from "./UserDirectory";
 
 import {
-  IAbout,
   IAccessTypeInfo,
-  IApp,
+  // IApp,
   IAppObject,
   IAppObjectCondensed,
   IAudit,
@@ -55,7 +54,6 @@ import {
   IServiceCluster,
   IServiceStatus,
   IStream,
-  ITag,
   ITask,
   ITaskExecutionResult,
   IUser,
@@ -64,9 +62,7 @@ import {
   IVirtualProxyConfigCondensed,
 } from "./interfaces";
 export {
-  IAbout,
   IAccessTypeInfo,
-  IApp,
   IAppObject,
   IAppObjectCondensed,
   IAudit,
@@ -94,7 +90,6 @@ export {
   IServiceCluster,
   IServiceStatus,
   IStream,
-  ITag,
   ITask,
   ITaskExecutionResult,
   IUser,
@@ -107,7 +102,6 @@ import {
   IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
-  ICertificateExportParameters,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -127,7 +121,6 @@ import {
   ICustomPropertyUpdate,
   ICustomPropertyCreate,
   IContentLibraryUpdate,
-  IAppUpdate,
   INodeUpdate,
   INodeCreate,
   ILicenseSetKey,
@@ -141,7 +134,6 @@ export {
   IAppObjectUpdate,
   IDataConnectionCreate,
   IDataConnectionUpdate,
-  ICertificateExportParameters,
   IAuditParameters,
   IExtensionUpdate,
   IUserUpdate,
@@ -161,7 +153,6 @@ export {
   ICustomPropertyUpdate,
   ICustomPropertyCreate,
   IContentLibraryUpdate,
-  IAppUpdate,
   INodeUpdate,
   INodeCreate,
   ILicenseSetKey,
@@ -172,11 +163,24 @@ export {
   IProxyCreate,
 };
 
+export { About, IAbout, IClassAbout } from "./About";
+export { Tag, ITag, ITagCondensed } from "./Tag";
+export {
+  Certificate,
+  ICertificateExportParameters,
+  IClassCertificate,
+} from "./Certificate";
+export { App, IApp, IAppCondensed, IClassApp, IAppUpdate } from "./App";
 export class QlikRepoApi {
   public repoClient: QlikRepositoryClient;
   public genericClient: QlikGenericRestClient;
   public genericRepoClient: QlikRepositoryClient;
   public genericWESClient: QlikRepositoryClient;
+
+  public about: IClassAbout;
+  public app: IClassApp;
+  public certificate: IClassCertificate;
+  public tag;
   constructor(public repoConfig: any) {
     this.repoClient = new QlikRepositoryClient(repoConfig);
 
@@ -187,28 +191,11 @@ export class QlikRepoApi {
     const genericRepoConfig = { ...repoConfig };
     delete genericRepoConfig.port;
     this.genericRepoClient = new QlikGenericRestClient(genericConfig);
+    this.about = new About(this.repoClient);
+    this.app = new App(this.repoClient, this.genericClient);
+    this.certificate = new Certificate(this.repoClient);
+    this.tag = new Tag(this);
   }
-
-  aboutGet = About.prototype.aboutGet;
-  aboutEnums = About.prototype.aboutEnums;
-  aboutOpenApi = About.prototype.aboutOpenApi;
-  aboutApiRelations = About.prototype.aboutApiRelations;
-  aboutApiDescription = About.prototype.aboutApiDescription;
-  aboutApiDefaults = About.prototype.aboutApiDefaults;
-
-  appGet = App.prototype.appGet;
-  appGetAll = App.prototype.appGetAll;
-  appGetFilter = App.prototype.appGetFilter;
-  appUpload = App.prototype.appUpload;
-  appUploadReplace = App.prototype.appUploadReplace;
-  appRemove = App.prototype.appRemove;
-  appRemoveFilter = App.prototype.appRemoveFilter;
-  appCopy = App.prototype.appCopy;
-  appExport = App.prototype.appExport;
-  appPublish = App.prototype.appPublish;
-  appSelect = App.prototype.appSelect;
-  appSwitch = App.prototype.appSwitch;
-  appUpdate = App.prototype.appUpdate;
 
   appObjectGet = AppObject.prototype.appObjectGet;
   appObjectGetAll = AppObject.prototype.appObjectGetAll;
@@ -217,10 +204,6 @@ export class QlikRepoApi {
   appObjectUnPublish = AppObject.prototype.appObjectUnPublish;
   appObjectRemove = AppObject.prototype.appObjectRemove;
   appObjectUpdate = AppObject.prototype.appObjectUpdate;
-
-  certificateDistributionPathGet =
-    Certificate.prototype.certificateDistributionPathGet;
-  certificateExport = Certificate.prototype.certificateExport;
 
   contentLibraryGet = ContentLibrary.prototype.contentLibraryGet;
   contentLibraryGetAll = ContentLibrary.prototype.contentLibraryGetAll;
@@ -353,13 +336,13 @@ export class QlikRepoApi {
   ruleLicenseCreate = SystemRule.prototype.ruleLicenseCreate;
   ruleUpdate = SystemRule.prototype.ruleUpdate;
 
-  tagGet = Tag.prototype.tagGet;
-  tagGetAll = Tag.prototype.tagGetAll;
-  tagGetFilter = Tag.prototype.tagGetFilter;
-  tagCreate = Tag.prototype.tagCreate;
-  tagRemove = Tag.prototype.tagRemove;
-  tagRemoveFilter = Tag.prototype.tagRemoveFilter;
-  tagUpdate = Tag.prototype.tagUpdate;
+  // tagGet = Tag.prototype.tagGet;
+  // tagGetAll = Tag.prototype.tagGetAll;
+  // tagGetFilter = Tag.prototype.tagGetFilter;
+  // tagCreate = Tag.prototype.tagCreate;
+  // tagRemove = Tag.prototype.tagRemove;
+  // tagRemoveFilter = Tag.prototype.tagRemoveFilter;
+  // tagUpdate = Tag.prototype.tagUpdate;
 
   tableCreate = Table.prototype.tableCreate;
 

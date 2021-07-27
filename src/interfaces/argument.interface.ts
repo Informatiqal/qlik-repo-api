@@ -45,16 +45,6 @@ export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
   id: string;
 }
 
-export interface IAppUpdate {
-  id: string;
-  name?: string;
-  description?: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-  stream?: string;
-}
-
 export interface IStreamCreate {
   name: string;
   tags?: string[];
@@ -352,14 +342,6 @@ export interface IAppObjectUpdate {
   id: string;
   owner?: string;
   approved?: boolean;
-}
-
-export interface ICertificateExportParameters {
-  machineNames: string[];
-  certificatePassword?: string;
-  includeSecretsKey?: boolean;
-  exportFormat?: "Windows" | "Pem";
-  includeCa?: boolean;
 }
 
 export interface IVirtualProxyUpdate {
