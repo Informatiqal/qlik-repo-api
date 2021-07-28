@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.20] - 2021-07-28
+
+### Changed
+
+- the codebase was overwritten
+- interfaces and types are closer to the class implementation (inside it or in xxx.interface.ts file)
+
 ## [0.0.19] - 2021-07-26
 
 ### Changed
