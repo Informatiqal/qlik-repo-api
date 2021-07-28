@@ -1,46 +1,89 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import {
-  IHttpStatus,
-  ICustomProperty,
-  IHttpReturnRemove,
-  ICustomPropertyCondensed,
-  ISelection,
-} from "./interfaces";
-
-import {
-  ICustomPropertyCreate,
-  ICustomPropertyUpdate,
-} from "./interfaces/argument.interface";
+import { IHttpStatus, IEntityRemove, ISelection } from "./types/interfaces";
 
 import { modifiedDateTime } from "./util/generic";
 
-export class CustomProperty {
-  constructor() {}
+export type TCustomPropObjectTypes =
+  | "App"
+  | "AnalyticConnection"
+  | "ContentLibrary"
+  | "DataConnection"
+  | "EngineService"
+  | "Extension"
+  | "ServerNodeConfiguration"
+  | "PrintingService"
+  | "ProxyService"
+  | "ReloadTask"
+  | "RepositoryService"
+  | "SchedulerService"
+  | "Stream"
+  | "UserSyncTask"
+  | "User"
+  | "VirtualProxyConfig";
 
-  public async customPropertyGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<ICustomProperty> {
+export interface ICustomPropertyCreate {
+  name: string;
+  description?: string;
+  choiceValues?: string[];
+  objectTypes?: TCustomPropObjectTypes[];
+  valueType?: string;
+}
+
+export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
+  id: string;
+}
+
+export interface ICustomPropertyCondensed {
+  privileges: string[];
+  valueType: string;
+  name: string;
+  choiceValues: string[];
+  id: string;
+}
+
+export interface ICustomProperty extends ICustomPropertyCondensed {
+  createdDate: string;
+  schemaPath: string;
+  modifiedDate: string;
+  description: string;
+  objectTypes: TCustomPropObjectTypes[];
+}
+
+export interface IClassCustomProperty {
+  get(id: string): Promise<ICustomProperty>;
+  getAll(): Promise<ICustomPropertyCondensed[]>;
+  getFilter(
+    filter: string,
+    full?: boolean
+  ): Promise<ICustomPropertyCondensed[]>;
+  create(arg: ICustomPropertyCreate): Promise<ICustomProperty>;
+  remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  update(arg: ICustomPropertyUpdate): Promise<ICustomProperty>;
+}
+
+export class CustomProperty {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`customPropertyGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`custompropertydefinition/${id}`)
       .then((res) => res.data as ICustomProperty);
   }
 
-  public async customPropertyGetAll(
-    this: QlikRepoApi
-  ): Promise<ICustomPropertyCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`custompropertydefinition`)
       .then((res) => res.data as ICustomPropertyCondensed[]);
   }
 
-  public async customPropertyGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<ICustomPropertyCondensed[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(
         `customPropertyGetFilter: "filter" parameter is required`
@@ -51,10 +94,7 @@ export class CustomProperty {
       .then((res) => res.data as ICustomPropertyCondensed[]);
   }
 
-  public async customPropertyCreate(
-    this: QlikRepoApi,
-    arg: ICustomPropertyCreate
-  ) {
+  public async create(arg: ICustomPropertyCreate) {
     if (!arg.name)
       throw new Error(`customPropertyCreate: "name" parameter is required`);
 
@@ -73,24 +113,30 @@ export class CustomProperty {
       .then((res) => res.data as ICustomProperty);
   }
 
-  public async customPropertyRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpReturnRemove> {
+  public async remove(id: string) {
     if (!id)
       throw new Error(`customPropertyRemove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`custompropertydefinition/${id}`)
       .then((res) => {
-        return { id, status: res.status as IHttpStatus } as IHttpReturnRemove;
+        return { id, status: res.status } as IEntityRemove;
       });
   }
 
-  public async customPropertySelect(
-    this: QlikRepoApi,
-    filter?: string
-  ): Promise<ISelection> {
+  public async removeFilter(filter: string) {
+    if (!filter)
+      throw new Error(`removeFilter: "filter" parameter is required`);
+
+    const customProperties = await this.getFilter(filter);
+    return await Promise.all<IEntityRemove>(
+      customProperties.map((customProperty: ICustomProperty) => {
+        return this.remove(customProperty.id);
+      })
+    );
+  }
+
+  public async select(filter?: string) {
     const urlBuild = new URLBuild(`selection/custompropertydefinition`);
     urlBuild.addParam("filter", filter);
 
@@ -100,16 +146,13 @@ export class CustomProperty {
   }
 
   // REVIEW: verify the logic here
-  public async customPropertyUpdate(
-    this: QlikRepoApi,
-    arg: ICustomPropertyUpdate
-  ) {
+  public async update(arg: ICustomPropertyUpdate) {
     if (!arg.id)
       throw new Error(`customPropertyUpdate: "id" parameter is required`);
     if (!arg.name)
       throw new Error(`customPropertyUpdate: "name" parameter is required`);
 
-    let customProperty = await this.customPropertyGet(arg.id);
+    let customProperty = await this.get(arg.id);
 
     if (arg.name) customProperty.name = arg.name;
     if (arg.description) customProperty.description = arg.description;

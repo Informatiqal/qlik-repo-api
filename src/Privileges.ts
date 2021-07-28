@@ -1,15 +1,49 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 
-import { IObject } from "./interfaces";
+import {
+  IApp,
+  IAppObject,
+  IContentLibrary,
+  ICustomProperty,
+  IDataConnection,
+  IEngine,
+  IExtension,
+  IStream,
+  ISystemRule,
+  ITag,
+  ITask,
+  IUser,
+  IUserDirectory,
+} from "./main";
 
-export class Privileges {
-  constructor() {}
+export type IObject =
+  | IApp
+  | IAppObject
+  | IContentLibrary
+  | ICustomProperty
+  | IDataConnection
+  | IEngine
+  | IExtension
+  | IStream
+  | ISystemRule
+  | ITag
+  | ITask
+  | IUser
+  | IUserDirectory
+  | any;
 
-  public async privilegesGet(
-    this: QlikRepoApi,
-    item: IObject,
-    filter?: string
-  ): Promise<string[]> {
+export interface IClassPrivileges {
+  get(item: IObject, filter?: string): Promise<string[]>;
+  assert(item: IObject, privileges?: string[]): Promise<boolean>;
+}
+
+export class Privileges implements IClassPrivileges {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(item: IObject, filter?: string) {
     if (!item.schemaPath)
       throw new Error(`privilegesGet: "object.schemaPath" is missing`);
     let url = `${item.schemaPath}`;
@@ -20,12 +54,8 @@ export class Privileges {
     });
   }
 
-  public async privilegesAssert(
-    this: QlikRepoApi,
-    item: IObject,
-    privileges?: string[]
-  ): Promise<boolean> {
-    let access = await this.privilegesGet(item);
+  public async assert(item: IObject, privileges?: string[]) {
+    let access = await this.get(item);
 
     privileges.filter((p) => {
       if (!access.includes(p))

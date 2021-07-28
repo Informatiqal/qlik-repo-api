@@ -1,39 +1,58 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 
-import { IAbout } from "./interfaces";
+export interface IAbout {
+  buildDate: string;
+  buildVersion: string;
+  databaseProvider: string;
+  nodeType: number;
+  requiresBootstrap: boolean;
+  schemaPath: string;
+  sharedPersistence: boolean;
+  singleNodeOnly: boolean;
+}
 
-export class About {
-  constructor() {}
+export interface IClassAbout {
+  get(): Promise<IAbout>;
+  enums(): Promise<any>;
+  openApi(): Promise<string[]>;
+  apiRelations(): Promise<string[]>;
+  apiDescription(): Promise<string[]>;
+  apiDefaults(path: string): Promise<any>;
+}
 
-  public async aboutGet(this: QlikRepoApi): Promise<IAbout> {
+export class About implements IClassAbout {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get() {
     return await this.repoClient.Get(`about`).then((res) => res.data as IAbout);
   }
 
-  public async aboutEnums(this: QlikRepoApi): Promise<string[]> {
+  public async enums() {
+    return await this.repoClient.Get(`about/api/enums`).then((res) => res.data);
+  }
+
+  public async openApi() {
     return await this.repoClient
-      .Get(`about/api/enums`)
+      .Get(`about/openapi`)
       .then((res) => res.data as string[]);
   }
 
-  public async aboutOpenApi(this: QlikRepoApi): Promise<string[]> {
+  public async apiRelations() {
     return await this.repoClient
-      .Get(`about/api/openapi`)
+      .Get(`about/api/relations`)
       .then((res) => res.data as string[]);
   }
 
-  public async aboutApiRelations(this: QlikRepoApi): Promise<string[]> {
-    return await this.repoClient
-      .Get(`relations`)
-      .then((res) => res.data as string[]);
-  }
-
-  public async aboutApiDescription(this: QlikRepoApi): Promise<string[]> {
+  public async apiDescription() {
     return await this.repoClient
       .Get(`about/api/description`)
       .then((res) => res.data as string[]);
   }
 
-  public async aboutApiDefaults(this: QlikRepoApi, path: string): Promise<any> {
+  public async apiDefaults(path: string) {
     if (!path)
       throw new Error(`aboutApiDefaults: "path" parameter is required`);
     return await this.repoClient

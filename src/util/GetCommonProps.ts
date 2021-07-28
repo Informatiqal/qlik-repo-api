@@ -1,10 +1,7 @@
-import { use } from "chai";
-import {
-  ITagCondensed,
-  ICustomPropertyObject,
-  ICustomPropertyCondensed,
-  IUser,
-} from "../interfaces";
+import { ITagCondensed } from "../Tag";
+import { IUser } from "../User";
+import { ICustomPropertyCondensed } from "../CustomProperty";
+import { ICustomPropertyObject } from "../types/interfaces";
 
 export class GetCommonProperties {
   private qlikUtil: any;

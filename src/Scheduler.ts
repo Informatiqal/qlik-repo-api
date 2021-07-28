@@ -1,49 +1,95 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { ISchedulerService, ISchedulerServiceCondensed } from "./interfaces";
-import { ISchedulerServiceUpdate } from "./interfaces/argument.interface";
+import { IProxyServiceSettingsLogVerbosity } from "./Proxy.interface";
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ITagCondensed } from "./Tag";
+import { IServerNodeConfigurationCondensed } from "./Node";
 
-export class Scheduler {
-  constructor() {}
+export type TSchedulerServiceType = "Master" | "Slave" | "MasterAndSlave";
 
-  public async schedulerGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<ISchedulerService> {
+export interface ISchedulerServiceUpdate {
+  id: string;
+  schedulerServiceType?: TSchedulerServiceType;
+  maxConcurrentEngines?: number;
+  engineTimeout?: number;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface ISchedulerServiceCondensed {
+  id?: string;
+  privileges?: string[];
+}
+
+export interface ISchedulerServiceSettingsLogVerbosity
+  extends IProxyServiceSettingsLogVerbosity {
+  logVerbosityApplication?: number;
+  logVerbosityTaskExecution?: number;
+}
+
+export interface ISchedulerServiceSettings {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  schedulerServiceType?: number;
+  maxConcurrentEngines?: number;
+  engineTimeout?: number;
+  logVerbosity;
+  SchedulerServiceSettingsLogVerbosity;
+}
+
+export interface ISchedulerService extends ISchedulerServiceCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties?: ICustomPropertyCondensed[];
+  tags?: ITagCondensed[];
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
+  settings: ISchedulerServiceSettings;
+}
+export interface IClassScheduler {
+  get(id: string): Promise<ISchedulerService>;
+  getAll(): Promise<ISchedulerServiceCondensed[]>;
+  getFilter(filter: string): Promise<ISchedulerService[]>;
+  update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
+}
+
+export class Scheduler implements IClassScheduler {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`schedulerGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`schedulerservice/${id}`)
       .then((res) => res.data as ISchedulerService);
   }
 
-  public async schedulerGetAll(
-    this: QlikRepoApi
-  ): Promise<ISchedulerServiceCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`schedulerservice`)
       .then((res) => res.data as ISchedulerServiceCondensed[]);
   }
 
-  public async schedulerGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<ISchedulerServiceCondensed[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`schedulerGetFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`schedulerservice/full?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as ISchedulerServiceCondensed[]);
+      .then((res) => res.data as ISchedulerService[]);
   }
 
-  public async schedulerUpdate(
-    this: QlikRepoApi,
-    arg: ISchedulerServiceUpdate
-  ): Promise<ISchedulerService[]> {
+  public async update(arg: ISchedulerServiceUpdate) {
     if (!arg.id) throw new Error(`schedulerUpdate: "id" parameter is required`);
 
-    let scheduler = await this.schedulerGet(arg.id);
+    let scheduler = await this.get(arg.id);
 
     if (arg.schedulerServiceType) {
       if (arg.schedulerServiceType == "Master")
@@ -76,6 +122,6 @@ export class Scheduler {
 
     return await this.repoClient
       .Put(`schedulerservice/${arg.id}`, scheduler)
-      .then((res) => res.data as ISchedulerService[]);
+      .then((res) => res.data as ISchedulerService);
   }
 }

@@ -1,17 +1,16 @@
 import { modifiedDateTime } from "./generic";
-import {
-  ITagCondensed,
-  ICustomPropertyObject,
-  ICustomPropertyCondensed,
-} from "../interfaces";
 
-import {
-  IUserUpdate,
-  IAppUpdate,
-  IStreamUpdate,
-  ISystemRuleCreate,
-  ITaskCreate,
-} from "../interfaces/argument.interface";
+import { ICustomPropertyObject } from "../types/interfaces";
+
+import { ICustomPropertyCondensed } from "../CustomProperty";
+import { IAppUpdate } from "../App";
+import { ITagCondensed } from "../Tag";
+
+import { ITaskCreate } from "../Task.interface";
+
+import { IUserUpdate } from "../User";
+import { IStreamUpdate } from "../Stream";
+import { ISystemRuleCreate } from "../SystemRule.interface";
 
 export class UpdateCommonProperties {
   private qlikUtil: any;

@@ -1,14 +1,27 @@
-import { QlikRepoApi } from "./main";
+import { IHttpStatus } from "./types/interfaces";
+import { QlikRepositoryClient } from "qlik-rest-api";
 
-import { ICertificateExportParameters } from "./interfaces/argument.interface";
-import { IHttpStatus } from "./interfaces";
+export type TCertificateExportFormat = "Windows" | "Pem;";
+export interface ICertificateExportParameters {
+  machineNames: string[];
+  certificatePassword?: string;
+  includeSecretsKey?: boolean;
+  exportFormat?: TCertificateExportFormat;
+  includeCa?: boolean;
+}
 
-export class Certificate {
-  constructor() {}
+export interface IClassCertificate {
+  distributionPathGet(): Promise<string>;
+  export(arg: ICertificateExportParameters): Promise<IHttpStatus>;
+}
 
-  public async certificateDistributionPathGet(
-    this: QlikRepoApi
-  ): Promise<string> {
+export class Certificate implements IClassCertificate {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async distributionPathGet() {
     return await this.repoClient
       .Get(`certificatedistribution/exportcertificatespath`)
       .then((res) => {
@@ -16,10 +29,7 @@ export class Certificate {
       });
   }
 
-  public async certificateExport(
-    this: QlikRepoApi,
-    arg: ICertificateExportParameters
-  ): Promise<IHttpStatus> {
+  public async export(arg: ICertificateExportParameters) {
     if (!arg.machineNames)
       throw new Error(
         `certificateExport: "machineNames" parameter is required`

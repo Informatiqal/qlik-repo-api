@@ -1,33 +1,103 @@
 import getMime from "name2mime";
-import { QlikRepoApi } from "./main";
-
-import {
-  IHttpStatus,
-  IContentLibrary,
-  IContentLibraryCondensed,
-  IStaticContentReferenceCondensed,
-  IContentLibraryFile,
-  IHttpReturnRemove,
-  IRemoveFilter,
-  ISelection,
-  IHttpReturn,
-} from "./interfaces";
-import { IContentLibraryUpdate } from "./interfaces/argument.interface";
+import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
-export class ContentLibrary {
-  constructor() {}
+import {
+  IHttpStatus,
+  IStaticContentReferenceCondensed,
+  IEntityRemove,
+  ISelection,
+  IOwner,
+  ICustomPropertyObject,
+  IFileExtensionWhiteListCondensed,
+} from "./types/interfaces";
+
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ITagCondensed } from "./Tag";
+
+export interface IContentLibraryFile {
+  name: string;
+  file: string;
+}
+
+export interface IContentLibraryUpdate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+}
+
+export interface IContentLibraryCondensed {
+  privileges: string[];
+  name: string;
+  id: string;
+  type: string;
+}
+
+export interface IContentLibrary extends IContentLibraryCondensed {
+  createdDate: string;
+  modifiedDate: string;
+  schemaPath: string;
+  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  owner: IOwner;
+  tags: ITagCondensed[];
+  whiteList: IFileExtensionWhiteListCondensed;
+  references: IStaticContentReferenceCondensed[];
+}
+
+export interface IClassContentLibrary {
+  get(id: string): Promise<IContentLibrary>;
+  getAll(): Promise<IContentLibraryCondensed[]>;
+  getFilter(filter: string, orderBy?: string): Promise<IContentLibrary[]>;
+  export(name: string, sourceFileName?: string): Promise<IContentLibraryFile[]>;
+  import(
+    name: string,
+    file: Buffer,
+    arg?: {
+      externalPath?: string;
+      overwrite?: boolean;
+    }
+  ): Promise<IContentLibrary[]>;
+  importForApp(
+    appId: string,
+    file: Buffer,
+    arg?: {
+      externalPath?: string;
+      overwrite?: boolean;
+    }
+  ): Promise<IContentLibrary[]>;
+  create(
+    name: string,
+    customProperties: string[],
+    tags: string[],
+    owner: string
+  ): Promise<IContentLibrary>;
+  remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter: string): Promise<ISelection>;
+  update(arg: IContentLibraryUpdate): Promise<IContentLibrary>;
+}
+
+export class ContentLibrary implements IClassContentLibrary {
+  private repoClient: QlikRepositoryClient;
+  private genericClient: QlikGenericRestClient;
+  constructor(
+    private mainRepoClient: QlikRepositoryClient,
+    private mainGenericClient: QlikGenericRestClient
+  ) {
+    this.repoClient = mainRepoClient;
+    this.genericClient = mainGenericClient;
+  }
 
   // TODO: test how GetCommonProperties behaves!
-  public async contentLibraryCreate(
-    this: QlikRepoApi,
+  public async create(
     name: string,
     customProperties = [],
     tags = [],
     owner = ""
-  ): Promise<IContentLibrary> {
+  ) {
     if (!name)
       throw new Error(`contentLibraryCreate: "name" parameter is required`);
 
@@ -45,29 +115,20 @@ export class ContentLibrary {
       .then((res) => res.data as IContentLibrary);
   }
 
-  public async contentLibraryGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IContentLibrary> {
+  public async get(id: string) {
     if (!id) throw new Error(`contentLibraryGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`contentlibrary/${id}`)
       .then((res) => res.data as IContentLibrary);
   }
 
-  public async contentLibraryGetAll(
-    this: QlikRepoApi
-  ): Promise<IContentLibraryCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`contentlibrary`)
       .then((res) => res.data as IContentLibraryCondensed[]);
   }
 
-  public async contentLibraryGetFilter(
-    this: QlikRepoApi,
-    filter: string,
-    orderBy?: string
-  ): Promise<IContentLibrary[]> {
+  public async getFilter(filter: string, orderBy?: string) {
     if (!filter)
       throw new Error(
         `contentLibraryGetFilter: "filter" parameter is required`
@@ -83,12 +144,8 @@ export class ContentLibrary {
   }
 
   // TODO: need to be tested!
-  public async contentLibraryExport(
-    this: QlikRepoApi,
-    name: string,
-    sourceFileName?: string
-  ): Promise<IContentLibraryFile[]> {
-    const library: IContentLibrary[] = await this.contentLibraryGetFilter(
+  public async export(name: string, sourceFileName?: string) {
+    const library: IContentLibrary[] = await this.getFilter(
       `name eq '${name}'`
     );
 
@@ -128,8 +185,7 @@ export class ContentLibrary {
   }
 
   // TODO: test + is externalPath required
-  public async contentLibraryImport(
-    this: QlikRepoApi,
+  public async import(
     name: string,
     file: Buffer,
     arg?: {
@@ -153,8 +209,7 @@ export class ContentLibrary {
   }
 
   // TODO: test + is externalPath required
-  public async contentLibraryImportForApp(
-    this: QlikRepoApi,
+  public async importForApp(
     appId: string,
     file: Buffer,
     arg?: {
@@ -177,38 +232,29 @@ export class ContentLibrary {
       .then((res) => res.data as IContentLibrary[]);
   }
 
-  public async contentLibraryRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpReturnRemove> {
+  public async remove(id: string) {
     if (!id)
       throw new Error(`contentLibraryRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`contentlibrary/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async contentLibraryRemoveFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IRemoveFilter[]> {
+  public async removeFilter(filter: string) {
     if (!filter)
       throw new Error(
         `contentLibraryRemoveFilter: "filter" parameter is required`
       );
-    const contentLibraries = await this.contentLibraryGetFilter(filter);
-    return Promise.all<IRemoveFilter>(
+    const contentLibraries = await this.getFilter(filter);
+    return Promise.all<IEntityRemove>(
       contentLibraries.map((contentLib: IContentLibrary) => {
-        return this.contentLibraryRemove(contentLib.id);
+        return this.remove(contentLib.id);
       })
     );
   }
 
-  public async contentLibrarySelect(
-    this: QlikRepoApi,
-    filter?: string
-  ): Promise<ISelection> {
+  public async select(filter?: string) {
     const urlBuild = new URLBuild(`selection/contentlibrary`);
     urlBuild.addParam("filter", filter);
 
@@ -218,14 +264,11 @@ export class ContentLibrary {
   }
 
   // REVIEW: verify the logic here
-  public async contentLibraryUpdate(
-    this: QlikRepoApi,
-    arg: IContentLibraryUpdate
-  ): Promise<IContentLibrary> {
+  public async update(arg: IContentLibraryUpdate): Promise<IContentLibrary> {
     if (!arg.id)
       throw new Error(`contentLibraryUpdate: "id" parameter is required`);
 
-    let contentLibrary = await this.contentLibraryGet(arg.id);
+    let contentLibrary = await this.get(arg.id);
 
     let updateCommon = new UpdateCommonProperties(this, contentLibrary, arg);
     contentLibrary = await updateCommon.updateAll();

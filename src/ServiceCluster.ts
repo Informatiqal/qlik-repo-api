@@ -1,47 +1,49 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 
+import { IHttpStatus, IEntityRemove } from "./types/interfaces";
 import {
-  IHttpStatus,
-  IHttpReturnRemove,
-  IHttpReturn,
-  IRemoveFilter,
   IServiceCluster,
   IServiceClusterCondensed,
-} from "./interfaces";
+  IServiceClusterUpdate,
+} from "./ServiceCluster.interface";
 
-import { IServiceClusterUpdate } from "./interfaces/argument.interface";
+export interface IClassServiceCluster {
+  count(): Promise<number>;
+  get(id: string): Promise<IServiceCluster>;
+  getAll(): Promise<IServiceClusterCondensed[]>;
+  getFilter(filter: string): Promise<IServiceClusterCondensed[]>;
+  remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  setCentral(id: string): Promise<number>;
+  update(arg: IServiceClusterUpdate): Promise<IServiceCluster>;
+}
 
-export class ServiceCluster {
-  constructor() {}
+export class ServiceCluster implements IClassServiceCluster {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
 
-  public async serviceClusterCount(this: QlikRepoApi): Promise<number> {
+  public async count() {
     return await this.repoClient
       .Get(`ServiceCluster/count`)
       .then((res) => res.data as number);
   }
 
-  public async serviceClusterGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IServiceCluster> {
+  public async get(id: string) {
     if (!id) throw new Error(`serviceClusterGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`ServiceCluster/${id}`)
       .then((res) => res.data as IServiceCluster);
   }
 
-  public async serviceClusterGetAll(
-    this: QlikRepoApi
-  ): Promise<IServiceClusterCondensed[]> {
+  public async getAll(): Promise<IServiceClusterCondensed[]> {
     return await this.repoClient
       .Get(`ServiceCluster`)
       .then((res) => res.data as IServiceClusterCondensed[]);
   }
 
-  public async serviceClusterGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IServiceCluster[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(
         `serviceClusterGetFilter: "filter" parameter is required`
@@ -52,26 +54,20 @@ export class ServiceCluster {
       .then((res) => res.data as IServiceCluster[]);
   }
 
-  public async serviceClusterRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpReturnRemove> {
+  public async remove(id: string) {
     if (!id)
       throw new Error(`serviceClusterRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`ServiceCluster/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async serviceClusterRemoveFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IRemoveFilter[]> {
+  public async removeFilter(filter: string) {
     if (!filter)
       throw new Error(`serviceClusterFilter: "filter" parameter is required`);
 
-    const serviceClusters = await this.serviceClusterGetFilter(filter).then(
+    const serviceClusters = await this.getFilter(filter).then(
       (s: IServiceCluster[]) => {
         if (s.length == 0)
           throw new Error(`serviceClusterFilter: filter query return 0 items`);
@@ -79,17 +75,14 @@ export class ServiceCluster {
         return s;
       }
     );
-    return await Promise.all<IRemoveFilter>(
+    return await Promise.all<IEntityRemove>(
       serviceClusters.map((serviceCluster: IServiceCluster) => {
-        return this.serviceClusterRemove(serviceCluster.id);
+        return this.remove(serviceCluster.id);
       })
     );
   }
 
-  public async serviceClusterSetCentral(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<number> {
+  public async setCentral(id: string) {
     if (!id)
       throw new Error(`serviceClusterSetCentral: "id" parameter is required`);
 
@@ -98,16 +91,13 @@ export class ServiceCluster {
       .then((res) => res.status);
   }
 
-  public async serviceClusterUpdate(
-    this: QlikRepoApi,
-    arg: IServiceClusterUpdate
-  ): Promise<IServiceCluster> {
+  public async update(arg: IServiceClusterUpdate): Promise<IServiceCluster> {
     if (!arg)
       throw new Error(`serviceClusterUpdate: all arguments are missing`);
     if (arg && !arg.id)
       throw new Error(`serviceClusterUpdate: "id" parameter is required`);
 
-    let serviceCluster = await this.serviceClusterGet(arg.id);
+    let serviceCluster = await this.get(arg.id);
 
     if (arg.name) serviceCluster.name = arg.name;
     if (arg.persistenceMode)

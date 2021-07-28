@@ -1,45 +1,99 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
-  IHttpStatus,
-  ISharedContent,
-  ISharedContentCondensed,
-  IHttpReturnRemove,
-} from "./interfaces";
+  IEntityRemove,
+  IFileExtensionWhiteListCondensed,
+  IStaticContentReferenceCondensed,
+  IOwner,
+} from "./types/interfaces";
 
-import {
-  ISharedContentUpdate,
-  ISharedContentCreate,
-} from "./interfaces/argument.interface";
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ITagCondensed } from "./Tag";
 
-export class SharedContent {
-  constructor() {}
+export interface ISharedContentUpdate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+  name?: string;
+  type?: string;
+  description?: string;
+}
 
-  public async sharedContentGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<ISharedContent> {
+export interface ISharedContentMetaData {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  key?: string;
+  value?: string;
+}
+
+export interface ISharedContentCreate {
+  id: string;
+  tags?: string[];
+  customProperties?: string[];
+  name?: string;
+  type?: string;
+  description?: string;
+}
+
+export interface ISharedContentCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  type: string;
+  description?: string;
+  uri?: string;
+  metaData?: ISharedContentMetaData[];
+}
+
+export interface ISharedContent extends ISharedContentCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties?: ICustomPropertyCondensed[];
+  tags?: ITagCondensed[];
+  owner: IOwner;
+  whiteList: IFileExtensionWhiteListCondensed;
+  references?: IStaticContentReferenceCondensed[];
+}
+export interface IClassSharedContent {
+  get(id: string): Promise<ISharedContent>;
+  getAll(): Promise<ISharedContentCondensed[]>;
+  getFilter(filter: string): Promise<ISharedContentCondensed[]>;
+  create(arg: ISharedContentCreate): Promise<ISharedContent>;
+  deleteFile(id: string, externalPath: string): Promise<IEntityRemove>;
+  remove(id: string): Promise<IEntityRemove>;
+  update(arg: ISharedContentUpdate): Promise<ISharedContent>;
+  uploadFile(id: string, file: Buffer, externalPath: string): Promise<string>;
+}
+
+export class SharedContent implements IClassSharedContent {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`sharedContentGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`sharedcontent/${id}`)
       .then((res) => res.data as ISharedContent);
   }
 
-  public async sharedContentGetAll(
-    this: QlikRepoApi
-  ): Promise<ISharedContentCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`sharedcontent`)
       .then((res) => res.data as ISharedContentCondensed[]);
   }
 
-  public async sharedContentGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<ISharedContentCondensed[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`sharedContentGetFilter: "filter" parameter is required`);
 
@@ -48,23 +102,15 @@ export class SharedContent {
       .then((res) => res.data as ISharedContentCondensed[]);
   }
 
-  public async sharedContentRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpReturnRemove> {
+  public async remove(id: string): Promise<IEntityRemove> {
     if (!id) throw new Error(`sharedContentRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`sharedcontent/${id}`).then((res) => {
-      return { id, status: res.status as IHttpStatus };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async sharedContentUploadFile(
-    this: QlikRepoApi,
-    id: string,
-    file: Buffer,
-    externalPath: string
-  ): Promise<string> {
+  public async uploadFile(id: string, file: Buffer, externalPath: string) {
     if (!id)
       throw new Error(`sharedContentUploadFile: "id" parameter is required`);
     if (!file)
@@ -82,11 +128,7 @@ export class SharedContent {
       .then((res) => res.data as string);
   }
 
-  public async sharedContentDeleteFile(
-    this: QlikRepoApi,
-    id: string,
-    externalPath: string
-  ): Promise<IHttpReturnRemove> {
+  public async deleteFile(id: string, externalPath: string) {
     if (!id)
       throw new Error(`sharedContentDeleteFile: "id" parameter is required`);
     if (!externalPath)
@@ -98,18 +140,15 @@ export class SharedContent {
     urlBuild.addParam("externalpath", externalPath);
 
     return await this.repoClient.Delete(urlBuild.getUrl()).then((res) => {
-      return { id, status: res.status };
+      return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async sharedContentUpdate(
-    this: QlikRepoApi,
-    arg: ISharedContentUpdate
-  ): Promise<ISharedContent> {
+  public async update(arg: ISharedContentUpdate) {
     if (!arg.id)
       throw new Error(`sharedContentUpdate: "id" parameter is required`);
 
-    let sharedContent = await this.sharedContentGet(arg.id);
+    let sharedContent = await this.get(arg.id);
 
     if (arg.name) sharedContent.name = arg.name;
     if (arg.description) sharedContent.description = arg.description;
@@ -123,10 +162,7 @@ export class SharedContent {
       .then((res) => res.data as ISharedContent);
   }
 
-  public async sharedContentCreate(
-    this: QlikRepoApi,
-    arg: ISharedContentCreate
-  ): Promise<ISharedContent> {
+  public async create(arg: ISharedContentCreate) {
     if (!arg.id)
       throw new Error(`sharedContentCreate: "id" parameter is required`);
     if (!arg.name)
