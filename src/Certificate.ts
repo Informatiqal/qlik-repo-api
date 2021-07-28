@@ -1,11 +1,12 @@
-import { IHttpStatus } from "./interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
 
+export type TCertificateExportFormat = "Windows" | "Pem;";
 export interface ICertificateExportParameters {
   machineNames: string[];
   certificatePassword?: string;
   includeSecretsKey?: boolean;
-  exportFormat?: "Windows" | "Pem";
+  exportFormat?: TCertificateExportFormat;
   includeCa?: boolean;
 }
 

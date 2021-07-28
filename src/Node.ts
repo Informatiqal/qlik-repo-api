@@ -1,21 +1,113 @@
-import { QlikRepoApi } from "./main";
-
+import { QlikRepositoryClient } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import {
-  IEntityRemove,
-  IHttpStatus,
-  IServerNodeConfiguration,
-  IServerNodeConfigurationCondensed,
-  IEngine,
-} from "./interfaces";
+import { IEntityRemove } from "./types/interfaces";
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ITagCondensed } from "./Tag";
 
-import { INodeUpdate, INodeCreate } from "./interfaces/argument.interface";
+export interface IServerNodeConfiguration {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  privileges?: string[];
+  customProperties?: ICustomPropertyCondensed[];
+  tags?: ITagCondensed[];
+  name: string;
+  hostName: string;
+  isCentral?: boolean;
+  nodePurpose?: number;
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  printingEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  temporaryfilepath: string;
+  failoverCandidate?: boolean;
+  serviceCluster: {
+    id: string;
+    name: string;
+    privileges: string[];
+  };
+  roles: {
+    id: string;
+    definition: number;
+    privileges: string[];
+  }[];
+}
 
-export class Node {
-  constructor() {}
+export interface IServerNodeConfigurationCondensed {
+  id: string;
+  name: string;
+  hostName: string;
+  temporaryfilepath: string;
+  privileges: string[];
+  serviceCluster: {
+    id: string;
+    name: string;
+    privileges: string[];
+  };
+  roles: {
+    id: string;
+    definition: number;
+    privileges: string[];
+  }[];
+}
 
-  public async nodeCount(this: QlikRepoApi, id?: string): Promise<number> {
+export interface INodeUpdate {
+  id: string;
+  name?: string;
+  nodePurpose?:
+    | "Production"
+    | "Development"
+    | "Both"
+    | "ProductionAndDevelopment";
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  printingEnabled?: boolean;
+  failoverCandidate?: boolean;
+}
+
+export interface INodeCreate {
+  hostName: string;
+  name?: string;
+  nodePurpose?:
+    | "Production"
+    | "Development"
+    | "Both"
+    | "ProductionAndDevelopment";
+  engineEnabled?: boolean;
+  proxyEnabled?: boolean;
+  schedulerEnabled?: boolean;
+  printingEnabled?: boolean;
+  failoverCandidate?: boolean;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface IClassNode {
+  count(): Promise<number>;
+  get(id: string): Promise<IServerNodeConfiguration>;
+  getAll(): Promise<IServerNodeConfigurationCondensed[]>;
+  getFilter(
+    filter: string,
+    full?: boolean
+  ): Promise<IServerNodeConfiguration[]>;
+  create(arg: INodeCreate): Promise<IServerNodeConfiguration>;
+  register(id: string): Promise<boolean>;
+  remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  update(arg: INodeUpdate): Promise<IServerNodeConfiguration>;
+}
+
+export class Node implements IClassNode {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async count(): Promise<number> {
     return await this.repoClient
       .Get(`servernodeconfiguration/count`)
       .then((res) => {
@@ -23,10 +115,7 @@ export class Node {
       });
   }
 
-  public async nodeCreate(
-    this: QlikRepoApi,
-    arg: INodeCreate
-  ): Promise<IServerNodeConfiguration> {
+  public async create(arg: INodeCreate) {
     let nodeConfig = {
       hostName: arg.hostName,
       name: arg.name || arg.hostName,
@@ -65,28 +154,20 @@ export class Node {
       .then((n) => n.data as IServerNodeConfiguration);
   }
 
-  public async nodeGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IServerNodeConfiguration> {
+  public async get(id: string) {
     if (!id) throw new Error(`nodeGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`servernodeconfiguration/${id}`)
       .then((res) => res.data as IServerNodeConfiguration);
   }
 
-  public async nodeGetAll(
-    this: QlikRepoApi
-  ): Promise<IServerNodeConfigurationCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`servernodeconfiguration`)
       .then((res) => res.data as IServerNodeConfigurationCondensed[]);
   }
 
-  public async nodeGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IServerNodeConfiguration[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`nodeGetFilter: "filter" parameter is required`);
 
@@ -98,14 +179,11 @@ export class Node {
   }
 
   // TODO: implementation
-  public async nodeRegister(this: QlikRepoApi, id?: string): Promise<true> {
+  public async register(id?: string): Promise<true> {
     return true;
   }
 
-  public async nodeRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async remove(id: string): Promise<IEntityRemove> {
     if (!id) throw new Error(`nodeRemove: "id" parameter is required`);
 
     return await this.repoClient
@@ -115,35 +193,27 @@ export class Node {
       });
   }
 
-  public async nodeRemoveFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IEntityRemove[]> {
+  public async removeFilter(filter: string): Promise<IEntityRemove[]> {
     if (!filter)
       throw new Error(`nodeRemoveFilter: "filter" parameter is required`);
 
-    const nodes = await this.nodeGetAll().then(
-      (n: IServerNodeConfiguration[]) => {
-        if (n.length == 0)
-          throw new Error(`nodeRemoveFilter: filter query return 0 items`);
+    const nodes = await this.getAll().then((n: IServerNodeConfiguration[]) => {
+      if (n.length == 0)
+        throw new Error(`nodeRemoveFilter: filter query return 0 items`);
 
-        return n;
-      }
-    );
+      return n;
+    });
     return await Promise.all<IEntityRemove>(
       nodes.map((ud) => {
-        return this.nodeRemove(ud.id);
+        return this.remove(ud.id);
       })
     );
   }
 
-  public async nodeUpdate(
-    this: QlikRepoApi,
-    arg: INodeUpdate
-  ): Promise<IServerNodeConfiguration> {
+  public async update(arg: INodeUpdate) {
     if (!arg.id) throw new Error(`nodeUpdate: "id" parameter is required`);
 
-    let node = await this.nodeGet(arg.id);
+    let node = await this.get(arg.id);
     if (arg.name) node.name;
     if (arg.nodePurpose) {
       if (arg.nodePurpose == "Production") node.nodePurpose = 0;

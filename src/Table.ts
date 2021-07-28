@@ -1,7 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { IHttpReturn } from "./interfaces";
+import { IHttpReturn } from "./types/interfaces";
 
 interface ITableColumnBase {
   columnType: string;

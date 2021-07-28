@@ -1,37 +1,52 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient, Node, IClassNode } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
+import { IServerNodeConfigurationCondensed } from "./Node";
+import { IEntityRemove } from "./types/interfaces";
+
 import {
-  IHttpStatus,
-  IEntityRemove,
+  IVirtualProxyUpdate,
+  IProxyCreate,
+  IProxyUpdate,
   IProxyService,
   IProxyServiceCondensed,
   IVirtualProxyConfig,
   IVirtualProxyConfigCondensed,
   IVirtualProxyConfigSamlAttributeMapItem,
   IVirtualProxyConfigJwtAttributeMapItem,
-  IServerNodeConfigurationCondensed,
-} from "./interfaces";
+} from "./Proxy.interface";
 
-import {
-  IVirtualProxyUpdate,
-  IProxyCreate,
-  IProxyUpdate,
-} from "./interfaces/argument.interface";
+export interface IClassProxy {
+  add(proxyId: string, virtualProxyId: string): Promise<IProxyService>;
+  get(id: string): Promise<IProxyService>;
+  getAll(): Promise<IProxyServiceCondensed[]>;
+  getFilter(filter: string): Promise<IProxyService[]>;
+  create(arg: IProxyCreate): Promise<IProxyService>;
+  update(arg: IProxyUpdate): Promise<IProxyService>;
+  virtualProxyAdd(virtualProxyId: string): Promise<IVirtualProxyConfig>;
+  virtualProxyGet(id: string): Promise<IVirtualProxyConfig>;
+  virtualProxyGetAll(): Promise<IVirtualProxyConfigCondensed[]>;
+  virtualProxyGetFilter(
+    filter: string
+  ): Promise<IVirtualProxyConfigCondensed[]>;
+  virtualProxyRemove(id: string): Promise<IEntityRemove>;
+  virtualProxyUpdate(arg: IVirtualProxyUpdate): Promise<IVirtualProxyConfig>;
+}
 
-export class Proxy {
-  constructor() {}
+export class Proxy implements IClassProxy {
+  private repoClient: QlikRepositoryClient;
+  private node: IClassNode;
+  constructor(private mainRepoClient: QlikRepositoryClient, node: IClassNode) {
+    this.repoClient = mainRepoClient;
+    this.node = node;
+  }
 
-  public async proxyAdd(
-    this: QlikRepoApi,
-    proxyId: string,
-    virtualProxyId: string
-  ): Promise<IProxyService> {
+  public async add(proxyId: string, virtualProxyId: string) {
     if (!proxyId) throw new Error(`proxyAdd: "proxyId" is required`);
     if (!virtualProxyId)
       throw new Error(`proxyAdd: "virtualProxyId" is required`);
 
-    let proxy = await this.proxyGet(proxyId).then((p) => p[0] as IProxyService);
+    let proxy = await this.get(proxyId).then((p) => p[0] as IProxyService);
     let virtualProxy = await this.virtualProxyGet(virtualProxyId).then(
       (vp) => vp[0] as IVirtualProxyConfig
     );
@@ -43,38 +58,29 @@ export class Proxy {
       .then((res) => res.data as IProxyService);
   }
 
-  public async proxyGet(this: QlikRepoApi, id: string): Promise<IProxyService> {
+  public async get(id: string) {
     if (!id) throw new Error(`proxyGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`proxyservice/${id}`)
       .then((res) => res.data as IProxyService);
   }
 
-  public async proxyGetAll(
-    this: QlikRepoApi
-  ): Promise<IProxyServiceCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`proxyservice`)
       .then((res) => res.data as IProxyServiceCondensed[]);
   }
 
-  public async proxyGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IProxyServiceCondensed[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`proxyGetFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`proxyservice/full?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as IProxyServiceCondensed[]);
+      .then((res) => res.data as IProxyService[]);
   }
 
-  public async proxyMetadataExport(
-    this: QlikRepoApi,
-    id: string,
-    fileName?: string
-  ): Promise<Buffer> {
+  public async metadataExport(id: string, fileName?: string): Promise<Buffer> {
     if (!fileName) {
       const virtualProxy = await this.virtualProxyGet(id).then(
         (v) => v[0] as IVirtualProxyConfig
@@ -92,10 +98,7 @@ export class Proxy {
   }
 
   // TODO: handle oidc arguments
-  public async proxyCreate(
-    this: QlikRepoApi,
-    arg: IProxyCreate
-  ): Promise<IProxyService> {
+  public async create(arg: IProxyCreate) {
     if (!arg.description)
       throw new Error(`proxyCreate: "description" parameter is required`);
     if (!arg.sessionCookieHeaderName)
@@ -109,13 +112,12 @@ export class Proxy {
     };
 
     if (arg.loadBalancingServerNodes) {
-      data["loadBalancingServerNodes"] = await parseLoadBalancingNodes(
-        this,
+      data["loadBalancingServerNodes"] = await this.parseLoadBalancingNodes(
         arg.loadBalancingServerNodes
       );
     }
     if (arg.authenticationMethod)
-      data["authenticationMethod"] = parseAuthenticationMethod(
+      data["authenticationMethod"] = this.parseAuthenticationMethod(
         arg.authenticationMethod
       );
     if (arg.prefix) data["prefix"] = arg.prefix;
@@ -138,7 +140,9 @@ export class Proxy {
     if (arg.samlAttributeUserDirectory)
       data["samlAttributeUserDirectory"] = arg.samlAttributeUserDirectory;
     if (arg.samlAttributeMap) {
-      data["samlAttributeMap"] = parseSamlAttributeMap(arg.samlAttributeMap);
+      data["samlAttributeMap"] = this.parseSamlAttributeMap(
+        arg.samlAttributeMap
+      );
     }
     if (arg.samlSlo) data["samlSlo"] = arg.samlSlo;
     if (arg.jwtPublicKeyCertificate)
@@ -148,7 +152,7 @@ export class Proxy {
     if (arg.jwtAttributeUserDirectory)
       data["jwtAttributeUserDirectory"] = arg.jwtAttributeUserDirectory;
     if (arg.jwtAttributeMap) {
-      data["jwtAttributeMap"] = parseJwtAttributeMap(arg.jwtAttributeMap);
+      data["jwtAttributeMap"] = this.parseJwtAttributeMap(arg.jwtAttributeMap);
     }
 
     return await this.repoClient
@@ -158,15 +162,12 @@ export class Proxy {
       });
   }
 
-  public async proxyUpdate(
-    this: QlikRepoApi,
-    arg: IProxyUpdate
-  ): Promise<IProxyService> {
+  public async update(arg: IProxyUpdate) {
     if (!arg.id) throw new Error(`proxyUpdate: "id" parameter is required`);
 
-    validateRanges(arg);
+    this.validateRanges(arg);
 
-    let proxy = await this.proxyGet(arg.id);
+    let proxy = await this.get(arg.id);
 
     if (arg.listenPort) proxy.settings.listenPort = arg.listenPort;
     if (arg.unencryptedListenPort)
@@ -190,8 +191,7 @@ export class Proxy {
       proxy.settings.kerberosAuthentication = arg.kerberosAuthentication;
     if (!arg.virtualProxies) proxy.settings.virtualProxies = [];
     if (arg.virtualProxies)
-      proxy.settings.virtualProxies = await parseVirtualProxies(
-        this,
+      proxy.settings.virtualProxies = await this.parseVirtualProxies(
         arg.virtualProxies
       );
 
@@ -205,11 +205,10 @@ export class Proxy {
 
   // TODO: what is this method supposed to do?
   public async virtualProxyAdd(
-    this: QlikRepoApi,
     virtualProxyId: string
     // loadBalancingServerNodes?: string[],
     // websocketCrossOriginWhiteList?: string[]
-  ): Promise<IVirtualProxyConfig> {
+  ) {
     if (!virtualProxyId)
       throw new Error(`virtualProxyAdd: "virtualProxyId" is required`);
 
@@ -220,28 +219,20 @@ export class Proxy {
     return virtualProxy;
   }
 
-  public async virtualProxyGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IVirtualProxyConfig> {
+  public async virtualProxyGet(id: string) {
     if (!id) throw new Error(`virtualProxyGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`virtualproxyconfig/${id}`)
       .then((res) => res.data as IVirtualProxyConfig);
   }
 
-  public async virtualProxyGetAll(
-    this: QlikRepoApi
-  ): Promise<IVirtualProxyConfigCondensed[]> {
+  public async virtualProxyGetAll() {
     return await this.repoClient
       .Get(`virtualproxyconfig`)
       .then((res) => res.data as IVirtualProxyConfigCondensed[]);
   }
 
-  public async virtualProxyGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IVirtualProxyConfigCondensed[]> {
+  public async virtualProxyGetFilter(filter: string) {
     if (!filter)
       throw new Error(`virtualProxyGetFilter: "filter" parameter is required`);
 
@@ -250,10 +241,7 @@ export class Proxy {
       .then((res) => res.data as IVirtualProxyConfigCondensed[]);
   }
 
-  public async virtualProxyRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async virtualProxyRemove(id: string) {
     if (!id) throw new Error(`virtualProxyRemove: "id" parameter is required`);
 
     return await this.repoClient.Get(`virtualproxyconfig/${id}`).then((res) => {
@@ -262,10 +250,7 @@ export class Proxy {
   }
 
   // TODO: handle oidc arguments
-  public async virtualProxyUpdate(
-    this: QlikRepoApi,
-    arg: IVirtualProxyUpdate
-  ): Promise<IVirtualProxyConfig> {
+  public async virtualProxyUpdate(arg: IVirtualProxyUpdate) {
     if (!arg.id)
       throw new Error(`virtualProxyUpdate: "id" parameter is required`);
 
@@ -289,17 +274,15 @@ export class Proxy {
       virtualProxy.windowsAuthenticationEnabledDevicePattern =
         arg.windowsAuthenticationEnabledDevicePattern;
     if (arg.loadBalancingServerNodes) {
-      virtualProxy.loadBalancingServerNodes = await parseLoadBalancingNodes(
-        this,
-        arg.loadBalancingServerNodes
-      );
+      virtualProxy.loadBalancingServerNodes =
+        await this.parseLoadBalancingNodes(arg.loadBalancingServerNodes);
     }
     if (arg.magicLinkHostUri)
       virtualProxy.magicLinkHostUri = arg.magicLinkHostUri;
     if (arg.magicLinkFriendlyName)
       virtualProxy.magicLinkFriendlyName = arg.magicLinkFriendlyName;
     if (arg.authenticationMethod) {
-      virtualProxy.authenticationMethod = parseAuthenticationMethod(
+      virtualProxy.authenticationMethod = this.parseAuthenticationMethod(
         arg.authenticationMethod
       );
     }
@@ -311,7 +294,7 @@ export class Proxy {
     if (arg.samlAttributeUserDirectory)
       virtualProxy.samlAttributeUserDirectory = arg.samlAttributeUserDirectory;
     if (arg.samlAttributeMap) {
-      virtualProxy.samlAttributeMap = parseSamlAttributeMap(
+      virtualProxy.samlAttributeMap = this.parseSamlAttributeMap(
         arg.samlAttributeMap
       );
     }
@@ -323,7 +306,9 @@ export class Proxy {
     if (arg.jwtAttributeUserDirectory)
       virtualProxy.jwtAttributeUserDirectory = arg.jwtAttributeUserDirectory;
     if (arg.jwtAttributeMap) {
-      virtualProxy.jwtAttributeMap = parseJwtAttributeMap(arg.jwtAttributeMap);
+      virtualProxy.jwtAttributeMap = this.parseJwtAttributeMap(
+        arg.jwtAttributeMap
+      );
     }
 
     return await this.repoClient
@@ -332,102 +317,103 @@ export class Proxy {
         return res.data as IVirtualProxyConfig;
       });
   }
-}
 
-function parseSamlAttributeMap(
-  mappings: string[]
-): IVirtualProxyConfigSamlAttributeMapItem[] {
-  return mappings.map((mapping) => {
-    let [senseAttribute, samlAttribute] = mapping.split("=");
-    return {
-      senseAttribute: senseAttribute,
-      samlAttribute: samlAttribute,
-      isMandatory: true,
-    } as IVirtualProxyConfigSamlAttributeMapItem;
-  });
-}
+  private parseSamlAttributeMap(
+    mappings: string[]
+  ): IVirtualProxyConfigSamlAttributeMapItem[] {
+    return mappings.map((mapping) => {
+      let [senseAttribute, samlAttribute] = mapping.split("=");
+      return {
+        senseAttribute: senseAttribute,
+        samlAttribute: samlAttribute,
+        isMandatory: true,
+      } as IVirtualProxyConfigSamlAttributeMapItem;
+    });
+  }
 
-function parseJwtAttributeMap(
-  mappings: string[]
-): IVirtualProxyConfigJwtAttributeMapItem[] {
-  return mappings.map((mapping) => {
-    let [senseAttribute, jwtAttribute] = mapping.split("=");
-    return {
-      senseAttribute: senseAttribute,
-      jwtAttribute: jwtAttribute,
-      isMandatory: true,
-    } as IVirtualProxyConfigJwtAttributeMapItem;
-  });
-}
+  private parseJwtAttributeMap(
+    mappings: string[]
+  ): IVirtualProxyConfigJwtAttributeMapItem[] {
+    return mappings.map((mapping) => {
+      let [senseAttribute, jwtAttribute] = mapping.split("=");
+      return {
+        senseAttribute: senseAttribute,
+        jwtAttribute: jwtAttribute,
+        isMandatory: true,
+      } as IVirtualProxyConfigJwtAttributeMapItem;
+    });
+  }
 
-async function parseLoadBalancingNodes(
-  repoApi: QlikRepoApi,
-  nodes: string[]
-): Promise<IServerNodeConfigurationCondensed[]> {
-  let existingNodes = await repoApi.nodeGetAll();
+  private async parseLoadBalancingNodes(
+    nodes: string[]
+  ): Promise<IServerNodeConfigurationCondensed[]> {
+    let existingNodes = await this.node.getAll();
 
-  return nodes.map((n) => {
-    let nodeCondensed = (
-      existingNodes as IServerNodeConfigurationCondensed[]
-    ).filter((n1) => n1.hostName == n);
+    return nodes.map((n) => {
+      let nodeCondensed = (
+        existingNodes as IServerNodeConfigurationCondensed[]
+      ).filter((n1) => n1.hostName == n);
 
-    return nodeCondensed[0];
-  });
-}
+      return nodeCondensed[0];
+    });
+  }
 
-function parseAuthenticationMethod(authenticationMethod: string): number {
-  if (authenticationMethod == "Ticket") return 0;
-  if (authenticationMethod == "static") return 1;
-  if (authenticationMethod == "dynamic") return 2;
-  if (authenticationMethod == "SAML") return 3;
-  if (authenticationMethod == "JWT") return 4;
+  private parseAuthenticationMethod(authenticationMethod: string): number {
+    if (authenticationMethod == "Ticket") return 0;
+    if (authenticationMethod == "static") return 1;
+    if (authenticationMethod == "dynamic") return 2;
+    if (authenticationMethod == "SAML") return 3;
+    if (authenticationMethod == "JWT") return 4;
 
-  return 0;
-}
+    return 0;
+  }
 
-function validateRanges(arg: IProxyUpdate) {
-  if (arg.listenPort < 1 && arg.listenPort > 65536)
-    throw new Error(`proxyUpdate: "listerPort" must be between 1 and 655536`);
-  if (arg.unencryptedListenPort < 1 && arg.unencryptedListenPort > 65536)
-    throw new Error(
-      `proxyUpdate: "unencryptedListenPort" must be between 1 and 655536`
-    );
-  if (arg.authenticationListenPort < 1 && arg.authenticationListenPort > 65536)
-    throw new Error(
-      `proxyUpdate: "authenticationListenPort" must be between 1 and 655536`
-    );
-  if (
-    arg.unencryptedAuthenticationListenPort < 1 &&
-    arg.unencryptedAuthenticationListenPort > 65536
-  )
-    throw new Error(
-      `proxyUpdate: "unencryptedAuthenticationListenPort" must be between 1 and 655536`
-    );
-  if (arg.keepAliveTimeoutSeconds < 1 && arg.keepAliveTimeoutSeconds > 300)
-    throw new Error(
-      `proxyUpdate: "keepAliveTimeoutSeconds" must be between 1 and 300`
-    );
-  if (arg.maxHeaderSizeBytes < 512 && arg.maxHeaderSizeBytes > 131072)
-    throw new Error(
-      `proxyUpdate: "maxHeaderSizeBytes" must be between 512 and 131072`
-    );
-  if (arg.maxHeaderLines < 20 && arg.maxHeaderLines > 1000)
-    throw new Error(
-      `proxyUpdate: "maxHeaderLines" must be between 20 and 1000`
-    );
-  if (arg.restListenPort < 1 && arg.restListenPort > 65536)
-    throw new Error(
-      `proxyUpdate: "restListenPort" must be between 1 and 655536`
-    );
-}
+  private validateRanges(arg: IProxyUpdate) {
+    if (arg.listenPort < 1 && arg.listenPort > 65536)
+      throw new Error(`proxyUpdate: "listerPort" must be between 1 and 655536`);
+    if (arg.unencryptedListenPort < 1 && arg.unencryptedListenPort > 65536)
+      throw new Error(
+        `proxyUpdate: "unencryptedListenPort" must be between 1 and 655536`
+      );
+    if (
+      arg.authenticationListenPort < 1 &&
+      arg.authenticationListenPort > 65536
+    )
+      throw new Error(
+        `proxyUpdate: "authenticationListenPort" must be between 1 and 655536`
+      );
+    if (
+      arg.unencryptedAuthenticationListenPort < 1 &&
+      arg.unencryptedAuthenticationListenPort > 65536
+    )
+      throw new Error(
+        `proxyUpdate: "unencryptedAuthenticationListenPort" must be between 1 and 655536`
+      );
+    if (arg.keepAliveTimeoutSeconds < 1 && arg.keepAliveTimeoutSeconds > 300)
+      throw new Error(
+        `proxyUpdate: "keepAliveTimeoutSeconds" must be between 1 and 300`
+      );
+    if (arg.maxHeaderSizeBytes < 512 && arg.maxHeaderSizeBytes > 131072)
+      throw new Error(
+        `proxyUpdate: "maxHeaderSizeBytes" must be between 512 and 131072`
+      );
+    if (arg.maxHeaderLines < 20 && arg.maxHeaderLines > 1000)
+      throw new Error(
+        `proxyUpdate: "maxHeaderLines" must be between 20 and 1000`
+      );
+    if (arg.restListenPort < 1 && arg.restListenPort > 65536)
+      throw new Error(
+        `proxyUpdate: "restListenPort" must be between 1 and 655536`
+      );
+  }
 
-async function parseVirtualProxies(
-  repoApi: QlikRepoApi,
-  vpArg: string[]
-): Promise<IVirtualProxyConfigCondensed[]> {
-  let allVP = await repoApi.virtualProxyGetAll();
-  let vpToAdd = allVP.filter((v) => {
-    return vpArg.includes(v.prefix);
-  });
-  return vpToAdd;
+  private async parseVirtualProxies(
+    vpArg: string[]
+  ): Promise<IVirtualProxyConfigCondensed[]> {
+    let allVP = await this.virtualProxyGetAll();
+    let vpToAdd = allVP.filter((v) => {
+      return vpArg.includes(v.prefix);
+    });
+    return vpToAdd;
+  }
 }

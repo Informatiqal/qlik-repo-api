@@ -1,7 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IHttpStatus, IEntityRemove } from "./interfaces";
+import { IHttpStatus, IEntityRemove } from "./types/interfaces";
 import { IAppCondensed } from "./App";
 import { ITagCondensed } from "./Tag";
 import { IUserCondensed } from "./User";

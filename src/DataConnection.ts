@@ -1,26 +1,78 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 import { URLBuild, uuid } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import {
-  IDataConnection,
-  IDataConnectionCondensed,
-  IEntityRemove,
-} from "./interfaces";
+import { IEntityRemove, ICustomPropertyObject } from "./types/interfaces";
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ITagCondensed } from "./Tag";
+import { IUserCondensed } from "./User";
 
-import {
-  IDataConnectionCreate,
-  IDataConnectionUpdate,
-} from "./interfaces/argument.interface";
+export interface IDataConnectionCondensed {
+  id?: string;
+  privileges?: string[];
+  name: string;
+  connectionstring: string;
+  type?: string;
+  engineObjectId?: string;
+  username?: string;
+  password?: string;
+  logOn?: number;
+  architecture?: number;
+}
 
-export class DataConnection {
-  constructor() {}
+export interface IDataConnection extends IDataConnectionCondensed {
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  tags: ITagCondensed[];
+  owner: IUserCondensed;
+}
 
-  public async dataConnectionGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IDataConnection> {
+export type TDataConnectionArchitecture = "x86" | "x64" | "Undefined";
+export type TDataConnectionLogOn = "Current user" | "Service user";
+
+export interface IDataConnectionCreate {
+  name: string;
+  connectionString: string;
+  owner: string;
+  type?: string;
+  username?: string;
+  password?: string;
+  architecture?: TDataConnectionArchitecture;
+  logOn?: TDataConnectionLogOn;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface IDataConnectionUpdate {
+  id: string;
+  connectionString?: string;
+  username?: string;
+  password?: string;
+  owner?: string;
+  tags?: string[];
+  customProperties?: string[];
+}
+
+export interface IClassDataConnection {
+  get(id: string): Promise<IDataConnection>;
+  getAll(): Promise<IDataConnectionCondensed[]>;
+  getFilter(filter: string, orderBy?: string): Promise<IDataConnection[]>;
+  create(arg: IDataConnectionCreate): Promise<IDataConnection>;
+  remove(id: string): Promise<IEntityRemove>;
+  update(arg: IDataConnectionUpdate): Promise<IDataConnection>;
+}
+
+export class DataConnection implements IClassDataConnection {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`dataConnectionGet: "id" parameter is required`);
 
     return await this.repoClient
@@ -28,16 +80,13 @@ export class DataConnection {
       .then((res) => res.data as IDataConnection);
   }
 
-  public async dataConnectionGetAll(
-    this: QlikRepoApi
-  ): Promise<IDataConnectionCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`dataconnection`)
       .then((res) => res.data as IDataConnectionCondensed[]);
   }
 
-  public async dataConnectionGetFilter(
-    this: QlikRepoApi,
+  public async getFilter(
     filter: string,
     orderBy?: string
   ): Promise<IDataConnection[]> {
@@ -55,10 +104,7 @@ export class DataConnection {
       .then((res) => res.data as IDataConnection[]);
   }
 
-  public async dataConnectionRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async remove(id: string) {
     if (!id)
       throw new Error(`dataConnectionRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`dataconnection/${id}`).then((res) => {
@@ -66,10 +112,7 @@ export class DataConnection {
     });
   }
 
-  public async dataConnectionCreate(
-    this: QlikRepoApi,
-    arg: IDataConnectionCreate
-  ): Promise<IDataConnection> {
+  public async create(arg: IDataConnectionCreate) {
     if (!arg.name)
       throw new Error(`dataConnectionCreate: "id" parameter is required`);
     if (!arg.connectionString)
@@ -116,14 +159,11 @@ export class DataConnection {
       });
   }
 
-  public async dataConnectionUpdate(
-    this: QlikRepoApi,
-    arg: IDataConnectionUpdate
-  ): Promise<IDataConnection> {
+  public async update(arg: IDataConnectionUpdate) {
     if (!arg.id)
       throw new Error(`dataConnectionUpdate: "id" parameter is required`);
 
-    let dataConnection = await this.dataConnectionGet(arg.id);
+    let dataConnection = await this.get(arg.id);
 
     let updateCommon = new UpdateCommonProperties(this, dataConnection, arg);
     dataConnection = await updateCommon.updateAll();

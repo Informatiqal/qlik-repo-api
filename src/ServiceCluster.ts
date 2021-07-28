@@ -1,6 +1,6 @@
 import { QlikRepositoryClient } from "./main";
 
-import { IHttpStatus, IEntityRemove } from "./interfaces";
+import { IHttpStatus, IEntityRemove } from "./types/interfaces";
 import {
   IServiceCluster,
   IServiceClusterCondensed,

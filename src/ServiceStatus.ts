@@ -1,6 +1,6 @@
 import { QlikRepositoryClient } from "./main";
 
-import { IServerNodeConfigurationCondensed } from "./interfaces";
+import { IServerNodeConfigurationCondensed } from "./Node";
 
 export interface IServiceStatusCondensed {
   id?: string;

@@ -1,47 +1,80 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
-import {
-  IHttpStatus,
-  IStream,
-  IEntityRemove,
-  IStreamCondensed,
-} from "./interfaces";
-import { IStreamCreate, IStreamUpdate } from "./interfaces/argument.interface";
+import { IHttpStatus, IEntityRemove, IOwner } from "./types/interfaces";
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ITagCondensed } from "./Tag";
 
-export class Stream {
-  constructor() {}
+export interface IStreamCreate {
+  name: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+}
 
-  public async streamGet(this: QlikRepoApi, id: string): Promise<IStream> {
+export interface IStreamUpdate {
+  id: string;
+  name?: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+}
+
+export interface IStreamCondensed {
+  id: string;
+  name: string;
+  privileges: [];
+}
+
+export interface IStream extends IStreamCondensed {
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName?: string;
+  schemaPath: string;
+  customProperties: ICustomPropertyCondensed[];
+  owner: IOwner;
+  tags: ITagCondensed[];
+}
+
+export interface IClassStream {
+  get(id: string): Promise<IStream>;
+  getAll(): Promise<IStreamCondensed[]>;
+  getFilter(filter: string): Promise<IStream[]>;
+  create(name: IStreamCreate): Promise<IStream>;
+  remove(id: string): Promise<IEntityRemove>;
+  update(arg: IStreamUpdate): Promise<IStream>;
+}
+
+export class Stream implements IClassStream {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`steamGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`stream/${id}`)
       .then((res) => res.data as IStream);
   }
 
-  public async streamGetAll(this: QlikRepoApi): Promise<IStreamCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`stream`)
       .then((res) => res.data as IStreamCondensed[]);
   }
 
-  public async streamGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IStream[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`streamGetFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`stream?filter=(${encodeURIComponent(filter)})`)
+      .Get(`stream/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IStream[]);
   }
 
-  public async streamCreate(
-    this: QlikRepoApi,
-    arg: IStreamCreate
-  ): Promise<IStream> {
+  public async create(arg: IStreamCreate) {
     if (!arg.name)
       throw new Error(`streamCreate: "path" parameter is required`);
 
@@ -62,23 +95,17 @@ export class Stream {
       .then((res) => res.data as IStream);
   }
 
-  public async streamRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async remove(id: string) {
     if (!id) throw new Error(`streamRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`stream/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async streamUpdate(
-    this: QlikRepoApi,
-    arg: IStreamUpdate
-  ): Promise<IStream> {
+  public async update(arg: IStreamUpdate) {
     if (!arg.id) throw new Error(`streamUpdate: "id" parameter is required`);
 
-    let stream = await this.streamGet(arg.id);
+    let stream = await this.get(arg.id);
 
     if (arg.name) stream.name = arg.name;
 

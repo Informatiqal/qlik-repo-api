@@ -6,10 +6,11 @@ import { ITagCondensed } from "./Tag";
 import {
   ISelection,
   IEntityRemove,
-  IStream,
   IOwner,
   ICustomPropertyObject,
-} from "./interfaces";
+} from "./types/interfaces";
+
+import { IStream } from "./Stream";
 
 export interface IAppCondensed {
   appId: string;

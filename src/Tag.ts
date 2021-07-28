@@ -1,5 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IEntityRemove } from "./interfaces";
+import { IHttpStatus, IEntityRemove } from "./types/interfaces";
 import { modifiedDateTime } from "./util/generic";
 export interface ITagCondensed {
   privileges: string[];
@@ -16,7 +16,7 @@ export interface ITag extends ITagCondensed {
 export interface IClassTag {
   get(id: string): Promise<ITag>;
   getAll(): Promise<ITagCondensed[]>;
-  getFilter(filter: string, full?: boolean): Promise<ITagCondensed[]>;
+  getFilter(filter: string, full?: boolean): Promise<ITag[]>;
   create(name: string): Promise<ITag>;
   remove(id: string): Promise<IEntityRemove>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
@@ -48,7 +48,7 @@ export class Tag {
 
     return await this.repoClient
       .Get(`tag/full?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as ITagCondensed[]);
+      .then((res) => res.data as ITag[]);
   }
 
   public async create(name: string) {

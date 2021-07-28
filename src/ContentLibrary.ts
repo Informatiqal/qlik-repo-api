@@ -12,7 +12,7 @@ import {
   IOwner,
   ICustomPropertyObject,
   IFileExtensionWhiteListCondensed,
-} from "./interfaces";
+} from "./types/interfaces";
 
 import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
@@ -50,7 +50,7 @@ export interface IContentLibrary extends IContentLibraryCondensed {
 export interface IClassContentLibrary {
   get(id: string): Promise<IContentLibrary>;
   getAll(): Promise<IContentLibraryCondensed[]>;
-  getFilter(filter: string, orderBy?: boolean): Promise<IContentLibrary[]>;
+  getFilter(filter: string, orderBy?: string): Promise<IContentLibrary[]>;
   export(name: string, sourceFileName?: string): Promise<IContentLibraryFile[]>;
   import(
     name: string,
@@ -128,7 +128,7 @@ export class ContentLibrary implements IClassContentLibrary {
       .then((res) => res.data as IContentLibraryCondensed[]);
   }
 
-  public async getFilter(filter: string, orderBy?: boolean) {
+  public async getFilter(filter: string, orderBy?: string) {
     if (!filter)
       throw new Error(
         `contentLibraryGetFilter: "filter" parameter is required`

@@ -1,7 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { IHttpStatus, IEntityRemove, ISelection } from "./interfaces";
+import { IHttpStatus, IEntityRemove, ISelection } from "./types/interfaces";
 
 import { modifiedDateTime } from "./util/generic";
 

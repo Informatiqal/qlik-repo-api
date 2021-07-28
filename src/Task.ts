@@ -1,53 +1,67 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
+import { IHttpStatus, IEntityRemove } from "./types/interfaces";
+
 import {
-  IHttpStatus,
   ITask,
   ITaskCondensed,
   ITaskExecutionResult,
   ISchemaEvent,
   ISchemaEventCondensed,
-  IEntityRemove,
-} from "./interfaces";
-import {
   ITaskCreate,
   ITaskReloadUpdate,
   ITaskCreateTriggerComposite,
   ITaskCreateTriggerSchema,
-} from "./interfaces/argument.interface";
+} from "./Task.interface";
 
-import { TRepeatOptions, TDaysOfMonth, TDaysOfWeek } from "./interfaces/ranges";
+import { TRepeatOptions, TDaysOfMonth, TDaysOfWeek } from "./types/ranges";
 
-export class Task {
-  constructor() {}
+export interface IClassTask {
+  getAll(): Promise<ITaskCondensed[]>;
+  getFilter(filter: string): Promise<ITask[]>;
+  reloadGet(id: string): Promise<ITask>;
+  reloadGetAll(): Promise<ITask[]>;
+  reloadGetFilter(filter: string): Promise<ITask[]>;
+  reloadCount(filter?: string): Promise<number>;
+  reloadUpdate(arg: ITaskReloadUpdate): Promise<ITask>;
+  reloadRemove(id: string): Promise<IEntityRemove>;
+  externalGetAll(): Promise<ITask[]>;
+  externalRemove(id: string): Promise<IEntityRemove>;
+  create(arg: ITaskCreate): Promise<ITask>;
+  start(id: string, wait: boolean): Promise<IHttpStatus>;
+  startByName(name: string, wait: boolean): Promise<IHttpStatus>;
+  waitExecution(
+    taskId: string,
+    executionId?: string
+  ): Promise<ITaskExecutionResult>;
+  scheduleRemove(id: string): Promise<IEntityRemove>;
+  scheduleGet(id: string): Promise<ISchemaEvent>;
+  scheduleGetAll(): Promise<ISchemaEventCondensed[]>;
+  triggerCreateComposite(
+    arg: ITaskCreateTriggerComposite
+  ): Promise<IHttpStatus>;
+  triggerCreateSchema(arg: ITaskCreateTriggerSchema): Promise<IHttpStatus>;
+  scriptLogGet(reloadTaskId: string, fileReferenceId: string): Promise<string>;
+  scriptLogFileGet(
+    reloadTaskId: string,
+    executionResultId: string
+  ): Promise<string>;
+}
 
-  public async taskGetAll(this: QlikRepoApi): Promise<ITaskCondensed[]> {
+export class Task implements IClassTask {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async getAll() {
     return await this.repoClient
       .Get(`task`)
       .then((res) => res.data as ITaskCondensed[]);
   }
 
-  public async taskReloadGetAll(this: QlikRepoApi): Promise<ITask[]> {
-    return await this.taskGetFilter("taskType eq 0");
-  }
-
-  public async taskExternalGetAll(this: QlikRepoApi): Promise<ITask[]> {
-    return await this.taskGetFilter("taskType eq 2");
-  }
-
-  public async taskReloadGet(this: QlikRepoApi, id: string): Promise<ITask> {
-    if (!id) throw new Error(`taskReloadGet: "id" parameter is required`);
-
-    return await this.repoClient
-      .Get(`reloadtask/${id}`)
-      .then((res) => res.data as ITask);
-  }
-
-  public async taskGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<ITask[]> {
+  public async getFilter(filter: string) {
     if (!filter) throw new Error(`taskGetFilter: "path" parameter is required`);
 
     return await this.repoClient
@@ -55,10 +69,19 @@ export class Task {
       .then((res) => res.data as ITask[]);
   }
 
-  public async taskReloadGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<ITask[]> {
+  public async reloadGet(id: string) {
+    if (!id) throw new Error(`taskReloadGet: "id" parameter is required`);
+
+    return await this.repoClient
+      .Get(`reloadtask/${id}`)
+      .then((res) => res.data as ITask);
+  }
+
+  public async reloadGetAll() {
+    return await this.getFilter("taskType eq 0");
+  }
+
+  public async reloadGetFilter(filter: string) {
     if (!filter)
       throw new Error(`taskReloadGetFilter: "path" parameter is required`);
 
@@ -67,10 +90,7 @@ export class Task {
       .then((res) => res.data as ITask[]);
   }
 
-  public async taskReloadCount(
-    this: QlikRepoApi,
-    filter?: string
-  ): Promise<number> {
+  public async reloadCount(filter?: string) {
     let url: string = `reloadtask/count`;
     if (filter) url += `${url}?filter=(${encodeURIComponent(filter)})`;
 
@@ -79,10 +99,25 @@ export class Task {
       .then((res) => res.data.value as number);
   }
 
-  public async taskReloadRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async reloadUpdate(arg: ITaskReloadUpdate) {
+    if (!arg.id) throw new Error(`taskUpdate: "id" parameter is required`);
+
+    let reloadTask: ITask = await this.reloadGet(arg.id);
+
+    if (arg.enabled) reloadTask.enabled = arg.enabled;
+    if (arg.taskSessionTimeout)
+      reloadTask.taskSessionTimeout = arg.taskSessionTimeout;
+    if (arg.maxRetries) reloadTask.maxRetries = arg.maxRetries;
+
+    let updateCommon = new UpdateCommonProperties(this, reloadTask, arg);
+    reloadTask = await updateCommon.updateAll();
+
+    return await this.repoClient
+      .Put(`reloadtask/${arg.id}`, { ...reloadTask })
+      .then((res) => res.data as ITask);
+  }
+
+  public async reloadRemove(id: string) {
     if (!id) throw new Error(`taskReloadRemove: id" parameter is required`);
 
     return await this.repoClient.Delete(`reloadtask/${id}`).then((res) => {
@@ -90,10 +125,11 @@ export class Task {
     });
   }
 
-  public async taskExternalRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async externalGetAll() {
+    return await this.getFilter("taskType eq 2");
+  }
+
+  public async externalRemove(id: string) {
     if (!id) throw new Error(`taskExternalRemove: "id" parameter is required`);
 
     return await this.repoClient
@@ -103,7 +139,7 @@ export class Task {
       });
   }
 
-  public async taskCreate(this: QlikRepoApi, arg: ITaskCreate): Promise<ITask> {
+  public async create(arg: ITaskCreate) {
     if (!arg.appId)
       throw new Error(`taskCreate: "appId" parameter is required`);
     if (!arg.name) throw new Error(`taskCreate: "name" parameter is required`);
@@ -139,32 +175,7 @@ export class Task {
       .then((res) => res.data as ITask);
   }
 
-  public async taskReloadUpdate(
-    this: QlikRepoApi,
-    arg: ITaskReloadUpdate
-  ): Promise<ITask> {
-    if (!arg.id) throw new Error(`taskUpdate: "id" parameter is required`);
-
-    let reloadTask: ITask = await this.taskReloadGet(arg.id);
-
-    if (arg.enabled) reloadTask.enabled = arg.enabled;
-    if (arg.taskSessionTimeout)
-      reloadTask.taskSessionTimeout = arg.taskSessionTimeout;
-    if (arg.maxRetries) reloadTask.maxRetries = arg.maxRetries;
-
-    let updateCommon = new UpdateCommonProperties(this, reloadTask, arg);
-    reloadTask = await updateCommon.updateAll();
-
-    return await this.repoClient
-      .Put(`reloadtask/${arg.id}`, { ...reloadTask })
-      .then((res) => res.data as ITask);
-  }
-
-  public async taskStart(
-    this: QlikRepoApi,
-    id: string,
-    wait: boolean = false
-  ): Promise<IHttpStatus> {
+  public async start(id: string, wait: boolean = false) {
     if (!id) throw new Error(`taskStart: "id" parameter is required`);
 
     let url = `task/${id}/start`;
@@ -175,11 +186,7 @@ export class Task {
       .then((res) => res.status as IHttpStatus);
   }
 
-  public async taskStartByName(
-    this: QlikRepoApi,
-    name: string,
-    wait: boolean = false
-  ): Promise<IHttpStatus> {
+  public async startByName(name: string, wait: boolean = false) {
     if (!name) throw new Error(`taskStartByName: "path" parameter is required`);
 
     let url = `task/start`;
@@ -191,18 +198,14 @@ export class Task {
       .then((res) => res.status as IHttpStatus);
   }
 
-  public async taskWaitExecution(
-    this: QlikRepoApi,
-    taskId: string,
-    executionId?: string
-  ): Promise<ITaskExecutionResult> {
+  public async waitExecution(taskId: string, executionId?: string) {
     if (!taskId)
       throw new Error(`taskWaitExecution: "taskId" parameter is required`);
     let taskStatusCode = -1;
     let resultId: string;
 
     if (!executionId) {
-      resultId = await this.taskGetFilter(`id eq ${taskId}`).then((t) => {
+      resultId = await this.getFilter(`id eq ${taskId}`).then((t) => {
         return t[0].operational.lastExecutionResult.id;
       });
     }
@@ -229,38 +232,27 @@ export class Task {
     return result;
   }
 
-  public async taskScheduleRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async scheduleRemove(id: string) {
     if (!id) throw new Error(`taskScheduleRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`schemaevent/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
-  public async taskScheduleGet(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<ISchemaEvent> {
+  public async scheduleGet(id: string) {
     if (!id) throw new Error(`taskScheduleGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`schemaevent/${id}`)
       .then((res) => res.data as ISchemaEvent);
   }
 
-  public async taskScheduleGetAll(
-    this: QlikRepoApi
-  ): Promise<ISchemaEventCondensed[]> {
+  public async scheduleGetAll() {
     return await this.repoClient
       .Get(`schemaevent`)
       .then((res) => res.data as ISchemaEventCondensed[]);
   }
 
-  public async taskTriggerCreateComposite(
-    this: QlikRepoApi,
-    arg: ITaskCreateTriggerComposite
-  ): Promise<IHttpStatus> {
+  public async triggerCreateComposite(arg: ITaskCreateTriggerComposite) {
     if (!arg.eventTaskId)
       throw new Error(
         `taskTriggerCreateComposite: "eventTaskId" parameter is required`
@@ -317,10 +309,7 @@ export class Task {
       });
   }
 
-  public async taskTriggerCreateSchema(
-    this: QlikRepoApi,
-    arg: ITaskCreateTriggerSchema
-  ) {
+  public async triggerCreateSchema(arg: ITaskCreateTriggerSchema) {
     if (!arg.name)
       throw new Error(`taskTriggerCreateSchema: "name" parameter is required`);
     if (!arg.reloadTaskId)
@@ -330,14 +319,14 @@ export class Task {
 
     let currentTimeStamp = new Date();
 
-    let schemaRepeatOpt = schemaRepeat(
+    let schemaRepeatOpt = this.schemaRepeat(
       arg.repeat || "Daily",
       arg.repeatEvery || 1,
       arg.daysOfWeek || "Monday",
       arg.daysOfMonth || 1
     );
 
-    const reloadTaskDetails = await this.taskGetFilter(
+    const reloadTaskDetails = await this.getFilter(
       `id eq ${arg.reloadTaskId}`
     ).then((t) => t[0]);
 
@@ -366,11 +355,7 @@ export class Task {
       .then((res) => res.status as IHttpStatus);
   }
 
-  public async taskScriptLogGet(
-    this: QlikRepoApi,
-    reloadTaskId: string,
-    fileReferenceId: string
-  ): Promise<string> {
+  public async scriptLogGet(reloadTaskId: string, fileReferenceId: string) {
     if (!reloadTaskId)
       throw new Error(`taskScriptLogGet: "reloadTaskId" parameter is required`);
     if (!fileReferenceId)
@@ -388,11 +373,10 @@ export class Task {
       .then((res) => res.data as string);
   }
 
-  public async taskScriptLogFileGet(
-    this: QlikRepoApi,
+  public async scriptLogFileGet(
     reloadTaskId: string,
     executionResultId: string
-  ): Promise<string> {
+  ) {
     if (!reloadTaskId)
       throw new Error(
         `taskScriptLogFileGet: "reloadTaskId" parameter is required`
@@ -411,59 +395,59 @@ export class Task {
       )
       .then((res) => res.data as string);
   }
-}
 
-function schemaRepeat(
-  repeat: TRepeatOptions,
-  repeatEvery: number,
-  daysOfWeek: TDaysOfWeek,
-  daysOfMonth: TDaysOfMonth
-): { incrementDescr: string; schemaFilterDescr: string } {
-  if (repeat == "Once")
-    return {
-      incrementDescr: "0 0 0 0",
-      schemaFilterDescr: "* * - * * * * *",
-    };
+  private schemaRepeat(
+    repeat: TRepeatOptions,
+    repeatEvery: number,
+    daysOfWeek: TDaysOfWeek,
+    daysOfMonth: TDaysOfMonth
+  ): { incrementDescr: string; schemaFilterDescr: string } {
+    if (repeat == "Once")
+      return {
+        incrementDescr: "0 0 0 0",
+        schemaFilterDescr: "* * - * * * * *",
+      };
 
-  if (repeat == "Minute")
-    return {
-      incrementDescr: `${repeatEvery} 0 0 0`,
-      schemaFilterDescr: "* * - * * * * *",
-    };
+    if (repeat == "Minute")
+      return {
+        incrementDescr: `${repeatEvery} 0 0 0`,
+        schemaFilterDescr: "* * - * * * * *",
+      };
 
-  if (repeat == "Hourly")
-    return {
-      incrementDescr: `0 ${repeatEvery} 0 0`,
-      schemaFilterDescr: "* * - * * * * *",
-    };
+    if (repeat == "Hourly")
+      return {
+        incrementDescr: `0 ${repeatEvery} 0 0`,
+        schemaFilterDescr: "* * - * * * * *",
+      };
 
-  if (repeat == "Daily")
-    return {
-      incrementDescr: `0 0 ${repeatEvery} 0`,
-      schemaFilterDescr: "* * - * * * * *",
-    };
+    if (repeat == "Daily")
+      return {
+        incrementDescr: `0 0 ${repeatEvery} 0`,
+        schemaFilterDescr: "* * - * * * * *",
+      };
 
-  if (repeat == "Weekly") {
-    let weekDay = getWeekDayNumber(daysOfWeek);
-    return {
-      incrementDescr: `0 0 1 0`,
-      schemaFilterDescr: `* * - ${weekDay} ${repeatEvery} * * *`,
-    };
+    if (repeat == "Weekly") {
+      let weekDay = this.getWeekDayNumber(daysOfWeek);
+      return {
+        incrementDescr: `0 0 1 0`,
+        schemaFilterDescr: `* * - ${weekDay} ${repeatEvery} * * *`,
+      };
+    }
+
+    if (repeat == "Monthly")
+      return {
+        incrementDescr: `0 0 1 0`,
+        schemaFilterDescr: `* * - * * ${daysOfMonth} * *`,
+      };
   }
 
-  if (repeat == "Monthly")
-    return {
-      incrementDescr: `0 0 1 0`,
-      schemaFilterDescr: `* * - * * ${daysOfMonth} * *`,
-    };
-}
-
-function getWeekDayNumber(daysOfWeek: TDaysOfWeek): number {
-  if (daysOfWeek == "Sunday") return 0;
-  if (daysOfWeek == "Monday") return 1;
-  if (daysOfWeek == "Tuesday") return 2;
-  if (daysOfWeek == "Wednesday") return 3;
-  if (daysOfWeek == "Thursday") return 4;
-  if (daysOfWeek == "Friday") return 5;
-  if (daysOfWeek == "Saturday") return 6;
+  private getWeekDayNumber(daysOfWeek: TDaysOfWeek): number {
+    if (daysOfWeek == "Sunday") return 0;
+    if (daysOfWeek == "Monday") return 1;
+    if (daysOfWeek == "Tuesday") return 2;
+    if (daysOfWeek == "Wednesday") return 3;
+    if (daysOfWeek == "Thursday") return 4;
+    if (daysOfWeek == "Friday") return 5;
+    if (daysOfWeek == "Saturday") return 6;
+  }
 }

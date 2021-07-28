@@ -1,32 +1,122 @@
-import { QlikRepoApi } from "./main";
-
+import { QlikRepositoryClient } from "./main";
 import { modifiedDateTime } from "./util/generic";
-import { IEngine, IEngineCondensed, IEngineGetValidResult } from "./interfaces";
-import {
-  IEngineUpdate,
-  IEngineGetValid,
-} from "./interfaces/argument.interface";
 
-export class Engine {
-  constructor() {}
+import { ITagCondensed } from "./Tag";
+import { ICustomPropertyCondensed } from "./CustomProperty";
+import { IServerNodeConfigurationCondensed } from "./Node";
 
-  public async engineGet(this: QlikRepoApi, id: string): Promise<IEngine> {
+import { IEngineGetValid, IEngineUpdate } from "./Engine.interface";
+
+export interface IEngineGetValidResult {
+  schemaPath?: string;
+  loadBalancingResultCode?: number;
+  appID?: string;
+  validEngines?: string[];
+}
+
+export interface IEngineCondensed {
+  id: string;
+  privileges: string[];
+}
+
+export interface IEngineSettings {
+  id: string;
+  createdDate: string;
+  modifiedDate: string;
+  listenerPorts: number[];
+  overlayDocuments: boolean;
+  autosaveInterval: number;
+  documentTimeout: number;
+  tableFilesDirectory: string;
+  documentDirectory: string;
+  genericUndoBufferMaxSize: number;
+  qvLogEnabled: boolean;
+  globalLogMinuteInterval: number;
+  auditActivityLogVerbosity: number;
+  auditSecurityLogVerbosity: number;
+  serviceLogVerbosity: number;
+  systemLogVerbosity: number;
+  performanceLogVerbosity: number;
+  httpTrafficLogVerbosity: number;
+  externalServicesLogVerbosity: number;
+  qixPerformanceLogVerbosity: number;
+  auditLogVerbosity: number;
+  sessionLogVerbosity: number;
+  trafficLogVerbosity: number;
+  sseLogVerbosity: number;
+  allowDataLineage: boolean;
+  workingSetSizeLoPct: number;
+  workingSetSizeHiPct: number;
+  workingSetSizeMode: number;
+  cpuThrottlePercentage: number;
+  standardReload: boolean;
+  maxCoreMaskPersisted: number;
+  maxCoreMask: number;
+  maxCoreMaskHiPersisted: number;
+  maxCoreMaskHi: number;
+  maxCoreMaskGrp1Persisted: number;
+  maxCoreMaskGrp1: number;
+  maxCoreMaskGrp1HiPersisted: number;
+  maxCoreMaskGrp1Hi: number;
+  maxCoreMaskGrp2Persisted: number;
+  maxCoreMaskGrp2: number;
+  maxCoreMaskGrp2HiPersisted: number;
+  maxCoreMaskGrp2Hi: number;
+  maxCoreMaskGrp3Persisted: number;
+  maxCoreMaskGrp3: number;
+  maxCoreMaskGrp3HiPersisted: number;
+  maxCoreMaskGrp3Hi: number;
+  objectTimeLimitSec: number;
+  exportTimeLimitSec: number;
+  reloadTimeLimitSec: number;
+  createSearchIndexOnReloadEnabled: boolean;
+  hyperCubeMemoryLimit: number;
+  exportMemoryLimit: number;
+  reloadMemoryLimit: number;
+  qrsHttpNotificationPort: number;
+  schemaPath: string;
+}
+
+export interface IEngine {
+  id: string;
+  createdDate: string;
+  modifiedDate: string;
+  customProperties: ICustomPropertyCondensed[];
+  tags: ITagCondensed[];
+  privileges: string[];
+  schemaPath: string;
+  settings: IEngineSettings;
+  serverNodeConfiguration: IServerNodeConfigurationCondensed;
+}
+
+export interface IClassEngine {
+  get(id: string): Promise<IEngine>;
+  getAll(): Promise<IEngineCondensed[]>;
+  getFilter(filter: string): Promise<IEngine[]>;
+  getValid(arg?: IEngineGetValid): Promise<IEngineGetValidResult[]>;
+  update(arg: IEngineUpdate): Promise<IEngine>;
+}
+
+export class Engine implements IClassEngine {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async get(id: string) {
     if (!id) throw new Error(`engineGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`engineservice`)
       .then((res) => res.data as IEngine);
   }
 
-  public async engineGetAll(this: QlikRepoApi): Promise<IEngineCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`engineservice`)
       .then((res) => res.data as IEngineCondensed[]);
   }
 
-  public async engineGetValid(
-    this: QlikRepoApi,
-    arg?: IEngineGetValid
-  ): Promise<IEngineGetValidResult[]> {
+  public async getValid(arg?: IEngineGetValid) {
     let loadBalancingPurpose = 2;
     if (arg && arg.loadBalancingPurpose == "Production")
       loadBalancingPurpose = 0;
@@ -46,10 +136,7 @@ export class Engine {
       .then((res) => res.data as IEngineGetValidResult[]);
   }
 
-  public async engineGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<IEngine[]> {
+  public async getFilter(filter: string) {
     if (!filter) throw new Error(`engineGetFilter: "filter" is required`);
 
     let baseUrl = `engineservice/full`;
@@ -60,13 +147,10 @@ export class Engine {
   }
 
   // REVIEW: double check the whole logic here
-  public async engineUpdate(
-    this: QlikRepoApi,
-    arg: IEngineUpdate
-  ): Promise<IEngine> {
+  public async update(arg: IEngineUpdate) {
     if (!arg.id) throw new Error(`engineUpdate: "id" is required`);
 
-    let engine = await this.engineGet(arg.id);
+    let engine = await this.get(arg.id);
 
     if (arg.workingSetSizeLoPct) {
       if (arg.workingSetSizeLoPct < 0 || arg.workingSetSizeLoPct > 100)

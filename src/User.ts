@@ -5,7 +5,7 @@ import {
   IHttpStatus,
   IEntityRemove,
   ICustomPropertyObject,
-} from "./interfaces";
+} from "./types/interfaces";
 
 import { ITagCondensed } from "./Tag";
 import { ICustomPropertyCondensed } from "./CustomProperty";

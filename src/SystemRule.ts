@@ -1,54 +1,57 @@
-import { QlikRepoApi } from "./main";
-import { modifiedDateTime } from "./util/generic";
+import { QlikRepositoryClient } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
+import { IEntityRemove } from "./types/interfaces";
+import { IAudit } from "./License.interface";
+
 import {
-  IHttpStatus,
-  IEntityRemove,
   ISystemRule,
-  IAudit,
-  TSystemRuleActions,
-  TSystemRuleContext,
   ISystemRuleCondensed,
-  IStreamCondensed,
-} from "./interfaces";
-import {
   ISystemRuleCreate,
   ISystemRuleUpdate,
-  ISystemRuleAuditGet,
   ISystemRuleLicenseCreate,
-} from "./interfaces/argument.interface";
+  ISystemRuleAuditGet,
+  TSystemRuleActions,
+  TSystemRuleContext,
+} from "./SystemRule.interface";
+export interface IClassSystemRule {
+  get(id: string): Promise<ISystemRule>;
+  getAll(): Promise<ISystemRuleCondensed[]>;
+  getAudit(arg: ISystemRuleAuditGet): Promise<IAudit>;
+  getFilter(filter: string): Promise<ISystemRule[]>;
+  create(arg: ISystemRuleCreate): Promise<ISystemRule>;
+  licenseCreate(arg: ISystemRuleLicenseCreate): Promise<any>;
+  remove(id: string): Promise<IEntityRemove>;
+  update(arg: ISystemRuleUpdate): Promise<ISystemRule>;
+}
 
-export class SystemRule {
-  constructor() {}
+export class SystemRule implements IClassSystemRule {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
 
-  public async ruleGet(this: QlikRepoApi, id: string): Promise<ISystemRule> {
+  public async get(id: string): Promise<ISystemRule> {
     if (!id) throw new Error(`ruleGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`systemrule/${id}`)
       .then((res) => res.data as ISystemRule);
   }
 
-  public async ruleGetAll(this: QlikRepoApi): Promise<ISystemRuleCondensed[]> {
+  public async getAll() {
     return await this.repoClient
       .Get(`systemrule`)
       .then((res) => res.data as ISystemRuleCondensed[]);
   }
 
-  public async ruleGetAudit(
-    this: QlikRepoApi,
-    arg: ISystemRuleAuditGet
-  ): Promise<IAudit> {
+  public async getAudit(arg: ISystemRuleAuditGet): Promise<IAudit> {
     return await this.repoClient
       .Post(`systemrule/security/audit`, { ...arg })
       .then((res) => res.data as IAudit);
   }
 
-  public async ruleGetFilter(
-    this: QlikRepoApi,
-    filter: string
-  ): Promise<ISystemRule[]> {
+  public async getFilter(filter: string) {
     if (!filter)
       throw new Error(`ruleGetFilter: "filter" parameter is required`);
 
@@ -57,10 +60,7 @@ export class SystemRule {
       .then((res) => res.data as ISystemRule[]);
   }
 
-  public async ruleCreate(
-    this: QlikRepoApi,
-    arg: ISystemRuleCreate
-  ): Promise<ISystemRule> {
+  public async create(arg: ISystemRuleCreate) {
     if (!arg.actions)
       throw new Error(`ruleCreate: "actions" parameter is required`);
     if (!arg.category)
@@ -73,8 +73,8 @@ export class SystemRule {
     let rule: ISystemRule = {
       name: arg.name,
       disabled: arg.disabled || false,
-      actions: calculateActions(arg.actions),
-      ruleContext: arg.context ? getRuleContext(arg.context) : 0,
+      actions: this.calculateActions(arg.actions),
+      ruleContext: arg.context ? this.getRuleContext(arg.context) : 0,
       category: arg.category || "Security",
       type: "Custom",
       rule: arg.rule || "",
@@ -93,10 +93,8 @@ export class SystemRule {
       .then((res) => res.data as ISystemRule);
   }
 
-  public async ruleLicenseCreate(
-    this: QlikRepoApi,
-    arg: ISystemRuleLicenseCreate
-  ) {
+  //TODO: whats the return type here?
+  public async licenseCreate(arg: ISystemRuleLicenseCreate) {
     let rule = {
       name: arg.name,
       type: "Custom",
@@ -133,10 +131,7 @@ export class SystemRule {
     return await this.repoClient.Post(`systemrule`, rule);
   }
 
-  public async ruleRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IEntityRemove> {
+  public async remove(id: string): Promise<IEntityRemove> {
     if (!id) throw new Error(`ruleRemove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`systemrule/${id}`).then((res) => {
@@ -144,13 +139,10 @@ export class SystemRule {
     });
   }
 
-  public async ruleUpdate(
-    this: QlikRepoApi,
-    arg: ISystemRuleUpdate
-  ): Promise<ISystemRule> {
+  public async update(arg: ISystemRuleUpdate): Promise<ISystemRule> {
     if (!arg.id) throw new Error(`ruleUpdate: "id" parameter is required`);
 
-    let rule = await this.ruleGet(arg.id);
+    let rule = await this.get(arg.id);
 
     if (arg.name) rule.name = arg.name;
     if (arg.rule) rule.rule = arg.rule;
@@ -158,8 +150,8 @@ export class SystemRule {
     if (arg.comment) rule.comment = arg.comment;
     if (arg.disabled) rule.disabled = arg.disabled;
     if (arg.category) rule.category = arg.category;
-    if (arg.actions) rule.actions = calculateActions(arg.actions);
-    if (arg.context) rule.ruleContext = getRuleContext(arg.context);
+    if (arg.actions) rule.actions = this.calculateActions(arg.actions);
+    if (arg.context) rule.ruleContext = this.getRuleContext(arg.context);
 
     let updateCommon = new UpdateCommonProperties(this, rule, arg);
     rule = await updateCommon.updateAll();
@@ -168,43 +160,43 @@ export class SystemRule {
       .Put(`systemrule/${arg.id}`, { ...rule })
       .then((res) => res.data as ISystemRule);
   }
-}
 
-function calculateActions(actions: TSystemRuleActions[]): number {
-  const actionsMeta = {
-    None: 0,
-    Create: 1,
-    "Allow access": 1,
-    Read: 2,
-    Update: 4,
-    Delete: 8,
-    Export: 16,
-    Publish: 32,
-    "Change owner": 64,
-    "Change role": 128,
-    "Export data": 256,
-    "Offline access": 512,
-    Distribute: 1024,
-    Duplicate: 2048,
-    Approve: 4096,
-  };
+  private calculateActions(actions: TSystemRuleActions[]): number {
+    const actionsMeta = {
+      None: 0,
+      Create: 1,
+      "Allow access": 1,
+      Read: 2,
+      Update: 4,
+      Delete: 8,
+      Export: 16,
+      Publish: 32,
+      "Change owner": 64,
+      "Change role": 128,
+      "Export data": 256,
+      "Offline access": 512,
+      Distribute: 1024,
+      Duplicate: 2048,
+      Approve: 4096,
+    };
 
-  const reducer = (accumulator: number, currentValue: number) =>
-    accumulator + currentValue;
-  return actions
-    .map((t) => {
-      return actionsMeta[t];
-    })
-    .reduce(reducer);
-}
+    const reducer = (accumulator: number, currentValue: number) =>
+      accumulator + currentValue;
+    return actions
+      .map((t) => {
+        return actionsMeta[t];
+      })
+      .reduce(reducer);
+  }
 
-function getRuleContext(context: TSystemRuleContext) {
-  if (context == "both") return 0;
-  if (context == "BothQlikSenseAndQMC") return 0;
-  if (context == "hub") return 1;
-  if (context == "qmc") return 2;
+  private getRuleContext(context: TSystemRuleContext) {
+    if (context == "both") return 0;
+    if (context == "BothQlikSenseAndQMC") return 0;
+    if (context == "hub") return 1;
+    if (context == "qmc") return 2;
 
-  throw new Error(
-    `"${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
-  );
+    throw new Error(
+      `"${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
+    );
+  }
 }

@@ -1,43 +1,58 @@
-import { QlikRepoApi } from "./main";
+import { QlikRepositoryClient } from "./main";
 import { modifiedDateTime } from "./util/generic";
+
+import { IHttpReturn, IHttpStatus } from "./types/interfaces";
 
 import {
   IAccessTypeInfo,
   ILicense,
   ILicenseAccessTypeCondensed,
-  IHttpReturn,
   IAudit,
-  IHttpStatus,
   ILicenseAccessGroup,
-} from "./interfaces";
-
-import {
   IAuditParameters,
   ILicenseSetKey,
   ILicenseSetSerial,
-} from "./interfaces/argument.interface";
+} from "./License.interface";
 
-export class License {
-  constructor() {}
+export interface IClassLicense {
+  accessTypeInfoGet(): Promise<IAccessTypeInfo>;
+  get(): Promise<ILicense>;
+  setSerial(arg: ILicenseSetSerial): Promise<ILicense>;
+  setKey(arg: ILicenseSetKey): Promise<ILicense>;
+  accessTypeGetAnalyzer(id?: string): Promise<ILicenseAccessTypeCondensed[]>;
+  accessTypeGetProfessional(
+    id?: string
+  ): Promise<ILicenseAccessTypeCondensed[]>;
+  accessTypeGetUser(id?: string): Promise<ILicenseAccessTypeCondensed[]>;
+  accessTypeGetLogin(id?: string): Promise<ILicenseAccessTypeCondensed[]>;
+  auditGet(arg: IAuditParameters): Promise<IAudit>;
+  accessTypeRemoveLogin(id: string): Promise<IHttpStatus>;
+  accessTypeRemoveAnalyzer(id: string): Promise<IHttpStatus>;
+  accessTypeRemoveProfessional(id: string): Promise<IHttpStatus>;
+  accessTypeRemoveUser(id: string): Promise<IHttpStatus>;
+  accessGroupCreateProfessional(name: string): Promise<ILicenseAccessGroup>;
+  accessGroupCreateUser(name: string): Promise<ILicenseAccessGroup>;
+}
 
-  public async licenseAccessTypeInfoGet(
-    this: QlikRepoApi
-  ): Promise<IAccessTypeInfo> {
+export class License implements IClassLicense {
+  private repoClient: QlikRepositoryClient;
+  constructor(private mainRepoClient: QlikRepositoryClient) {
+    this.repoClient = mainRepoClient;
+  }
+
+  public async accessTypeInfoGet() {
     return await this.repoClient.Get(`license/accesstypeinfo`).then((res) => {
       return res.data as IAccessTypeInfo;
     });
   }
 
-  public async licenseGet(this: QlikRepoApi): Promise<ILicense> {
+  public async get() {
     return await this.repoClient.Get(`license`).then((res) => {
       return res.data as ILicense;
     });
   }
 
-  public async licenseSetSerial(
-    this: QlikRepoApi,
-    arg: ILicenseSetSerial
-  ): Promise<ILicense> {
+  public async setSerial(arg: ILicenseSetSerial) {
     let url = `license`;
 
     let data = {
@@ -47,7 +62,7 @@ export class License {
 
     let method: "Post" | "Put";
 
-    let currentLicense = await this.licenseGet();
+    let currentLicense = await this.get();
     if (currentLicense.key != "")
       throw new Error(
         `licenseSetSerial: Downgrading from Signed License is not supported by Qlik Sense APIs`
@@ -72,10 +87,7 @@ export class License {
     });
   }
 
-  public async licenseSetKey(
-    this: QlikRepoApi,
-    arg: ILicenseSetKey
-  ): Promise<ILicense> {
+  public async setKey(arg: ILicenseSetKey) {
     let url = `license`;
 
     let data = {
@@ -85,7 +97,7 @@ export class License {
 
     let method: "Post" | "Put";
 
-    let currentLicense = await this.licenseGet();
+    let currentLicense = await this.get();
     if (!currentLicense) method = "Post";
     if (currentLicense) {
       method = "Put";
@@ -101,38 +113,23 @@ export class License {
     });
   }
 
-  public async licenseAnalyzerAccessTypeGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<ILicenseAccessTypeCondensed[]> {
-    return await getAccessType(this, "analyzer", id);
+  public async accessTypeGetAnalyzer(id?: string) {
+    return await this.getAccessType("analyzer", id);
   }
 
-  public async licenseProfessionalAccessTypeGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<ILicenseAccessTypeCondensed[]> {
-    return await getAccessType(this, "professional", id);
+  public async accessTypeGetProfessional(id?: string) {
+    return await this.getAccessType("professional", id);
   }
 
-  public async licenseUserAccessTypeGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<ILicenseAccessTypeCondensed[]> {
-    return await getAccessType(this, "user", id);
+  public async accessTypeGetUser(id?: string) {
+    return await this.getAccessType("user", id);
   }
 
-  public async licenseLoginAccessTypeGet(
-    this: QlikRepoApi,
-    id?: string
-  ): Promise<ILicenseAccessTypeCondensed[]> {
-    return await getAccessType(this, "login", id);
+  public async accessTypeGetLogin(id?: string) {
+    return await this.getAccessType("login", id);
   }
 
-  public async licenseAuditGet(
-    this: QlikRepoApi,
-    arg: IAuditParameters
-  ): Promise<IAudit> {
+  public async auditGet(arg: IAuditParameters) {
     let data = { ...arg };
 
     if (arg.resourceId) data.resourceFilter = `id eq ${arg.resourceId}`;
@@ -142,54 +139,39 @@ export class License {
       .then((res) => res.data as IAudit);
   }
 
-  public async licenseLoginAccessTypeRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpStatus> {
+  public async accessTypeRemoveLogin(id: string) {
     if (!id)
       throw new Error(
         `licenseLoginAccessTypeRemove: "id" parameter is required`
       );
-    return await removeAccessType(this, "login", id);
+    return await this.removeAccessType("login", id);
   }
 
-  public async licenseAnalyzerAccessTypeRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpStatus> {
+  public async accessTypeRemoveAnalyzer(id: string) {
     if (!id)
       throw new Error(
         `licenseAnalyzerAccessTypeRemove: "id" parameter is required`
       );
-    return await removeAccessType(this, "analyzer", id);
+    return await this.removeAccessType("analyzer", id);
   }
 
-  public async licenseProfessionalAccessTypeRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpStatus> {
+  public async accessTypeRemoveProfessional(id: string) {
     if (!id)
       throw new Error(
         `licenseProfessionalAccessTypeRemove: "id" parameter is required`
       );
-    return await removeAccessType(this, "professional", id);
+    return await this.removeAccessType("professional", id);
   }
 
-  public async licenseUserAccessTypeRemove(
-    this: QlikRepoApi,
-    id: string
-  ): Promise<IHttpStatus> {
+  public async accessTypeRemoveUser(id: string) {
     if (!id)
       throw new Error(
         `licenseUserAccessTypeRemove: "id" parameter is required`
       );
-    return await removeAccessType(this, "user", id);
+    return await this.removeAccessType("user", id);
   }
 
-  public async licenseProfessionalAccessGroupCreate(
-    this: QlikRepoApi,
-    name: string
-  ): Promise<ILicenseAccessGroup> {
+  public async accessGroupCreateProfessional(name: string) {
     if (!name)
       throw new Error(
         `licenseProfessionalAccessGroupCreate: "name" parameter is required`
@@ -201,10 +183,7 @@ export class License {
       });
   }
 
-  public async licenseUserAccessGroupCreate(
-    this: QlikRepoApi,
-    name: string
-  ): Promise<ILicenseAccessGroup> {
+  public async accessGroupCreateUser(name: string) {
     if (!name)
       throw new Error(
         `licenseUserAccessGroupCreate: "name" parameter is required`
@@ -216,31 +195,29 @@ export class License {
         return res.data as ILicenseAccessGroup;
       });
   }
-}
 
-async function getAccessType(
-  repo: QlikRepoApi,
-  licenseType: string,
-  id: string
-): Promise<ILicenseAccessTypeCondensed[]> {
-  let url = `license/${licenseType}AccessType`;
-  if (id) url += `/${id}`;
+  private async getAccessType(
+    licenseType: string,
+    id: string
+  ): Promise<ILicenseAccessTypeCondensed[]> {
+    let url = `license/${licenseType}AccessType`;
+    if (id) url += `/${id}`;
 
-  return await repo.repoClient.Get(url).then((res: IHttpReturn) => {
-    if (res.data.length > 0) return res.data as ILicenseAccessTypeCondensed[];
+    return await this.repoClient.Get(url).then((res: IHttpReturn) => {
+      if (res.data.length > 0) return res.data as ILicenseAccessTypeCondensed[];
 
-    return [res.data];
-  });
-}
+      return [res.data];
+    });
+  }
 
-async function removeAccessType(
-  repo: QlikRepoApi,
-  licenseType: string,
-  id: string
-): Promise<IHttpStatus> {
-  let url = `license/${licenseType}AccessType/${id}`;
+  private async removeAccessType(
+    licenseType: string,
+    id: string
+  ): Promise<IHttpStatus> {
+    let url = `license/${licenseType}AccessType/${id}`;
 
-  return await repo.repoClient
-    .Delete(url)
-    .then((res: IHttpReturn) => res.status);
+    return await this.repoClient
+      .Delete(url)
+      .then((res: IHttpReturn) => res.status);
+  }
 }

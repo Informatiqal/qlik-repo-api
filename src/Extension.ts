@@ -11,7 +11,7 @@ import {
   IFileExtensionWhiteListCondensed,
   IOwner,
   IStaticContentReferenceCondensed,
-} from "./interfaces";
+} from "./types/interfaces";
 
 export interface IExtensionCondensed {
   id: string;
