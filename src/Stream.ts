@@ -82,7 +82,7 @@ export class Stream implements IClassStream {
       throw new Error(`stream.create: "path" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
-      this,
+      this.repoClient,
       arg.customProperties,
       arg.tags,
       arg.owner
@@ -138,7 +138,7 @@ export class Stream implements IClassStream {
 
     if (arg.name) stream.name = arg.name;
 
-    let updateCommon = new UpdateCommonProperties(this, stream, arg);
+    let updateCommon = new UpdateCommonProperties(this.repoClient, stream, arg);
     stream = await updateCommon.updateAll();
 
     return await this.repoClient

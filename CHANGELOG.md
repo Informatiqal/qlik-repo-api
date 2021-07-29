@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.22] - 2021-07-29
+
+### Changed
+
+- all methods, working with Update/GetCommonProperties are passing the correct argument and types
+
+### Fixed
+
+- `UpdateCommonProperties` and `GetCommonProperties` are adapted to work with the new code structure
+
 ## [0.0.21] - 2021-07-29
 
 ### Changed

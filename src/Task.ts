@@ -113,7 +113,11 @@ export class Task implements IClassTask {
       reloadTask.taskSessionTimeout = arg.taskSessionTimeout;
     if (arg.maxRetries) reloadTask.maxRetries = arg.maxRetries;
 
-    let updateCommon = new UpdateCommonProperties(this, reloadTask, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      reloadTask,
+      arg
+    );
     reloadTask = await updateCommon.updateAll();
 
     return await this.repoClient
@@ -190,7 +194,11 @@ export class Task implements IClassTask {
       },
     };
 
-    let updateCommon = new UpdateCommonProperties(this, reloadTask, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      reloadTask,
+      arg
+    );
     reloadTask = await updateCommon.updateAll();
 
     reloadTask.task.customProperties = (reloadTask as any).customProperties;

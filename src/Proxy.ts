@@ -208,7 +208,7 @@ export class Proxy implements IClassProxy {
         arg.virtualProxies
       );
 
-    let updateCommon = new UpdateCommonProperties(this, proxy, arg);
+    let updateCommon = new UpdateCommonProperties(this.repoClient, proxy, arg);
     proxy = await updateCommon.updateAll();
 
     return await this.repoClient

@@ -121,7 +121,11 @@ export class Extension implements IClassExtension {
 
     let extension = await this.get(arg.id);
 
-    let updateCommon = new UpdateCommonProperties(this, extension, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      extension,
+      arg
+    );
     extension = await updateCommon.updateAll();
 
     return await this.repoClient

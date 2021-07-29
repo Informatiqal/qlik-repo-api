@@ -1,18 +1,26 @@
-import { ITagCondensed } from "../Tag";
-import { IUser } from "../User";
-import { ICustomPropertyCondensed } from "../CustomProperty";
+import { ITagCondensed, IClassTag, Tag } from "../Tag";
+import { IUser, IClassUser, User } from "../User";
+import {
+  ICustomPropertyCondensed,
+  IClassCustomProperty,
+  CustomProperty,
+} from "../CustomProperty";
 import { ICustomPropertyObject } from "../types/interfaces";
+import { QlikRepositoryClient } from "../main";
 
 export class GetCommonProperties {
-  private qlikUtil: any;
+  private qlikUtil: QlikRepositoryClient;
   private customProperties: string[];
   private tags: string[];
   private owner: string;
   private props = {
     customProperties: [],
     tags: [],
-    owner: "",
+    owner: {},
   };
+  private user: IClassUser;
+  private tag: IClassTag;
+  private customProperty: IClassCustomProperty;
   constructor(
     qlikUtil: any,
     customProperties: string[],
@@ -23,6 +31,9 @@ export class GetCommonProperties {
     this.customProperties = customProperties;
     this.tags = tags;
     this.owner = owner;
+    this.customProperty = new CustomProperty(this.qlikUtil);
+    this.tag = new Tag(this.qlikUtil);
+    this.user = new User(this.qlikUtil);
   }
 
   private async getCustomProperties(): Promise<ICustomPropertyObject | void> {
@@ -30,8 +41,8 @@ export class GetCommonProperties {
       this.props.customProperties = await Promise.all<ICustomPropertyObject>(
         this.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
-          return await this.qlikUtil
-            .customPropertyGetFilter(`name eq '${cpName}'`)
+          return await this.customProperty
+            .getFilter(`name eq '${cpName}'`)
             .then((cpData) => {
               if (cpData.length == 0)
                 throw new Error(`Non existing custom property "${cpName}"`);
@@ -49,8 +60,8 @@ export class GetCommonProperties {
     if (this.tags && this.tags.length > 0) {
       this.props.tags = await Promise.all<ITagCondensed>(
         this.tags.map(async (tag) => {
-          return await this.qlikUtil
-            .tagGetFilter(`name eq '${tag}'`)
+          return await this.tag
+            .getFilter(`name eq '${tag}'`)
             .then((tagsData) => {
               if (tagsData.length == 0)
                 throw new Error(`Non existing tag "${tag}"`);
@@ -65,8 +76,8 @@ export class GetCommonProperties {
     if (this.owner) {
       let [userDirectory, userId] = this.owner.split("\\");
 
-      this.props.owner = await this.qlikUtil
-        .userGetFilter(
+      this.props.owner = await this.user
+        .getFilter(
           `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`
         )
         .then((userData) => {

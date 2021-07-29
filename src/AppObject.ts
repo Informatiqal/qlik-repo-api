@@ -138,7 +138,11 @@ export class AppObject implements IClassAppObject {
     let appObject = await this.get(arg.id);
     if (arg.approved) appObject.approved = arg.approved;
 
-    let updateCommon = new UpdateCommonProperties(this, appObject, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      appObject,
+      arg
+    );
     appObject = await updateCommon.updateAll();
 
     return await this.repoClient

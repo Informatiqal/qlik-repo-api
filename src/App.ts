@@ -1,4 +1,4 @@
-import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
+import { QlikGenericRestClient, QlikRepositoryClient } from "./main";
 import { URLBuild, uuid } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
@@ -271,7 +271,7 @@ export class App implements IClassApp {
     if (arg.name) app.name = arg.name;
     if (arg.description) app.description = arg.description;
 
-    let updateCommon = new UpdateCommonProperties(this, app, arg);
+    let updateCommon = new UpdateCommonProperties(this.repoClient, app, arg);
     app = await updateCommon.updateAll();
 
     return await this.repoClient

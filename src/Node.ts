@@ -247,7 +247,7 @@ export class Node implements IClassNode {
       }
     }
 
-    let updateCommon = new UpdateCommonProperties(this, node, arg);
+    let updateCommon = new UpdateCommonProperties(this.repoClient, node, arg);
     node = await updateCommon.updateAll();
 
     return await this.repoClient

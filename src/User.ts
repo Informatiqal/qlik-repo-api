@@ -112,7 +112,7 @@ export class User implements IClassUser {
       throw new Error(`user.create: "userDirectory" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
-      this,
+      this.repoClient,
       arg.customProperties,
       arg.tags,
       ""

@@ -190,7 +190,11 @@ export class SharedContent implements IClassSharedContent {
     if (arg.description) sharedContent.description = arg.description;
     if (arg.type) sharedContent.type = arg.type;
 
-    const updateCommon = new UpdateCommonProperties(this, sharedContent, arg);
+    const updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      sharedContent,
+      arg
+    );
     sharedContent = await updateCommon.updateAll();
 
     return await this.repoClient
@@ -214,7 +218,7 @@ export class SharedContent implements IClassSharedContent {
     if (arg.description) sharedContent["description"] = arg.description;
 
     const getCommon = new GetCommonProperties(
-      this,
+      this.repoClient,
       arg.customProperties || [],
       arg.tags || [],
       ""

@@ -102,7 +102,7 @@ export class ContentLibrary implements IClassContentLibrary {
       throw new Error(`contentLibrary.create: "name" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
-      this,
+      this.repoClient,
       customProperties,
       tags,
       owner
@@ -270,7 +270,11 @@ export class ContentLibrary implements IClassContentLibrary {
 
     let contentLibrary = await this.get(arg.id);
 
-    let updateCommon = new UpdateCommonProperties(this, contentLibrary, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      contentLibrary,
+      arg
+    );
     contentLibrary = await updateCommon.updateAll();
 
     return await this.repoClient

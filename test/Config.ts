@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import https from "https";
+import { v4 as uuidv4 } from "uuid";
 
 const dotEnvPath = path.resolve(".env");
 require("dotenv").config({ path: dotEnvPath });
@@ -30,5 +31,18 @@ export class Config {
     });
 
     this.repoApi = repoApi;
+  }
+}
+
+export class Helpers {
+  constructor() {}
+
+  uuidString(): string {
+    let guid = uuidv4();
+    return guid.replace(/-/g, "");
+  }
+
+  uuid(): string {
+    return uuidv4();
   }
 }

@@ -90,7 +90,7 @@ export class SystemRule implements IClassSystemRule {
     };
 
     if (arg.tags) {
-      let updateCommon = new UpdateCommonProperties(this, rule, arg);
+      let updateCommon = new UpdateCommonProperties(this.repoClient, rule, arg);
       rule = await updateCommon.updateAll();
       delete rule.modifiedDate;
     }
@@ -118,7 +118,7 @@ export class SystemRule implements IClassSystemRule {
     };
 
     let commonProps = new GetCommonProperties(
-      this,
+      this.repoClient,
       arg.customProperties || [],
       arg.tags || [],
       ""
@@ -189,7 +189,7 @@ export class SystemRule implements IClassSystemRule {
     if (arg.actions) rule.actions = this.calculateActions(arg.actions);
     if (arg.context) rule.ruleContext = this.getRuleContext(arg.context);
 
-    let updateCommon = new UpdateCommonProperties(this, rule, arg);
+    let updateCommon = new UpdateCommonProperties(this.repoClient, rule, arg);
     rule = await updateCommon.updateAll();
 
     return await this.repoClient

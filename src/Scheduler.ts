@@ -130,7 +130,11 @@ export class Scheduler implements IClassScheduler {
       scheduler.settings.engineTimeout = arg.engineTimeout;
     }
 
-    let updateCommon = new UpdateCommonProperties(this, scheduler, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      scheduler,
+      arg
+    );
     scheduler = await updateCommon.updateAll();
 
     return await this.repoClient

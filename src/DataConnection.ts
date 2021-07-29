@@ -176,7 +176,7 @@ export class DataConnection implements IClassDataConnection {
     data["engineObjectId"] = uuid();
 
     let getCommonProps = new GetCommonProperties(
-      this,
+      this.repoClient,
       arg.customProperties,
       arg.tags,
       arg.owner
@@ -197,7 +197,11 @@ export class DataConnection implements IClassDataConnection {
 
     let dataConnection = await this.get(arg.id);
 
-    let updateCommon = new UpdateCommonProperties(this, dataConnection, arg);
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      dataConnection,
+      arg
+    );
     dataConnection = await updateCommon.updateAll();
 
     return await this.repoClient
