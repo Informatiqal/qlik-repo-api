@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "./main";
+import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import { IEntityRemove, IHttpStatus, ISelection } from "./types/interfaces";
 import { ITagCondensed } from "./Tag";
 
 export interface IUserDirectoryCondensed {
@@ -64,6 +65,7 @@ export interface IClassUserDirectory {
   getFilter(filter: string): Promise<IUserDirectory[]>;
   remove(id: string): Promise<IEntityRemove>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   sync(userDirectoryIds: string[]): Promise<IHttpStatus>;
   update(): Promise<boolean>;
 }
@@ -81,7 +83,7 @@ export class UserDirectory implements IClassUserDirectory {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`userDirectoryGet: "id" parameter is required`);
+    if (!id) throw new Error(`userDirectory.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`userdirectory/${id}`)
       .then((res) => res.data as IUserDirectory);
@@ -95,7 +97,9 @@ export class UserDirectory implements IClassUserDirectory {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`userDirectoryGetFilter: "filter" parameter is required`);
+      throw new Error(
+        `userDirectory.getFilter: "filter" parameter is required`
+      );
 
     return await this.repoClient
       .Get(`userdirectory/full?filter=(${encodeURIComponent(filter)})`)
@@ -103,7 +107,8 @@ export class UserDirectory implements IClassUserDirectory {
   }
 
   public async remove(id: string) {
-    if (!id) throw new Error(`userDirectoryRemove: "id" parameter is required`);
+    if (!id)
+      throw new Error(`userDirectory.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`userdirectory/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
@@ -113,12 +118,14 @@ export class UserDirectory implements IClassUserDirectory {
   public async removeFilter(filter: string) {
     if (!filter)
       throw new Error(
-        `userDirectoryRemoveFilter: "filter" parameter is required`
+        `userDirectory.removeFilter: "filter" parameter is required`
       );
 
     const userDirectories = await this.getAll().then((u: IUserDirectory[]) => {
       if (u.length == 0)
-        throw new Error(`tagRemoveFilter: filter query return 0 items`);
+        throw new Error(
+          `userDirectory.removeFilter: filter query return 0 items`
+        );
 
       return u;
     });
@@ -129,9 +136,18 @@ export class UserDirectory implements IClassUserDirectory {
     );
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/userdirectory`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async sync(userDirectoryIds: string[]) {
     if (!userDirectoryIds)
-      throw new Error(`userDirectorySync: "ids" parameter is required`);
+      throw new Error(`userDirectory.sync: "ids" parameter is required`);
 
     return await this.repoClient
       .Post(`userdirectoryconnector/syncuserdirectories`, [...userDirectoryIds])

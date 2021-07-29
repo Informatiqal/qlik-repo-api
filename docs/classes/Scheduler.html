@@ -101,6 +101,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Scheduler.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Scheduler.html#getAll" class="tsd-kind-icon">get<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Scheduler.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Scheduler.html#select" class="tsd-kind-icon">select</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Scheduler.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
 						</section>
@@ -119,7 +120,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Scheduler.ts#L63">src/Scheduler.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L66">src/Scheduler.ts:66</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -141,7 +142,7 @@
 					<div class="tsd-signature tsd-kind-icon">repo<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Scheduler.ts#L62">src/Scheduler.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L65">src/Scheduler.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -159,7 +160,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassScheduler.html">IClassScheduler</a>.<a href="../interfaces/IClassScheduler.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Scheduler.ts#L67">src/Scheduler.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L70">src/Scheduler.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -183,7 +184,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassScheduler.html">IClassScheduler</a>.<a href="../interfaces/IClassScheduler.html#getAll">getAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Scheduler.ts#L74">src/Scheduler.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L77">src/Scheduler.ts:77</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISchedulerServiceCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ISchedulerServiceCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -201,7 +202,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassScheduler.html">IClassScheduler</a>.<a href="../interfaces/IClassScheduler.html#getFilter">getFilter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Scheduler.ts#L80">src/Scheduler.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L83">src/Scheduler.ts:83</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -211,6 +212,30 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISchedulerService.html" class="tsd-signature-type" data-tsd-kind="Interface">ISchedulerService</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="select" class="tsd-anchor"></a>
+					<h3>select</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/IClassScheduler.html">IClassScheduler</a>.<a href="../interfaces/IClassScheduler.html#select">select</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L92">src/Scheduler.ts:92</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -225,7 +250,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassScheduler.html">IClassScheduler</a>.<a href="../interfaces/IClassScheduler.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Scheduler.ts#L89">src/Scheduler.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Scheduler.ts#L101">src/Scheduler.ts:101</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -269,6 +294,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Scheduler.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Scheduler.html#select" class="tsd-kind-icon">select</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Scheduler.html#update" class="tsd-kind-icon">update</a>

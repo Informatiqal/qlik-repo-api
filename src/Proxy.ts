@@ -1,8 +1,9 @@
-import { QlikRepositoryClient, Node, IClassNode } from "./main";
+import { QlikRepositoryClient, IClassNode } from "./main";
+import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import { IServerNodeConfigurationCondensed } from "./Node";
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 
 import {
   IVirtualProxyUpdate,
@@ -22,6 +23,7 @@ export interface IClassProxy {
   getAll(): Promise<IProxyServiceCondensed[]>;
   getFilter(filter: string): Promise<IProxyService[]>;
   create(arg: IProxyCreate): Promise<IProxyService>;
+  select(filter: string): Promise<ISelection>;
   update(arg: IProxyUpdate): Promise<IProxyService>;
   virtualProxyAdd(virtualProxyId: string): Promise<IVirtualProxyConfig>;
   virtualProxyGet(id: string): Promise<IVirtualProxyConfig>;
@@ -30,6 +32,8 @@ export interface IClassProxy {
     filter: string
   ): Promise<IVirtualProxyConfigCondensed[]>;
   virtualProxyRemove(id: string): Promise<IEntityRemove>;
+  virtualProxyRemoveFilter(filter: string): Promise<IEntityRemove[]>;
+  virtualProxySelect(filter: string): Promise<ISelection>;
   virtualProxyUpdate(arg: IVirtualProxyUpdate): Promise<IVirtualProxyConfig>;
 }
 
@@ -42,9 +46,9 @@ export class Proxy implements IClassProxy {
   }
 
   public async add(proxyId: string, virtualProxyId: string) {
-    if (!proxyId) throw new Error(`proxyAdd: "proxyId" is required`);
+    if (!proxyId) throw new Error(`proxy.add: "proxyId" is required`);
     if (!virtualProxyId)
-      throw new Error(`proxyAdd: "virtualProxyId" is required`);
+      throw new Error(`proxy.add: "virtualProxyId" is required`);
 
     let proxy = await this.get(proxyId).then((p) => p[0] as IProxyService);
     let virtualProxy = await this.virtualProxyGet(virtualProxyId).then(
@@ -59,7 +63,7 @@ export class Proxy implements IClassProxy {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`proxyGet: "id" parameter is required`);
+    if (!id) throw new Error(`proxy.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`proxyservice/${id}`)
       .then((res) => res.data as IProxyService);
@@ -73,7 +77,7 @@ export class Proxy implements IClassProxy {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`proxyGetFilter: "filter" parameter is required`);
+      throw new Error(`proxy.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`proxyservice/full?filter=(${encodeURIComponent(filter)})`)
@@ -97,13 +101,22 @@ export class Proxy implements IClassProxy {
       .then((m) => m.data as Buffer);
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/proxyservice`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   // TODO: handle oidc arguments
   public async create(arg: IProxyCreate) {
     if (!arg.description)
-      throw new Error(`proxyCreate: "description" parameter is required`);
+      throw new Error(`proxy.create: "description" parameter is required`);
     if (!arg.sessionCookieHeaderName)
       throw new Error(
-        `proxyCreate: "sessionCookieHeaderName" parameter is required`
+        `proxy.create: "sessionCookieHeaderName" parameter is required`
       );
 
     let data = {
@@ -163,7 +176,7 @@ export class Proxy implements IClassProxy {
   }
 
   public async update(arg: IProxyUpdate) {
-    if (!arg.id) throw new Error(`proxyUpdate: "id" parameter is required`);
+    if (!arg.id) throw new Error(`proxy.update: "id" parameter is required`);
 
     this.validateRanges(arg);
 
@@ -210,7 +223,7 @@ export class Proxy implements IClassProxy {
     // websocketCrossOriginWhiteList?: string[]
   ) {
     if (!virtualProxyId)
-      throw new Error(`virtualProxyAdd: "virtualProxyId" is required`);
+      throw new Error(`proxy.virtualProxyAdd: "virtualProxyId" is required`);
 
     let virtualProxy = await this.virtualProxyGet(virtualProxyId).then(
       (vp) => vp[0] as IVirtualProxyConfig
@@ -220,7 +233,8 @@ export class Proxy implements IClassProxy {
   }
 
   public async virtualProxyGet(id: string) {
-    if (!id) throw new Error(`virtualProxyGet: "id" parameter is required`);
+    if (!id)
+      throw new Error(`proxy.virtualProxyGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`virtualproxyconfig/${id}`)
       .then((res) => res.data as IVirtualProxyConfig);
@@ -234,7 +248,9 @@ export class Proxy implements IClassProxy {
 
   public async virtualProxyGetFilter(filter: string) {
     if (!filter)
-      throw new Error(`virtualProxyGetFilter: "filter" parameter is required`);
+      throw new Error(
+        `proxy.virtualProxyGetFilter: "filter" parameter is required`
+      );
 
     return await this.repoClient
       .Get(`virtualproxyconfig/full?filter=(${encodeURIComponent(filter)})`)
@@ -242,17 +258,50 @@ export class Proxy implements IClassProxy {
   }
 
   public async virtualProxyRemove(id: string) {
-    if (!id) throw new Error(`virtualProxyRemove: "id" parameter is required`);
+    if (!id)
+      throw new Error(`proxy.virtualProxyRemove: "id" parameter is required`);
 
     return await this.repoClient.Get(`virtualproxyconfig/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
+  public async virtualProxyRemoveFilter(filter: string) {
+    if (!filter)
+      throw new Error(
+        `proxy.virtualProxyRemoveFilter: "filter" parameter is required`
+      );
+
+    const tags = await this.virtualProxyGetFilter(filter).then(
+      (t: IVirtualProxyConfig[]) => {
+        if (t.length == 0)
+          throw new Error(
+            `proxy.virtualProxyRemoveFilter: filter query return 0 items`
+          );
+
+        return t;
+      }
+    );
+    return await Promise.all<IEntityRemove>(
+      tags.map((tag: IVirtualProxyConfig) => {
+        return this.virtualProxyRemove(tag.id);
+      })
+    );
+  }
+
+  public async virtualProxySelect(filter?: string) {
+    const urlBuild = new URLBuild(`selection/virtualproxyconfig`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   // TODO: handle oidc arguments
   public async virtualProxyUpdate(arg: IVirtualProxyUpdate) {
     if (!arg.id)
-      throw new Error(`virtualProxyUpdate: "id" parameter is required`);
+      throw new Error(`proxy.virtualProxyUpdate: "id" parameter is required`);
 
     let virtualProxy = await this.virtualProxyGet(arg.id);
 
@@ -370,40 +419,42 @@ export class Proxy implements IClassProxy {
 
   private validateRanges(arg: IProxyUpdate) {
     if (arg.listenPort < 1 && arg.listenPort > 65536)
-      throw new Error(`proxyUpdate: "listerPort" must be between 1 and 655536`);
+      throw new Error(
+        `proxy.update: "listerPort" must be between 1 and 655536`
+      );
     if (arg.unencryptedListenPort < 1 && arg.unencryptedListenPort > 65536)
       throw new Error(
-        `proxyUpdate: "unencryptedListenPort" must be between 1 and 655536`
+        `proxy.update: "unencryptedListenPort" must be between 1 and 655536`
       );
     if (
       arg.authenticationListenPort < 1 &&
       arg.authenticationListenPort > 65536
     )
       throw new Error(
-        `proxyUpdate: "authenticationListenPort" must be between 1 and 655536`
+        `proxy.update: "authenticationListenPort" must be between 1 and 655536`
       );
     if (
       arg.unencryptedAuthenticationListenPort < 1 &&
       arg.unencryptedAuthenticationListenPort > 65536
     )
       throw new Error(
-        `proxyUpdate: "unencryptedAuthenticationListenPort" must be between 1 and 655536`
+        `proxy.update: "unencryptedAuthenticationListenPort" must be between 1 and 655536`
       );
     if (arg.keepAliveTimeoutSeconds < 1 && arg.keepAliveTimeoutSeconds > 300)
       throw new Error(
-        `proxyUpdate: "keepAliveTimeoutSeconds" must be between 1 and 300`
+        `proxy.update: "keepAliveTimeoutSeconds" must be between 1 and 300`
       );
     if (arg.maxHeaderSizeBytes < 512 && arg.maxHeaderSizeBytes > 131072)
       throw new Error(
-        `proxyUpdate: "maxHeaderSizeBytes" must be between 512 and 131072`
+        `proxy.update: "maxHeaderSizeBytes" must be between 512 and 131072`
       );
     if (arg.maxHeaderLines < 20 && arg.maxHeaderLines > 1000)
       throw new Error(
-        `proxyUpdate: "maxHeaderLines" must be between 20 and 1000`
+        `proxy.update: "maxHeaderLines" must be between 20 and 1000`
       );
     if (arg.restListenPort < 1 && arg.restListenPort > 65536)
       throw new Error(
-        `proxyUpdate: "restListenPort" must be between 1 and 655536`
+        `proxy.update: "restListenPort" must be between 1 and 655536`
       );
   }
 

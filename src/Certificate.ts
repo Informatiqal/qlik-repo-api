@@ -32,7 +32,7 @@ export class Certificate implements IClassCertificate {
   public async export(arg: ICertificateExportParameters) {
     if (!arg.machineNames)
       throw new Error(
-        `certificateExport: "machineNames" parameter is required`
+        `certificate.export: "machineNames" parameter is required`
       );
 
     let data = {

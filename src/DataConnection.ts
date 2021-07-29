@@ -3,7 +3,7 @@ import { URLBuild, uuid } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IEntityRemove, ICustomPropertyObject } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
 import { IUserCondensed } from "./User";
@@ -26,7 +26,7 @@ export interface IDataConnection extends IDataConnectionCondensed {
   modifiedDate?: string;
   modifiedByUserName?: string;
   schemaPath?: string;
-  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  customProperties: ICustomPropertyCondensed[];
   tags: ITagCondensed[];
   owner: IUserCondensed;
 }
@@ -63,6 +63,8 @@ export interface IClassDataConnection {
   getFilter(filter: string, orderBy?: string): Promise<IDataConnection[]>;
   create(arg: IDataConnectionCreate): Promise<IDataConnection>;
   remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   update(arg: IDataConnectionUpdate): Promise<IDataConnection>;
 }
 
@@ -73,7 +75,7 @@ export class DataConnection implements IClassDataConnection {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`dataConnectionGet: "id" parameter is required`);
+    if (!id) throw new Error(`dataConnection.get: "id" parameter is required`);
 
     return await this.repoClient
       .Get(`dataconnection/${id}`)
@@ -92,7 +94,7 @@ export class DataConnection implements IClassDataConnection {
   ): Promise<IDataConnection[]> {
     if (!filter)
       throw new Error(
-        `dataConnectionGetFilter: "filter" parameter is required`
+        `dataConnection.getFilter: "filter" parameter is required`
       );
 
     const urlBuild = new URLBuild(`dataconnection/full`);
@@ -106,21 +108,51 @@ export class DataConnection implements IClassDataConnection {
 
   public async remove(id: string) {
     if (!id)
-      throw new Error(`dataConnectionRemove: "id" parameter is required`);
+      throw new Error(`dataConnection.remove: "id" parameter is required`);
     return await this.repoClient.Delete(`dataconnection/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
+  public async removeFilter(filter: string) {
+    if (!filter)
+      throw new Error(
+        `dataConnection.removeFilter: "filter" parameter is required`
+      );
+
+    const tags = await this.getFilter(filter).then((t: IDataConnection[]) => {
+      if (t.length == 0)
+        throw new Error(
+          `dataConnection.removeFilter: filter query return 0 items`
+        );
+
+      return t;
+    });
+    return await Promise.all<IEntityRemove>(
+      tags.map((tag: IDataConnection) => {
+        return this.remove(tag.id);
+      })
+    );
+  }
+
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/dataconnection`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async create(arg: IDataConnectionCreate) {
     if (!arg.name)
-      throw new Error(`dataConnectionCreate: "id" parameter is required`);
+      throw new Error(`dataConnection.create: "id" parameter is required`);
     if (!arg.connectionString)
       throw new Error(
-        `dataConnectionCreate: "connectionString" parameter is required`
+        `dataConnection.create: "connectionString" parameter is required`
       );
     if (!arg.owner)
-      throw new Error(`dataConnectionCreate: "owner" parameter is required`);
+      throw new Error(`dataConnection.create: "owner" parameter is required`);
 
     let data = {
       name: arg.name,
@@ -161,7 +193,7 @@ export class DataConnection implements IClassDataConnection {
 
   public async update(arg: IDataConnectionUpdate) {
     if (!arg.id)
-      throw new Error(`dataConnectionUpdate: "id" parameter is required`);
+      throw new Error(`dataConnection.update: "id" parameter is required`);
 
     let dataConnection = await this.get(arg.id);
 

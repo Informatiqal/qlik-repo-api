@@ -1,7 +1,8 @@
 import { QlikRepositoryClient } from "./main";
+import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
 
@@ -155,7 +156,7 @@ export class Node implements IClassNode {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`nodeGet: "id" parameter is required`);
+    if (!id) throw new Error(`node.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`servernodeconfiguration/${id}`)
       .then((res) => res.data as IServerNodeConfiguration);
@@ -169,7 +170,7 @@ export class Node implements IClassNode {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`nodeGetFilter: "filter" parameter is required`);
+      throw new Error(`node.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(
@@ -184,7 +185,7 @@ export class Node implements IClassNode {
   }
 
   public async remove(id: string): Promise<IEntityRemove> {
-    if (!id) throw new Error(`nodeRemove: "id" parameter is required`);
+    if (!id) throw new Error(`node.remove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`servernodeconfiguration/${id}`)
@@ -195,11 +196,11 @@ export class Node implements IClassNode {
 
   public async removeFilter(filter: string): Promise<IEntityRemove[]> {
     if (!filter)
-      throw new Error(`nodeRemoveFilter: "filter" parameter is required`);
+      throw new Error(`node.removeFilter: "filter" parameter is required`);
 
     const nodes = await this.getAll().then((n: IServerNodeConfiguration[]) => {
       if (n.length == 0)
-        throw new Error(`nodeRemoveFilter: filter query return 0 items`);
+        throw new Error(`node.removeFilter: filter query return 0 items`);
 
       return n;
     });
@@ -210,8 +211,17 @@ export class Node implements IClassNode {
     );
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/servernodeconfiguration`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(arg: INodeUpdate) {
-    if (!arg.id) throw new Error(`nodeUpdate: "id" parameter is required`);
+    if (!arg.id) throw new Error(`node.update: "id" parameter is required`);
 
     let node = await this.get(arg.id);
     if (arg.name) node.name;

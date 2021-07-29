@@ -1,6 +1,8 @@
 import { QlikRepositoryClient } from "./main";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
+import { URLBuild } from "./util/generic";
 
+import { ISelection } from "./types/interfaces";
 import { IProxyServiceSettingsLogVerbosity } from "./Proxy.interface";
 import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
@@ -55,6 +57,7 @@ export interface IClassScheduler {
   get(id: string): Promise<ISchedulerService>;
   getAll(): Promise<ISchedulerServiceCondensed[]>;
   getFilter(filter: string): Promise<ISchedulerService[]>;
+  select(filter: string): Promise<ISelection>;
   update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
 }
 
@@ -65,7 +68,7 @@ export class Scheduler implements IClassScheduler {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`schedulerGet: "id" parameter is required`);
+    if (!id) throw new Error(`scheduler.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`schedulerservice/${id}`)
       .then((res) => res.data as ISchedulerService);
@@ -79,15 +82,25 @@ export class Scheduler implements IClassScheduler {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`schedulerGetFilter: "filter" parameter is required`);
+      throw new Error(`scheduler.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`schedulerservice/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ISchedulerService[]);
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/schedulerservice`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(arg: ISchedulerServiceUpdate) {
-    if (!arg.id) throw new Error(`schedulerUpdate: "id" parameter is required`);
+    if (!arg.id)
+      throw new Error(`scheduler.update: "id" parameter is required`);
 
     let scheduler = await this.get(arg.id);
 
@@ -103,7 +116,7 @@ export class Scheduler implements IClassScheduler {
     if (arg.maxConcurrentEngines) {
       if (arg.maxConcurrentEngines < 1 && arg.maxConcurrentEngines > 256)
         throw new Error(
-          `schedulerUpdate: "maxConcurrentEngines" value must be between 1 and 256`
+          `scheduler.update: "maxConcurrentEngines" value must be between 1 and 256`
         );
 
       scheduler.settings.maxConcurrentEngines = arg.maxConcurrentEngines;
@@ -112,7 +125,7 @@ export class Scheduler implements IClassScheduler {
     if (arg.engineTimeout) {
       if (arg.engineTimeout < 10 && arg.engineTimeout > 10080)
         throw new Error(
-          `schedulerUpdate: "engineTimeout" value must be between 10 and 10080`
+          `scheduler.update: "engineTimeout" value must be between 10 and 10080`
         );
       scheduler.settings.engineTimeout = arg.engineTimeout;
     }

@@ -1,10 +1,11 @@
-import { QlikRepositoryClient } from "qlik-rest-api";
+import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IHttpStatus, IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 import { IAppCondensed } from "./App";
 import { ITagCondensed } from "./Tag";
 import { IUserCondensed } from "./User";
+import { QlikRepositoryClient } from "./main";
 
 export interface IAppObjectCondensed {
   id?: string;
@@ -47,6 +48,7 @@ export interface IClassAppObject {
   getFilter(filter: string): Promise<IAppObject[]>;
   publish(id: string): Promise<IAppObject[]>;
   remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
   unPublish(id: string): Promise<IAppObject[]>;
   update(arg: IAppObjectUpdate): Promise<IAppObject>;
 }
@@ -57,7 +59,7 @@ export class AppObject implements IClassAppObject {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`appObjectGet: "id" parameter is required`);
+    if (!id) throw new Error(`appObject.Get: "id" parameter is required`);
 
     return await this.repoClient
       .Get(`app/object/${id}`)
@@ -72,7 +74,7 @@ export class AppObject implements IClassAppObject {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`appObjectFilter: "filter" parameter is required`);
+      throw new Error(`appObject.filter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`app/object/full?filter=(${encodeURIComponent(filter)})`)
@@ -80,7 +82,7 @@ export class AppObject implements IClassAppObject {
   }
 
   public async publish(id: string) {
-    if (!id) throw new Error(`appObjectPublish: "id" parameter is required`);
+    if (!id) throw new Error(`appObject.publish: "id" parameter is required`);
 
     return await this.repoClient
       .Put(`app/object/${id}/publish`, {})
@@ -88,7 +90,7 @@ export class AppObject implements IClassAppObject {
   }
 
   public async unPublish(id: string) {
-    if (!id) throw new Error(`appObjectUnPublish: "id" parameter is required`);
+    if (!id) throw new Error(`appObject.unPublish: "id" parameter is required`);
 
     return await this.repoClient
       .Put(`app/object/${id}/unpublish`, {})
@@ -96,15 +98,42 @@ export class AppObject implements IClassAppObject {
   }
 
   public async remove(id: string) {
-    if (!id) throw new Error(`appObjectRemove: "id" parameter is required`);
+    if (!id) throw new Error(`appObject.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`app/object/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
+  public async removeFilter(filter: string) {
+    if (!filter)
+      throw new Error(`appObject.removeFilter: "filter" parameter is required`);
+
+    const appObjects = await this.getFilter(filter).then((t: IAppObject[]) => {
+      if (t.length == 0)
+        throw new Error(`appObject.removeFilter: filter query return 0 items`);
+
+      return t;
+    });
+    return await Promise.all<IEntityRemove>(
+      appObjects.map((tag: IAppObject) => {
+        return this.remove(tag.id);
+      })
+    );
+  }
+
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/app/object`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(arg: IAppObjectUpdate) {
-    if (!arg.id) throw new Error(`appObjectUpdate: "id" parameter is required`);
+    if (!arg.id)
+      throw new Error(`appObject.update: "id" parameter is required`);
 
     let appObject = await this.get(arg.id);
     if (arg.approved) appObject.approved = arg.approved;

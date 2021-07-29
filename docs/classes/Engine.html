@@ -102,6 +102,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Engine.html#getAll" class="tsd-kind-icon">get<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Engine.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Engine.html#getValid" class="tsd-kind-icon">get<wbr>Valid</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Engine.html#select" class="tsd-kind-icon">select</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="Engine.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
 						</section>
@@ -120,7 +121,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L102">src/Engine.ts:102</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L105">src/Engine.ts:105</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -142,7 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">repo<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L101">src/Engine.ts:101</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L104">src/Engine.ts:104</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,7 +161,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassEngine.html">IClassEngine</a>.<a href="../interfaces/IClassEngine.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L106">src/Engine.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L109">src/Engine.ts:109</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -184,7 +185,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassEngine.html">IClassEngine</a>.<a href="../interfaces/IClassEngine.html#getAll">getAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L113">src/Engine.ts:113</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L116">src/Engine.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEngineCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">IEngineCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -202,7 +203,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassEngine.html">IClassEngine</a>.<a href="../interfaces/IClassEngine.html#getFilter">getFilter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L139">src/Engine.ts:139</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L142">src/Engine.ts:142</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -226,7 +227,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassEngine.html">IClassEngine</a>.<a href="../interfaces/IClassEngine.html#getValid">getValid</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L119">src/Engine.ts:119</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L122">src/Engine.ts:122</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -236,6 +237,30 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEngineGetValidResult.html" class="tsd-signature-type" data-tsd-kind="Interface">IEngineGetValidResult</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="select" class="tsd-anchor"></a>
+					<h3>select</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/IClassEngine.html">IClassEngine</a>.<a href="../interfaces/IClassEngine.html#select">select</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L152">src/Engine.ts:152</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -250,7 +275,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassEngine.html">IClassEngine</a>.<a href="../interfaces/IClassEngine.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/Engine.ts#L150">src/Engine.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/Engine.ts#L162">src/Engine.ts:162</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -297,6 +322,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Engine.html#getValid" class="tsd-kind-icon">get<wbr>Valid</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="Engine.html#select" class="tsd-kind-icon">select</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="Engine.html#update" class="tsd-kind-icon">update</a>

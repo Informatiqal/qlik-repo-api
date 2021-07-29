@@ -8,6 +8,7 @@ import {
   IFileExtensionWhiteListCondensed,
   IStaticContentReferenceCondensed,
   IOwner,
+  ISelection,
 } from "./types/interfaces";
 
 import { ICustomPropertyCondensed } from "./CustomProperty";
@@ -70,6 +71,8 @@ export interface IClassSharedContent {
   create(arg: ISharedContentCreate): Promise<ISharedContent>;
   deleteFile(id: string, externalPath: string): Promise<IEntityRemove>;
   remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   update(arg: ISharedContentUpdate): Promise<ISharedContent>;
   uploadFile(id: string, file: Buffer, externalPath: string): Promise<string>;
 }
@@ -81,7 +84,7 @@ export class SharedContent implements IClassSharedContent {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`sharedContentGet: "id" parameter is required`);
+    if (!id) throw new Error(`sharedContent.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`sharedcontent/${id}`)
       .then((res) => res.data as ISharedContent);
@@ -95,7 +98,9 @@ export class SharedContent implements IClassSharedContent {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`sharedContentGetFilter: "filter" parameter is required`);
+      throw new Error(
+        `sharedContent.getFilter: "filter" parameter is required`
+      );
 
     return await this.repoClient
       .Get(`sharedcontent/full?filter=(${encodeURIComponent(filter)})`)
@@ -103,21 +108,43 @@ export class SharedContent implements IClassSharedContent {
   }
 
   public async remove(id: string): Promise<IEntityRemove> {
-    if (!id) throw new Error(`sharedContentRemove: "id" parameter is required`);
+    if (!id)
+      throw new Error(`sharedContent.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`sharedcontent/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
+  public async removeFilter(filter: string) {
+    if (!filter)
+      throw new Error(
+        `sharedContent.removeFilter: "filter" parameter is required`
+      );
+
+    const tags = await this.getFilter(filter).then((t: ISharedContent[]) => {
+      if (t.length == 0)
+        throw new Error(
+          `sharedContent.removeFilter: filter query return 0 items`
+        );
+
+      return t;
+    });
+    return await Promise.all<IEntityRemove>(
+      tags.map((tag: ISharedContent) => {
+        return this.remove(tag.id);
+      })
+    );
+  }
+
   public async uploadFile(id: string, file: Buffer, externalPath: string) {
     if (!id)
-      throw new Error(`sharedContentUploadFile: "id" parameter is required`);
+      throw new Error(`sharedContent.uploadFile: "id" parameter is required`);
     if (!file)
-      throw new Error(`sharedContentUploadFile: "file" parameter is required`);
+      throw new Error(`sharedContent.uploadFile: "file" parameter is required`);
     if (!externalPath)
       throw new Error(
-        `sharedContentUploadFile: "externalPath" parameter is required`
+        `sharedContent.uploadFile: "externalPath" parameter is required`
       );
 
     const urlBuild = new URLBuild(`sharedcontent/${id}/uploadfile`);
@@ -130,10 +157,10 @@ export class SharedContent implements IClassSharedContent {
 
   public async deleteFile(id: string, externalPath: string) {
     if (!id)
-      throw new Error(`sharedContentDeleteFile: "id" parameter is required`);
+      throw new Error(`sharedContent.deleteFile: "id" parameter is required`);
     if (!externalPath)
       throw new Error(
-        `sharedContentDeleteFile: "externalPath" parameter is required`
+        `sharedContent.deleteFile: "externalPath" parameter is required`
       );
 
     const urlBuild = new URLBuild(`sharedcontent/${id}/deletecontent`);
@@ -144,9 +171,18 @@ export class SharedContent implements IClassSharedContent {
     });
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/sharedcontent`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(arg: ISharedContentUpdate) {
     if (!arg.id)
-      throw new Error(`sharedContentUpdate: "id" parameter is required`);
+      throw new Error(`sharedContent.update: "id" parameter is required`);
 
     let sharedContent = await this.get(arg.id);
 
@@ -164,11 +200,11 @@ export class SharedContent implements IClassSharedContent {
 
   public async create(arg: ISharedContentCreate) {
     if (!arg.id)
-      throw new Error(`sharedContentCreate: "id" parameter is required`);
+      throw new Error(`sharedContent.create: "id" parameter is required`);
     if (!arg.name)
-      throw new Error(`sharedContentCreate: "id" parameter is required`);
+      throw new Error(`sharedContent.create: "id" parameter is required`);
     if (!arg.type)
-      throw new Error(`sharedContentCreate: "id" parameter is required`);
+      throw new Error(`sharedContent.create: "id" parameter is required`);
 
     let sharedContent = {
       name: arg.name,

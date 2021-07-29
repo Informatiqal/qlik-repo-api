@@ -38,8 +38,9 @@ export class Table {
 
   public async create(arg: ITableCreate) {
     if (!arg.columns)
-      throw new Error(`tableCreate: "columns" parameter is required`);
-    if (!arg.type) throw new Error(`tableCreate: "type" parameter is required`);
+      throw new Error(`table.create: "columns" parameter is required`);
+    if (!arg.type)
+      throw new Error(`table.create: "type" parameter is required`);
 
     const urlBuild = new URLBuild(`${arg.type}/table`);
     urlBuild.addParam("filter", arg.filter);

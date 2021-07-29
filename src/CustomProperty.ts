@@ -71,7 +71,7 @@ export class CustomProperty {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`customPropertyGet: "id" parameter is required`);
+    if (!id) throw new Error(`customProperty.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`custompropertydefinition/${id}`)
       .then((res) => res.data as ICustomProperty);
@@ -86,7 +86,7 @@ export class CustomProperty {
   public async getFilter(filter: string) {
     if (!filter)
       throw new Error(
-        `customPropertyGetFilter: "filter" parameter is required`
+        `customProperty.getFilter: "filter" parameter is required`
       );
 
     return await this.repoClient
@@ -96,7 +96,7 @@ export class CustomProperty {
 
   public async create(arg: ICustomPropertyCreate) {
     if (!arg.name)
-      throw new Error(`customPropertyCreate: "name" parameter is required`);
+      throw new Error(`customProperty.create: "name" parameter is required`);
 
     return await this.repoClient
       .Post(
@@ -115,7 +115,7 @@ export class CustomProperty {
 
   public async remove(id: string) {
     if (!id)
-      throw new Error(`customPropertyRemove: "id" parameter is required`);
+      throw new Error(`customProperty.remove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`custompropertydefinition/${id}`)
@@ -126,7 +126,9 @@ export class CustomProperty {
 
   public async removeFilter(filter: string) {
     if (!filter)
-      throw new Error(`removeFilter: "filter" parameter is required`);
+      throw new Error(
+        `customProperty.removeFilter: "filter" parameter is required`
+      );
 
     const customProperties = await this.getFilter(filter);
     return await Promise.all<IEntityRemove>(
@@ -148,9 +150,9 @@ export class CustomProperty {
   // REVIEW: verify the logic here
   public async update(arg: ICustomPropertyUpdate) {
     if (!arg.id)
-      throw new Error(`customPropertyUpdate: "id" parameter is required`);
+      throw new Error(`customProperty.update: "id" parameter is required`);
     if (!arg.name)
-      throw new Error(`customPropertyUpdate: "name" parameter is required`);
+      throw new Error(`customProperty.update: "name" parameter is required`);
 
     let customProperty = await this.get(arg.id);
 

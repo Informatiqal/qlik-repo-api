@@ -1,8 +1,9 @@
 import { QlikRepositoryClient } from "./main";
+import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 import { IAudit } from "./License.interface";
 
 import {
@@ -23,6 +24,8 @@ export interface IClassSystemRule {
   create(arg: ISystemRuleCreate): Promise<ISystemRule>;
   licenseCreate(arg: ISystemRuleLicenseCreate): Promise<any>;
   remove(id: string): Promise<IEntityRemove>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   update(arg: ISystemRuleUpdate): Promise<ISystemRule>;
 }
 
@@ -33,7 +36,7 @@ export class SystemRule implements IClassSystemRule {
   }
 
   public async get(id: string): Promise<ISystemRule> {
-    if (!id) throw new Error(`ruleGet: "id" parameter is required`);
+    if (!id) throw new Error(`systemRule.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`systemrule/${id}`)
       .then((res) => res.data as ISystemRule);
@@ -53,7 +56,7 @@ export class SystemRule implements IClassSystemRule {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`ruleGetFilter: "filter" parameter is required`);
+      throw new Error(`systemRule.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`systemrule?filter=(${encodeURIComponent(filter)})`)
@@ -62,13 +65,17 @@ export class SystemRule implements IClassSystemRule {
 
   public async create(arg: ISystemRuleCreate) {
     if (!arg.actions)
-      throw new Error(`ruleCreate: "actions" parameter is required`);
+      throw new Error(`systemRule.create: "actions" parameter is required`);
     if (!arg.category)
-      throw new Error(`ruleCreate: "category" parameter is required`);
-    if (!arg.name) throw new Error(`ruleCreate: "name" parameter is required`);
+      throw new Error(`systemRule.create: "category" parameter is required`);
+    if (!arg.name)
+      throw new Error(`systemRule.create: "name" parameter is required`);
     if (!arg.resourceFilter)
-      throw new Error(`ruleCreate: "resourceFilter" parameter is required`);
-    if (!arg.rule) throw new Error(`ruleCreate: "rule" parameter is required`);
+      throw new Error(
+        `systemRule.create: "resourceFilter" parameter is required`
+      );
+    if (!arg.rule)
+      throw new Error(`systemRule.create: "rule" parameter is required`);
 
     let rule: ISystemRule = {
       name: arg.name,
@@ -132,15 +139,44 @@ export class SystemRule implements IClassSystemRule {
   }
 
   public async remove(id: string): Promise<IEntityRemove> {
-    if (!id) throw new Error(`ruleRemove: "id" parameter is required`);
+    if (!id) throw new Error(`systemRule.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`systemrule/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
+  public async removeFilter(filter: string) {
+    if (!filter)
+      throw new Error(
+        `systemRule.removeFilter: "filter" parameter is required`
+      );
+
+    const tags = await this.getFilter(filter).then((t: ISystemRule[]) => {
+      if (t.length == 0)
+        throw new Error(`systemRule.removeFilter: filter query return 0 items`);
+
+      return t;
+    });
+    return await Promise.all<IEntityRemove>(
+      tags.map((tag: ISystemRule) => {
+        return this.remove(tag.id);
+      })
+    );
+  }
+
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/systemrule`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(arg: ISystemRuleUpdate): Promise<ISystemRule> {
-    if (!arg.id) throw new Error(`ruleUpdate: "id" parameter is required`);
+    if (!arg.id)
+      throw new Error(`systemRule.update: "id" parameter is required`);
 
     let rule = await this.get(arg.id);
 
@@ -196,7 +232,7 @@ export class SystemRule implements IClassSystemRule {
     if (context == "qmc") return 2;
 
     throw new Error(
-      `"${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
+      `systemRule.update: "${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
     );
   }
 }

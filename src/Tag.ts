@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IEntityRemove } from "./types/interfaces";
+import { URLBuild } from "./util/generic";
 import { modifiedDateTime } from "./util/generic";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 export interface ITagCondensed {
   privileges: string[];
   name: string;
@@ -20,6 +21,7 @@ export interface IClassTag {
   create(name: string): Promise<ITag>;
   remove(id: string): Promise<IEntityRemove>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   update(id: string, name: string): Promise<ITag>;
 }
 
@@ -30,7 +32,7 @@ export class Tag {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`tagGet: "id" parameter is required`);
+    if (!id) throw new Error(`tag.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`tag/${id}`)
       .then((res) => res.data as ITag);
@@ -44,7 +46,7 @@ export class Tag {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`tagGetFilter: "filter" parameter is required`);
+      throw new Error(`tag.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(`tag/full?filter=(${encodeURIComponent(filter)})`)
@@ -52,7 +54,7 @@ export class Tag {
   }
 
   public async create(name: string) {
-    if (!name) throw new Error(`tagCreate: "name" is required`);
+    if (!name) throw new Error(`tag.create: "name" is required`);
 
     return await this.repoClient
       .Post(`tag`, { name })
@@ -60,7 +62,7 @@ export class Tag {
   }
 
   public async remove(id: string) {
-    if (!id) throw new Error(`tagRemove: "id" parameter is required`);
+    if (!id) throw new Error(`tag.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`tag/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
@@ -69,11 +71,11 @@ export class Tag {
 
   public async removeFilter(filter: string) {
     if (!filter)
-      throw new Error(`tagRemoveFilter: "filter" parameter is required`);
+      throw new Error(`tag.removeFilter: "filter" parameter is required`);
 
     const tags = await this.getFilter(filter).then((t: ITag[]) => {
       if (t.length == 0)
-        throw new Error(`tagRemoveFilter: filter query return 0 items`);
+        throw new Error(`tag.removeFilter: filter query return 0 items`);
 
       return t;
     });
@@ -84,9 +86,18 @@ export class Tag {
     );
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/tag`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(id: string, name: string) {
-    if (!id) throw new Error(`tagUpdate: "id" parameter is required`);
-    if (!name) throw new Error(`tagUpdate: "name" parameter is required`);
+    if (!id) throw new Error(`tag.update: "id" parameter is required`);
+    if (!name) throw new Error(`tag.update: "name" parameter is required`);
 
     let tag = await this.get(id).then((t) => t[0] as ITag);
     tag.name = name;

@@ -1,7 +1,8 @@
 import { QlikRepositoryClient } from "./main";
+import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IHttpStatus, IEntityRemove } from "./types/interfaces";
+import { IHttpStatus, IEntityRemove, ISelection } from "./types/interfaces";
 
 import {
   ITask,
@@ -26,6 +27,8 @@ export interface IClassTask {
   reloadCount(filter?: string): Promise<number>;
   reloadUpdate(arg: ITaskReloadUpdate): Promise<ITask>;
   reloadRemove(id: string): Promise<IEntityRemove>;
+  reloadRemoveFilter(filter: string): Promise<IEntityRemove[]>;
+  reloadSelect(filter?: string): Promise<ISelection>;
   externalGetAll(): Promise<ITask[]>;
   externalRemove(id: string): Promise<IEntityRemove>;
   create(arg: ITaskCreate): Promise<ITask>;
@@ -62,7 +65,8 @@ export class Task implements IClassTask {
   }
 
   public async getFilter(filter: string) {
-    if (!filter) throw new Error(`taskGetFilter: "path" parameter is required`);
+    if (!filter)
+      throw new Error(`task.getFilter: "path" parameter is required`);
 
     return await this.repoClient
       .Get(`task/full?filter=(${encodeURIComponent(filter)})`)
@@ -70,7 +74,7 @@ export class Task implements IClassTask {
   }
 
   public async reloadGet(id: string) {
-    if (!id) throw new Error(`taskReloadGet: "id" parameter is required`);
+    if (!id) throw new Error(`task.reloadGet: "id" parameter is required`);
 
     return await this.repoClient
       .Get(`reloadtask/${id}`)
@@ -83,7 +87,7 @@ export class Task implements IClassTask {
 
   public async reloadGetFilter(filter: string) {
     if (!filter)
-      throw new Error(`taskReloadGetFilter: "path" parameter is required`);
+      throw new Error(`task.reloadGetFilter: "path" parameter is required`);
 
     return await this.repoClient
       .Get(`reloadtask/full?filter=(${encodeURIComponent(filter)})`)
@@ -100,7 +104,7 @@ export class Task implements IClassTask {
   }
 
   public async reloadUpdate(arg: ITaskReloadUpdate) {
-    if (!arg.id) throw new Error(`taskUpdate: "id" parameter is required`);
+    if (!arg.id) throw new Error(`task.update: "id" parameter is required`);
 
     let reloadTask: ITask = await this.reloadGet(arg.id);
 
@@ -118,11 +122,37 @@ export class Task implements IClassTask {
   }
 
   public async reloadRemove(id: string) {
-    if (!id) throw new Error(`taskReloadRemove: id" parameter is required`);
+    if (!id) throw new Error(`task.reloadRemove: id" parameter is required`);
 
     return await this.repoClient.Delete(`reloadtask/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
+  }
+
+  public async reloadRemoveFilter(filter: string) {
+    if (!filter)
+      throw new Error(`tag.removeFilter: "filter" parameter is required`);
+
+    const tags = await this.getFilter(filter).then((t: ITask[]) => {
+      if (t.length == 0)
+        throw new Error(`tag.removeFilter: filter query return 0 items`);
+
+      return t;
+    });
+    return await Promise.all<IEntityRemove>(
+      tags.map((tag: ITask) => {
+        return this.reloadRemove(tag.id);
+      })
+    );
+  }
+
+  public async reloadSelect(filter?: string) {
+    const urlBuild = new URLBuild(`selection/reloadtask`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
   }
 
   public async externalGetAll() {
@@ -130,7 +160,7 @@ export class Task implements IClassTask {
   }
 
   public async externalRemove(id: string) {
-    if (!id) throw new Error(`taskExternalRemove: "id" parameter is required`);
+    if (!id) throw new Error(`task.externalRemove: "id" parameter is required`);
 
     return await this.repoClient
       .Delete(`externalprogramtask/${id}`)
@@ -141,8 +171,8 @@ export class Task implements IClassTask {
 
   public async create(arg: ITaskCreate) {
     if (!arg.appId)
-      throw new Error(`taskCreate: "appId" parameter is required`);
-    if (!arg.name) throw new Error(`taskCreate: "name" parameter is required`);
+      throw new Error(`task.create: "appId" parameter is required`);
+    if (!arg.name) throw new Error(`task.create: "name" parameter is required`);
 
     let reloadTask = {
       schemaEvents: [],
@@ -176,7 +206,7 @@ export class Task implements IClassTask {
   }
 
   public async start(id: string, wait: boolean = false) {
-    if (!id) throw new Error(`taskStart: "id" parameter is required`);
+    if (!id) throw new Error(`task.start: "id" parameter is required`);
 
     let url = `task/${id}/start`;
     if (wait) url += `/synchronous`;
@@ -187,7 +217,8 @@ export class Task implements IClassTask {
   }
 
   public async startByName(name: string, wait: boolean = false) {
-    if (!name) throw new Error(`taskStartByName: "path" parameter is required`);
+    if (!name)
+      throw new Error(`task.startByName: "path" parameter is required`);
 
     let url = `task/start`;
     if (wait) url += `/synchronous`;
@@ -200,7 +231,7 @@ export class Task implements IClassTask {
 
   public async waitExecution(taskId: string, executionId?: string) {
     if (!taskId)
-      throw new Error(`taskWaitExecution: "taskId" parameter is required`);
+      throw new Error(`task.waitExecution: "taskId" parameter is required`);
     let taskStatusCode = -1;
     let resultId: string;
 
@@ -233,14 +264,14 @@ export class Task implements IClassTask {
   }
 
   public async scheduleRemove(id: string) {
-    if (!id) throw new Error(`taskScheduleRemove: "id" parameter is required`);
+    if (!id) throw new Error(`task.scheduleRemove: "id" parameter is required`);
     return await this.repoClient.Delete(`schemaevent/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
   }
 
   public async scheduleGet(id: string) {
-    if (!id) throw new Error(`taskScheduleGet: "id" parameter is required`);
+    if (!id) throw new Error(`task.scheduleGet: "id" parameter is required`);
     return await this.repoClient
       .Get(`schemaevent/${id}`)
       .then((res) => res.data as ISchemaEvent);
@@ -255,19 +286,19 @@ export class Task implements IClassTask {
   public async triggerCreateComposite(arg: ITaskCreateTriggerComposite) {
     if (!arg.eventTaskId)
       throw new Error(
-        `taskTriggerCreateComposite: "eventTaskId" parameter is required`
+        `task.triggerCreateComposite: "eventTaskId" parameter is required`
       );
     if (!arg.state)
       throw new Error(
-        `taskTriggerCreateComposite: "state" parameter is required`
+        `task.triggerCreateComposite: "state" parameter is required`
       );
     if (!arg.taskId)
       throw new Error(
-        `taskTriggerCreateComposite: "taskId" parameter is required`
+        `task.triggerCreateComposite: "taskId" parameter is required`
       );
     if (!arg.triggerName)
       throw new Error(
-        `taskTriggerCreateComposite: "triggerName" parameter is required`
+        `task.triggerCreateComposite: "triggerName" parameter is required`
       );
 
     let ruleState = -1;
@@ -311,10 +342,10 @@ export class Task implements IClassTask {
 
   public async triggerCreateSchema(arg: ITaskCreateTriggerSchema) {
     if (!arg.name)
-      throw new Error(`taskTriggerCreateSchema: "name" parameter is required`);
+      throw new Error(`task.triggerCreateSchema: "name" parameter is required`);
     if (!arg.reloadTaskId)
       throw new Error(
-        `taskTriggerCreateSchema: "reloadTaskId" parameter is required`
+        `task.triggerCreateSchema: "reloadTaskId" parameter is required`
       );
 
     let currentTimeStamp = new Date();
@@ -357,10 +388,12 @@ export class Task implements IClassTask {
 
   public async scriptLogGet(reloadTaskId: string, fileReferenceId: string) {
     if (!reloadTaskId)
-      throw new Error(`taskScriptLogGet: "reloadTaskId" parameter is required`);
+      throw new Error(
+        `task.scriptLogGet: "reloadTaskId" parameter is required`
+      );
     if (!fileReferenceId)
       throw new Error(
-        `taskScriptLogGet: "fileReferenceId" parameter is required`
+        `task.scriptLogGet: "fileReferenceId" parameter is required`
       );
 
     return await this.repoClient
@@ -379,11 +412,11 @@ export class Task implements IClassTask {
   ) {
     if (!reloadTaskId)
       throw new Error(
-        `taskScriptLogFileGet: "reloadTaskId" parameter is required`
+        `task.scriptLogFileGet: "reloadTaskId" parameter is required`
       );
     if (!executionResultId)
       throw new Error(
-        `taskScriptLogFileGet: "executionResultId" parameter is required`
+        `task.scriptLogFileGet: "executionResultId" parameter is required`
       );
 
     return await this.repoClient
