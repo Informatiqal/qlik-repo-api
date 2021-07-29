@@ -45,7 +45,7 @@ export class Privileges implements IClassPrivileges {
 
   public async get(item: IObject, filter?: string) {
     if (!item.schemaPath)
-      throw new Error(`privilegesGet: "object.schemaPath" is missing`);
+      throw new Error(`privileges.get: "object.schemaPath" is missing`);
     let url = `${item.schemaPath}`;
     if (filter) url += `/?privilegesFilter=${filter}`;
 
@@ -60,9 +60,9 @@ export class Privileges implements IClassPrivileges {
     privileges.filter((p) => {
       if (!access.includes(p))
         throw new Error(
-          `Expected "${p}" to ber found in collection "${access.join(", ")}. ${
-            item.schemaPath
-          } - ${item.id}"`
+          `privileges.assert: Expected "${p}" to ber found in collection "${access.join(
+            ", "
+          )}. ${item.schemaPath} - ${item.id}"`
         );
 
       return p;

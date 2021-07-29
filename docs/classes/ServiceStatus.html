@@ -102,6 +102,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceStatus.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceStatus.html#getAll" class="tsd-kind-icon">get<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceStatus.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceStatus.html#select" class="tsd-kind-icon">select</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,7 +120,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/ServiceStatus.ts#L30">src/ServiceStatus.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L33">src/ServiceStatus.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -141,7 +142,7 @@
 					<div class="tsd-signature tsd-kind-icon">repo<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/ServiceStatus.ts#L29">src/ServiceStatus.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L32">src/ServiceStatus.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -159,7 +160,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceStatus.html">IClassServiceStatus</a>.<a href="../interfaces/IClassServiceStatus.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/ServiceStatus.ts#L34">src/ServiceStatus.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L37">src/ServiceStatus.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -177,7 +178,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceStatus.html">IClassServiceStatus</a>.<a href="../interfaces/IClassServiceStatus.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/ServiceStatus.ts#L40">src/ServiceStatus.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L43">src/ServiceStatus.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -201,7 +202,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceStatus.html">IClassServiceStatus</a>.<a href="../interfaces/IClassServiceStatus.html#getAll">getAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/ServiceStatus.ts#L47">src/ServiceStatus.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L50">src/ServiceStatus.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceStatusCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceStatusCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -219,7 +220,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceStatus.html">IClassServiceStatus</a>.<a href="../interfaces/IClassServiceStatus.html#getFilter">getFilter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4789843/src/ServiceStatus.ts#L53">src/ServiceStatus.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L56">src/ServiceStatus.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -229,6 +230,30 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceStatus.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceStatus</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="select" class="tsd-anchor"></a>
+					<h3>select</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Implementation of <a href="../interfaces/IClassServiceStatus.html">IClassServiceStatus</a>.<a href="../interfaces/IClassServiceStatus.html#select">select</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceStatus.ts#L67">src/ServiceStatus.ts:67</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -266,6 +291,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ServiceStatus.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ServiceStatus.html#select" class="tsd-kind-icon">select</a>
 							</li>
 						</ul>
 					</li>

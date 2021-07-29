@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "./main";
+import { URLBuild } from "./util/generic";
 
-import { IHttpStatus, IEntityRemove } from "./types/interfaces";
+import { ISelection, IEntityRemove } from "./types/interfaces";
 import {
   IServiceCluster,
   IServiceClusterCondensed,
@@ -14,6 +15,7 @@ export interface IClassServiceCluster {
   getFilter(filter: string): Promise<IServiceClusterCondensed[]>;
   remove(id: string): Promise<IEntityRemove>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   setCentral(id: string): Promise<number>;
   update(arg: IServiceClusterUpdate): Promise<IServiceCluster>;
 }
@@ -31,7 +33,7 @@ export class ServiceCluster implements IClassServiceCluster {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`serviceClusterGet: "id" parameter is required`);
+    if (!id) throw new Error(`serviceCluster.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`ServiceCluster/${id}`)
       .then((res) => res.data as IServiceCluster);
@@ -46,7 +48,7 @@ export class ServiceCluster implements IClassServiceCluster {
   public async getFilter(filter: string) {
     if (!filter)
       throw new Error(
-        `serviceClusterGetFilter: "filter" parameter is required`
+        `serviceCluster.getFilter: "filter" parameter is required`
       );
 
     return await this.repoClient
@@ -56,7 +58,7 @@ export class ServiceCluster implements IClassServiceCluster {
 
   public async remove(id: string) {
     if (!id)
-      throw new Error(`serviceClusterRemove: "id" parameter is required`);
+      throw new Error(`serviceCluster.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`ServiceCluster/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
@@ -65,12 +67,12 @@ export class ServiceCluster implements IClassServiceCluster {
 
   public async removeFilter(filter: string) {
     if (!filter)
-      throw new Error(`serviceClusterFilter: "filter" parameter is required`);
+      throw new Error(`serviceCluster.filter: "filter" parameter is required`);
 
     const serviceClusters = await this.getFilter(filter).then(
       (s: IServiceCluster[]) => {
         if (s.length == 0)
-          throw new Error(`serviceClusterFilter: filter query return 0 items`);
+          throw new Error(`serviceCluster.filter: filter query return 0 items`);
 
         return s;
       }
@@ -82,9 +84,18 @@ export class ServiceCluster implements IClassServiceCluster {
     );
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/ServiceCluster`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async setCentral(id: string) {
     if (!id)
-      throw new Error(`serviceClusterSetCentral: "id" parameter is required`);
+      throw new Error(`serviceCluster.setCentral: "id" parameter is required`);
 
     return await this.repoClient
       .Get(`failover/tonode/${id}`)
@@ -93,9 +104,9 @@ export class ServiceCluster implements IClassServiceCluster {
 
   public async update(arg: IServiceClusterUpdate): Promise<IServiceCluster> {
     if (!arg)
-      throw new Error(`serviceClusterUpdate: all arguments are missing`);
+      throw new Error(`serviceCluster.update: all arguments are missing`);
     if (arg && !arg.id)
-      throw new Error(`serviceClusterUpdate: "id" parameter is required`);
+      throw new Error(`serviceCluster.update: "id" parameter is required`);
 
     let serviceCluster = await this.get(arg.id);
 

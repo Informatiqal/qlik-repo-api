@@ -98,7 +98,7 @@ export class App implements IClassApp {
     name?: string,
     includeCustomProperties?: boolean
   ) {
-    if (!id) throw new Error(`appCopy: "id" parameter is required`);
+    if (!id) throw new Error(`app.copy: "id" parameter is required`);
 
     const urlBuild = new URLBuild(`app/${id}/copy`);
     if (name) urlBuild.addParam("name", name);
@@ -111,7 +111,7 @@ export class App implements IClassApp {
   }
 
   public async export(id: string, fileName?: string, skipData?: boolean) {
-    if (!id) throw new Error(`appExport: "id" parameter is required`);
+    if (!id) throw new Error(`app.export: "id" parameter is required`);
 
     const token = uuid();
     const urlBuild = new URLBuild(`app/${id}/export/${token}`);
@@ -132,7 +132,7 @@ export class App implements IClassApp {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`appGet: "id" parameter is required`);
+    if (!id) throw new Error(`app.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`app/${id}`)
       .then((res) => res.data as IApp);
@@ -146,7 +146,7 @@ export class App implements IClassApp {
 
   public async getFilter(filter: string, orderBy?: string) {
     if (!filter)
-      throw new Error(`appGetFilter: "filter" parameter is required`);
+      throw new Error(`app.getFilter: "filter" parameter is required`);
 
     const urlBuild = new URLBuild(`app/full`);
     urlBuild.addParam("filter", filter);
@@ -163,8 +163,8 @@ export class App implements IClassApp {
     keepData?: boolean,
     excludeDataConnections?: boolean
   ) {
-    if (!name) throw new Error(`appUpload: "name" parameter is required`);
-    if (!file) throw new Error(`appUpload: "file" parameter is required`);
+    if (!name) throw new Error(`app.upload: "name" parameter is required`);
+    if (!file) throw new Error(`app.upload: "file" parameter is required`);
 
     const urlBuild = new URLBuild("app/upload");
     urlBuild.addParam("name", name);
@@ -183,11 +183,13 @@ export class App implements IClassApp {
     keepData?: boolean
   ) {
     if (!name)
-      throw new Error(`appUploadReplace: "name" parameter is required`);
+      throw new Error(`app.uploadAndReplace: "name" parameter is required`);
     if (!file)
-      throw new Error(`appUploadReplace: "file" parameter is required`);
+      throw new Error(`app.uploadAndReplace: "file" parameter is required`);
     if (!targetAppId)
-      throw new Error(`appUploadReplace: "targetAppId" parameter is required`);
+      throw new Error(
+        `app.uploadAndReplace: "targetAppId" parameter is required`
+      );
 
     const urlBuild = new URLBuild("app/upload/replace");
     urlBuild.addParam("name", name);
@@ -200,18 +202,18 @@ export class App implements IClassApp {
   }
 
   public async publish(id: string, stream: string, name?: string) {
-    if (!id) throw new Error(`appPublish: "id" parameter is required`);
-    if (!stream) throw new Error(`appPublish: "stream" parameter is required`);
+    if (!id) throw new Error(`app.publish: "id" parameter is required`);
+    if (!stream) throw new Error(`app.publish: "stream" parameter is required`);
 
     let streamRes = await this.repoClient.Get(
       `stream?filter=(name eq '${stream}')`
     );
 
     if (streamRes.data.length == 0)
-      throw new Error(`appPublish: Stream "${stream}" not found`);
+      throw new Error(`app.publish: Stream "${stream}" not found`);
 
     if (streamRes.data.length > 1)
-      throw new Error(`appPublish: Multiple streams found "${stream}"`);
+      throw new Error(`app.publish: Multiple streams found "${stream}"`);
 
     const urlBuild = new URLBuild(`app/${id}/publish`);
     urlBuild.addParam("stream", streamRes.data[0].id);
@@ -223,7 +225,7 @@ export class App implements IClassApp {
   }
 
   public async remove(id: string) {
-    if (!id) throw new Error(`appRemove: "id" parameter is required`);
+    if (!id) throw new Error(`app.remove: "id" parameter is required`);
     return await this.repoClient.Delete(`app/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
     });
@@ -231,7 +233,7 @@ export class App implements IClassApp {
 
   public async removeFilter(filter: string) {
     if (!filter)
-      throw new Error(`appRemoveFilter: "filter" parameter is required`);
+      throw new Error(`app.removeFilter: "filter" parameter is required`);
 
     const apps = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
@@ -252,9 +254,9 @@ export class App implements IClassApp {
 
   public async switch(sourceAppId: string, targetAppId: string) {
     if (!sourceAppId)
-      throw new Error(`appSwitch: "sourceAppId" parameter is required`);
+      throw new Error(`app.switch: "sourceAppId" parameter is required`);
     if (!targetAppId)
-      throw new Error(`appSwitch: "targetAppId" parameter is required`);
+      throw new Error(`app.switch: "targetAppId" parameter is required`);
 
     return await this.repoClient
       .Put(`app/${sourceAppId}/replace?app=${targetAppId}`, {})
@@ -262,7 +264,7 @@ export class App implements IClassApp {
   }
 
   public async update(arg: IAppUpdate) {
-    if (!arg.id) throw new Error(`appUpdate: "id" parameter is required`);
+    if (!arg.id) throw new Error(`app.update: "id" parameter is required`);
 
     let app = await this.get(arg.id);
 

@@ -99,7 +99,7 @@ export class ContentLibrary implements IClassContentLibrary {
     owner = ""
   ) {
     if (!name)
-      throw new Error(`contentLibraryCreate: "name" parameter is required`);
+      throw new Error(`contentLibrary.create: "name" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
       this,
@@ -116,7 +116,7 @@ export class ContentLibrary implements IClassContentLibrary {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`contentLibraryGet: "id" parameter is required`);
+    if (!id) throw new Error(`contentLibrary.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`contentlibrary/${id}`)
       .then((res) => res.data as IContentLibrary);
@@ -131,7 +131,7 @@ export class ContentLibrary implements IClassContentLibrary {
   public async getFilter(filter: string, orderBy?: string) {
     if (!filter)
       throw new Error(
-        `contentLibraryGetFilter: "filter" parameter is required`
+        `contentLibrary.getFilter: "filter" parameter is required`
       );
 
     const urlBuild = new URLBuild(`contentlibrary/full`);
@@ -150,10 +150,10 @@ export class ContentLibrary implements IClassContentLibrary {
     );
 
     if (library.length == 0)
-      throw new Error(`contentLibraryExport: library "${name}" do not exists`);
+      throw new Error(`contentLibrary.export: library "${name}" do not exists`);
     if (library.length > 1)
       throw new Error(
-        `contentLibraryExport: more than one library "${name}" found`
+        `contentLibrary.export: more than one library "${name}" found`
       );
 
     let files: IStaticContentReferenceCondensed[] = [];
@@ -170,7 +170,7 @@ export class ContentLibrary implements IClassContentLibrary {
 
     if (files.length == 0)
       throw new Error(
-        `contentLibraryExport: No file(s) in content library "${name}"`
+        `contentLibrary.export: No file(s) in content library "${name}"`
       );
 
     return await Promise.all<IContentLibraryFile>(
@@ -194,9 +194,9 @@ export class ContentLibrary implements IClassContentLibrary {
     }
   ) {
     if (!name)
-      throw new Error(`contentLibraryImport: "name" parameter is required`);
+      throw new Error(`contentLibrary.import: "name" parameter is required`);
     if (!file)
-      throw new Error(`contentLibraryImport: "file" parameter is required`);
+      throw new Error(`contentLibrary.import: "file" parameter is required`);
 
     const urlBuild = new URLBuild(`contentlibrary/${name}/uploadfile`);
     urlBuild.addParam("externalpath", arg.externalPath || undefined);
@@ -218,9 +218,9 @@ export class ContentLibrary implements IClassContentLibrary {
     }
   ) {
     if (!appId)
-      throw new Error(`contentLibraryImport: "name" parameter is required`);
+      throw new Error(`contentLibrary.import: "name" parameter is required`);
     if (!file)
-      throw new Error(`contentLibraryImport: "file" parameter is required`);
+      throw new Error(`contentLibrary.import: "file" parameter is required`);
 
     const urlBuild = new URLBuild(`appcontent/${appId}/uploadfile`);
     urlBuild.addParam("externalpath", arg.externalPath || undefined);
@@ -234,7 +234,7 @@ export class ContentLibrary implements IClassContentLibrary {
 
   public async remove(id: string) {
     if (!id)
-      throw new Error(`contentLibraryRemove: "id" parameter is required`);
+      throw new Error(`contentLibrary.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`contentlibrary/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
@@ -244,7 +244,7 @@ export class ContentLibrary implements IClassContentLibrary {
   public async removeFilter(filter: string) {
     if (!filter)
       throw new Error(
-        `contentLibraryRemoveFilter: "filter" parameter is required`
+        `contentLibrary.removeFilter: "filter" parameter is required`
       );
     const contentLibraries = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
@@ -266,7 +266,7 @@ export class ContentLibrary implements IClassContentLibrary {
   // REVIEW: verify the logic here
   public async update(arg: IContentLibraryUpdate): Promise<IContentLibrary> {
     if (!arg.id)
-      throw new Error(`contentLibraryUpdate: "id" parameter is required`);
+      throw new Error(`contentLibrary.update: "id" parameter is required`);
 
     let contentLibrary = await this.get(arg.id);
 

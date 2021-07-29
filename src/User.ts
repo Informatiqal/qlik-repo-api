@@ -1,8 +1,10 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
+import { URLBuild } from "./util/generic";
+
 import {
-  IHttpStatus,
+  ISelection,
   IEntityRemove,
   ICustomPropertyObject,
 } from "./types/interfaces";
@@ -66,6 +68,7 @@ export interface IClassUser {
   create(arg: IUserCreate): Promise<IUser>;
   remove(id: string): Promise<IEntityRemove>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
+  select(filter?: string): Promise<ISelection>;
   update(arg: IUserUpdate): Promise<IUser>;
 }
 
@@ -76,7 +79,7 @@ export class User implements IClassUser {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`userGet: "id" parameter is required`);
+    if (!id) throw new Error(`user.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`user/${id}`)
       .then((res) => res.data as IUser);
@@ -93,7 +96,7 @@ export class User implements IClassUser {
     full = true
   ): Promise<IUserCondensed[]> {
     if (!filter)
-      throw new Error(`userGetFilter: "filter" parameter is required`);
+      throw new Error(`user.getFilter: "filter" parameter is required`);
 
     let baseUrl = `user`;
     if (full) baseUrl += `/full`;
@@ -104,9 +107,9 @@ export class User implements IClassUser {
 
   public async create(arg: IUserCreate) {
     if (!arg.userId)
-      throw new Error(`userCreate: "userId" parameter is required`);
+      throw new Error(`user.create: "userId" parameter is required`);
     if (!arg.userDirectory)
-      throw new Error(`userCreate: "userDirectory" parameter is required`);
+      throw new Error(`user.create: "userDirectory" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
       this,
@@ -129,7 +132,7 @@ export class User implements IClassUser {
   }
 
   public async remove(id: string) {
-    if (!id) throw new Error(`userRemove: "id" parameter is required`);
+    if (!id) throw new Error(`user.remove: "id" parameter is required`);
 
     return await this.repoClient.Delete(`user/${id}`).then((res) => {
       return { id, status: res.status } as IEntityRemove;
@@ -138,7 +141,7 @@ export class User implements IClassUser {
 
   public async removeFilter(filter: string): Promise<IEntityRemove[]> {
     if (!filter)
-      throw new Error(`userRemoveFilter: "filter" parameter is required`);
+      throw new Error(`user.removeFilter: "filter" parameter is required`);
 
     const users = await this.getFilter(filter);
     return await Promise.all<IEntityRemove>(
@@ -148,8 +151,17 @@ export class User implements IClassUser {
     );
   }
 
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/user`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
+  }
+
   public async update(arg: IUserUpdate) {
-    if (!arg.id) throw new Error(`userUpdate: "id" parameter is required`);
+    if (!arg.id) throw new Error(`user.update: "id" parameter is required`);
 
     let user = await this.get(arg.id);
 

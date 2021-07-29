@@ -65,7 +65,7 @@ export class License implements IClassLicense {
     let currentLicense = await this.get();
     if (currentLicense.key != "")
       throw new Error(
-        `licenseSetSerial: Downgrading from Signed License is not supported by Qlik Sense APIs`
+        `license.setSerial: Downgrading from Signed License is not supported by Qlik Sense APIs`
       );
 
     if (!currentLicense) method = "Post";
@@ -142,7 +142,7 @@ export class License implements IClassLicense {
   public async accessTypeRemoveLogin(id: string) {
     if (!id)
       throw new Error(
-        `licenseLoginAccessTypeRemove: "id" parameter is required`
+        `license.accessTypeRemoveLogin: "id" parameter is required`
       );
     return await this.removeAccessType("login", id);
   }
@@ -150,7 +150,7 @@ export class License implements IClassLicense {
   public async accessTypeRemoveAnalyzer(id: string) {
     if (!id)
       throw new Error(
-        `licenseAnalyzerAccessTypeRemove: "id" parameter is required`
+        `license.accessTypeRemoveAnalyzer: "id" parameter is required`
       );
     return await this.removeAccessType("analyzer", id);
   }
@@ -158,7 +158,7 @@ export class License implements IClassLicense {
   public async accessTypeRemoveProfessional(id: string) {
     if (!id)
       throw new Error(
-        `licenseProfessionalAccessTypeRemove: "id" parameter is required`
+        `license.accessTypeRemoveProfessional: "id" parameter is required`
       );
     return await this.removeAccessType("professional", id);
   }
@@ -166,7 +166,7 @@ export class License implements IClassLicense {
   public async accessTypeRemoveUser(id: string) {
     if (!id)
       throw new Error(
-        `licenseUserAccessTypeRemove: "id" parameter is required`
+        `license.accessTypeRemoveUser: "id" parameter is required`
       );
     return await this.removeAccessType("user", id);
   }
@@ -174,7 +174,7 @@ export class License implements IClassLicense {
   public async accessGroupCreateProfessional(name: string) {
     if (!name)
       throw new Error(
-        `licenseProfessionalAccessGroupCreate: "name" parameter is required`
+        `license.accessGroupCreateProfessional: "name" parameter is required`
       );
     return await this.repoClient
       .Post(`license/ProfessionalAccessGroup`, { name })
@@ -186,7 +186,7 @@ export class License implements IClassLicense {
   public async accessGroupCreateUser(name: string) {
     if (!name)
       throw new Error(
-        `licenseUserAccessGroupCreate: "name" parameter is required`
+        `license.accessGroupCreateUser: "name" parameter is required`
       );
 
     return await this.repoClient

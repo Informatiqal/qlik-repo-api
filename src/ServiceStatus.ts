@@ -1,5 +1,7 @@
 import { QlikRepositoryClient } from "./main";
+import { URLBuild } from "./util/generic";
 
+import { ISelection } from "./types/interfaces";
 import { IServerNodeConfigurationCondensed } from "./Node";
 
 export interface IServiceStatusCondensed {
@@ -23,6 +25,7 @@ export interface IClassServiceStatus {
   get(id: string): Promise<IServiceStatus>;
   getAll(): Promise<IServiceStatusCondensed[]>;
   getFilter(filter: string, full?: boolean): Promise<IServiceStatus[]>;
+  select(filter?: string): Promise<ISelection>;
 }
 
 export class ServiceStatus implements IClassServiceStatus {
@@ -38,7 +41,7 @@ export class ServiceStatus implements IClassServiceStatus {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`serviceStatusGet: "id" parameter is required`);
+    if (!id) throw new Error(`serviceStatus.get: "id" parameter is required`);
     return await this.repoClient
       .Get(`ServiceStatus/${id}`)
       .then((res) => res.data as IServiceStatus);
@@ -52,10 +55,21 @@ export class ServiceStatus implements IClassServiceStatus {
 
   public async getFilter(filter: string) {
     if (!filter)
-      throw new Error(`serviceStatusGetFilter: "filter" parameter is required`);
+      throw new Error(
+        `serviceStatus.getFilter: "filter" parameter is required`
+      );
 
     return await this.repoClient
       .Get(`ServiceStatus/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IServiceStatus[]);
+  }
+
+  public async select(filter?: string) {
+    const urlBuild = new URLBuild(`selection/ServiceStatus`);
+    urlBuild.addParam("filter", filter);
+
+    return await this.repoClient
+      .Post(urlBuild.getUrl(), {})
+      .then((res) => res.data as ISelection);
   }
 }

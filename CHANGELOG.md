@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.21] - 2021-07-29
+
+### Changed
+
+- all error messages are changed to return the function name in the new format - `xxx.yyy:` instead of `yyy:`
+
+### Added
+
+- whenever is relevant there is `xxx.removeFilter` method
+- whenever is relevant there is `xxx.select` method
+
 ## [0.0.20] - 2021-07-28
 
 ### Changed
