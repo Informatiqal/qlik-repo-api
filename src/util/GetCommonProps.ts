@@ -5,7 +5,7 @@ import {
   IClassCustomProperty,
   CustomProperty,
 } from "../CustomProperty";
-import { ICustomPropertyObject } from "../types/interfaces";
+import { ICustomPropertyValue } from "../CustomProperty";
 import { QlikRepositoryClient } from "../main";
 
 export class GetCommonProperties {
@@ -36,9 +36,9 @@ export class GetCommonProperties {
     this.user = new User(this.qlikUtil);
   }
 
-  private async getCustomProperties(): Promise<ICustomPropertyObject | void> {
+  private async getCustomProperties(): Promise<ICustomPropertyValue | void> {
     if (this.customProperties && this.customProperties.length > 0) {
-      this.props.customProperties = await Promise.all<ICustomPropertyObject>(
+      this.props.customProperties = await Promise.all<ICustomPropertyValue>(
         this.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
           return await this.customProperty
@@ -49,7 +49,7 @@ export class GetCommonProperties {
               return {
                 definition: cpData[0] as ICustomPropertyCondensed,
                 value: cpValue,
-              } as ICustomPropertyObject;
+              } as ICustomPropertyValue;
             });
         })
       );

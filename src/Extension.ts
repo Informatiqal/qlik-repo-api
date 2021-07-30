@@ -7,11 +7,11 @@ import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
 
 import {
-  IOwner,
   IEntityRemove,
   IFileExtensionWhiteListCondensed,
   IStaticContentReferenceCondensed,
 } from "./types/interfaces";
+import { IOwner } from "./User";
 
 export interface IExtensionCondensed {
   id: string;
@@ -142,6 +142,6 @@ export class Extension implements IClassExtension {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), arg.file)
-      .then((res) => res.data as IExtension);
+      .then((res) => res.data[0] as IExtension);
   }
 }

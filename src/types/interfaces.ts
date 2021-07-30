@@ -32,37 +32,13 @@ export interface IStaticContentReferenceCondensed {
   serveOptions: string;
 }
 
-export interface IOwner {
-  privileges: [];
-  userDirectory: string;
-  userDirectoryConnectorName: string;
-  name: string;
-  id: string;
-  userId: string;
-}
-
-export interface ICustomPropertyObject {
-  createdDate: string;
-  schemaPath: string;
-  modifiedDate: string;
-  definition: {
-    privileges: [];
-    valueType: string;
-    name: string;
-    choiceValues: string[];
-    id: string;
-  };
-  id: string;
-  value: string;
-}
-
-export interface IAppExportResponse {
-  exportToken: string;
-  downloadPath: string;
-  schemaPath: string;
-  appId: string;
-  cancelled: boolean;
-}
+// export interface IAppExportResponse {
+//   exportToken: string;
+//   downloadPath: string;
+//   schemaPath: string;
+//   appId: string;
+//   cancelled: boolean;
+// }
 
 export interface ISelectionItem {
   id?: string;

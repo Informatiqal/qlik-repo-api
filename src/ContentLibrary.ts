@@ -5,17 +5,15 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
 import {
-  IHttpStatus,
   IStaticContentReferenceCondensed,
   IEntityRemove,
   ISelection,
-  IOwner,
-  ICustomPropertyObject,
   IFileExtensionWhiteListCondensed,
 } from "./types/interfaces";
 
-import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ICustomPropertyValue } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
+import { IOwner } from "./User";
 
 export interface IContentLibraryFile {
   name: string;
@@ -40,7 +38,7 @@ export interface IContentLibrary extends IContentLibraryCondensed {
   createdDate: string;
   modifiedDate: string;
   schemaPath: string;
-  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  customProperties: ICustomPropertyValue[];
   owner: IOwner;
   tags: ITagCondensed[];
   whiteList: IFileExtensionWhiteListCondensed;

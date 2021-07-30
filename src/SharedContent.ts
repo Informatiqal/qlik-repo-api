@@ -7,12 +7,12 @@ import {
   IEntityRemove,
   IFileExtensionWhiteListCondensed,
   IStaticContentReferenceCondensed,
-  IOwner,
   ISelection,
 } from "./types/interfaces";
 
 import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
+import { IOwner } from "./User";
 
 export interface ISharedContentUpdate {
   id: string;

@@ -7,13 +7,24 @@ const config = new Config();
 const repoApi = config.repoApi;
 
 const helpers = new Helpers();
+
 /**
  * Phase1 tests:
  * About, App, Content library, Custom property, Engine,
  * Extension, Stream, System rule, Table, Tag, Task, User
  */
-describe("App operations", function () {
+describe("Phase1", function () {
   this.timeout(30000);
+
+  /**
+   * Get about
+   * Used methods: about.get
+   */
+  it("About", async function () {
+    let about = await repoApi.about.get();
+
+    expect(about).to.have.property("buildVersion");
+  });
 
   /**
    * Test apps list methods
@@ -109,5 +120,128 @@ describe("App operations", function () {
       expect(publishApp.stream.name).to.be.equal(streamName) &&
       expect(updateStream.customProperties.length).to.be.equal(1) &&
       expect(deleteStream.status).to.be.equal(204);
+  });
+
+  /**
+   * Basic audit (QMC -> Audit)
+   * User methods: systemRule.getAudit
+   */
+  it("Security rule - audit apps", async function () {
+    const auditResult = await repoApi.systemRule.getAudit({
+      resourceType: "App",
+    });
+
+    expect(auditResult.resources.length).to.be.greaterThan(0);
+  });
+
+  /**
+   * Create basic table view to list available appIds
+   * User methods: table.create
+   */
+  it("Create table view", async function () {
+    const tableResult = await repoApi.table.create({
+      columns: [
+        {
+          columnType: "Property",
+          definition: "id",
+          name: "id",
+        },
+      ],
+      type: "App",
+    });
+
+    expect(tableResult.status).to.be.equal(201) &&
+      expect(tableResult.data.rows.length).to.be.greaterThan(0);
+  });
+
+  /**
+   * Basic extension operations
+   * import extension, list all extensions, create custom property,
+   * add the custom property to the extension get the imported extension,
+   * delete the extension and the custom property
+   * User methods: extension.import, extension.update, extension.remove, extension.get,
+   *               extension.getAll, customProperty.create, customProperty.remove
+   */
+  it("Extensions", async function () {
+    const extFile = fs.readFileSync(process.env.IMPORT_EXTENSION_FILE);
+    const importExtension = await repoApi.extension.import({
+      file: extFile,
+    });
+    const allExtensions = await repoApi.extension.getAll();
+
+    const newCustomProperty = await repoApi.customProperty.create({
+      name: helpers.uuidString(),
+      choiceValues: [helpers.uuid()],
+      objectTypes: ["Extension"],
+    });
+
+    const updatedExtension = await repoApi.extension.update({
+      id: importExtension.id,
+      customProperties: [
+        `${newCustomProperty.name}="${newCustomProperty.choiceValues[0]}`,
+      ],
+    });
+
+    const listExtension = await repoApi.extension.get(importExtension.id);
+
+    const deletedExtension = await repoApi.extension.remove(importExtension.id);
+    const deleteCustomProperty = await repoApi.customProperty.remove(
+      newCustomProperty.id
+    );
+
+    expect(allExtensions.length).to.be.greaterThan(0) &&
+      expect(listExtension.id).to.be.equal(importExtension.id) &&
+      expect(updatedExtension.customProperties.length).to.be.equal(1) &&
+      expect(deletedExtension.id).to.be.equal(importExtension.id) &&
+      expect(deleteCustomProperty.id).to.be.equal(newCustomProperty.id);
+  });
+
+  /**
+   * Get engines
+   * Used methods: engine.getAll
+   */
+  it("Engine get", async function () {
+    let engines = await repoApi.engine.getAll();
+    expect(engines.length).to.be.greaterThan(0);
+  });
+
+  /**
+   * Get engines
+   * Used methods: engine.getAll
+   */
+  it("Users", async function () {
+    const newUserConfig = {
+      userDirectory: "TESTING",
+      userId: helpers.uuidString(),
+    };
+
+    const newCustomProperty = await repoApi.customProperty.create({
+      name: helpers.uuidString(),
+      choiceValues: [helpers.uuid()],
+      objectTypes: ["User"],
+    });
+    const newUser = await repoApi.user.create(newUserConfig);
+    const updateUser = await repoApi.user.update({
+      id: newUser.id,
+      customProperties: [
+        `${newCustomProperty.name}=${newCustomProperty.choiceValues[0]}`,
+      ],
+    });
+
+    const getNewUser = await repoApi.user.getFilter(
+      `name eq '${newUserConfig.userId}'`
+    );
+    const deleteNewUser = await repoApi.user.remove(newUser.id);
+    const deleteCP = await repoApi.customProperty.remove(newCustomProperty.id);
+
+    expect(newUser.userDirectory).to.be.equal("TESTING") &&
+      expect(getNewUser.length).to.be.equal(1) &&
+      expect(getNewUser[0].name).to.be.equal(newUserConfig.userId) &&
+      expect(updateUser.customProperties.length).to.be.equal(1) &&
+      expect(updateUser.customProperties[0].value).to.be.equal(
+        newCustomProperty.choiceValues[0]
+      ) &&
+      expect(deleteNewUser.id).to.be.equal(newUser.id);
+    expect(deleteCP.id).to.be.equal(newCustomProperty.id);
   });
 });

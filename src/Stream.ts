@@ -3,10 +3,10 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, IOwner, ISelection } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 import { ICustomPropertyCondensed } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
-
+import { IOwner } from "./User";
 export interface IStreamCreate {
   name: string;
   tags?: string[];

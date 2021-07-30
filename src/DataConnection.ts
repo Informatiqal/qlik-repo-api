@@ -4,7 +4,7 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import { IEntityRemove, ISelection } from "./types/interfaces";
-import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ICustomPropertyValue } from "./CustomProperty";
 import { ITagCondensed } from "./Tag";
 import { IUserCondensed } from "./User";
 
@@ -26,7 +26,7 @@ export interface IDataConnection extends IDataConnectionCondensed {
   modifiedDate?: string;
   modifiedByUserName?: string;
   schemaPath?: string;
-  customProperties: ICustomPropertyCondensed[];
+  customProperties: ICustomPropertyValue[];
   tags: ITagCondensed[];
   owner: IUserCondensed;
 }

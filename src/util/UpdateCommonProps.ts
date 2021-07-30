@@ -2,7 +2,7 @@ import { modifiedDateTime } from "./generic";
 
 import { QlikRepositoryClient } from "../main";
 
-import { ICustomPropertyObject } from "../types/interfaces";
+import { ICustomPropertyValue } from "../CustomProperty";
 import {
   ICustomPropertyCondensed,
   IClassCustomProperty,
@@ -50,7 +50,7 @@ export class UpdateCommonProperties {
     if (this.arg.customProperties && this.arg.customProperties.length == 0)
       this.obj.customProperties = [];
     if (this.arg.customProperties && this.arg.customProperties.length > 0) {
-      this.obj.customProperties = await Promise.all<ICustomPropertyObject>(
+      this.obj.customProperties = await Promise.all<ICustomPropertyValue>(
         this.arg.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
           return await this.customProperty
@@ -59,7 +59,7 @@ export class UpdateCommonProperties {
               return {
                 definition: cpData[0] as ICustomPropertyCondensed,
                 value: cpValue,
-              } as ICustomPropertyObject;
+              } as ICustomPropertyValue;
             });
         })
       );

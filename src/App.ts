@@ -3,14 +3,11 @@ import { URLBuild, uuid } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import { ITagCondensed } from "./Tag";
-import {
-  ISelection,
-  IEntityRemove,
-  IOwner,
-  ICustomPropertyObject,
-} from "./types/interfaces";
+import { ISelection, IEntityRemove } from "./types/interfaces";
 
+import { ICustomPropertyValue } from "./CustomProperty";
 import { IStream } from "./Stream";
+import { IOwner } from "./User";
 
 export interface IAppCondensed {
   appId: string;
@@ -27,7 +24,7 @@ export interface IAppCondensed {
 
 export interface IApp extends IAppCondensed {
   createdDate: string;
-  customProperties: ICustomPropertyObject[];
+  customProperties: ICustomPropertyValue[];
   description: string;
   dynamicColor: string;
   fileSize: number;

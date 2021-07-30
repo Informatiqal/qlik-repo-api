@@ -3,14 +3,10 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
-import {
-  ISelection,
-  IEntityRemove,
-  ICustomPropertyObject,
-} from "./types/interfaces";
+import { ISelection, IEntityRemove } from "./types/interfaces";
 
 import { ITagCondensed } from "./Tag";
-import { ICustomPropertyCondensed } from "./CustomProperty";
+import { ICustomProperty, ICustomPropertyValue } from "./CustomProperty";
 
 export interface IUserCondensed {
   privileges: string[];
@@ -39,7 +35,7 @@ export interface IUser extends IUserCondensed {
   tags: ITagCondensed[];
   blacklisted: boolean;
   createdDate: string;
-  customProperties: ICustomPropertyCondensed[] | ICustomPropertyObject[];
+  customProperties: ICustomPropertyValue[];
   inactive: boolean;
   modifiedDate: string;
   attributes: IUserAttributes[];
@@ -59,6 +55,15 @@ export interface IUserCreate {
   roles?: string[];
   tags?: string[];
   customProperties?: string[];
+}
+
+export interface IOwner {
+  privileges: [];
+  userDirectory: string;
+  userDirectoryConnectorName: string;
+  name: string;
+  id: string;
+  userId: string;
 }
 
 export interface IClassUser {
@@ -168,7 +173,7 @@ export class User implements IClassUser {
     if (arg.roles) user.roles = arg.roles;
     if (arg.name) user.name = arg.name;
 
-    let updateCommon = new UpdateCommonProperties(this, user, arg);
+    let updateCommon = new UpdateCommonProperties(this.repoClient, user, arg);
     user = await updateCommon.updateAll();
 
     return await this.repoClient

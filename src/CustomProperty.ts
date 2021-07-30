@@ -35,6 +35,21 @@ export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
   id: string;
 }
 
+export interface ICustomPropertyValue {
+  createdDate: string;
+  schemaPath: string;
+  modifiedDate: string;
+  definition: {
+    privileges: [];
+    valueType: string;
+    name: string;
+    choiceValues: string[];
+    id: string;
+  };
+  id: string;
+  value: string;
+}
+
 export interface ICustomPropertyCondensed {
   privileges: string[];
   valueType: string;
