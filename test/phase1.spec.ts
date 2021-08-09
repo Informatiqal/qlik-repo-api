@@ -31,16 +31,18 @@ describe("Phase1", function () {
    * Used methods: app.get, app.getFilter, app.select
    */
   it("List apps", async function () {
-    let allApps = await repoApi.app.getAll();
-    let singleApp = await repoApi.app.get(allApps[0].id);
-    let filterApp = await repoApi.app.getFilter(
-      `name eq '${singleApp[0].name}'`
+    let allApps = await repoApi.apps.getAll();
+    let singleApp = await repoApi.apps.get(allApps[0].details.id);
+    let filterApp = await repoApi.apps.getFilter(
+      `name eq '${singleApp.details.name}'`
     );
-    let selectApp = await repoApi.app.select(`name eq '${singleApp[0].name}'`);
+    let selectApp = await repoApi.apps.select(
+      `name eq '${singleApp.details.name}'`
+    );
 
     expect(allApps.length).to.be.greaterThan(0) &&
-      expect(singleApp.id).to.be.equal(allApps[0].id) &&
-      expect(filterApp[0].id).to.be.equal(singleApp.id) &&
+      expect(singleApp.details.id).to.be.equal(allApps[0].details.id) &&
+      expect(filterApp[0].details.id).to.be.equal(singleApp.details.id) &&
       expect(selectApp.items.length).to.be.equal(1);
   });
 
@@ -65,9 +67,9 @@ describe("Phase1", function () {
     let streamName = helpers.uuid();
     let qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
 
-    let uploadedApp = await repoApi.app.upload(appName, qvf);
+    let uploadedApp = await repoApi.apps.upload(appName, qvf);
 
-    let customProperty = await repoApi.customProperty.create({
+    let customProperty = await repoApi.customProperties.create({
       name: cpName,
       choiceValues: [helpers.uuid(), helpers.uuid()],
       objectTypes: ["App", "Stream"],
@@ -75,47 +77,45 @@ describe("Phase1", function () {
 
     let tags = await Promise.all(
       tagNames.map(async (t) => {
-        return await repoApi.tag.create(t);
+        return await repoApi.tags.create(t);
       })
     );
 
-    let updatedApp = await repoApi.app.update({
-      id: uploadedApp.id,
+    let updatedApp = await uploadedApp.update({
       name: appNewName,
       customProperties: [
         `${cpName}=${cpValues[0]}`,
         `${cpName}=${cpValues[1]}`,
       ],
-      tags: [tags[0].name, tags[1].name],
+      tags: [tags[0].details.name, tags[1].details.name],
     });
 
-    let newStream = await repoApi.stream.create({
+    let newStream = await repoApi.streams.create({
       name: streamName,
-      tags: [tags[1].name],
+      tags: [tags[1].details.name],
     });
 
-    let updateStream = await repoApi.stream.update({
-      id: newStream.id,
+    let updateStream = await newStream.update({
       customProperties: [`${cpName}=${cpValues[1]}`],
     });
 
-    let publishApp = await repoApi.app.publish(uploadedApp.id, streamName);
+    let publishApp = await uploadedApp.publish(streamName);
 
-    let deleteApp = await repoApi.app.remove(uploadedApp.id);
-    let deleteCP = await repoApi.customProperty.remove(customProperty.id);
+    let deleteApp = await uploadedApp.remove();
+    let deleteCP = await customProperty.remove();
     let deleteTags = await Promise.all(
       tags.map(async (t) => {
-        return await repoApi.tag
-          .removeFilter(`name eq '${t.name}'`)
+        return await repoApi.tags
+          .removeFilter(`name eq '${t.details.name}'`)
           .then((t) => t[0]);
       })
     );
-    let deleteStream = await repoApi.stream.remove(newStream.id);
+    let deleteStream = await newStream.remove();
 
-    expect(uploadedApp.name).to.be.equal(appName) &&
+    expect(uploadedApp.details.name).to.be.equal(appName) &&
       expect(updatedApp.name).to.be.equal(appNewName) &&
       expect(deleteApp.status).to.be.equal(204) &&
-      expect(deleteCP.id).to.be.equal(customProperty.id) &&
+      expect(deleteCP.id).to.be.equal(customProperty.details.id) &&
       expect(deleteTags.length).to.be.equal(2) &&
       expect(publishApp.stream.name).to.be.equal(streamName) &&
       expect(updateStream.customProperties.length).to.be.equal(1) &&
@@ -127,7 +127,7 @@ describe("Phase1", function () {
    * User methods: systemRule.getAudit
    */
   it("Security rule - audit apps", async function () {
-    const auditResult = await repoApi.systemRule.getAudit({
+    const auditResult = await repoApi.systemRules.getAudit({
       resourceType: "App",
     });
 
@@ -164,36 +164,30 @@ describe("Phase1", function () {
    */
   it("Extensions", async function () {
     const extFile = fs.readFileSync(process.env.IMPORT_EXTENSION_FILE);
-    const importExtension = await repoApi.extension.import({
+    const importExtension = await repoApi.extensions.import({
       file: extFile,
     });
-    const allExtensions = await repoApi.extension.getAll();
+    const allExtensions = await repoApi.extensions.getAll();
 
-    const newCustomProperty = await repoApi.customProperty.create({
+    const newCustomProperty = await repoApi.customProperties.create({
       name: helpers.uuidString(),
       choiceValues: [helpers.uuid()],
       objectTypes: ["Extension"],
     });
 
-    const updatedExtension = await repoApi.extension.update({
-      id: importExtension.id,
+    const updatedExtension = await importExtension.update({
       customProperties: [
-        `${newCustomProperty.name}="${newCustomProperty.choiceValues[0]}`,
+        `${newCustomProperty.details.name}="${newCustomProperty.details.choiceValues[0]}`,
       ],
     });
 
-    const listExtension = await repoApi.extension.get(importExtension.id);
-
-    const deletedExtension = await repoApi.extension.remove(importExtension.id);
-    const deleteCustomProperty = await repoApi.customProperty.remove(
-      newCustomProperty.id
-    );
+    const deletedExtension = await importExtension.remove();
+    const deleteCustomProperty = await newCustomProperty.remove();
 
     expect(allExtensions.length).to.be.greaterThan(0) &&
-      expect(listExtension.id).to.be.equal(importExtension.id) &&
       expect(updatedExtension.customProperties.length).to.be.equal(1) &&
-      expect(deletedExtension.id).to.be.equal(importExtension.id) &&
-      expect(deleteCustomProperty.id).to.be.equal(newCustomProperty.id);
+      expect(deletedExtension.id).to.be.equal(importExtension.details.id) &&
+      expect(deleteCustomProperty.id).to.be.equal(newCustomProperty.details.id);
   });
 
   /**
@@ -201,13 +195,16 @@ describe("Phase1", function () {
    * Used methods: engine.getAll
    */
   it("Engine get", async function () {
-    let engines = await repoApi.engine.getAll();
+    let engines = await repoApi.engines.getAll();
     expect(engines.length).to.be.greaterThan(0);
   });
 
   /**
-   * Get engines
-   * Used methods: engine.getAll
+   * User operations
+   * create user, create custom property, update the users with the custom property
+   * get users (apply filter with the new userId), remove the user and custom property
+   * User methods; customProperty.create, user.create, user.update, user.getFilter
+   *               user.remove, customProperty.remove
    */
   it("Users", async function () {
     const newUserConfig = {
@@ -215,33 +212,60 @@ describe("Phase1", function () {
       userId: helpers.uuidString(),
     };
 
-    const newCustomProperty = await repoApi.customProperty.create({
+    const newCustomProperty = await repoApi.customProperties.create({
       name: helpers.uuidString(),
       choiceValues: [helpers.uuid()],
       objectTypes: ["User"],
     });
-    const newUser = await repoApi.user.create(newUserConfig);
-    const updateUser = await repoApi.user.update({
-      id: newUser.id,
+    const newUser = await repoApi.users.create(newUserConfig);
+    const updateUser = await newUser.update({
       customProperties: [
-        `${newCustomProperty.name}=${newCustomProperty.choiceValues[0]}`,
+        `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[0]}`,
       ],
     });
 
-    const getNewUser = await repoApi.user.getFilter(
+    const getNewUser = await repoApi.users.getFilter(
       `name eq '${newUserConfig.userId}'`
     );
-    const deleteNewUser = await repoApi.user.remove(newUser.id);
-    const deleteCP = await repoApi.customProperty.remove(newCustomProperty.id);
+    const deleteNewUser = await newUser.remove();
+    const deleteCP = await newCustomProperty.remove();
 
-    expect(newUser.userDirectory).to.be.equal("TESTING") &&
+    expect(newUser.details.userDirectory).to.be.equal("TESTING") &&
       expect(getNewUser.length).to.be.equal(1) &&
-      expect(getNewUser[0].name).to.be.equal(newUserConfig.userId) &&
+      expect(getNewUser[0].details.name).to.be.equal(newUserConfig.userId) &&
       expect(updateUser.customProperties.length).to.be.equal(1) &&
       expect(updateUser.customProperties[0].value).to.be.equal(
-        newCustomProperty.choiceValues[0]
+        newCustomProperty.details.choiceValues[0]
       ) &&
-      expect(deleteNewUser.id).to.be.equal(newUser.id);
-    expect(deleteCP.id).to.be.equal(newCustomProperty.id);
+      expect(deleteNewUser.id).to.be.equal(newUser.details.id);
+    expect(deleteCP.id).to.be.equal(newCustomProperty.details.id);
+  });
+
+  /**
+   * Task operations
+   * Used methods:
+   */
+  it("Reload task", async function () {
+    // const qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
+    // const app = await repoApi.apps.upload("RepoTest", qvf);
+    // const reloadTask = await repoApi.task.create({
+    //   appId: app.details.id,
+    //   name: helpers.uuidString(),
+    // });
+    // const newTaskSchema = await repoApi.task.triggerSchemaCreate({
+    //   name: helpers.uuidString(),
+    //   reloadTaskId: reloadTask.id,
+    //   daysOfWeek: ["Monday", "Tuesday"],
+    //   repeatEvery: 1,
+    //   repeat: "Weekly",
+    // });
+    // // const updatedTask = await repoApi.task.reloadUpdate({
+    // //   id: reloadTask.id,
+    // // });
+    // // const startTask = await repoApi.task.start(reloadTask.id, true);
+    // let a = 1;
+    // const deleteTask = await repoApi.task.reloadRemove(reloadTask.id);
+    // const deleteApp = await app.remove();
+    // expect(1).to.be.greaterThan(0);
   });
 });

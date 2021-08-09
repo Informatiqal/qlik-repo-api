@@ -1,25 +1,26 @@
 import { modifiedDateTime } from "./generic";
 
-import { QlikRepositoryClient } from "../main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 
-import { ICustomPropertyValue } from "../CustomProperty";
 import {
-  ICustomPropertyCondensed,
-  IClassCustomProperty,
-  CustomProperty,
-} from "../CustomProperty";
+  CustomProperties,
+  IClassCustomProperties,
+  ICustomPropertyValue,
+} from "../CustomProperties";
+import { ICustomPropertyCondensed } from "../CustomProperties";
+import { IClassCustomProperty, CustomProperty } from "../CustomProperty";
 import { IAppUpdate } from "../App";
-import { ITagCondensed, Tag, IClassTag } from "../Tag";
+import { ITagCondensed, IClassTags, Tags } from "../Tags";
 import { ITaskCreate } from "../Task.interface";
-import { IUserUpdate, IClassUser, User } from "../User";
-import { IStreamUpdate, Stream, IClassStream } from "../Stream";
+import { IUserUpdate, IClassUsers, Users } from "../Users";
+import { IStreamUpdate, Streams, IClassStreams } from "../Streams";
 import { ISystemRuleCreate } from "../SystemRule.interface";
 export class UpdateCommonProperties {
   private qlikUtil: QlikRepositoryClient;
-  private customProperty: IClassCustomProperty;
-  private stream: IClassStream;
-  private tag: IClassTag;
-  private user: IClassUser;
+  private customPropertiesClass: IClassCustomProperties;
+  private tagsClass: IClassTags;
+  private streams: IClassStreams;
+  private user: IClassUsers;
   private arg:
     | IUserUpdate
     | IAppUpdate
@@ -28,7 +29,7 @@ export class UpdateCommonProperties {
     | ITaskCreate;
   public obj: any;
   constructor(
-    qlikUtil: any,
+    qlikUtil: QlikRepositoryClient,
     obj,
     arg:
       | IUserUpdate
@@ -40,10 +41,10 @@ export class UpdateCommonProperties {
     this.qlikUtil = qlikUtil;
     this.obj = obj;
     this.arg = arg;
-    this.customProperty = new CustomProperty(this.qlikUtil);
-    this.stream = new Stream(this.qlikUtil);
-    this.tag = new Tag(this.qlikUtil);
-    this.user = new User(this.qlikUtil);
+    this.customPropertiesClass = new CustomProperties(this.qlikUtil);
+    this.streams = new Streams(this.qlikUtil);
+    this.tagsClass = new Tags(this.qlikUtil);
+    this.user = new Users(this.qlikUtil);
   }
 
   async updateCustomProperties() {
@@ -53,11 +54,11 @@ export class UpdateCommonProperties {
       this.obj.customProperties = await Promise.all<ICustomPropertyValue>(
         this.arg.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
-          return await this.customProperty
+          return await this.customPropertiesClass
             .getFilter(`name eq '${cpName}'`)
             .then((cpData) => {
               return {
-                definition: cpData[0] as ICustomPropertyCondensed,
+                definition: cpData[0].details as ICustomPropertyCondensed,
                 value: cpValue,
               } as ICustomPropertyValue;
             });
@@ -71,9 +72,9 @@ export class UpdateCommonProperties {
     if (this.arg.tags && this.arg.tags.length > 0) {
       this.obj.tags = await Promise.all<ITagCondensed>(
         this.arg.tags.map(async (tag) => {
-          return await this.tag
+          return await this.tagsClass
             .getFilter(`name eq '${tag}'`)
-            .then((tagsData) => tagsData[0] as ITagCondensed);
+            .then((tagsData) => tagsData[0].details as ITagCondensed);
         })
       );
     }
@@ -97,9 +98,9 @@ export class UpdateCommonProperties {
 
   async updateAppStream() {
     if ((this.arg as IAppUpdate).stream) {
-      this.obj.stream = await this.stream
+      this.obj.stream = await this.streams
         .getFilter(`name eq '${(this.arg as IAppUpdate).stream}'`)
-        .then((streams) => streams[0]);
+        .then((streams) => streams[0].details);
     }
   }
 

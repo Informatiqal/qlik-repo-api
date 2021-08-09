@@ -1,156 +1,49 @@
-import { QlikRepositoryClient } from "./main";
-import { URLBuild } from "./util/generic";
-
-import { IEntityRemove, IHttpStatus, ISelection } from "./types/interfaces";
-import { ITagCondensed } from "./Tag";
-
-export interface IUserDirectoryCondensed {
-  id?: string;
-  privileges?: string[];
-  name: string;
-  type: string;
-}
-
-export interface IUserDirectorySettings {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  privileges?: string[];
-  name: string;
-  category?: string;
-  userDirectorySettingType: number;
-  secret: boolean;
-  value?: string;
-  secretValue?: string;
-}
-
-export interface IUserDirectory extends IUserDirectoryCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  userDirectoryName?: string;
-  configured?: boolean;
-  operational?: boolean;
-  syncOnlyLoggedInUsers: boolean;
-  syncStatus: boolean;
-  syncLastStarted?: string;
-  syncLastSuccessfulEnded?: string;
-  configuredError?: string;
-  operationalError?: string;
-  tags: ITagCondensed[];
-  creationType: number;
-  settings?: IUserDirectorySettings;
-}
-
-export interface IUserDirectoryUpdate {
-  id: string;
-  name: string;
-  path: string;
-  userName: string;
-  password: string;
-  ldapFilter: string;
-  timeout: string;
-  pageSize: string;
-  tags?: string[];
-  customProperties?: string[];
-}
+import { QlikRepositoryClient } from "qlik-rest-api";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import { IUserDirectory } from "./UserDirectories";
 
 export interface IClassUserDirectory {
-  count(): Promise<number>;
-  get(id: string): Promise<IUserDirectory>;
-  getAll(): Promise<IUserDirectoryCondensed[]>;
-  getFilter(filter: string): Promise<IUserDirectory[]>;
-  remove(id: string): Promise<IEntityRemove>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
-  sync(userDirectoryIds: string[]): Promise<IHttpStatus>;
+  remove(): Promise<IEntityRemove>;
+  sync(): Promise<IHttpStatus>;
   update(): Promise<boolean>;
+  details: IUserDirectory;
 }
 
 export class UserDirectory implements IClassUserDirectory {
+  private id: string;
   private repoClient: QlikRepositoryClient;
-  constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+  details: IUserDirectory;
+  constructor(
+    repoClient: QlikRepositoryClient,
+    id: string,
+    details?: IUserDirectory
+  ) {
+    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+
+    this.id = id;
+    this.repoClient = repoClient;
+    if (details) this.details = details;
   }
 
-  public async count() {
+  async init() {
+    if (!this.details) {
+      this.details = await this.repoClient
+        .Get(`userdirectory/${this.id}`)
+        .then((res) => res.data as IUserDirectory);
+    }
+  }
+
+  public async remove() {
     return await this.repoClient
-      .Get(`userdirectory/count`)
-      .then((res) => res.data as number);
+      .Delete(`userdirectory/${this.id}`)
+      .then((res) => {
+        return { id: this.id, status: res.status } as IEntityRemove;
+      });
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`userDirectory.get: "id" parameter is required`);
+  public async sync() {
     return await this.repoClient
-      .Get(`userdirectory/${id}`)
-      .then((res) => res.data as IUserDirectory);
-  }
-
-  public async getAll() {
-    return await this.repoClient
-      .Get(`userdirectory`)
-      .then((res) => res.data as IUserDirectoryCondensed[]);
-  }
-
-  public async getFilter(filter: string) {
-    if (!filter)
-      throw new Error(
-        `userDirectory.getFilter: "filter" parameter is required`
-      );
-
-    return await this.repoClient
-      .Get(`userdirectory/full?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as IUserDirectory[]);
-  }
-
-  public async remove(id: string) {
-    if (!id)
-      throw new Error(`userDirectory.remove: "id" parameter is required`);
-
-    return await this.repoClient.Delete(`userdirectory/${id}`).then((res) => {
-      return { id, status: res.status } as IEntityRemove;
-    });
-  }
-
-  public async removeFilter(filter: string) {
-    if (!filter)
-      throw new Error(
-        `userDirectory.removeFilter: "filter" parameter is required`
-      );
-
-    const userDirectories = await this.getAll().then((u: IUserDirectory[]) => {
-      if (u.length == 0)
-        throw new Error(
-          `userDirectory.removeFilter: filter query return 0 items`
-        );
-
-      return u;
-    });
-    return await Promise.all<IEntityRemove>(
-      userDirectories.map((ud) => {
-        return this.remove(ud.id);
-      })
-    );
-  }
-
-  public async select(filter?: string) {
-    const urlBuild = new URLBuild(`selection/userdirectory`);
-    urlBuild.addParam("filter", filter);
-
-    return await this.repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
-  }
-
-  public async sync(userDirectoryIds: string[]) {
-    if (!userDirectoryIds)
-      throw new Error(`userDirectory.sync: "ids" parameter is required`);
-
-    return await this.repoClient
-      .Post(`userdirectoryconnector/syncuserdirectories`, [...userDirectoryIds])
+      .Post(`userdirectoryconnector/syncuserdirectories`, [this.details.id])
       .then((res) => res.status as IHttpStatus);
   }
 

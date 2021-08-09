@@ -1,12 +1,12 @@
-import { ICustomPropertyCondensed } from "./CustomProperty";
-import { ITagCondensed } from "./Tag";
+import { ICustomPropertyCondensed } from "./CustomProperties";
+import { ITagCondensed } from "./Tags";
 import {
   IServerNodeConfiguration,
   IServerNodeConfigurationCondensed,
-} from "./Node";
+} from "./Nodes";
 
 export interface IVirtualProxyUpdate {
-  id: string;
+  // id: string;
   prefix?: string;
   description?: string;
   sessionCookieHeaderName?: string;
@@ -42,6 +42,37 @@ export interface IVirtualProxyUpdate {
   customProperties?: string[];
 }
 
+export interface IVirtualProxyCreate {
+  customProperties?: [];
+  tags?: [];
+  prefix: string;
+  sessionCookieHeaderName: string;
+  description?: string;
+  authenticationModuleRedirectUri?: string;
+  loadBalancingServerNodes?: string[];
+  websocketCrossOriginWhiteList?: string;
+  additionalResponseHeaders?: string;
+  authenticationMethod?:
+    | "Ticket"
+    | "HeaderStaticUserDirectory"
+    | "HeaderDynamicUserDirectory"
+    | "static"
+    | "dynamic"
+    | "SAML"
+    | "JWT";
+  samlMetadataIdP?: string;
+  samlHostUri?: string;
+  samlEntityId?: string;
+  samlAttributeUserId?: string;
+  samlAttributeUserDirectory?: string;
+  samlAttributeMap?: string[];
+  samlSlo?: boolean;
+  jwtPublicKeyCertificate?: string;
+  jwtAttributeUserId?: string;
+  jwtAttributeUserDirectory?: string;
+  jwtAttributeMap?: string[];
+  sessionInactivityTimeout?: number;
+}
 export interface IProxyCreate {
   prefix?: string;
   description: string;

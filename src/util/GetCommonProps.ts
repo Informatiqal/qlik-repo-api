@@ -1,12 +1,15 @@
-import { ITagCondensed, IClassTag, Tag } from "../Tag";
-import { IUser, IClassUser, User } from "../User";
+// import { Tag, IClassTag } from "../Tag";
+import { ITagCondensed, IClassTags, Tags } from "../Tags";
+import { IUser, IClassUsers, Users, IUserCondensed } from "../Users";
 import {
   ICustomPropertyCondensed,
-  IClassCustomProperty,
-  CustomProperty,
-} from "../CustomProperty";
-import { ICustomPropertyValue } from "../CustomProperty";
-import { QlikRepositoryClient } from "../main";
+  IClassCustomProperties,
+  CustomProperties,
+  ICustomProperty,
+} from "../CustomProperties";
+import { ICustomPropertyValue } from "../CustomProperties";
+import { QlikRepositoryClient } from "qlik-rest-api";
+import { IClassTag } from "../Tag";
 
 export class GetCommonProperties {
   private qlikUtil: QlikRepositoryClient;
@@ -18,22 +21,25 @@ export class GetCommonProperties {
     tags: [],
     owner: {},
   };
-  private user: IClassUser;
-  private tag: IClassTag;
-  private customProperty: IClassCustomProperty;
+  private user: IClassUsers;
+  private tagsClass: IClassTags;
+  private customPropertiesClass: IClassCustomProperties;
+  // private repoApi: QlikRepositoryClient;
   constructor(
     qlikUtil: any,
     customProperties: string[],
     tags: string[],
     owner: string
+    // repoApi?: QlikRepositoryClient
   ) {
     this.qlikUtil = qlikUtil;
     this.customProperties = customProperties;
     this.tags = tags;
     this.owner = owner;
-    this.customProperty = new CustomProperty(this.qlikUtil);
-    this.tag = new Tag(this.qlikUtil);
-    this.user = new User(this.qlikUtil);
+    this.customPropertiesClass = new CustomProperties(this.qlikUtil);
+    this.tagsClass = new Tags(this.qlikUtil);
+    this.user = new Users(this.qlikUtil);
+    // this.repoApi = repoApi;
   }
 
   private async getCustomProperties(): Promise<ICustomPropertyValue | void> {
@@ -41,13 +47,13 @@ export class GetCommonProperties {
       this.props.customProperties = await Promise.all<ICustomPropertyValue>(
         this.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
-          return await this.customProperty
+          return await this.customPropertiesClass
             .getFilter(`name eq '${cpName}'`)
             .then((cpData) => {
               if (cpData.length == 0)
                 throw new Error(`Non existing custom property "${cpName}"`);
               return {
-                definition: cpData[0] as ICustomPropertyCondensed,
+                definition: cpData[0].details as ICustomPropertyCondensed,
                 value: cpValue,
               } as ICustomPropertyValue;
             });
@@ -60,12 +66,12 @@ export class GetCommonProperties {
     if (this.tags && this.tags.length > 0) {
       this.props.tags = await Promise.all<ITagCondensed>(
         this.tags.map(async (tag) => {
-          return await this.tag
+          return await this.tagsClass
             .getFilter(`name eq '${tag}'`)
             .then((tagsData) => {
               if (tagsData.length == 0)
                 throw new Error(`Non existing tag "${tag}"`);
-              return tagsData[0] as ITagCondensed;
+              return tagsData[0].details as ITagCondensed;
             });
         })
       );
@@ -83,7 +89,7 @@ export class GetCommonProperties {
         .then((userData) => {
           if (userData.length == 0)
             throw new Error(`Non existing user "${userDirectory}\\${userId}"`);
-          return userData[0] as IUser;
+          return userData[0].details as IUser;
         });
     }
   }

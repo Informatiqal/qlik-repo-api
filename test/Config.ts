@@ -9,7 +9,7 @@ require("dotenv").config({ path: dotEnvPath });
 import { QlikRepoApi } from "../src/main";
 
 export class Config {
-  public repoApi: QlikRepoApi;
+  public repoApi: QlikRepoApi.client;
   constructor() {
     const cert = fs.readFileSync(`${process.env.TEST_CERT}/client.pem`);
     const key = fs.readFileSync(`${process.env.TEST_CERT}/client_key.pem`);
@@ -20,7 +20,7 @@ export class Config {
       key: key,
     });
 
-    let repoApi = new QlikRepoApi({
+    let repoApi = new QlikRepoApi.client({
       host: process.env.TEST_HOST,
       port: 4242,
       httpsAgent: httpsAgentCert,

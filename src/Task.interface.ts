@@ -1,6 +1,6 @@
-import { ICustomPropertyCondensed } from "./CustomProperty";
-import { ITagCondensed } from "./Tag";
-import { IApp } from "./App";
+import { ICustomPropertyCondensed } from "./CustomProperties";
+import { ITagCondensed } from "./Tags";
+import { IApp } from "./Apps";
 
 import {
   TTimeZones,
@@ -32,9 +32,13 @@ export type TTaskTriggerCompositeState = "success" | "fail";
 export interface ITaskCreateTriggerComposite {
   taskId: string;
   triggerName: string;
-  eventTaskId: string;
-  state: TTaskTriggerCompositeState;
+  eventTasks: {
+    id: string;
+    state: TTaskTriggerCompositeState;
+  }[];
 }
+
+export interface ITaskUpdateTriggerComposite {}
 
 export interface ITaskCreateTriggerSchema {
   reloadTaskId: string;
@@ -43,8 +47,8 @@ export interface ITaskCreateTriggerSchema {
   repeatEvery?: number;
   startDate?: string;
   expirationDate?: string;
-  daysOfWeek?: TDaysOfWeek;
-  daysOfMonth?: TDaysOfMonth;
+  daysOfWeek?: TDaysOfWeek[];
+  daysOfMonth?: TDaysOfMonth[];
   timeZone?: TTimeZones;
   daylightSavingTime?: boolean;
 }
@@ -148,4 +152,18 @@ export interface ITask extends ITaskCondensed {
   createdDate: string;
   customProperties: ICustomPropertyCondensed[];
   modifiedDate: string;
+}
+
+export interface ISelectionEvent {
+  id?: string;
+  name: string;
+  enabled?: boolean;
+  eventType?: number;
+  privileges?: string[];
+  operational?: {
+    id?: string;
+    nextExecution?: string;
+    timesTriggered?: number;
+    privileges?: string[];
+  };
 }

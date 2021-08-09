@@ -1,45 +1,10 @@
-import { QlikGenericRestClient, QlikRepositoryClient } from "./main";
-import { URLBuild, uuid } from "./util/generic";
+import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
+import { modifiedDateTime, URLBuild, uuid } from "./util/generic";
+import { IEntityRemove } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
-
-import { ITagCondensed } from "./Tag";
-import { ISelection, IEntityRemove } from "./types/interfaces";
-
-import { ICustomPropertyValue } from "./CustomProperty";
-import { IStream } from "./Stream";
-import { IOwner } from "./User";
-
-export interface IAppCondensed {
-  appId: string;
-  availabilityStatus: {};
-  id?: string;
-  migrationHash: string;
-  name: string;
-  privileges?: string[];
-  published: boolean;
-  publishTime: string;
-  savedInProductVersion: string;
-  stream: IStream;
-}
-
-export interface IApp extends IAppCondensed {
-  createdDate: string;
-  customProperties: ICustomPropertyValue[];
-  description: string;
-  dynamicColor: string;
-  fileSize: number;
-  lastReloadTime: string;
-  modifiedDate: string;
-  owner: IOwner;
-  schemaPath: string;
-  sourceAppId: string;
-  tags: ITagCondensed[];
-  targetAppId: string;
-  thumbnail: string;
-}
+import { IApp } from "./Apps";
 
 export interface IAppUpdate {
-  id: string;
   name?: string;
   description?: string;
   tags?: string[];
@@ -53,66 +18,51 @@ export interface IAppUpdate {
   owner?: string;
   stream?: string;
 }
+
 export interface IClassApp {
-  copy(id: string): Promise<IApp>;
-  export(id: string): Promise<Buffer>;
-  get(id: string): Promise<IApp>;
-  getAll(): Promise<IAppCondensed[]>;
-  getFilter(filter: string, orderBy?: string): Promise<IApp[]>;
-  publish(id: string, stream: string, name?: string): Promise<IApp>;
-  remove(id: string): Promise<IEntityRemove>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  details: IApp;
+  copy(): Promise<IApp>;
+  export(): Promise<Buffer>;
+  remove(): Promise<IEntityRemove>;
+  publish(stream: string, name?: string): Promise<IApp>;
   switch(sourceAppId: string, targetAppId: string): Promise<IApp>;
   update(arg: IAppUpdate): Promise<IApp>;
-  upload(
-    name: string,
-    file: Buffer,
-    keepData?: boolean,
-    excludeDataConnections?: boolean
-  ): Promise<IApp>;
-  uploadAndReplace(
-    name: string,
-    targetAppId: string,
-    file: Buffer,
-    keepData?: boolean
-  ): Promise<IApp>;
 }
 
 export class App implements IClassApp {
+  private id: string;
   private repoClient: QlikRepositoryClient;
   private genericClient: QlikGenericRestClient;
+  details: IApp;
   constructor(
-    private mainRepoClient: QlikRepositoryClient,
-    private mainGenericClient: QlikGenericRestClient
-  ) {
-    this.repoClient = mainRepoClient;
-    this.genericClient = mainGenericClient;
-  }
-
-  public async copy(
+    repoClient: QlikRepositoryClient,
     id: string,
-    name?: string,
-    includeCustomProperties?: boolean
+    details?: IApp,
+    genericClient?: QlikGenericRestClient
   ) {
-    if (!id) throw new Error(`app.copy: "id" parameter is required`);
+    if (!id) throw new Error(`tags.get: "id" parameter is required`);
 
-    const urlBuild = new URLBuild(`app/${id}/copy`);
-    if (name) urlBuild.addParam("name", name);
-    if (includeCustomProperties)
-      urlBuild.addParam("includecustomproperties", includeCustomProperties);
-
-    return await this.repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as IApp);
+    this.id = id;
+    this.repoClient = repoClient;
+    this.genericClient = genericClient;
+    if (details) this.details = details;
   }
 
-  public async export(id: string, fileName?: string, skipData?: boolean) {
-    if (!id) throw new Error(`app.export: "id" parameter is required`);
+  async init() {
+    if (!this.details) {
+      this.details = await this.repoClient
+        .Get(`app/${this.id}`)
+        .then((res) => res.data as IApp);
+    }
+  }
+
+  public async export(fileName?: string, skipData?: boolean) {
+    if (!this.details.id)
+      throw new Error(`app.export: "id" parameter is required`);
 
     const token = uuid();
-    const urlBuild = new URLBuild(`app/${id}/export/${token}`);
-    if (!fileName) fileName = `${id}.qvf`;
+    const urlBuild = new URLBuild(`app/${this.details.id}/export/${token}`);
+    if (!fileName) fileName = `${this.details.id}.qvf`;
 
     urlBuild.addParam("skipdata", skipData);
 
@@ -128,78 +78,26 @@ export class App implements IClassApp {
       .then((r) => r.data as Buffer);
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`app.get: "id" parameter is required`);
+  public async copy(name?: string, includeCustomProperties?: boolean) {
+    const urlBuild = new URLBuild(`app/${this.details.id}/copy`);
+    if (name) urlBuild.addParam("name", name);
+    if (includeCustomProperties)
+      urlBuild.addParam("includecustomproperties", includeCustomProperties);
+
     return await this.repoClient
-      .Get(`app/${id}`)
+      .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as IApp);
   }
 
-  public async getAll() {
+  public async remove() {
     return await this.repoClient
-      .Get(`app`)
-      .then((res) => res.data as IAppCondensed[]);
+      .Delete(`app/${this.details.id}`)
+      .then((res) => {
+        return { id: this.details.id, status: res.status } as IEntityRemove;
+      });
   }
 
-  public async getFilter(filter: string, orderBy?: string) {
-    if (!filter)
-      throw new Error(`app.getFilter: "filter" parameter is required`);
-
-    const urlBuild = new URLBuild(`app/full`);
-    urlBuild.addParam("filter", filter);
-    urlBuild.addParam("orderby", orderBy);
-
-    return await this.repoClient
-      .Get(urlBuild.getUrl())
-      .then((res) => res.data as IApp[]);
-  }
-
-  public async upload(
-    name: string,
-    file: Buffer,
-    keepData?: boolean,
-    excludeDataConnections?: boolean
-  ) {
-    if (!name) throw new Error(`app.upload: "name" parameter is required`);
-    if (!file) throw new Error(`app.upload: "file" parameter is required`);
-
-    const urlBuild = new URLBuild("app/upload");
-    urlBuild.addParam("name", name);
-    urlBuild.addParam("keepdata", keepData);
-    urlBuild.addParam("excludeconnections", excludeDataConnections);
-
-    return await this.repoClient
-      .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => res.data as IApp);
-  }
-
-  public async uploadAndReplace(
-    name: string,
-    targetAppId: string,
-    file: Buffer,
-    keepData?: boolean
-  ) {
-    if (!name)
-      throw new Error(`app.uploadAndReplace: "name" parameter is required`);
-    if (!file)
-      throw new Error(`app.uploadAndReplace: "file" parameter is required`);
-    if (!targetAppId)
-      throw new Error(
-        `app.uploadAndReplace: "targetAppId" parameter is required`
-      );
-
-    const urlBuild = new URLBuild("app/upload/replace");
-    urlBuild.addParam("name", name);
-    urlBuild.addParam("keepdata", keepData);
-    urlBuild.addParam("targetappid", targetAppId);
-
-    return await this.repoClient
-      .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => res.data as IApp);
-  }
-
-  public async publish(id: string, stream: string, name?: string) {
-    if (!id) throw new Error(`app.publish: "id" parameter is required`);
+  public async publish(stream: string, name?: string) {
     if (!stream) throw new Error(`app.publish: "stream" parameter is required`);
 
     let streamRes = await this.repoClient.Get(
@@ -212,7 +110,7 @@ export class App implements IClassApp {
     if (streamRes.data.length > 1)
       throw new Error(`app.publish: Multiple streams found "${stream}"`);
 
-    const urlBuild = new URLBuild(`app/${id}/publish`);
+    const urlBuild = new URLBuild(`app/${this.details.id}/publish`);
     urlBuild.addParam("stream", streamRes.data[0].id);
     urlBuild.addParam("name", name);
 
@@ -221,58 +119,28 @@ export class App implements IClassApp {
       .then((res) => res.data as IApp);
   }
 
-  public async remove(id: string) {
-    if (!id) throw new Error(`app.remove: "id" parameter is required`);
-    return await this.repoClient.Delete(`app/${id}`).then((res) => {
-      return { id, status: res.status } as IEntityRemove;
-    });
-  }
+  public async update(arg: IAppUpdate) {
+    if (arg.name) this.details.name = arg.name;
+    if (arg.description) this.details.description = arg.description;
 
-  public async removeFilter(filter: string) {
-    if (!filter)
-      throw new Error(`app.removeFilter: "filter" parameter is required`);
-
-    const apps = await this.getFilter(filter);
-    return Promise.all<IEntityRemove>(
-      apps.map((app: IApp) => {
-        return this.remove(app.id);
-      })
+    let updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      this.details,
+      arg
     );
-  }
-
-  public async select(filter?: string) {
-    const urlBuild = new URLBuild(`selection/app`);
-    urlBuild.addParam("filter", filter);
+    this.details = await updateCommon.updateAll();
 
     return await this.repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Put(`app/${this.details.id}`, { ...this.details })
+      .then((res) => res.data as IApp);
   }
 
-  public async switch(sourceAppId: string, targetAppId: string) {
-    if (!sourceAppId)
-      throw new Error(`app.switch: "sourceAppId" parameter is required`);
+  public async switch(targetAppId: string) {
     if (!targetAppId)
       throw new Error(`app.switch: "targetAppId" parameter is required`);
 
     return await this.repoClient
-      .Put(`app/${sourceAppId}/replace?app=${targetAppId}`, {})
-      .then((res) => res.data as IApp);
-  }
-
-  public async update(arg: IAppUpdate) {
-    if (!arg.id) throw new Error(`app.update: "id" parameter is required`);
-
-    let app = await this.get(arg.id);
-
-    if (arg.name) app.name = arg.name;
-    if (arg.description) app.description = arg.description;
-
-    let updateCommon = new UpdateCommonProperties(this.repoClient, app, arg);
-    app = await updateCommon.updateAll();
-
-    return await this.repoClient
-      .Put(`app/${arg.id}`, { ...app })
+      .Put(`app/${this.details.id}/replace?app=${targetAppId}`, {})
       .then((res) => res.data as IApp);
   }
 }

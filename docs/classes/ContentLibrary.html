@@ -89,26 +89,18 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="ContentLibrary.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="ContentLibrary.html#genericClient" class="tsd-kind-icon">generic<wbr>Client</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="ContentLibrary.html#repoClient" class="tsd-kind-icon">repo<wbr>Client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ContentLibrary.html#details" class="tsd-kind-icon">details</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#create" class="tsd-kind-icon">create</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#export" class="tsd-kind-icon">export</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#getAll" class="tsd-kind-icon">get<wbr>All</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#import" class="tsd-kind-icon">import</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#importForApp" class="tsd-kind-icon">import<wbr>For<wbr>App</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#init" class="tsd-kind-icon">init</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#remove" class="tsd-kind-icon">remove</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#removeFilter" class="tsd-kind-icon">remove<wbr>Filter</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#select" class="tsd-kind-icon">select</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ContentLibrary.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
 						</section>
@@ -121,22 +113,28 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Content<wbr>Library<span class="tsd-signature-symbol">(</span>mainRepoClient<span class="tsd-signature-symbol">: </span><a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a>, mainGenericClient<span class="tsd-signature-symbol">: </span><a href="QlikGenericRestClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikGenericRestClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Class">ContentLibrary</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Content<wbr>Library<span class="tsd-signature-symbol">(</span>repoClient<span class="tsd-signature-symbol">: </span><a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, details<span class="tsd-signature-symbol">?: </span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a>, genericClient<span class="tsd-signature-symbol">?: </span><a href="QlikGenericRestClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikGenericRestClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Class">ContentLibrary</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L86">src/ContentLibrary.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/2164214/src/ContentLibrary.ts#L25">src/ContentLibrary.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>mainRepoClient: <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></h5>
+									<h5>repoClient: <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></h5>
 								</li>
 								<li>
-									<h5>mainGenericClient: <a href="QlikGenericRestClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikGenericRestClient</a></h5>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> details: <a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> genericClient: <a href="QlikGenericRestClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikGenericRestClient</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="ContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Class">ContentLibrary</a></h4>
@@ -144,64 +142,22 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="genericClient" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> generic<wbr>Client</h3>
-					<div class="tsd-signature tsd-kind-icon">generic<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="QlikGenericRestClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikGenericRestClient</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="details" class="tsd-anchor"></a>
+					<h3>details</h3>
+					<div class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#details">details</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L85">src/ContentLibrary.ts:85</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="repoClient" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> repo<wbr>Client</h3>
-					<div class="tsd-signature tsd-kind-icon">repo<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L84">src/ContentLibrary.ts:84</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/2164214/src/ContentLibrary.ts#L24">src/ContentLibrary.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="create" class="tsd-anchor"></a>
-					<h3>create</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, customProperties<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, tags<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, owner<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#create">create</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L95">src/ContentLibrary.ts:95</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>customProperties: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
-								</li>
-								<li>
-									<h5>tags: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
-								</li>
-								<li>
-									<h5>owner: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="export" class="tsd-anchor"></a>
 					<h3>export</h3>
@@ -213,7 +169,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#export">export</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L147">src/ContentLibrary.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/2164214/src/ContentLibrary.ts#L48">src/ContentLibrary.ts:48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -230,147 +186,19 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
+					<a name="init" class="tsd-anchor"></a>
+					<h3>init</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L118">src/ContentLibrary.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/2164214/src/ContentLibrary.ts#L39">src/ContentLibrary.ts:39</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getAll" class="tsd-anchor"></a>
-					<h3>get<wbr>All</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibraryCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibraryCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#getAll">getAll</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L125">src/ContentLibrary.ts:125</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibraryCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibraryCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getFilter" class="tsd-anchor"></a>
-					<h3>get<wbr>Filter</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Filter<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, orderBy<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#getFilter">getFilter</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L131">src/ContentLibrary.ts:131</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>filter: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> orderBy: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="import" class="tsd-anchor"></a>
-					<h3>import</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">import<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, arg<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>externalPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>overwrite<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#import">import</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L188">src/ContentLibrary.ts:188</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>file: <span class="tsd-signature-type">Buffer</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> arg: <span class="tsd-signature-symbol">{ </span>externalPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>overwrite<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5><span class="tsd-flag ts-flagOptional">Optional</span> external<wbr>Path<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5><span class="tsd-flag ts-flagOptional">Optional</span> overwrite<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="importForApp" class="tsd-anchor"></a>
-					<h3>import<wbr>For<wbr>App</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">import<wbr>For<wbr>App<span class="tsd-signature-symbol">(</span>appId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span>, arg<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>externalPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>overwrite<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#importForApp">importForApp</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L212">src/ContentLibrary.ts:212</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>appId: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>file: <span class="tsd-signature-type">Buffer</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> arg: <span class="tsd-signature-symbol">{ </span>externalPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>overwrite<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter">
-											<h5><span class="tsd-flag ts-flagOptional">Optional</span> external<wbr>Path<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
-										</li>
-										<li class="tsd-parameter">
-											<h5><span class="tsd-flag ts-flagOptional">Optional</span> overwrite<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IContentLibrary.html" class="tsd-signature-type" data-tsd-kind="Interface">IContentLibrary</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -378,71 +206,17 @@
 					<a name="remove" class="tsd-anchor"></a>
 					<h3>remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#remove">remove</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L235">src/ContentLibrary.ts:235</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/2164214/src/ContentLibrary.ts#L77">src/ContentLibrary.ts:77</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="removeFilter" class="tsd-anchor"></a>
-					<h3>remove<wbr>Filter</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>Filter<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#removeFilter">removeFilter</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L244">src/ContentLibrary.ts:244</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>filter: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="select" class="tsd-anchor"></a>
-					<h3>select</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#select">select</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L257">src/ContentLibrary.ts:257</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -457,7 +231,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassContentLibrary.html">IClassContentLibrary</a>.<a href="../interfaces/IClassContentLibrary.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/290a9e6/src/ContentLibrary.ts#L267">src/ContentLibrary.ts:267</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/2164214/src/ContentLibrary.ts#L86">src/ContentLibrary.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -490,41 +264,17 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="ContentLibrary.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="ContentLibrary.html#genericClient" class="tsd-kind-icon">generic<wbr>Client</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="ContentLibrary.html#repoClient" class="tsd-kind-icon">repo<wbr>Client</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#create" class="tsd-kind-icon">create</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ContentLibrary.html#details" class="tsd-kind-icon">details</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ContentLibrary.html#export" class="tsd-kind-icon">export</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#get" class="tsd-kind-icon">get</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#getAll" class="tsd-kind-icon">get<wbr>All</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#import" class="tsd-kind-icon">import</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#importForApp" class="tsd-kind-icon">import<wbr>For<wbr>App</a>
+								<a href="ContentLibrary.html#init" class="tsd-kind-icon">init</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ContentLibrary.html#remove" class="tsd-kind-icon">remove</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#removeFilter" class="tsd-kind-icon">remove<wbr>Filter</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ContentLibrary.html#select" class="tsd-kind-icon">select</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ContentLibrary.html#update" class="tsd-kind-icon">update</a>
@@ -538,7 +288,7 @@
 		</div>
 	</div>
 </div>
-<footer class="with-border-bottom">
+<footer>
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
@@ -551,16 +301,9 @@
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-			</ul>
 		</div>
 	</div>
 </footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
 </body>

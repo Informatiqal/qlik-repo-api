@@ -1,8 +1,8 @@
-import { QlikRepositoryClient } from "./main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { ISelection } from "./types/interfaces";
-import { IServerNodeConfigurationCondensed } from "./Node";
+import { IServerNodeConfigurationCondensed } from "./Nodes";
 
 export interface IServiceStatusCondensed {
   id?: string;
