@@ -17,7 +17,7 @@ export interface ITaskCreate {
 }
 
 export interface ITaskReloadUpdate {
-  id: string;
+  // id: string;
   name?: string;
   enabled?: boolean;
   taskSessionTimeout?: number;

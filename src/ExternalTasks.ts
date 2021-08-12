@@ -15,10 +15,10 @@ import {
 } from "./Task.interface";
 
 import { TRepeatOptions, TDaysOfMonth, TDaysOfWeek } from "./types/ranges";
-import { ReloadTask } from "./ReloadTask";
 import { IClassReloadTask } from "./ReloadTaskBase";
+import { ExternalTask } from "./ExternalTask";
 
-export interface IClassReloadTasks {
+export interface IClassExternalTasks {
   get(id: string): Promise<IClassReloadTask>;
   getAll(): Promise<IClassReloadTask[]>;
   getFilter(filter: string): Promise<IClassReloadTask[]>;
@@ -40,18 +40,18 @@ export interface IClassReloadTasks {
   //   taskId: string,
   //   executionId?: string
   // ): Promise<ITaskExecutionResult>;
-  scheduleRemove(id: string): Promise<IEntityRemove>;
-  scheduleGet(id: string): Promise<ISchemaEvent>;
-  scheduleGetAll(): Promise<ISchemaEventCondensed[]>;
-  triggerCompositeCreate(
-    arg: ITaskCreateTriggerComposite
-  ): Promise<IHttpStatus>;
+  // scheduleRemove(id: string): Promise<IEntityRemove>;
+  // scheduleGet(id: string): Promise<ISchemaEvent>;
+  // scheduleGetAll(): Promise<ISchemaEventCondensed[]>;
+  // triggerCompositeCreate(
+  //   arg: ITaskCreateTriggerComposite
+  // ): Promise<IHttpStatus>;
   // triggersForTask(id: string): Promise<ISelectionEvent[]>;
-  triggerSchemaCreate(arg: ITaskCreateTriggerSchema): Promise<ISchemaEvent>;
+  // triggerSchemaCreate(arg: ITaskCreateTriggerSchema): Promise<ISchemaEvent>;
   // triggerSchemaRemove(id: string): Promise<IEntityRemove>;
-  triggerSchemaGet(id: string): Promise<ISchemaEvent>;
-  triggerSchemaGetAll(): Promise<ISchemaEvent[]>;
-  triggerSchemaGetFilter(filter: string): Promise<ISchemaEvent[]>;
+  // triggerSchemaGet(id: string): Promise<ISchemaEvent>;
+  // triggerSchemaGetAll(): Promise<ISchemaEvent[]>;
+  // triggerSchemaGetFilter(filter: string): Promise<ISchemaEvent[]>;
   // scriptLogGet(reloadTaskId: string, fileReferenceId: string): Promise<string>;
   // scriptLogFileGet(
   //   reloadTaskId: string,
@@ -59,7 +59,7 @@ export interface IClassReloadTasks {
   // ): Promise<string>;
 }
 
-export class ReloadTasks implements IClassReloadTasks {
+export class ExternalTasks implements IClassExternalTasks {
   private repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
     this.repoClient = mainRepoClient;
@@ -68,19 +68,19 @@ export class ReloadTasks implements IClassReloadTasks {
   public async get(id: string) {
     if (!id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
-    const reloadTask: ReloadTask = new ReloadTask(this.repoClient, id);
-    await reloadTask.init();
+    const extTask: ExternalTask = new ExternalTask(this.repoClient, id);
+    await extTask.init();
 
-    return reloadTask;
+    return extTask;
   }
 
   public async getAll() {
     return await this.repoClient
-      .Get(`reloadtask/full`)
+      .Get(`externalprogramtask/full`)
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => {
-          return new ReloadTask(this.repoClient, t.id, t);
+          return new ExternalTask(this.repoClient, t.id, t);
         });
       });
   }
@@ -90,17 +90,17 @@ export class ReloadTasks implements IClassReloadTasks {
       throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
 
     return await this.repoClient
-      .Get(`reloadtask/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`externalprogramtask/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => {
-          return new ReloadTask(this.repoClient, t.id, t);
+          return new ExternalTask(this.repoClient, t.id, t);
         });
       });
   }
 
   public async count(filter?: string) {
-    let url: string = `reloadtask/count`;
+    let url: string = `externalprogramtask/count`;
     if (filter) url += `${url}?filter=(${encodeURIComponent(filter)})`;
 
     return await this.repoClient
@@ -145,7 +145,7 @@ export class ReloadTasks implements IClassReloadTasks {
   }
 
   public async select(filter?: string) {
-    const urlBuild = new URLBuild(`selection/reloadtask`);
+    const urlBuild = new URLBuild(`selection/externalprogramtask`);
     urlBuild.addParam("filter", filter);
 
     return await this.repoClient
@@ -191,7 +191,7 @@ export class ReloadTasks implements IClassReloadTasks {
     return await this.repoClient
       .Post(`reloadtask/create`, { ...reloadTask })
       .then((res) => res.data as ITask)
-      .then((t) => new ReloadTask(this.repoClient, t.id, t));
+      .then((t) => new ExternalTask(this.repoClient, t.id, t));
   }
 
   // public async externalGetAll() {
@@ -470,14 +470,14 @@ export class ReloadTasks implements IClassReloadTasks {
       .then((res) => res.data as ISchemaEvent);
   }
 
-  // public async triggerSchemaRemove(id: string): Promise<IEntityRemove> {
-  //   if (!id)
-  //     throw new Error(`task.triggerSchemaRemove: "id" parameter is required`);
+  public async triggerSchemaRemove(id: string): Promise<IEntityRemove> {
+    if (!id)
+      throw new Error(`task.triggerSchemaRemove: "id" parameter is required`);
 
-  //   return await this.repoClient.Delete(`schemaevent/${id}`).then((r) => {
-  //     return { id, status: r.status } as IEntityRemove;
-  //   });
-  // }
+    return await this.repoClient.Delete(`schemaevent/${id}`).then((r) => {
+      return { id, status: r.status } as IEntityRemove;
+    });
+  }
 
   public async triggerSchemaGet(id: string) {
     if (!id)
@@ -504,28 +504,71 @@ export class ReloadTasks implements IClassReloadTasks {
       .then((res) => res.data as ISchemaEvent[]);
   }
 
-  // public async triggersForTask(id: string) {
-  //   if (!id)
-  //     throw new Error(`task.triggersForTask: "id" parameter is required`);
+  public async triggersForTask(id: string) {
+    if (!id)
+      throw new Error(`task.triggersForTask: "id" parameter is required`);
 
-  //   const selection = await this.repoClient
-  //     .Post(`selection`, {
-  //       items: [
-  //         {
-  //           type: "ReloadTask",
-  //           objectID: `${id}`,
-  //         },
-  //       ],
-  //     })
-  //     .then((res) => res.data as ISelection);
+    const selection = await this.repoClient
+      .Post(`selection`, {
+        items: [
+          {
+            type: "ReloadTask",
+            objectID: `${id}`,
+          },
+        ],
+      })
+      .then((res) => res.data as ISelection);
 
-  //   const selectionData = await this.repoClient
-  //     .Get(`selection/${selection.id}/Event`)
-  //     .then((s) => s.data as ISelectionEvent[]);
+    const selectionData = await this.repoClient
+      .Get(`selection/${selection.id}/Event`)
+      .then((s) => s.data as ISelectionEvent[]);
 
-  //   await this.repoClient.Delete(`selection/${selection.id}`);
+    await this.repoClient.Delete(`selection/${selection.id}`);
 
-  //   return selectionData;
+    return selectionData;
+  }
+
+  // public async scriptLogGet(reloadTaskId: string, fileReferenceId: string) {
+  //   if (!reloadTaskId)
+  //     throw new Error(
+  //       `task.scriptLogGet: "reloadTaskId" parameter is required`
+  //     );
+  //   if (!fileReferenceId)
+  //     throw new Error(
+  //       `task.scriptLogGet: "fileReferenceId" parameter is required`
+  //     );
+
+  //   return await this.repoClient
+  //     .Get(
+  //       `/reloadtask/${reloadTaskId}/scriptlog?filereferenceid=${encodeURIComponent(
+  //         fileReferenceId
+  //       )}
+  //   `
+  //     )
+  //     .then((res) => res.data as string);
+  // }
+
+  // public async scriptLogFileGet(
+  //   reloadTaskId: string,
+  //   executionResultId: string
+  // ) {
+  //   if (!reloadTaskId)
+  //     throw new Error(
+  //       `task.scriptLogFileGet: "reloadTaskId" parameter is required`
+  //     );
+  //   if (!executionResultId)
+  //     throw new Error(
+  //       `task.scriptLogFileGet: "executionResultId" parameter is required`
+  //     );
+
+  //   return await this.repoClient
+  //     .Get(
+  //       `/reloadtask/${reloadTaskId}/scriptlog?executionresultid =${encodeURIComponent(
+  //         executionResultId
+  //       )}
+  // `
+  //     )
+  //     .then((res) => res.data as string);
   // }
 
   private schemaRepeat(
