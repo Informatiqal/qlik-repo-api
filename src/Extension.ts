@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { IExtension, IExtensionUpdate } from "./Extensions";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassExtension {
-  remove(): Promise<IEntityRemove>;
-  update(arg: IExtensionUpdate): Promise<IExtension>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: IExtensionUpdate): Promise<IHttpStatus>;
   details: IExtension;
 }
 
@@ -34,9 +34,9 @@ export class Extension implements IClassExtension {
   }
 
   public async remove() {
-    return await this.repoClient.Delete(`extension/${this.id}`).then((res) => {
-      return { id: this.id, status: res.status } as IEntityRemove;
-    });
+    return await this.repoClient
+      .Delete(`extension/${this.id}`)
+      .then((res) => res.status);
   }
 
   public async update(arg: IExtensionUpdate) {
@@ -49,6 +49,6 @@ export class Extension implements IClassExtension {
 
     return await this.repoClient
       .Put(`extension/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IExtension);
+      .then((res) => res.status);
   }
 }

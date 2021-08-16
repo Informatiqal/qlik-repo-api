@@ -2,7 +2,7 @@ import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { ITagCondensed } from "./Tags";
-import { ISelection, IEntityRemove } from "./types/interfaces";
+import { ISelection, IEntityRemove, IHttpStatus } from "./types/interfaces";
 
 import { App, IClassApp } from "./App";
 import { ICustomPropertyValue } from "./CustomProperties";
@@ -55,7 +55,7 @@ export interface IClassApps {
     targetAppId: string,
     file: Buffer,
     keepData?: boolean
-  ): Promise<IApp>;
+  ): Promise<IClassApp>;
 }
 
 export class Apps implements IClassApps {
@@ -82,9 +82,7 @@ export class Apps implements IClassApps {
       .Get(`app/full`)
       .then((res) => res.data as IApp[])
       .then((data) => {
-        return data.map((t) => {
-          return new App(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new App(this.repoClient, t.id, t));
       });
   }
 
@@ -100,9 +98,7 @@ export class Apps implements IClassApps {
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IApp[])
       .then((data) => {
-        return data.map((t) => {
-          return new App(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new App(this.repoClient, t.id, t));
       });
   }
 
@@ -122,9 +118,7 @@ export class Apps implements IClassApps {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => {
-        return new App(this.repoClient, (res.data as IApp).id);
-      });
+      .then((res) => new App(this.repoClient, (res.data as IApp).id));
   }
 
   public async uploadAndReplace(
@@ -149,7 +143,7 @@ export class Apps implements IClassApps {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => res.data as IApp);
+      .then((res) => new App(this.repoClient, (res.data as IApp).id));
   }
 
   public async removeFilter(filter: string) {
@@ -158,9 +152,9 @@ export class Apps implements IClassApps {
 
     const apps = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      apps.map((app: IClassApp) => {
-        return app.remove();
-      })
+      apps.map((app: IClassApp) =>
+        app.remove().then((s) => ({ id: app.details.id, status: s }))
+      )
     );
   }
 

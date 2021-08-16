@@ -43,9 +43,7 @@ export class VirtualProxies implements IClassVirtualProxies {
         return res.data as IVirtualProxyConfig[];
       })
       .then((data) => {
-        return data.map((t) => {
-          return new VirtualProxy(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new VirtualProxy(this.repoClient, t.id, t));
       });
   }
 
@@ -59,9 +57,7 @@ export class VirtualProxies implements IClassVirtualProxies {
       .Get(`virtualproxyconfig?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IVirtualProxyConfig[])
       .then((data) => {
-        return data.map((t) => {
-          return new VirtualProxy(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new VirtualProxy(this.repoClient, t.id, t));
       });
   }
 
@@ -78,9 +74,9 @@ export class VirtualProxies implements IClassVirtualProxies {
       );
 
     return await Promise.all<IEntityRemove>(
-      vps.map((vp: IClassVirtualProxy) => {
-        return vp.remove();
-      })
+      vps.map((vp: IClassVirtualProxy) =>
+        vp.remove().then((s) => ({ id: vp.details.id, status: s }))
+      )
     );
   }
 

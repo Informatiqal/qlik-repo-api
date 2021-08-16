@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
 import { ITag } from "./Tags";
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 
 export interface IClassTag {
-  remove(): Promise<IEntityRemove>;
-  update(name: string): Promise<ITag>;
+  remove(): Promise<IHttpStatus>;
+  update(name: string): Promise<IHttpStatus>;
   details: ITag;
 }
 
@@ -30,9 +30,9 @@ export class Tag implements IClassTag {
   }
 
   public async remove() {
-    return await this.repoClient.Delete(`tag/${this.id}`).then((res) => {
-      return { id: this.id, status: res.status } as IEntityRemove;
-    });
+    return await this.repoClient
+      .Delete(`tag/${this.id}`)
+      .then((res) => res.status);
   }
 
   public async update(name: string) {
@@ -41,12 +41,10 @@ export class Tag implements IClassTag {
     this.details.name = name;
     this.details.modifiedDate = modifiedDateTime();
 
-    this.details = await this.repoClient
+    return await this.repoClient
       .Put(`tag/${this.id}`, {
         ...this.details,
       })
-      .then((res) => res.data as ITag);
-
-    return this.details;
+      .then((res) => res.status);
   }
 }

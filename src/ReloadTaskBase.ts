@@ -1,9 +1,7 @@
 import { IHttpReturn, QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, IHttpStatus, ISelection } from "./types/interfaces";
+import { IHttpStatus, ISelection } from "./types/interfaces";
 import {
-  ICompositeEvent,
   ISchemaEvent,
-  ISelectionEvent,
   ITask,
   ITaskCreateTriggerComposite,
   ITaskCreateTriggerSchema,
@@ -16,18 +14,18 @@ import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
 import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
 
 export interface IClassReloadTask {
-  remove(): Promise<IEntityRemove>;
+  remove(): Promise<IHttpStatus>;
   start(): Promise<IHttpStatus>;
   startSynchronous(): Promise<IHttpReturn>;
   waitExecution(executionId?: string): Promise<ITaskExecutionResult>;
   scriptLogGet(fileReferenceId: string): Promise<string>;
   scriptLogFileGet(executionResultId: string): Promise<string>;
-  update(arg: ITaskReloadUpdate): Promise<ITask>;
+  update(arg: ITaskReloadUpdate): Promise<IHttpStatus>;
   addTriggerComposite(arg: ITaskCreateTriggerComposite): Promise<IHttpStatus>;
   addTriggerSchema(arg: ITaskCreateTriggerSchema): Promise<IHttpStatus>;
   addTriggerMany(
     triggers: (ITaskCreateTriggerComposite | ITaskCreateTriggerSchema)[]
-  );
+  ): Promise<{ name: string; status: number }[]>;
   // triggersGetAll(): Promise<IClassSchemaTrigger[]>;
   // triggersGetSchema(id: string): Promise<IClassSchemaTrigger>;
   details: ITask;
@@ -63,9 +61,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
   public async remove() {
     return await this.repoClient
       .Delete(`${this.baseUrl}/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   async start() {
@@ -163,7 +159,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
     return await this.repoClient
       .Put(`${this.baseUrl}/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as ITask);
+      .then((res) => res.status);
   }
 
   /**

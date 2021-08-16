@@ -105,9 +105,7 @@ export class Users implements IClassUsers {
       .Get(`user/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IUser[])
       .then((data) => {
-        return data.map((t) => {
-          return new User(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new User(this.repoClient, t.id, t));
       });
   }
 
@@ -143,10 +141,10 @@ export class Users implements IClassUsers {
       throw new Error(`user.removeFilter: "filter" parameter is required`);
 
     const users = await this.getFilter(filter);
-    return Promise.all<IEntityRemove>(
-      users.map((user: IClassUser) => {
-        return user.remove();
-      })
+    return await Promise.all<IEntityRemove>(
+      users.map((user: IClassUser) =>
+        user.remove().then((s) => ({ id: user.details.id, status: s }))
+      )
     );
   }
 

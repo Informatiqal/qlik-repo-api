@@ -106,9 +106,7 @@ export class Nodes implements IClassNodes {
   public async count(): Promise<number> {
     return await this.repoClient
       .Get(`servernodeconfiguration/count`)
-      .then((res) => {
-        return res.data as number;
-      });
+      .then((res) => res.data as number);
   }
 
   public async create(arg: INodeCreate) {
@@ -164,9 +162,7 @@ export class Nodes implements IClassNodes {
       .Get(`servernodeconfiguration/full`)
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
-        return data.map((t) => {
-          return new Node(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Node(this.repoClient, t.id, t));
       });
   }
 
@@ -180,9 +176,7 @@ export class Nodes implements IClassNodes {
       )
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
-        return data.map((t) => {
-          return new Node(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Node(this.repoClient, t.id, t));
       });
   }
 
@@ -197,9 +191,9 @@ export class Nodes implements IClassNodes {
 
     const nodes = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      nodes.map((node: IClassNode) => {
-        return node.remove();
-      })
+      nodes.map((node: IClassNode) =>
+        node.remove().then((s) => ({ id: node.details.id, status: s }))
+      )
     );
   }
 

@@ -40,9 +40,7 @@ export class ServiceClusters implements IClassServiceClusters {
       .Get(`ServiceCluster/full`)
       .then((res) => res.data as IServiceCluster[])
       .then((data) => {
-        return data.map((t) => {
-          return new ServiceCluster(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new ServiceCluster(this.repoClient, t.id, t));
       });
   }
 
@@ -56,9 +54,7 @@ export class ServiceClusters implements IClassServiceClusters {
       .Get(`ServiceCluster/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IServiceCluster[])
       .then((data) => {
-        return data.map((t) => {
-          return new ServiceCluster(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new ServiceCluster(this.repoClient, t.id, t));
       });
   }
 
@@ -68,9 +64,9 @@ export class ServiceClusters implements IClassServiceClusters {
 
     const serviceClusters = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      serviceClusters.map((sc: IClassServiceCluster) => {
-        return sc.remove();
-      })
+      serviceClusters.map((sc: IClassServiceCluster) =>
+        sc.remove().then((s) => ({ id: sc.details.id, status: s }))
+      )
     );
   }
 

@@ -217,9 +217,11 @@ export class ContentLibraries implements IClassContentLibraries {
       );
     const contentLibraries = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      contentLibraries.map((contentLib: IClassContentLibrary) => {
-        return contentLib.remove();
-      })
+      contentLibraries.map((contentLib: IClassContentLibrary) =>
+        contentLib
+          .remove()
+          .then((s) => ({ id: contentLib.details.id, status: s }))
+      )
     );
   }
 

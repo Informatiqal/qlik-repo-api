@@ -69,9 +69,7 @@ export class Extensions implements IClassExtensions {
       .Get(`extension/full`)
       .then((res) => res.data as IExtension[])
       .then((data) => {
-        return data.map((t) => {
-          return new Extension(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Extension(this.repoClient, t.id, t));
       });
   }
 
@@ -83,9 +81,7 @@ export class Extensions implements IClassExtensions {
       .Get(`extension?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IExtension[])
       .then((data) => {
-        return data.map((t) => {
-          return new Extension(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Extension(this.repoClient, t.id, t));
       });
   }
 
@@ -97,9 +93,11 @@ export class Extensions implements IClassExtensions {
 
     const extensions = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      extensions.map((extension: IClassExtension) => {
-        return extension.remove();
-      })
+      extensions.map((extension: IClassExtension) =>
+        extension
+          .remove()
+          .then((s) => ({ id: extension.details.id, status: s }))
+      )
     );
   }
 
@@ -121,8 +119,8 @@ export class Extensions implements IClassExtensions {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), arg.file)
-      .then((res) => {
-        return new Extension(this.repoClient, (res.data as IExtension).id);
-      });
+      .then(
+        (res) => new Extension(this.repoClient, (res.data as IExtension).id)
+      );
   }
 }

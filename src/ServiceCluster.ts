@@ -1,14 +1,14 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import {
   IServiceCluster,
   IServiceClusterUpdate,
 } from "./ServiceCluster.interface";
 
 export interface IClassServiceCluster {
-  remove(): Promise<IEntityRemove>;
-  setCentral(): Promise<number>;
-  update(arg: IServiceClusterUpdate): Promise<IServiceCluster>;
+  remove(): Promise<IHttpStatus>;
+  setCentral(): Promise<IHttpStatus>;
+  update(arg: IServiceClusterUpdate): Promise<IHttpStatus>;
   details: IServiceCluster;
 }
 
@@ -39,9 +39,7 @@ export class ServiceCluster implements IClassServiceCluster {
   public async remove() {
     return await this.repoClient
       .Delete(`ServiceCluster/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   // TODO: this should be here or in Node?
@@ -91,6 +89,6 @@ export class ServiceCluster implements IClassServiceCluster {
 
     return await this.repoClient
       .Post(`ServiceCluster/${arg.id}`, { ...this.details })
-      .then((res) => res.data as IServiceCluster);
+      .then((res) => res.status);
   }
 }

@@ -1,6 +1,6 @@
 import { URLBuild } from "./util/generic";
 
-import { ISelection } from "./types/interfaces";
+import { IEntityRemove, ISelection } from "./types/interfaces";
 import { IProxyServiceSettingsLogVerbosity } from "./Proxy.interface";
 import { ICustomPropertyCondensed } from "./CustomProperties";
 import { ITagCondensed } from "./Tags";
@@ -59,6 +59,7 @@ export interface IClassSchedulers {
   getAll(): Promise<IClassScheduler[]>;
   getFilter(filter: string): Promise<IClassScheduler[]>;
   select(filter: string): Promise<ISelection>;
+  removeFilter(filter: string): Promise<IEntityRemove[]>;
   // update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
 }
 
@@ -81,9 +82,7 @@ export class Schedulers implements IClassSchedulers {
       .Get(`schedulerservice/full`)
       .then((res) => res.data as ISchedulerService[])
       .then((data) => {
-        return data.map((t) => {
-          return new Scheduler(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Scheduler(this.repoClient, t.id, t));
       });
   }
 
@@ -95,10 +94,22 @@ export class Schedulers implements IClassSchedulers {
       .Get(`schedulerservice/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ISchedulerService[])
       .then((data) => {
-        return data.map((t) => {
-          return new Scheduler(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Scheduler(this.repoClient, t.id, t));
       });
+  }
+
+  public async removeFilter(filter: string) {
+    if (!filter)
+      throw new Error(`scheduler.removeFilter: "filter" parameter is required`);
+
+    const schedulers = await this.getFilter(filter);
+    return Promise.all<IEntityRemove>(
+      schedulers.map((scheduler: IClassScheduler) =>
+        scheduler
+          .remove()
+          .then((s) => ({ id: scheduler.details.id, status: s }))
+      )
+    );
   }
 
   public async select(filter?: string) {

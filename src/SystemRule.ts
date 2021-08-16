@@ -1,12 +1,12 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import { ISystemRule, ISystemRuleUpdate } from "./SystemRule.interface";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { calculateActions, getRuleContext } from "./util/generic";
 
 export interface IClassSystemRule {
-  remove(): Promise<IEntityRemove>;
-  update(arg: ISystemRuleUpdate): Promise<ISystemRule>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: ISystemRuleUpdate): Promise<IHttpStatus>;
   details: ISystemRule;
 }
 
@@ -35,9 +35,9 @@ export class SystemRule implements IClassSystemRule {
   }
 
   public async remove() {
-    return await this.repoClient.Delete(`systemrule/${this.id}`).then((res) => {
-      return { id: this.id, status: res.status } as IEntityRemove;
-    });
+    return await this.repoClient
+      .Delete(`systemrule/${this.id}`)
+      .then((res) => res.status);
   }
 
   public async update(arg: ISystemRuleUpdate) {
@@ -59,6 +59,6 @@ export class SystemRule implements IClassSystemRule {
 
     return await this.repoClient
       .Put(`systemrule/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as ISystemRule);
+      .then((res) => res.status);
   }
 }

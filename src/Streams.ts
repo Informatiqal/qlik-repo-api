@@ -1,5 +1,4 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
@@ -68,9 +67,7 @@ export class Streams implements IClassStreams {
       .Get(`stream/full`)
       .then((res) => res.data as IStream[])
       .then((data) => {
-        return data.map((t) => {
-          return new Stream(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Stream(this.repoClient, t.id, t));
       });
   }
 
@@ -82,9 +79,7 @@ export class Streams implements IClassStreams {
       .Get(`stream/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IStream[])
       .then((data) => {
-        return data.map((t) => {
-          return new Stream(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Stream(this.repoClient, t.id, t));
       });
   }
 
@@ -116,9 +111,9 @@ export class Streams implements IClassStreams {
 
     const streams = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      streams.map((stream: IClassStream) => {
-        return stream.remove();
-      })
+      streams.map((stream: IClassStream) =>
+        stream.remove().then((s) => ({ id: stream.details.id, status: s }))
+      )
     );
   }
 

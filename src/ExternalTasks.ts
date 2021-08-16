@@ -75,9 +75,9 @@ export class ExternalTasks implements IClassExternalTasks {
 
     const tasks = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      tasks.map((task: IClassReloadTask) => {
-        return task.remove();
-      })
+      tasks.map((task: IClassReloadTask) =>
+        task.remove().then((s) => ({ id: task.details.id, status: s }))
+      )
     );
   }
 

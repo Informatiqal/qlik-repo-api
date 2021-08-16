@@ -1,14 +1,14 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { ISharedContent, ISharedContentUpdate } from "./SharedContents";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { URLBuild } from "./util/generic";
 
 export interface IClassSharedContent {
-  remove(): Promise<IEntityRemove>;
-  update(arg: ISharedContentUpdate): Promise<ISharedContent>;
-  uploadFile(file: Buffer, externalPath: string): Promise<string>;
-  deleteFile(externalPath: string): Promise<IEntityRemove>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: ISharedContentUpdate): Promise<IHttpStatus>;
+  uploadFile(file: Buffer, externalPath: string): Promise<IHttpStatus>;
+  deleteFile(externalPath: string): Promise<IHttpStatus>;
   details: ISharedContent;
 }
 
@@ -39,9 +39,7 @@ export class SharedContent implements IClassSharedContent {
   public async remove() {
     return await this.repoClient
       .Delete(`sharedcontent/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async update(arg: ISharedContentUpdate) {
@@ -58,7 +56,7 @@ export class SharedContent implements IClassSharedContent {
 
     return await this.repoClient
       .Put(`sharedcontent/${arg.id}`, { ...this.details })
-      .then((res) => res.data as ISharedContent);
+      .then((res) => res.status);
   }
 
   public async uploadFile(file: Buffer, externalPath: string) {
@@ -74,9 +72,16 @@ export class SharedContent implements IClassSharedContent {
     );
     urlBuild.addParam("externalpath", externalPath);
 
-    return await this.repoClient
+    const status = await this.repoClient
       .Post(urlBuild.getUrl(), file)
-      .then((res) => res.data as string);
+      .then((res) => res.status);
+
+    // clear the details
+    this.details = {} as ISharedContent;
+    // get the latest details
+    await this.init();
+
+    return status;
   }
 
   public async deleteFile(externalPath: string) {
@@ -90,8 +95,13 @@ export class SharedContent implements IClassSharedContent {
     );
     urlBuild.addParam("externalpath", externalPath);
 
-    return await this.repoClient.Delete(urlBuild.getUrl()).then((res) => {
-      return { id: this.details.id, status: res.status } as IEntityRemove;
-    });
+    const status = await this.repoClient
+      .Delete(urlBuild.getUrl())
+      .then((res) => res.status);
+
+    this.details = {} as ISharedContent;
+    await this.init();
+
+    return status;
   }
 }

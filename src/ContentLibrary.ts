@@ -1,6 +1,6 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import {
-  IEntityRemove,
+  IHttpStatus,
   IStaticContentReferenceCondensed,
 } from "./types/interfaces";
 import {
@@ -12,8 +12,8 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassContentLibrary {
   export(sourceFileName?: string): Promise<IContentLibraryFile[]>;
-  remove(): Promise<IEntityRemove>;
-  update(arg: IContentLibraryUpdate): Promise<IContentLibrary>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: IContentLibraryUpdate): Promise<IHttpStatus>;
   details: IContentLibrary;
 }
 
@@ -77,13 +77,11 @@ export class ContentLibrary implements IClassContentLibrary {
   public async remove() {
     return await this.repoClient
       .Delete(`contentlibrary/${this.details.id}`)
-      .then((res) => {
-        return { id: this.details.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   // REVIEW: verify the logic here
-  public async update(arg: IContentLibraryUpdate): Promise<IContentLibrary> {
+  public async update(arg: IContentLibraryUpdate) {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
@@ -93,6 +91,6 @@ export class ContentLibrary implements IClassContentLibrary {
 
     return await this.repoClient
       .Put(`contentlibrary/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IContentLibrary);
+      .then((res) => res.status);
   }
 }

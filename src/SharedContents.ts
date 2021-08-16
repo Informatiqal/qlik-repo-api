@@ -93,9 +93,7 @@ export class SharedContents implements IClassSharedContents {
       .Get(`sharedcontent/full`)
       .then((res) => res.data as ISharedContent[])
       .then((data) => {
-        return data.map((t) => {
-          return new SharedContent(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new SharedContent(this.repoClient, t.id, t));
       });
   }
 
@@ -109,9 +107,7 @@ export class SharedContents implements IClassSharedContents {
       .Get(`sharedcontent/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ISharedContent[])
       .then((data) => {
-        return data.map((t) => {
-          return new SharedContent(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new SharedContent(this.repoClient, t.id, t));
       });
   }
 
@@ -123,9 +119,9 @@ export class SharedContents implements IClassSharedContents {
 
     const shc = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      shc.map((sc: IClassSharedContent) => {
-        return sc.remove();
-      })
+      shc.map((sc: IClassSharedContent) =>
+        sc.remove().then((s) => ({ id: sc.details.id, status: s }))
+      )
     );
   }
 

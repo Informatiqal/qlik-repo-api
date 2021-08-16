@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import { IUser, IUserUpdate } from "./Users";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassUser {
-  remove(): Promise<IEntityRemove>;
-  update(arg: IUserUpdate): Promise<IUser>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: IUserUpdate): Promise<IHttpStatus>;
   details: IUser;
 }
 
@@ -30,9 +30,9 @@ export class User implements IClassUser {
   }
 
   public async remove() {
-    return await this.repoClient.Delete(`user/${this.id}`).then((res) => {
-      return { id: this.id, status: res.status } as IEntityRemove;
-    });
+    return await this.repoClient
+      .Delete(`user/${this.id}`)
+      .then((res) => res.status);
   }
 
   public async update(arg: IUserUpdate) {
@@ -48,6 +48,6 @@ export class User implements IClassUser {
 
     return await this.repoClient
       .Put(`user/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IUser);
+      .then((res) => res.status);
   }
 }

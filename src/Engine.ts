@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { IEngine } from "./Engines";
 import { IEngineUpdate } from "./Engine.interface";
 import { modifiedDateTime } from "./util/generic";
 
 export interface IClassEngine {
-  update(arg: IEngineUpdate): Promise<IEngine>;
+  update(arg: IEngineUpdate): Promise<IHttpStatus>;
   details: IEngine;
 }
 
@@ -246,6 +246,6 @@ export class Engine implements IClassEngine {
 
     return await this.repoClient
       .Put(`engineservice/${arg.id}`, { ...this.details })
-      .then((res) => res.data as IEngine);
+      .then((res) => res.status);
   }
 }

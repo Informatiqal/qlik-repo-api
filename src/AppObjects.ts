@@ -95,9 +95,11 @@ export class AppObjects implements IClassAppObjects {
       }
     );
     return await Promise.all<IEntityRemove>(
-      appObjects.map((appObject: IClassAppObject) => {
-        return appObject.remove();
-      })
+      appObjects.map((appObject: IClassAppObject) =>
+        appObject
+          .remove()
+          .then((s) => ({ id: appObject.details.id, status: s }))
+      )
     );
   }
 

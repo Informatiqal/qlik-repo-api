@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { ICustomProperty, ICustomPropertyUpdate } from "./CustomProperties";
 
 export interface IClassCustomProperty {
-  remove(): Promise<IEntityRemove>;
-  update(arg: ICustomPropertyUpdate): Promise<ICustomProperty>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: ICustomPropertyUpdate): Promise<IHttpStatus>;
   details: ICustomProperty;
 }
 
@@ -36,9 +36,7 @@ export class CustomProperty implements IClassCustomProperty {
   public async remove() {
     return await this.repoClient
       .Delete(`custompropertydefinition/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   // REVIEW: verify the logic here
@@ -58,6 +56,6 @@ export class CustomProperty implements IClassCustomProperty {
 
     return await this.repoClient
       .Put(`custompropertydefinition/${arg.id}`, this.details)
-      .then((res) => res.data as ICustomProperty);
+      .then((res) => res.status);
   }
 }

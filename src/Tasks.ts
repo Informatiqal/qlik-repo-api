@@ -28,9 +28,7 @@ export class Tasks implements IClassTasks {
         return res.data as ITask[];
       })
       .then((data) => {
-        return data.map((t) => {
-          return new Task(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Task(this.repoClient, t.id, t));
       });
   }
 
@@ -42,9 +40,7 @@ export class Tasks implements IClassTasks {
       .Get(`tasks?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ITask[])
       .then((data) => {
-        return data.map((t) => {
-          return new Task(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Task(this.repoClient, t.id, t));
       });
   }
 }

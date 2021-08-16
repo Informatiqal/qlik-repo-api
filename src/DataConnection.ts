@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IDataConnection, IDataConnectionUpdate } from "./DataConnections";
 
 export interface IClassDataConnection {
-  remove(): Promise<IEntityRemove>;
-  update(arg: IDataConnectionUpdate): Promise<IDataConnection>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: IDataConnectionUpdate): Promise<IHttpStatus>;
   details: IDataConnection;
 }
 
@@ -36,9 +36,7 @@ export class DataConnection implements IClassDataConnection {
   async remove() {
     return await this.repoClient
       .Delete(`dataconnection/${this.details.id}`)
-      .then((res) => {
-        return { id: this.details.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async update(arg: IDataConnectionUpdate) {
@@ -53,6 +51,6 @@ export class DataConnection implements IClassDataConnection {
 
     return await this.repoClient
       .Put(`dataconnection/${arg.id}`, { ...this.details })
-      .then((res) => res.data as IDataConnection);
+      .then((res) => res.status);
   }
 }

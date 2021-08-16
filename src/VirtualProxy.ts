@@ -1,5 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import {
   IVirtualProxyConfig,
   IVirtualProxyConfigJwtAttributeMapItem,
@@ -13,8 +13,8 @@ import {
 import { IClassNode, Node } from "./Node";
 
 export interface IClassVirtualProxy {
-  remove(): Promise<IEntityRemove>;
-  update(arg: IVirtualProxyUpdate): Promise<IVirtualProxyConfig>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: IVirtualProxyUpdate): Promise<IHttpStatus>;
   details: IVirtualProxyConfig;
 }
 
@@ -45,9 +45,7 @@ export class VirtualProxy implements IClassVirtualProxy {
   public async remove() {
     return await this.repoClient
       .Delete(`virtualproxyconfig/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   // TODO: handle oidc arguments
@@ -109,9 +107,7 @@ export class VirtualProxy implements IClassVirtualProxy {
 
     return await this.repoClient
       .Put(`virtualproxyconfig/${this.details.id}`, this.details)
-      .then((res) => {
-        return res.data as IVirtualProxyConfig;
-      });
+      .then((res) => res.status);
   }
 
   // TODO: move these to separate file. Duplicating in Proxies.ts

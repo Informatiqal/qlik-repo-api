@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { ISchedulerService, ISchedulerServiceUpdate } from "./Schedulers";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassScheduler {
-  remove(): Promise<IEntityRemove>;
-  update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: ISchedulerServiceUpdate): Promise<IHttpStatus>;
   details: ISchedulerService;
 }
 
@@ -37,9 +37,7 @@ export class Scheduler implements IClassScheduler {
   public async remove() {
     return await this.repoClient
       .Delete(`schedulerservice/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async update(arg: ISchedulerServiceUpdate) {
@@ -81,6 +79,6 @@ export class Scheduler implements IClassScheduler {
 
     return await this.repoClient
       .Put(`schedulerservice/${arg.id}`, this.details)
-      .then((res) => res.data as ISchedulerService);
+      .then((res) => res.status);
   }
 }

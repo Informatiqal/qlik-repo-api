@@ -38,9 +38,7 @@ export class ReloadTasks implements IClassReloadTasks {
       .Get(`reloadtask/full`)
       .then((res) => res.data as ITask[])
       .then((data) => {
-        return data.map((t) => {
-          return new ReloadTask(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new ReloadTask(this.repoClient, t.id, t));
       });
   }
 
@@ -52,9 +50,7 @@ export class ReloadTasks implements IClassReloadTasks {
       .Get(`reloadtask/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ITask[])
       .then((data) => {
-        return data.map((t) => {
-          return new ReloadTask(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new ReloadTask(this.repoClient, t.id, t));
       });
   }
 
@@ -75,9 +71,9 @@ export class ReloadTasks implements IClassReloadTasks {
 
     const tasks = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      tasks.map((task: IClassReloadTask) => {
-        return task.remove();
-      })
+      tasks.map((task: IClassReloadTask) =>
+        task.remove().then((s) => ({ id: task.details.id, status: s }))
+      )
     );
   }
 

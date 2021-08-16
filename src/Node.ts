@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { INodeUpdate, IServerNodeConfiguration } from "./Nodes";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassNode {
-  remove(): Promise<IEntityRemove>;
-  update(arg: INodeUpdate): Promise<IServerNodeConfiguration>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: INodeUpdate): Promise<IHttpStatus>;
   details: IServerNodeConfiguration;
 }
 
@@ -36,9 +36,7 @@ export class Node implements IClassNode {
   public async remove() {
     return await this.repoClient
       .Delete(`servernodeconfiguration/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async update(arg: INodeUpdate) {
@@ -76,6 +74,6 @@ export class Node implements IClassNode {
 
     return await this.repoClient
       .Put(`servernodeconfiguration/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IServerNodeConfiguration);
+      .then((res) => res.status);
   }
 }

@@ -94,9 +94,7 @@ export class CustomProperties implements IClassCustomProperties {
       .Get(`custompropertydefinition/full`)
       .then((res) => res.data as ICustomProperty[])
       .then((data) => {
-        return data.map((t) => {
-          return new CustomProperty(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new CustomProperty(this.repoClient, t.id, t));
       });
   }
 
@@ -112,9 +110,7 @@ export class CustomProperties implements IClassCustomProperties {
       )
       .then((res) => res.data as ICustomProperty[])
       .then((data) => {
-        return data.map((t) => {
-          return new CustomProperty(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new CustomProperty(this.repoClient, t.id, t));
       });
   }
 
@@ -146,9 +142,9 @@ export class CustomProperties implements IClassCustomProperties {
 
     const customProperties = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      customProperties.map((cp: IClassCustomProperty) => {
-        return cp.remove();
-      })
+      customProperties.map((cp: IClassCustomProperty) =>
+        cp.remove().then((s) => ({ id: cp.details.id, status: s }))
+      )
     );
   }
 

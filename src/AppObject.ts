@@ -1,5 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove } from "./types/interfaces";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IAppObject } from "./AppObjects";
 
@@ -10,10 +10,10 @@ export interface IAppObjectUpdate {
 
 export interface IClassAppObject {
   details: IAppObject;
-  publish(): Promise<IAppObject>;
-  remove(): Promise<IEntityRemove>;
-  unPublish(): Promise<IAppObject>;
-  update(arg: IAppObjectUpdate): Promise<IAppObject>;
+  publish(): Promise<IHttpStatus>;
+  remove(): Promise<IHttpStatus>;
+  unPublish(): Promise<IHttpStatus>;
+  update(arg: IAppObjectUpdate): Promise<IHttpStatus>;
 }
 
 export class AppObject implements IClassAppObject {
@@ -43,21 +43,25 @@ export class AppObject implements IClassAppObject {
   public async publish() {
     return await this.repoClient
       .Put(`app/object/${this.details.id}/publish`, {})
-      .then((res) => res.data as IAppObject);
+      .then((res) => {
+        this.details = res.data;
+        return res.status;
+      });
   }
 
   public async unPublish() {
     return await this.repoClient
       .Put(`app/object/${this.details.id}/unpublish`, {})
-      .then((res) => res.data as IAppObject);
+      .then((res) => {
+        this.details = res.data;
+        return res.status;
+      });
   }
 
   public async remove() {
     return await this.repoClient
       .Delete(`app/object/${this.details.id}`)
-      .then((res) => {
-        return { id: this.details.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async update(arg: IAppObjectUpdate) {
@@ -72,6 +76,6 @@ export class AppObject implements IClassAppObject {
 
     return await this.repoClient
       .Put(`app/object/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IAppObject);
+      .then((res) => res.status);
   }
 }

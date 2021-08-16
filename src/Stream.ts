@@ -1,12 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { modifiedDateTime } from "./util/generic";
-import { IEntityRemove } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { IStream, IStreamUpdate } from "./Streams";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassStream {
-  remove(): Promise<IEntityRemove>;
-  update(arg: IStreamUpdate): Promise<IStream>;
+  remove(): Promise<IHttpStatus>;
+  update(arg: IStreamUpdate): Promise<IHttpStatus>;
   details: IStream;
 }
 
@@ -31,9 +30,9 @@ export class Stream implements IClassStream {
   }
 
   public async remove() {
-    return await this.repoClient.Delete(`stream/${this.id}`).then((res) => {
-      return { id: this.id, status: res.status } as IEntityRemove;
-    });
+    return await this.repoClient
+      .Delete(`stream/${this.id}`)
+      .then((res) => res.status);
   }
 
   public async update(arg: IStreamUpdate) {
@@ -48,6 +47,6 @@ export class Stream implements IClassStream {
 
     return await this.repoClient
       .Put(`stream/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IStream);
+      .then((res) => res.status);
   }
 }

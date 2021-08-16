@@ -95,9 +95,7 @@ export class UserDirectories implements IClassUserDirectories {
       .Get(`userdirectory/full`)
       .then((res) => res.data as IUserDirectory[])
       .then((data) => {
-        return data.map((t) => {
-          return new UserDirectory(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new UserDirectory(this.repoClient, t.id, t));
       });
   }
 
@@ -111,9 +109,7 @@ export class UserDirectories implements IClassUserDirectories {
       .Get(`userdirectory/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IUserDirectory[])
       .then((data) => {
-        return data.map((t) => {
-          return new UserDirectory(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new UserDirectory(this.repoClient, t.id, t));
       });
   }
 
@@ -125,9 +121,9 @@ export class UserDirectories implements IClassUserDirectories {
 
     const uds = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      uds.map((ud: IClassUserDirectory) => {
-        return ud.remove();
-      })
+      uds.map((ud: IClassUserDirectory) =>
+        ud.remove().then((s) => ({ id: ud.details.id, status: s }))
+      )
     );
   }
 

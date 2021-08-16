@@ -3,7 +3,7 @@ import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import { IUserDirectory } from "./UserDirectories";
 
 export interface IClassUserDirectory {
-  remove(): Promise<IEntityRemove>;
+  remove(): Promise<IHttpStatus>;
   sync(): Promise<IHttpStatus>;
   update(): Promise<boolean>;
   details: IUserDirectory;
@@ -36,9 +36,7 @@ export class UserDirectory implements IClassUserDirectory {
   public async remove() {
     return await this.repoClient
       .Delete(`userdirectory/${this.id}`)
-      .then((res) => {
-        return { id: this.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async sync() {

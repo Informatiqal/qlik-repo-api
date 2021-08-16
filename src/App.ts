@@ -1,11 +1,17 @@
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
-import { modifiedDateTime, URLBuild, uuid } from "./util/generic";
-import { IEntityRemove } from "./types/interfaces";
+import { URLBuild, uuid } from "./util/generic";
+import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IApp } from "./Apps";
 
 export interface IAppUpdate {
+  /**
+   * Application name
+   */
   name?: string;
+  /**
+   * Application description
+   */
   description?: string;
   tags?: string[];
   /**
@@ -16,17 +22,20 @@ export interface IAppUpdate {
    * In format `USER_DIRECTORY/USER_ID`
    */
   owner?: string;
+  /**
+   * Stream name
+   */
   stream?: string;
 }
 
 export interface IClassApp {
   details: IApp;
-  copy(): Promise<IApp>;
+  copy(): Promise<IClassApp>;
   export(): Promise<Buffer>;
-  remove(): Promise<IEntityRemove>;
-  publish(stream: string, name?: string): Promise<IApp>;
-  switch(sourceAppId: string, targetAppId: string): Promise<IApp>;
-  update(arg: IAppUpdate): Promise<IApp>;
+  remove(): Promise<IHttpStatus>;
+  publish(stream: string, name?: string): Promise<IHttpStatus>;
+  switch(sourceAppId: string, targetAppId: string): Promise<IHttpStatus>;
+  update(arg: IAppUpdate): Promise<IHttpStatus>;
 }
 
 export class App implements IClassApp {
@@ -86,15 +95,13 @@ export class App implements IClassApp {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as IApp);
+      .then((res) => new App(this.repoClient, res.data.id, res.data));
   }
 
   public async remove() {
     return await this.repoClient
       .Delete(`app/${this.details.id}`)
-      .then((res) => {
-        return { id: this.details.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 
   public async publish(stream: string, name?: string) {
@@ -114,9 +121,10 @@ export class App implements IClassApp {
     urlBuild.addParam("stream", streamRes.data[0].id);
     urlBuild.addParam("name", name);
 
-    return await this.repoClient
-      .Put(urlBuild.getUrl(), {})
-      .then((res) => res.data as IApp);
+    return await this.repoClient.Put(urlBuild.getUrl(), {}).then((res) => {
+      this.details = res.data;
+      return res.status;
+    });
   }
 
   public async update(arg: IAppUpdate) {
@@ -132,7 +140,7 @@ export class App implements IClassApp {
 
     return await this.repoClient
       .Put(`app/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IApp);
+      .then((res) => res.status);
   }
 
   public async switch(targetAppId: string) {
@@ -141,6 +149,9 @@ export class App implements IClassApp {
 
     return await this.repoClient
       .Put(`app/${this.details.id}/replace?app=${targetAppId}`, {})
-      .then((res) => res.data as IApp);
+      .then((res) => {
+        this.details = res.data;
+        return res.status;
+      });
   }
 }

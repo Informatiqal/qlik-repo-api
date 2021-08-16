@@ -21,8 +21,9 @@ export interface IClassProxies {
   get(id: string): Promise<IClassProxy>;
   getAll(): Promise<IClassProxy[]>;
   getFilter(filter: string): Promise<IClassProxy[]>;
-  create(arg: IProxyCreate): Promise<IProxyService>;
+  create(arg: IProxyCreate): Promise<IClassProxy>;
   select(filter: string): Promise<ISelection>;
+  metadataExport(id: string, fileName?: string): Promise<Buffer>;
 }
 
 export class Proxies implements IClassProxies {
@@ -63,9 +64,7 @@ export class Proxies implements IClassProxies {
       .Get(`proxyservice/full`)
       .then((res) => res.data as IProxyService[])
       .then((data) => {
-        return data.map((t) => {
-          return new Proxy(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Proxy(this.repoClient, t.id, t));
       });
   }
 
@@ -77,9 +76,7 @@ export class Proxies implements IClassProxies {
       .Get(`proxyservice/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IProxyService[])
       .then((data) => {
-        return data.map((t) => {
-          return new Proxy(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Proxy(this.repoClient, t.id, t));
       });
   }
 
@@ -152,12 +149,11 @@ export class Proxies implements IClassProxies {
 
     return await this.repoClient
       .Post(`virtualproxyconfig`, { ...data })
-      .then((res) => {
-        return res.data as IProxyService;
-      });
+      .then((res) => new Proxy(this.repoClient, res.data.id, res.data));
   }
 
-  public async metadataExport(id: string, fileName?: string): Promise<Buffer> {
+  // TODO: this method should be here or in VirtualProxy?
+  public async metadataExport(id: string, fileName?: string) {
     if (!fileName) {
       const virtualProxyInstance = new VirtualProxies(this.repoClient);
       const virtualProxy = virtualProxyInstance.get(id);

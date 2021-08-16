@@ -1,9 +1,9 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, ISelection } from "./types/interfaces";
+import { IHttpStatus, ISelection } from "./types/interfaces";
 import { URLBuild } from "./util/generic";
 
 export interface IClassSelection {
-  remove(): Promise<IEntityRemove>;
+  remove(): Promise<IHttpStatus>;
   data(path: string): Promise<any>;
 }
 
@@ -39,8 +39,6 @@ export class Selection implements IClassSelection {
   public async remove() {
     return await this.repoClient
       .Delete(`selection/${this.details.id}`)
-      .then((res) => {
-        return { id: this.details.id, status: res.status } as IEntityRemove;
-      });
+      .then((res) => res.status);
   }
 }

@@ -45,9 +45,7 @@ export class Tags implements IClassTags {
         return res.data as ITag[];
       })
       .then((data) => {
-        return data.map((t) => {
-          return new Tag(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Tag(this.repoClient, t.id, t));
       });
   }
 
@@ -59,9 +57,7 @@ export class Tags implements IClassTags {
       .Get(`tag?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as ITag[])
       .then((data) => {
-        return data.map((t) => {
-          return new Tag(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Tag(this.repoClient, t.id, t));
       });
   }
 
@@ -86,9 +82,7 @@ export class Tags implements IClassTags {
     return await this.repoClient
       .Post(`tag/many`, data)
       .then((res) => res.data as ITag[])
-      .then((tags) => {
-        return tags.map((t) => new Tag(this.repoClient, t.id, t));
-      });
+      .then((tags) => tags.map((t) => new Tag(this.repoClient, t.id, t)));
   }
 
   public async removeFilter(filter: string) {
@@ -100,9 +94,9 @@ export class Tags implements IClassTags {
       throw new Error(`tag.removeFilter: filter query return 0 items`);
 
     return await Promise.all<IEntityRemove>(
-      tags.map((tag: IClassTag) => {
-        return tag.remove();
-      })
+      tags.map((tag: IClassTag) =>
+        tag.remove().then((s) => ({ id: tag.details.id, status: s }))
+      )
     );
   }
 

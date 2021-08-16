@@ -1,7 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
-import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import { IEntityRemove, ISelection } from "./types/interfaces";
 import { IClassDataConnection, DataConnection } from "./DataConnection";
@@ -66,7 +65,6 @@ export interface IClassDataConnections {
   create(arg: IDataConnectionCreate): Promise<IClassDataConnection>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
   select(filter?: string): Promise<ISelection>;
-  update(arg: IDataConnectionUpdate): Promise<IDataConnection>;
 }
 
 export class DataConnections implements IClassDataConnections {
@@ -89,9 +87,7 @@ export class DataConnections implements IClassDataConnections {
       .Get(`dataconnection/full`)
       .then((res) => res.data as IDataConnection[])
       .then((data) => {
-        return data.map((t) => {
-          return new DataConnection(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new DataConnection(this.repoClient, t.id, t));
       });
   }
 
@@ -109,9 +105,7 @@ export class DataConnections implements IClassDataConnections {
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IDataConnection[])
       .then((data) => {
-        return data.map((t) => {
-          return new DataConnection(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new DataConnection(this.repoClient, t.id, t));
       });
   }
 
@@ -123,9 +117,9 @@ export class DataConnections implements IClassDataConnections {
 
     const dcs = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      dcs.map((dc: IClassDataConnection) => {
-        return dc.remove();
-      })
+      dcs.map((dc: IClassDataConnection) =>
+        dc.remove().then((s) => ({ id: dc.details.id, status: s }))
+      )
     );
   }
 
@@ -181,23 +175,5 @@ export class DataConnections implements IClassDataConnections {
       .Post(`dataconnection`, { ...data, ...commonProps })
       .then((res) => res.data as IDataConnection)
       .then((d) => new DataConnection(this.repoClient, d.id, d));
-  }
-
-  public async update(arg: IDataConnectionUpdate) {
-    if (!arg.id)
-      throw new Error(`dataConnection.update: "id" parameter is required`);
-
-    let dataConnection = await this.get(arg.id);
-
-    let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
-      dataConnection,
-      arg
-    );
-    dataConnection = await updateCommon.updateAll();
-
-    return await this.repoClient
-      .Put(`dataconnection/${arg.id}`, { ...dataConnection })
-      .then((res) => res.data as IDataConnection);
   }
 }

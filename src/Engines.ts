@@ -1,6 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import { modifiedDateTime } from "./util/generic";
 
 import { ISelection } from "./types/interfaces";
 import { ITagCondensed } from "./Tags";
@@ -119,9 +118,7 @@ export class Engines implements IClassEngines {
       .Get(`engineservice/full`)
       .then((res) => res.data as IEngine[])
       .then((data) => {
-        return data.map((t) => {
-          return new Engine(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Engine(this.repoClient, t.id, t));
       });
   }
 
@@ -154,9 +151,7 @@ export class Engines implements IClassEngines {
       .Get(`${baseUrl}?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IEngine[])
       .then((data) => {
-        return data.map((t) => {
-          return new Engine(this.repoClient, t.id, t);
-        });
+        return data.map((t) => new Engine(this.repoClient, t.id, t));
       });
   }
 
