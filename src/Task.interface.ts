@@ -1,6 +1,6 @@
-import { ICustomPropertyCondensed } from "./CustomProperty";
-import { ITagCondensed } from "./Tag";
-import { IApp } from "./App";
+import { ICustomPropertyCondensed } from "./CustomProperties";
+import { ITagCondensed } from "./Tags";
+import { IApp } from "./Apps";
 
 import {
   TTimeZones,
@@ -17,7 +17,7 @@ export interface ITaskCreate {
 }
 
 export interface ITaskReloadUpdate {
-  id: string;
+  // id: string;
   name?: string;
   enabled?: boolean;
   taskSessionTimeout?: number;
@@ -30,22 +30,97 @@ export interface ITaskReloadUpdate {
 export type TTaskTriggerCompositeState = "success" | "fail";
 
 export interface ITaskCreateTriggerComposite {
-  taskId: string;
-  triggerName: string;
-  eventTaskId: string;
-  state: TTaskTriggerCompositeState;
+  enabled?: boolean;
+  name: string;
+  eventTasks: {
+    id?: string;
+    name?: string;
+    state: TTaskTriggerCompositeState;
+  }[];
+}
+
+export interface ITaskUpdateTriggerComposite {
+  /**
+   * Enable/disable the trigger true or false
+   */
+  enabled?: boolean;
+  /**
+   * Name of the trigger
+   */
+  name?: string;
+  /**
+   * (Composite events) Array of Reload task(s) on which this trigger is depending
+   */
+  eventTasks?: {
+    /**
+     * Reload task ID
+     */
+    id?: string;
+    /**
+     * Reload task Name. If ID is provided this is not required
+     */
+    name?: string;
+    /**
+     * Trigger on the state of the task "success" or "fail"
+     */
+    state: TTaskTriggerCompositeState;
+  }[];
 }
 
 export interface ITaskCreateTriggerSchema {
-  reloadTaskId: string;
+  // reloadTaskId: string;
+  enabled?: boolean;
   name: string;
   repeat?: TRepeatOptions;
   repeatEvery?: number;
   startDate?: string;
   expirationDate?: string;
-  daysOfWeek?: TDaysOfWeek;
-  daysOfMonth?: TDaysOfMonth;
+  daysOfWeek?: TDaysOfWeek[];
+  daysOfMonth?: TDaysOfMonth[];
   timeZone?: TTimeZones;
+  daylightSavingTime?: boolean;
+}
+
+export interface ITaskUpdateTriggerSchema {
+  /**
+   * Enable/disable the trigger true or false
+   */
+  enabled?: boolean;
+  /**
+   * Name of the trigger
+   */
+  name?: string;
+  /**
+   * (Schema events) Schedule of the task "Once", "Minute", "Hourly", "Daily", "Weekly", "Monthly"
+   */
+  repeat?: TRepeatOptions;
+  /**
+   * (Schema events) How often to repeat the task 1,2,3 ... no applied when "Once" or "Monthly"
+   */
+  repeatEvery?: number;
+  /**
+   * (Schema events) When will be the first timestamp to start the trigger. Default is current timestamp
+   */
+  startDate?: string;
+  /**
+   * (Schema events) When will be the last timestamp to start the trigger. Default is 9999-01-01T00:00:00.000
+   */
+  expirationDate?: string;
+  /**
+   * (Schema events) if "Weekly" schedule provide the day(s) of the week "Monday" ... "Sunday"
+   */
+  daysOfWeek?: TDaysOfWeek[];
+  /**
+   * (Schema events) if "Monthly" schedule provide the day(s) of the month 1...31
+   */
+  daysOfMonth?: TDaysOfMonth[];
+  /**
+   * (Schema events) Use different timezone. Default is "UTC"
+   */
+  timeZone?: TTimeZones;
+  /**
+   * (Schema events) use daylight saving time. true or false, Default is "true"
+   */
   daylightSavingTime?: boolean;
 }
 
@@ -67,12 +142,12 @@ export interface IExternalProgramTaskOperationalCondensed {
 export interface IExternalProgramTaskCondensed {
   id?: string;
   privileges?: string[];
-  name: string;
+  name?: string;
   taskType?: number;
   enabled?: boolean;
-  taskSessionTimeout: number;
-  maxRetries: number;
-  operational: IExternalProgramTaskOperationalCondensed;
+  taskSessionTimeout?: number;
+  maxRetries?: number;
+  operational?: IExternalProgramTaskOperationalCondensed;
 }
 
 export interface ISchemaEventCondensed {
@@ -87,13 +162,15 @@ export interface ISchemaEventCondensed {
 export interface ISchemaEvent extends ISchemaEventCondensed {
   createdDate?: string;
   modifiedDate?: string;
+  modifiedByUserName?: string;
   schemaPath?: string;
   timeZone: string;
+  daylightSavingTime: number;
   startDate: string;
   expirationDate: string;
   schemaFilterDescription: string[];
-  incrementalDescription: string;
-  incrementalOption: number;
+  incrementDescription: string;
+  incrementOption: number;
   externalProgramTask: IExternalProgramTaskCondensed;
   reloadTask: IExternalProgramTaskCondensed;
   userSyncTask: IExternalProgramTaskCondensed;
@@ -149,3 +226,76 @@ export interface ITask extends ITaskCondensed {
   customProperties: ICustomPropertyCondensed[];
   modifiedDate: string;
 }
+
+export interface ISelectionEvent {
+  id?: string;
+  name: string;
+  enabled?: boolean;
+  eventType?: number;
+  privileges?: string[];
+  operational?: {
+    id?: string;
+    nextExecution?: string;
+    timesTriggered?: number;
+    privileges?: string[];
+  };
+}
+
+export interface ICompositeEventRuleOperationalCondensed {
+  id?: string;
+  privileges?: string[];
+  timeStamp?: string;
+  currentState?: number;
+}
+
+export interface ICompositeEventRule {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  schemaPath?: string;
+  ruleState?: number;
+  reloadTask?: IExternalProgramTaskCondensed;
+  userSyncTask?: IExternalProgramTaskCondensed;
+  externalProgramTask?: IExternalProgramTaskCondensed;
+  operational?: ICompositeEventRuleOperationalCondensed;
+}
+
+export interface ICompositeEvent {
+  id?: string;
+  createdDate?: string;
+  modifiedDate?: string;
+  modifiedByUserName?: string;
+  name?: string;
+  enabled?: boolean;
+  eventType?: number;
+  userSyncTask?: null;
+  externalProgramTask?: null;
+  privileges: string[];
+  schemaPath: string;
+  timeConstraint: {
+    id?: string;
+    createdDate?: string;
+    modifiedDate?: string;
+    modifiedByUserName?: string;
+    days?: number;
+    hours?: number;
+    minutes?: number;
+    seconds?: number;
+    schemaPath?: string;
+  };
+  operational: {
+    id?: string;
+    timesTriggered?: number;
+    privileges?: string[];
+  };
+  reloadTask?: IExternalProgramTaskCondensed;
+  compositeRules?: ICompositeEventRule[];
+}
+
+// export interface IReloadTaskChange {
+//   schemaPath?: string;
+//   task?: string;
+//   compositeEventsToDelete?: string[];
+//   schemaEventsToDelete?: string[];
+// }

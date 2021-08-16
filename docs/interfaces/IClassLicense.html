@@ -86,17 +86,10 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessGroupCreateProfessional" class="tsd-kind-icon">access<wbr>Group<wbr>Create<wbr>Professional</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessGroupCreateUser" class="tsd-kind-icon">access<wbr>Group<wbr>Create<wbr>User</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeGetAnalyzer" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Analyzer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeGetLogin" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Login</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeGetProfessional" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Professional</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeGetUser" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessGroupCreate" class="tsd-kind-icon">access<wbr>Group<wbr>Create</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeGet" class="tsd-kind-icon">access<wbr>Type<wbr>Get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeInfoGet" class="tsd-kind-icon">access<wbr>Type<wbr>Info<wbr>Get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeRemoveAnalyzer" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Analyzer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeRemoveLogin" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Login</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeRemoveProfessional" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Professional</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeRemoveUser" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>User</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#accessTypeRemove" class="tsd-kind-icon">access<wbr>Type<wbr>Remove</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#auditGet" class="tsd-kind-icon">audit<wbr>Get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#get" class="tsd-kind-icon">get</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="IClassLicense.html#setKey" class="tsd-kind-icon">set<wbr>Key</a></li>
@@ -109,20 +102,23 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessGroupCreateProfessional" class="tsd-anchor"></a>
-					<h3>access<wbr>Group<wbr>Create<wbr>Professional</h3>
+					<a name="accessGroupCreate" class="tsd-anchor"></a>
+					<h3>access<wbr>Group<wbr>Create</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Group<wbr>Create<wbr>Professional<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">access<wbr>Group<wbr>Create<span class="tsd-signature-symbol">(</span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L33">src/License.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L29">src/License.ts:29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
+								<li>
+									<h5>accessType: <span class="tsd-signature-type">TAccessType</span></h5>
+								</li>
 								<li>
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
@@ -132,112 +128,23 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessGroupCreateUser" class="tsd-anchor"></a>
-					<h3>access<wbr>Group<wbr>Create<wbr>User</h3>
+					<a name="accessTypeGet" class="tsd-anchor"></a>
+					<h3>access<wbr>Type<wbr>Get</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Group<wbr>Create<wbr>User<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<span class="tsd-signature-symbol">(</span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span>, id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L34">src/License.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L23">src/License.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>accessType: <span class="tsd-signature-type">TAccessType</span></h5>
 								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeGetAnalyzer" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Get<wbr>Analyzer</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Analyzer<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L22">src/License.ts:22</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeGetLogin" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Get<wbr>Login</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Login<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L27">src/License.ts:27</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeGetProfessional" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Get<wbr>Professional</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Professional<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L23">src/License.ts:23</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeGetUser" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Get<wbr>User</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>User<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicenseAccessTypeCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessTypeCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L26">src/License.ts:26</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
 								</li>
@@ -256,7 +163,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L18">src/License.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L19">src/License.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="IAccessTypeInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">IAccessTypeInfo</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -264,89 +171,23 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeRemoveAnalyzer" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Remove<wbr>Analyzer</h3>
+					<a name="accessTypeRemove" class="tsd-anchor"></a>
+					<h3>access<wbr>Type<wbr>Remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Analyzer<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<span class="tsd-signature-symbol">(</span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L30">src/License.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L28">src/License.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>accessType: <span class="tsd-signature-type">TAccessType</span></h5>
 								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeRemoveLogin" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Remove<wbr>Login</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Login<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L29">src/License.ts:29</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeRemoveProfessional" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Remove<wbr>Professional</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Professional<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L31">src/License.ts:31</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="accessTypeRemoveUser" class="tsd-anchor"></a>
-					<h3>access<wbr>Type<wbr>Remove<wbr>User</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>User<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L32">src/License.ts:32</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
 								<li>
 									<h5>id: <span class="tsd-signature-type">string</span></h5>
 								</li>
@@ -365,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L28">src/License.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L27">src/License.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -388,7 +229,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L19">src/License.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L20">src/License.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ILicense.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicense</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -405,7 +246,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L21">src/License.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L22">src/License.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -428,7 +269,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/License.ts#L20">src/License.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/License.ts#L21">src/License.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -459,37 +300,16 @@
 						<a href="IClassLicense.html" class="tsd-kind-icon">IClass<wbr>License</a>
 						<ul>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessGroupCreateProfessional" class="tsd-kind-icon">access<wbr>Group<wbr>Create<wbr>Professional</a>
+								<a href="IClassLicense.html#accessGroupCreate" class="tsd-kind-icon">access<wbr>Group<wbr>Create</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessGroupCreateUser" class="tsd-kind-icon">access<wbr>Group<wbr>Create<wbr>User</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeGetAnalyzer" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Analyzer</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeGetLogin" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Login</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeGetProfessional" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>Professional</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeGetUser" class="tsd-kind-icon">access<wbr>Type<wbr>Get<wbr>User</a>
+								<a href="IClassLicense.html#accessTypeGet" class="tsd-kind-icon">access<wbr>Type<wbr>Get</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="IClassLicense.html#accessTypeInfoGet" class="tsd-kind-icon">access<wbr>Type<wbr>Info<wbr>Get</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeRemoveAnalyzer" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Analyzer</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeRemoveLogin" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Login</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeRemoveProfessional" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>Professional</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="IClassLicense.html#accessTypeRemoveUser" class="tsd-kind-icon">access<wbr>Type<wbr>Remove<wbr>User</a>
+								<a href="IClassLicense.html#accessTypeRemove" class="tsd-kind-icon">access<wbr>Type<wbr>Remove</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="IClassLicense.html#auditGet" class="tsd-kind-icon">audit<wbr>Get</a>
@@ -512,7 +332,7 @@
 		</div>
 	</div>
 </div>
-<footer class="with-border-bottom">
+<footer>
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
@@ -526,15 +346,12 @@
 				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 			</ul>
 		</div>
 	</div>
 </footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
 </body>

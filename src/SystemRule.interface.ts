@@ -1,4 +1,4 @@
-import { ITagCondensed } from "./Tag";
+import { ITagCondensed } from "./Tags";
 
 export type TSystemRuleCategory = "License" | "Security" | "Sync";
 export type TSystemRuleActions =
@@ -67,7 +67,7 @@ export interface ISystemRuleLicenseCreate {
 }
 
 export interface ISystemRuleUpdate {
-  id: string;
+  // id: string;
   name?: string;
   category?: TSystemRuleCategory;
   rule?: string;

@@ -1,3 +1,8 @@
+import {
+  TSystemRuleActions,
+  TSystemRuleContext,
+} from "../SystemRule.interface";
+
 export class URLBuild {
   private url: string;
   private params = [];
@@ -31,4 +36,43 @@ export function uuid(): string {
 
 export function modifiedDateTime(): string {
   return new Date().toISOString();
+}
+
+export function calculateActions(actions: TSystemRuleActions[]): number {
+  const actionsMeta = {
+    None: 0,
+    Create: 1,
+    "Allow access": 1,
+    Read: 2,
+    Update: 4,
+    Delete: 8,
+    Export: 16,
+    Publish: 32,
+    "Change owner": 64,
+    "Change role": 128,
+    "Export data": 256,
+    "Offline access": 512,
+    Distribute: 1024,
+    Duplicate: 2048,
+    Approve: 4096,
+  };
+
+  const reducer = (accumulator: number, currentValue: number) =>
+    accumulator + currentValue;
+  return actions
+    .map((t) => {
+      return actionsMeta[t];
+    })
+    .reduce(reducer);
+}
+
+export function getRuleContext(context: TSystemRuleContext) {
+  if (context == "both") return 0;
+  if (context == "BothQlikSenseAndQMC") return 0;
+  if (context == "hub") return 1;
+  if (context == "qmc") return 2;
+
+  throw new Error(
+    `systemRule.update: "${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
+  );
 }

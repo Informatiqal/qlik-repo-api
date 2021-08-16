@@ -1,175 +1,43 @@
-import { QlikRepositoryClient } from "./main";
-import { URLBuild } from "./util/generic";
+import { QlikRepositoryClient } from "qlik-rest-api";
+import { IHttpStatus } from "./types/interfaces";
+import { IEngine } from "./Engines";
+import { IEngineUpdate } from "./Engine.interface";
 import { modifiedDateTime } from "./util/generic";
 
-import { ISelection } from "./types/interfaces";
-import { ITagCondensed } from "./Tag";
-import { ICustomPropertyCondensed } from "./CustomProperty";
-import { IServerNodeConfigurationCondensed } from "./Node";
-
-import { IEngineGetValid, IEngineUpdate } from "./Engine.interface";
-
-export interface IEngineGetValidResult {
-  schemaPath?: string;
-  loadBalancingResultCode?: number;
-  appID?: string;
-  validEngines?: string[];
-}
-
-export interface IEngineCondensed {
-  id: string;
-  privileges: string[];
-}
-
-export interface IEngineSettings {
-  id: string;
-  createdDate: string;
-  modifiedDate: string;
-  listenerPorts: number[];
-  overlayDocuments: boolean;
-  autosaveInterval: number;
-  documentTimeout: number;
-  tableFilesDirectory: string;
-  documentDirectory: string;
-  genericUndoBufferMaxSize: number;
-  qvLogEnabled: boolean;
-  globalLogMinuteInterval: number;
-  auditActivityLogVerbosity: number;
-  auditSecurityLogVerbosity: number;
-  serviceLogVerbosity: number;
-  systemLogVerbosity: number;
-  performanceLogVerbosity: number;
-  httpTrafficLogVerbosity: number;
-  externalServicesLogVerbosity: number;
-  qixPerformanceLogVerbosity: number;
-  auditLogVerbosity: number;
-  sessionLogVerbosity: number;
-  trafficLogVerbosity: number;
-  sseLogVerbosity: number;
-  allowDataLineage: boolean;
-  workingSetSizeLoPct: number;
-  workingSetSizeHiPct: number;
-  workingSetSizeMode: number;
-  cpuThrottlePercentage: number;
-  standardReload: boolean;
-  maxCoreMaskPersisted: number;
-  maxCoreMask: number;
-  maxCoreMaskHiPersisted: number;
-  maxCoreMaskHi: number;
-  maxCoreMaskGrp1Persisted: number;
-  maxCoreMaskGrp1: number;
-  maxCoreMaskGrp1HiPersisted: number;
-  maxCoreMaskGrp1Hi: number;
-  maxCoreMaskGrp2Persisted: number;
-  maxCoreMaskGrp2: number;
-  maxCoreMaskGrp2HiPersisted: number;
-  maxCoreMaskGrp2Hi: number;
-  maxCoreMaskGrp3Persisted: number;
-  maxCoreMaskGrp3: number;
-  maxCoreMaskGrp3HiPersisted: number;
-  maxCoreMaskGrp3Hi: number;
-  objectTimeLimitSec: number;
-  exportTimeLimitSec: number;
-  reloadTimeLimitSec: number;
-  createSearchIndexOnReloadEnabled: boolean;
-  hyperCubeMemoryLimit: number;
-  exportMemoryLimit: number;
-  reloadMemoryLimit: number;
-  qrsHttpNotificationPort: number;
-  schemaPath: string;
-}
-
-export interface IEngine {
-  id: string;
-  createdDate: string;
-  modifiedDate: string;
-  customProperties: ICustomPropertyCondensed[];
-  tags: ITagCondensed[];
-  privileges: string[];
-  schemaPath: string;
-  settings: IEngineSettings;
-  serverNodeConfiguration: IServerNodeConfigurationCondensed;
-}
-
 export interface IClassEngine {
-  get(id: string): Promise<IEngine>;
-  getAll(): Promise<IEngineCondensed[]>;
-  getFilter(filter: string): Promise<IEngine[]>;
-  getValid(arg?: IEngineGetValid): Promise<IEngineGetValidResult[]>;
-  select(filter?: string): Promise<ISelection>;
-  update(arg: IEngineUpdate): Promise<IEngine>;
+  update(arg: IEngineUpdate): Promise<IHttpStatus>;
+  details: IEngine;
 }
 
 export class Engine implements IClassEngine {
+  private id: string;
   private repoClient: QlikRepositoryClient;
-  constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+  details: IEngine;
+  constructor(repoClient: QlikRepositoryClient, id: string, details?: IEngine) {
+    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+
+    this.id = id;
+    this.repoClient = repoClient;
+    if (details) this.details = details;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`engine.get: "id" parameter is required`);
-    return await this.repoClient
-      .Get(`engineservice`)
-      .then((res) => res.data as IEngine);
-  }
-
-  public async getAll() {
-    return await this.repoClient
-      .Get(`engineservice`)
-      .then((res) => res.data as IEngineCondensed[]);
-  }
-
-  public async getValid(arg?: IEngineGetValid) {
-    let loadBalancingPurpose = 2;
-    if (arg && arg.loadBalancingPurpose == "Production")
-      loadBalancingPurpose = 0;
-    if (arg && arg.loadBalancingPurpose == "Development")
-      loadBalancingPurpose = 1;
-    if (arg && arg.loadBalancingPurpose == "Any") loadBalancingPurpose = 2;
-
-    const body = {
-      proxyId: arg.proxyID || "",
-      proxyPrefix: arg.proxyPrefix || "",
-      appId: arg.appId || "",
-      loadBalancingPurpose: loadBalancingPurpose,
-    };
-
-    return await this.repoClient
-      .Post(`loadbalancing/validengines"`, body)
-      .then((res) => res.data as IEngineGetValidResult[]);
-  }
-
-  public async getFilter(filter: string) {
-    if (!filter) throw new Error(`engine.getFilter: "filter" is required`);
-
-    let baseUrl = `engineservice/full`;
-
-    return await this.repoClient
-      .Get(`${baseUrl}?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as IEngine[]);
-  }
-
-  public async select(filter?: string) {
-    const urlBuild = new URLBuild(`selection/engineservice`);
-    urlBuild.addParam("filter", filter);
-
-    return await this.repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+  async init() {
+    if (!this.details) {
+      this.details = await this.repoClient
+        .Get(`tag/${this.id}`)
+        .then((res) => res.data as IEngine);
+    }
   }
 
   // REVIEW: double check the whole logic here
   public async update(arg: IEngineUpdate) {
     if (!arg.id) throw new Error(`engine.update: "id" is required`);
-
-    let engine = await this.get(arg.id);
-
     if (arg.workingSetSizeLoPct) {
       if (arg.workingSetSizeLoPct < 0 || arg.workingSetSizeLoPct > 100)
         throw new Error(
           "engine.update: workingSetSizeLoPct must be between 0 and 100"
         );
-      engine.settings.workingSetSizeLoPct = arg.workingSetSizeLoPct;
+      this.details.settings.workingSetSizeLoPct = arg.workingSetSizeLoPct;
     }
 
     if (arg.workingSetSizeHiPct) {
@@ -177,7 +45,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: workingSetSizeHiPct must be between 0 and 100"
         );
-      engine.settings.workingSetSizeHiPct = arg.workingSetSizeHiPct;
+      this.details.settings.workingSetSizeHiPct = arg.workingSetSizeHiPct;
     }
 
     if (arg.cpuThrottlePercentage) {
@@ -185,7 +53,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: cpuThrottlePercentage must be between 0 and 100"
         );
-      engine.settings.cpuThrottlePercentage = arg.cpuThrottlePercentage;
+      this.details.settings.cpuThrottlePercentage = arg.cpuThrottlePercentage;
     }
 
     if (arg.workingSetSizeMode) {
@@ -199,13 +67,13 @@ export class Engine implements IClassEngine {
         );
 
       if (arg.workingSetSizeMode == "IgnoreMaxLimit")
-        engine.settings.workingSetSizeMode == 0;
+        this.details.settings.workingSetSizeMode == 0;
 
       if (arg.workingSetSizeMode == "SoftMaxLimit")
-        engine.settings.workingSetSizeMode == 1;
+        this.details.settings.workingSetSizeMode == 1;
 
       if (arg.workingSetSizeMode == "HardMaxLimit")
-        engine.settings.workingSetSizeMode == 2;
+        this.details.settings.workingSetSizeMode == 2;
     }
 
     if (arg.coresToAllocate) {
@@ -228,32 +96,37 @@ export class Engine implements IClassEngine {
         maxCoreMaskPersisted,
       ] = mask.map((m, i) => parseInt(bin.substr(i * 32 * 32)), 2);
 
-      engine.settings.maxCoreMaskPersisted = maxCoreMaskPersisted;
-      engine.settings.maxCoreMaskHiPersisted = maxCoreMaskHiPersisted;
-      engine.settings.maxCoreMaskGrp1Persisted = maxCoreMaskGrp1Persisted;
-      engine.settings.maxCoreMaskGrp1HiPersisted = maxCoreMaskGrp1HiPersisted;
-      engine.settings.maxCoreMaskGrp2Persisted = maxCoreMaskGrp2Persisted;
-      engine.settings.maxCoreMaskGrp2HiPersisted = maxCoreMaskGrp2HiPersisted;
-      engine.settings.maxCoreMaskGrp3Persisted = maxCoreMaskGrp3Persisted;
-      engine.settings.maxCoreMaskGrp3HiPersisted = maxCoreMaskGrp3HiPersisted;
+      this.details.settings.maxCoreMaskPersisted = maxCoreMaskPersisted;
+      this.details.settings.maxCoreMaskHiPersisted = maxCoreMaskHiPersisted;
+      this.details.settings.maxCoreMaskGrp1Persisted = maxCoreMaskGrp1Persisted;
+      this.details.settings.maxCoreMaskGrp1HiPersisted =
+        maxCoreMaskGrp1HiPersisted;
+      this.details.settings.maxCoreMaskGrp2Persisted = maxCoreMaskGrp2Persisted;
+      this.details.settings.maxCoreMaskGrp2HiPersisted =
+        maxCoreMaskGrp2HiPersisted;
+      this.details.settings.maxCoreMaskGrp3Persisted = maxCoreMaskGrp3Persisted;
+      this.details.settings.maxCoreMaskGrp3HiPersisted =
+        maxCoreMaskGrp3HiPersisted;
     }
 
     if (arg.documentDirectory)
-      engine.settings.documentDirectory = arg.documentDirectory;
+      this.details.settings.documentDirectory = arg.documentDirectory;
 
     if (arg.allowDataLineage)
-      engine.settings.allowDataLineage = arg.allowDataLineage;
+      this.details.settings.allowDataLineage = arg.allowDataLineage;
 
-    if (arg.standardReload) engine.settings.standardReload = arg.standardReload;
+    if (arg.standardReload)
+      this.details.settings.standardReload = arg.standardReload;
 
     if (arg.documentTimeout)
-      engine.settings.documentTimeout = arg.documentTimeout;
+      this.details.settings.documentTimeout = arg.documentTimeout;
 
     if (arg.autosaveInterval)
-      engine.settings.autosaveInterval = arg.autosaveInterval;
+      this.details.settings.autosaveInterval = arg.autosaveInterval;
 
     if (arg.genericUndoBufferMaxSize)
-      engine.settings.genericUndoBufferMaxSize = arg.genericUndoBufferMaxSize;
+      this.details.settings.genericUndoBufferMaxSize =
+        arg.genericUndoBufferMaxSize;
 
     if (arg.auditActivityLogVerbosity) {
       if (
@@ -263,7 +136,8 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: auditActivityLogVerbosity must be between 0 and 5"
         );
-      engine.settings.auditActivityLogVerbosity = arg.auditActivityLogVerbosity;
+      this.details.settings.auditActivityLogVerbosity =
+        arg.auditActivityLogVerbosity;
     }
 
     if (arg.auditSecurityLogVerbosity) {
@@ -274,7 +148,8 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: auditSecurityLogVerbosity must be between 0 and 5"
         );
-      engine.settings.auditSecurityLogVerbosity = arg.auditSecurityLogVerbosity;
+      this.details.settings.auditSecurityLogVerbosity =
+        arg.auditSecurityLogVerbosity;
     }
 
     if (arg.systemLogVerbosity) {
@@ -282,7 +157,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: systemLogVerbosity must be between 0 and 5"
         );
-      engine.settings.systemLogVerbosity = arg.systemLogVerbosity;
+      this.details.settings.systemLogVerbosity = arg.systemLogVerbosity;
     }
 
     if (arg.externalServicesLogVerbosity) {
@@ -293,7 +168,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: externalServicesLogVerbosity must be between 0 and 5"
         );
-      engine.settings.externalServicesLogVerbosity =
+      this.details.settings.externalServicesLogVerbosity =
         arg.externalServicesLogVerbosity;
     }
 
@@ -305,7 +180,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: qixPerformanceLogVerbosity must be between 0 and 5"
         );
-      engine.settings.qixPerformanceLogVerbosity =
+      this.details.settings.qixPerformanceLogVerbosity =
         arg.qixPerformanceLogVerbosity;
     }
 
@@ -314,7 +189,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: serviceLogVerbosity must be between 0 and 5"
         );
-      engine.settings.serviceLogVerbosity = arg.serviceLogVerbosity;
+      this.details.settings.serviceLogVerbosity = arg.serviceLogVerbosity;
     }
 
     if (arg.httpTrafficLogVerbosity) {
@@ -322,7 +197,8 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: httpTrafficLogVerbosity must be between 0 and 5"
         );
-      engine.settings.httpTrafficLogVerbosity = arg.httpTrafficLogVerbosity;
+      this.details.settings.httpTrafficLogVerbosity =
+        arg.httpTrafficLogVerbosity;
     }
 
     if (arg.auditLogVerbosity) {
@@ -330,7 +206,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: auditLogVerbosity must be between 0 and 5"
         );
-      engine.settings.auditLogVerbosity = arg.auditLogVerbosity;
+      this.details.settings.auditLogVerbosity = arg.auditLogVerbosity;
     }
 
     if (arg.trafficLogVerbosity) {
@@ -338,7 +214,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: trafficLogVerbosity must be between 0 and 5"
         );
-      engine.settings.trafficLogVerbosity = arg.trafficLogVerbosity;
+      this.details.settings.trafficLogVerbosity = arg.trafficLogVerbosity;
     }
 
     if (arg.sessionLogVerbosity) {
@@ -346,7 +222,7 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: sessionLogVerbosity must be between 0 and 5"
         );
-      engine.settings.sessionLogVerbosity = arg.sessionLogVerbosity;
+      this.details.settings.sessionLogVerbosity = arg.sessionLogVerbosity;
     }
 
     if (arg.performanceLogVerbosity) {
@@ -354,7 +230,8 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: performanceLogVerbosity must be between 0 and 5"
         );
-      engine.settings.performanceLogVerbosity = arg.performanceLogVerbosity;
+      this.details.settings.performanceLogVerbosity =
+        arg.performanceLogVerbosity;
     }
 
     if (arg.sseLogVerbosity) {
@@ -362,13 +239,13 @@ export class Engine implements IClassEngine {
         throw new Error(
           "engine.update: auditActivityLogVerbosity must be between 0 and 5"
         );
-      engine.settings.sseLogVerbosity = arg.sseLogVerbosity;
+      this.details.settings.sseLogVerbosity = arg.sseLogVerbosity;
     }
 
-    engine.modifiedDate = modifiedDateTime();
+    this.details.modifiedDate = modifiedDateTime();
 
     return await this.repoClient
-      .Put(`engineservice/${arg.id}`, { ...engine })
-      .then((res) => res.data as IEngine);
+      .Put(`engineservice/${arg.id}`, { ...this.details })
+      .then((res) => res.status);
   }
 }

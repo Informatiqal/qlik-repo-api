@@ -1,19 +1,26 @@
 import { modifiedDateTime } from "./generic";
 
-import { ICustomPropertyObject } from "../types/interfaces";
+import { QlikRepositoryClient } from "qlik-rest-api";
 
-import { ICustomPropertyCondensed } from "../CustomProperty";
+import {
+  CustomProperties,
+  IClassCustomProperties,
+  ICustomPropertyValue,
+} from "../CustomProperties";
+import { ICustomPropertyCondensed } from "../CustomProperties";
+import { IClassCustomProperty, CustomProperty } from "../CustomProperty";
 import { IAppUpdate } from "../App";
-import { ITagCondensed } from "../Tag";
-
+import { ITagCondensed, IClassTags, Tags } from "../Tags";
 import { ITaskCreate } from "../Task.interface";
-
-import { IUserUpdate } from "../User";
-import { IStreamUpdate } from "../Stream";
+import { IUserUpdate, IClassUsers, Users } from "../Users";
+import { IStreamUpdate, Streams, IClassStreams } from "../Streams";
 import { ISystemRuleCreate } from "../SystemRule.interface";
-
 export class UpdateCommonProperties {
-  private qlikUtil: any;
+  private qlikUtil: QlikRepositoryClient;
+  private customPropertiesClass: IClassCustomProperties;
+  private tagsClass: IClassTags;
+  private streams: IClassStreams;
+  private user: IClassUsers;
   private arg:
     | IUserUpdate
     | IAppUpdate
@@ -22,7 +29,7 @@ export class UpdateCommonProperties {
     | ITaskCreate;
   public obj: any;
   constructor(
-    qlikUtil: any,
+    qlikUtil: QlikRepositoryClient,
     obj,
     arg:
       | IUserUpdate
@@ -34,22 +41,26 @@ export class UpdateCommonProperties {
     this.qlikUtil = qlikUtil;
     this.obj = obj;
     this.arg = arg;
+    this.customPropertiesClass = new CustomProperties(this.qlikUtil);
+    this.streams = new Streams(this.qlikUtil);
+    this.tagsClass = new Tags(this.qlikUtil);
+    this.user = new Users(this.qlikUtil);
   }
 
   async updateCustomProperties() {
     if (this.arg.customProperties && this.arg.customProperties.length == 0)
       this.obj.customProperties = [];
     if (this.arg.customProperties && this.arg.customProperties.length > 0) {
-      this.obj.customProperties = await Promise.all<ICustomPropertyObject>(
+      this.obj.customProperties = await Promise.all<ICustomPropertyValue>(
         this.arg.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
-          return await this.qlikUtil
-            .customPropertyGetFilter(`name eq '${cpName}'`)
+          return await this.customPropertiesClass
+            .getFilter(`name eq '${cpName}'`)
             .then((cpData) => {
               return {
-                definition: cpData[0] as ICustomPropertyCondensed,
+                definition: cpData[0].details as ICustomPropertyCondensed,
                 value: cpValue,
-              } as ICustomPropertyObject;
+              } as ICustomPropertyValue;
             });
         })
       );
@@ -61,9 +72,9 @@ export class UpdateCommonProperties {
     if (this.arg.tags && this.arg.tags.length > 0) {
       this.obj.tags = await Promise.all<ITagCondensed>(
         this.arg.tags.map(async (tag) => {
-          return await this.qlikUtil
-            .tagGetFilter(`name eq '${tag}'`)
-            .then((tagsData) => tagsData[0] as ITagCondensed);
+          return await this.tagsClass
+            .getFilter(`name eq '${tag}'`)
+            .then((tagsData) => tagsData[0].details as ITagCondensed);
         })
       );
     }
@@ -77,8 +88,8 @@ export class UpdateCommonProperties {
     if ((this.arg as IAppUpdate).owner) {
       let [userDirectory, userId] = (this.arg as IAppUpdate).owner.split("\\");
 
-      this.obj.owner = await this.qlikUtil
-        .userGetFilter(
+      this.obj.owner = await this.user
+        .getFilter(
           `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`
         )
         .then((u) => u[0]);
@@ -87,9 +98,9 @@ export class UpdateCommonProperties {
 
   async updateAppStream() {
     if ((this.arg as IAppUpdate).stream) {
-      this.obj.stream = await this.qlikUtil
-        .streamGetFilter(`name eq '${(this.arg as IAppUpdate).stream}'`)
-        .then((streams) => streams[0]);
+      this.obj.stream = await this.streams
+        .getFilter(`name eq '${(this.arg as IAppUpdate).stream}'`)
+        .then((streams) => streams[0].details);
     }
   }
 

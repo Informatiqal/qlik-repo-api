@@ -5,3 +5,4 @@ out/
 test/playground.spec.ts
 temp.md
 .VSCodeCounter
+src/main.doc.ts

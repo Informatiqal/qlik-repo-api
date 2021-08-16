@@ -89,22 +89,17 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="ServiceCluster.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="ServiceCluster.html#repoClient" class="tsd-kind-icon">repo<wbr>Client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ServiceCluster.html#details" class="tsd-kind-icon">details</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#count" class="tsd-kind-icon">count</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#getAll" class="tsd-kind-icon">get<wbr>All</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#init" class="tsd-kind-icon">init</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#remove" class="tsd-kind-icon">remove</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#removeFilter" class="tsd-kind-icon">remove<wbr>Filter</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#select" class="tsd-kind-icon">select</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#setCentral" class="tsd-kind-icon">set<wbr>Central</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ServiceCluster.html#update" class="tsd-kind-icon">update</a></li>
 							</ul>
@@ -118,19 +113,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Service<wbr>Cluster<span class="tsd-signature-symbol">(</span>mainRepoClient<span class="tsd-signature-symbol">: </span><a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Class">ServiceCluster</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Service<wbr>Cluster<span class="tsd-signature-symbol">(</span>repoClient<span class="tsd-signature-symbol">: </span><a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, details<span class="tsd-signature-symbol">?: </span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Class">ServiceCluster</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L25">src/ServiceCluster.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/ServiceCluster.ts#L19">src/ServiceCluster.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>mainRepoClient: <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></h5>
+									<h5>repoClient: <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></h5>
+								</li>
+								<li>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> details: <a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="ServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Class">ServiceCluster</a></h4>
@@ -138,15 +139,16 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="repoClient" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> repo<wbr>Client</h3>
-					<div class="tsd-signature tsd-kind-icon">repo<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="QlikRepositoryClient.html" class="tsd-signature-type" data-tsd-kind="Class">QlikRepositoryClient</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="details" class="tsd-anchor"></a>
+					<h3>details</h3>
+					<div class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#details">details</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L24">src/ServiceCluster.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/ServiceCluster.ts#L18">src/ServiceCluster.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -154,86 +156,19 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="count" class="tsd-anchor"></a>
-					<h3>count</h3>
+					<a name="init" class="tsd-anchor"></a>
+					<h3>init</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">count<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#count">count</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L29">src/ServiceCluster.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/ServiceCluster.ts#L31">src/ServiceCluster.ts:31</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#get">get</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L35">src/ServiceCluster.ts:35</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getAll" class="tsd-anchor"></a>
-					<h3>get<wbr>All</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>All<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceClusterCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceClusterCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#getAll">getAll</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L42">src/ServiceCluster.ts:42</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceClusterCondensed.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceClusterCondensed</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getFilter" class="tsd-anchor"></a>
-					<h3>get<wbr>Filter</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Filter<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#getFilter">getFilter</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L48">src/ServiceCluster.ts:48</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>filter: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -241,71 +176,17 @@
 					<a name="remove" class="tsd-anchor"></a>
 					<h3>remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#remove">remove</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L59">src/ServiceCluster.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/ServiceCluster.ts#L39">src/ServiceCluster.ts:39</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="removeFilter" class="tsd-anchor"></a>
-					<h3>remove<wbr>Filter</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>Filter<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#removeFilter">removeFilter</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L68">src/ServiceCluster.ts:68</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>filter: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IEntityRemove.html" class="tsd-signature-type" data-tsd-kind="Interface">IEntityRemove</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="select" class="tsd-anchor"></a>
-					<h3>select</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#select">select</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L87">src/ServiceCluster.ts:87</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -313,22 +194,16 @@
 					<a name="setCentral" class="tsd-anchor"></a>
 					<h3>set<wbr>Central</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Central<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Central<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#setCentral">setCentral</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L96">src/ServiceCluster.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/ServiceCluster.ts#L46">src/ServiceCluster.ts:46</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -337,14 +212,14 @@
 					<a name="update" class="tsd-anchor"></a>
 					<h3>update</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><a href="../interfaces/IServiceClusterUpdate.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceClusterUpdate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><a href="../interfaces/IServiceClusterUpdate.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceClusterUpdate</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassServiceCluster.html">IClassServiceCluster</a>.<a href="../interfaces/IClassServiceCluster.html#update">update</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/3c2b295/src/ServiceCluster.ts#L105">src/ServiceCluster.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/ServiceCluster.ts#L52">src/ServiceCluster.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -353,7 +228,7 @@
 									<h5>arg: <a href="../interfaces/IServiceClusterUpdate.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceClusterUpdate</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IServiceCluster.html" class="tsd-signature-type" data-tsd-kind="Interface">IServiceCluster</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -377,29 +252,14 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="ServiceCluster.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="ServiceCluster.html#repoClient" class="tsd-kind-icon">repo<wbr>Client</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ServiceCluster.html#details" class="tsd-kind-icon">details</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ServiceCluster.html#count" class="tsd-kind-icon">count</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ServiceCluster.html#get" class="tsd-kind-icon">get</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ServiceCluster.html#getAll" class="tsd-kind-icon">get<wbr>All</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ServiceCluster.html#getFilter" class="tsd-kind-icon">get<wbr>Filter</a>
+								<a href="ServiceCluster.html#init" class="tsd-kind-icon">init</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ServiceCluster.html#remove" class="tsd-kind-icon">remove</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ServiceCluster.html#removeFilter" class="tsd-kind-icon">remove<wbr>Filter</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="ServiceCluster.html#select" class="tsd-kind-icon">select</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="ServiceCluster.html#setCentral" class="tsd-kind-icon">set<wbr>Central</a>
@@ -416,7 +276,7 @@
 		</div>
 	</div>
 </div>
-<footer class="with-border-bottom">
+<footer>
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
@@ -430,15 +290,12 @@
 				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 			</ul>
 		</div>
 	</div>
 </footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
 </body>

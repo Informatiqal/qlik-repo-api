@@ -1,8 +1,7 @@
-import { QlikRepositoryClient } from "./main";
+import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
 
 import { IHttpReturn, IHttpStatus } from "./types/interfaces";
-
 import {
   IAccessTypeInfo,
   ILicense,
@@ -14,24 +13,23 @@ import {
   ILicenseSetSerial,
 } from "./License.interface";
 
+type TAccessType = "Analyzer" | "Professional" | "Login" | "User";
+
 export interface IClassLicense {
   accessTypeInfoGet(): Promise<IAccessTypeInfo>;
   get(): Promise<ILicense>;
   setSerial(arg: ILicenseSetSerial): Promise<ILicense>;
   setKey(arg: ILicenseSetKey): Promise<ILicense>;
-  accessTypeGetAnalyzer(id?: string): Promise<ILicenseAccessTypeCondensed[]>;
-  accessTypeGetProfessional(
+  accessTypeGet(
+    accessType: TAccessType,
     id?: string
   ): Promise<ILicenseAccessTypeCondensed[]>;
-  accessTypeGetUser(id?: string): Promise<ILicenseAccessTypeCondensed[]>;
-  accessTypeGetLogin(id?: string): Promise<ILicenseAccessTypeCondensed[]>;
   auditGet(arg: IAuditParameters): Promise<IAudit>;
-  accessTypeRemoveLogin(id: string): Promise<IHttpStatus>;
-  accessTypeRemoveAnalyzer(id: string): Promise<IHttpStatus>;
-  accessTypeRemoveProfessional(id: string): Promise<IHttpStatus>;
-  accessTypeRemoveUser(id: string): Promise<IHttpStatus>;
-  accessGroupCreateProfessional(name: string): Promise<ILicenseAccessGroup>;
-  accessGroupCreateUser(name: string): Promise<ILicenseAccessGroup>;
+  accessTypeRemove(accessType: TAccessType, id: string): Promise<IHttpStatus>;
+  accessGroupCreate(
+    accessType: TAccessType,
+    name: string
+  ): Promise<ILicenseAccessGroup>;
 }
 
 export class License implements IClassLicense {
@@ -113,22 +111,6 @@ export class License implements IClassLicense {
     });
   }
 
-  public async accessTypeGetAnalyzer(id?: string) {
-    return await this.getAccessType("analyzer", id);
-  }
-
-  public async accessTypeGetProfessional(id?: string) {
-    return await this.getAccessType("professional", id);
-  }
-
-  public async accessTypeGetUser(id?: string) {
-    return await this.getAccessType("user", id);
-  }
-
-  public async accessTypeGetLogin(id?: string) {
-    return await this.getAccessType("login", id);
-  }
-
   public async auditGet(arg: IAuditParameters) {
     let data = { ...arg };
 
@@ -139,68 +121,8 @@ export class License implements IClassLicense {
       .then((res) => res.data as IAudit);
   }
 
-  public async accessTypeRemoveLogin(id: string) {
-    if (!id)
-      throw new Error(
-        `license.accessTypeRemoveLogin: "id" parameter is required`
-      );
-    return await this.removeAccessType("login", id);
-  }
-
-  public async accessTypeRemoveAnalyzer(id: string) {
-    if (!id)
-      throw new Error(
-        `license.accessTypeRemoveAnalyzer: "id" parameter is required`
-      );
-    return await this.removeAccessType("analyzer", id);
-  }
-
-  public async accessTypeRemoveProfessional(id: string) {
-    if (!id)
-      throw new Error(
-        `license.accessTypeRemoveProfessional: "id" parameter is required`
-      );
-    return await this.removeAccessType("professional", id);
-  }
-
-  public async accessTypeRemoveUser(id: string) {
-    if (!id)
-      throw new Error(
-        `license.accessTypeRemoveUser: "id" parameter is required`
-      );
-    return await this.removeAccessType("user", id);
-  }
-
-  public async accessGroupCreateProfessional(name: string) {
-    if (!name)
-      throw new Error(
-        `license.accessGroupCreateProfessional: "name" parameter is required`
-      );
-    return await this.repoClient
-      .Post(`license/ProfessionalAccessGroup`, { name })
-      .then((res) => {
-        return res.data as ILicenseAccessGroup;
-      });
-  }
-
-  public async accessGroupCreateUser(name: string) {
-    if (!name)
-      throw new Error(
-        `license.accessGroupCreateUser: "name" parameter is required`
-      );
-
-    return await this.repoClient
-      .Post(`license/UserAccessGroup`, { name })
-      .then((res) => {
-        return res.data as ILicenseAccessGroup;
-      });
-  }
-
-  private async getAccessType(
-    licenseType: string,
-    id: string
-  ): Promise<ILicenseAccessTypeCondensed[]> {
-    let url = `license/${licenseType}AccessType`;
+  public async accessTypeGet(accessType: TAccessType, id?: string) {
+    let url = `license/${accessType}AccessType`;
     if (id) url += `/${id}`;
 
     return await this.repoClient.Get(url).then((res: IHttpReturn) => {
@@ -210,14 +132,29 @@ export class License implements IClassLicense {
     });
   }
 
-  private async removeAccessType(
-    licenseType: string,
-    id: string
-  ): Promise<IHttpStatus> {
-    let url = `license/${licenseType}AccessType/${id}`;
+  public async accessTypeRemove(accessType: TAccessType, id: string) {
+    if (!id)
+      throw new Error(
+        `license.accessTypeRemoveLogin: "id" parameter is required`
+      );
+
+    let url = `license/${accessType}AccessType/${id}`;
 
     return await this.repoClient
       .Delete(url)
       .then((res: IHttpReturn) => res.status);
+  }
+
+  public async accessGroupCreate(accessGroup: TAccessType, name: string) {
+    if (!name)
+      throw new Error(
+        `license.accessGroupCreateUser: "name" parameter is required`
+      );
+
+    return await this.repoClient
+      .Post(`license/${accessGroup}AccessGroup`, { name })
+      .then((res) => {
+        return res.data as ILicenseAccessGroup;
+      });
   }
 }

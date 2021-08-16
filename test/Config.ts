@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import https from "https";
+import { v4 as uuidv4 } from "uuid";
 
 const dotEnvPath = path.resolve(".env");
 require("dotenv").config({ path: dotEnvPath });
@@ -8,7 +9,7 @@ require("dotenv").config({ path: dotEnvPath });
 import { QlikRepoApi } from "../src/main";
 
 export class Config {
-  public repoApi: QlikRepoApi;
+  public repoApi: QlikRepoApi.client;
   constructor() {
     const cert = fs.readFileSync(`${process.env.TEST_CERT}/client.pem`);
     const key = fs.readFileSync(`${process.env.TEST_CERT}/client_key.pem`);
@@ -19,7 +20,7 @@ export class Config {
       key: key,
     });
 
-    let repoApi = new QlikRepoApi({
+    let repoApi = new QlikRepoApi.client({
       host: process.env.TEST_HOST,
       port: 4242,
       httpsAgent: httpsAgentCert,
@@ -30,5 +31,18 @@ export class Config {
     });
 
     this.repoApi = repoApi;
+  }
+}
+
+export class Helpers {
+  constructor() {}
+
+  uuidString(): string {
+    let guid = uuidv4();
+    return guid.replace(/-/g, "");
+  }
+
+  uuid(): string {
+    return uuidv4();
   }
 }
