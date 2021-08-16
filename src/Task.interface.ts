@@ -170,7 +170,7 @@ export interface ISchemaEvent extends ISchemaEventCondensed {
   expirationDate: string;
   schemaFilterDescription: string[];
   incrementDescription: string;
-  incrementalOption: number;
+  incrementOption: number;
   externalProgramTask: IExternalProgramTaskCondensed;
   reloadTask: IExternalProgramTaskCondensed;
   userSyncTask: IExternalProgramTaskCondensed;

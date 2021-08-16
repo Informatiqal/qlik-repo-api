@@ -280,7 +280,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       startDate: arg.startDate || currentTimeStamp.toISOString(),
       expirationDate: arg.expirationDate || "9999-01-01T00:00:00.000",
       schemaFilterDescription: [schemaRepeatOpt.schemaFilterDescr],
-      incrementalDescription: schemaRepeatOpt.incrementDescr,
+      incrementDescription: schemaRepeatOpt.incrementDescr,
       incrementOption: 1,
       eventType: 0,
       enabled: arg.enabled || true,

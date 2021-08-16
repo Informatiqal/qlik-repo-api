@@ -240,31 +240,78 @@ describe("Phase1", function () {
     expect(deleteCP).to.be.equal(204);
   });
 
+  it("Data connections", async function () {
+    const connectionConfig = {
+      name: "Test data connection",
+      connectionString: "C:\\ProgramData\\Qlik\\Sense\\Log",
+    };
+    const newDataConnection = await repoApi.dataConnections.create(
+      connectionConfig
+    );
+
+    await newDataConnection.remove();
+    const filter = await repoApi.dataConnections.getFilter(
+      `name eq '${connectionConfig.name}'`
+    );
+
+    expect(newDataConnection.details.connectionstring).to.be.equal(
+      connectionConfig.connectionString
+    ) &&
+      expect(newDataConnection.details.name).to.be.equal(
+        connectionConfig.name
+      ) &&
+      expect(filter.length).to.be.equal(0);
+  });
+
   /**
    * Task operations
    * Used methods:
    */
   it("Reload task", async function () {
-    // const qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
-    // const app = await repoApi.apps.upload("RepoTest", qvf);
-    // const reloadTask = await repoApi.task.create({
-    //   appId: app.details.id,
-    //   name: helpers.uuidString(),
-    // });
-    // const newTaskSchema = await repoApi.task.triggerSchemaCreate({
-    //   name: helpers.uuidString(),
-    //   reloadTaskId: reloadTask.id,
-    //   daysOfWeek: ["Monday", "Tuesday"],
-    //   repeatEvery: 1,
-    //   repeat: "Weekly",
-    // });
-    // // const updatedTask = await repoApi.task.reloadUpdate({
-    // //   id: reloadTask.id,
-    // // });
-    // // const startTask = await repoApi.task.start(reloadTask.id, true);
-    // let a = 1;
-    // const deleteTask = await repoApi.task.reloadRemove(reloadTask.id);
-    // const deleteApp = await app.remove();
-    // expect(1).to.be.greaterThan(0);
+    const appName = helpers.uuid();
+    const qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
+    const uploadedApp = await repoApi.apps.upload(appName, qvf);
+
+    const newReloadTask1 = await repoApi.reloadTasks.create({
+      name: "New reload task 1",
+      appId: uploadedApp.details.id,
+    });
+
+    const newReloadTask2 = await repoApi.reloadTasks.create({
+      name: "New reload task 2",
+      appId: uploadedApp.details.id,
+    });
+
+    await newReloadTask2.addTriggerComposite({
+      name: "Reload on task event",
+      eventTasks: [
+        {
+          state: "success",
+          id: newReloadTask1.details.id,
+        },
+      ],
+    });
+
+    await newReloadTask2.addTriggerSchema({
+      name: "Reload every day",
+      repeat: "Daily",
+      repeatEvery: 1,
+    });
+
+    const allTasksCountBefore = await repoApi.tasks
+      .getAll()
+      .then((t) => t.length);
+
+    await newReloadTask2.triggersDetails[0].remove();
+    await newReloadTask2.triggersDetails[1].remove();
+    await newReloadTask1.remove();
+    await newReloadTask2.remove();
+    await uploadedApp.remove();
+
+    const allTasksCountAfter = await repoApi.tasks
+      .getAll()
+      .then((t) => t.length);
+
+    expect(allTasksCountBefore).to.be.greaterThan(allTasksCountAfter);
   });
 });
