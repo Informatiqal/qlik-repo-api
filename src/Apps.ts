@@ -118,7 +118,7 @@ export class Apps implements IClassApps {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => new App(this.repoClient, (res.data as IApp).id));
+      .then((res) => new App(this.repoClient, (res.data as IApp).id, res.data));
   }
 
   public async uploadAndReplace(

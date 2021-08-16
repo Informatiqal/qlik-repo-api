@@ -119,8 +119,20 @@ export class Extensions implements IClassExtensions {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), arg.file)
-      .then(
-        (res) => new Extension(this.repoClient, (res.data as IExtension).id)
-      );
+      .then((res) => {
+        return new Extension(
+          this.repoClient,
+          (res.data[0] as IExtension).id,
+          res.data[0]
+        );
+      })
+      .catch((e) => {
+        if (e.message == "Request failed with status code 400")
+          throw new Error(
+            "extensions.import: Status code 400. Possibly extension with the same name already exists."
+          );
+
+        throw new Error(e.message);
+      });
   }
 }

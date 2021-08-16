@@ -112,14 +112,13 @@ describe("Phase1", function () {
     );
     let deleteStream = await newStream.remove();
 
-    expect(uploadedApp.details.name).to.be.equal(appName) &&
-      expect(updatedApp.name).to.be.equal(appNewName) &&
-      expect(deleteApp.status).to.be.equal(204) &&
-      expect(deleteCP.id).to.be.equal(customProperty.details.id) &&
+    expect(uploadedApp.details.name).to.be.equal(appNewName) &&
+      expect(deleteApp).to.be.equal(204) &&
+      expect(deleteCP).to.be.equal(204) &&
       expect(deleteTags.length).to.be.equal(2) &&
-      expect(publishApp.stream.name).to.be.equal(streamName) &&
-      expect(updateStream.customProperties.length).to.be.equal(1) &&
-      expect(deleteStream.status).to.be.equal(204);
+      expect(uploadedApp.details.stream.name).to.be.equal(streamName) &&
+      expect(newStream.details.customProperties.length).to.be.equal(1) &&
+      expect(deleteStream).to.be.equal(204);
   });
 
   /**
@@ -131,7 +130,7 @@ describe("Phase1", function () {
       resourceType: "App",
     });
 
-    expect(auditResult.resources.length).to.be.greaterThan(0);
+    expect(Object.keys(auditResult.resources).length).to.be.greaterThan(0);
   });
 
   /**
@@ -185,9 +184,9 @@ describe("Phase1", function () {
     const deleteCustomProperty = await newCustomProperty.remove();
 
     expect(allExtensions.length).to.be.greaterThan(0) &&
-      expect(updatedExtension.customProperties.length).to.be.equal(1) &&
-      expect(deletedExtension.id).to.be.equal(importExtension.details.id) &&
-      expect(deleteCustomProperty.id).to.be.equal(newCustomProperty.details.id);
+      expect(importExtension.details.customProperties.length).to.be.equal(1) &&
+      expect(deletedExtension).to.be.equal(204) &&
+      expect(deleteCustomProperty).to.be.equal(204);
   });
 
   /**
@@ -233,12 +232,12 @@ describe("Phase1", function () {
     expect(newUser.details.userDirectory).to.be.equal("TESTING") &&
       expect(getNewUser.length).to.be.equal(1) &&
       expect(getNewUser[0].details.name).to.be.equal(newUserConfig.userId) &&
-      expect(updateUser.customProperties.length).to.be.equal(1) &&
-      expect(updateUser.customProperties[0].value).to.be.equal(
+      expect(newUser.details.customProperties.length).to.be.equal(1) &&
+      expect(newUser.details.customProperties[0].value).to.be.equal(
         newCustomProperty.details.choiceValues[0]
       ) &&
-      expect(deleteNewUser.id).to.be.equal(newUser.details.id);
-    expect(deleteCP.id).to.be.equal(newCustomProperty.details.id);
+      expect(deleteNewUser).to.be.equal(204);
+    expect(deleteCP).to.be.equal(204);
   });
 
   /**
