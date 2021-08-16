@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.0] - 2021-08-16
+
+### Changed
+
+- A lot had been changed. All `get` methods are returning instance of classes which expose their on methods. For example:
+
+```javascript
+const qlikApp = await repoApi.apps.get("some-app-id-here");
+
+// At this point qlikApp will have the app details
+const appName = qlikApp.details.name;
+
+// all app methods will be exposed:
+
+await qlikApp.update({
+  name: "new-app-name",
+});
+
+await qlikApp.remove();
+```
+
+- basic tests for Phase 1 are in place. More tests should/will be added
+- various bugs were fixed while writing the tests
+
 ## [0.0.22] - 2021-07-29
 
 ### Changed
