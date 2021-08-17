@@ -52,9 +52,9 @@ const someQlikApps = await repoApi.apps.getFilter("name sw 'License Monitor'");
 
 The `someQlikApps` variable will be an array of the `App` class. Each element of array will have `details` and the single app methods
 
-![Apps](./images/apps-getFilter.png)
+![Apps](./images/apps-getFilter.PNG)
 
-![Apps0](./images/apps-getFilter1.png)
+![Apps0](./images/apps-getFilter1.PNG)
 
 ## Usage examples
 
