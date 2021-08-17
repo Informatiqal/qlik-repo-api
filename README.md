@@ -1,14 +1,93 @@
 ## **UNDER DEVELOPMENT!**
 
-## Compatibility
-
-At the moment the module is compatible with `QSEoW` version `May 2021`
-
 ---
 
 **NOT AFFILIATED WITH QLIK**
 
 ---
+
+## Compatibility
+
+At the moment the module is compatible with `QSEoW` version `May 2021`
+
+## Installation
+
+`npm install qlik-repo-api`
+
+## Authentication
+
+The package itself will **NOT** perform authentication. All authentication information is passed in the config (see next section).
+
+But multiple authentication configuration can be provided:
+
+- certificates
+- JWT
+- header
+- session
+- ticket
+
+## Initialization
+
+- JWT
+  ```javascript
+  const repoApi = new QlikRepoApi.client({
+    host: "my-sense-server.com",
+    proxy: "virtualProxyPrefix",
+    authentication: {
+      token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+    },
+  });
+  ```
+- Certificates
+
+  ```javascript
+  const https = require("https");
+  const fs = require("fs");
+
+  // read the certificate files
+  const cert = fs.readFileSync(`${process.env.TEST_CERT}/client.pem`);
+  const key = fs.readFileSync(`${process.env.TEST_CERT}/client_key.pem`);
+
+  // create httpsAgent. Pass the certificate files and ignore any certificate errors (like self-signed certificates)
+  const httpsAgentCert = new https.Agent({
+    rejectUnauthorized: false,
+    cert: cert,
+    key: key,
+  });
+
+  // the actual initialization
+  const repoApi = new QlikRepoApi.client({
+    host: "my-sense-server.com",
+    port: 4242,
+    httpsAgent: httpsAgentCert,
+    authentication: {
+      user_dir: "USER-DIRECTORY",
+      user_name: "userId",
+    },
+  });
+  ```
+
+- Header
+
+  ```javascript
+  const https = require("https");
+
+  // httpsAgent (Node.js only) can be used with other authentication methods to ignore certificate errors (if any)
+  const httpsAgentIgnoreSelfSigned = new https.Agent({
+    rejectUnauthorized: false,
+  });
+
+  // the actual initialization
+  const repoApi = new QlikRepoApi.client({
+    host: "my-sense-server.com",
+    proxy: "virtualProxyPrefix",
+    httpsAgent: httpsAgentIgnoreSelfSigned,
+    authentication: {
+      header: "SomeHeader",
+      user: "USER-DIRECTORY\\userId",
+    },
+  });
+  ```
 
 ## Methods
 
