@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.1] - 2021-XX-XX
+## [0.1.2] - 2021-08-17
+
+### Added
+
+- `nodes.register` method implemented. Not sure if its working. Have to be tested somehow
+
+## [0.1.1] - 2021-08-17
 
 ### Added
 
