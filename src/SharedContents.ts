@@ -15,7 +15,6 @@ import { IOwner } from "./Users";
 import { IClassSharedContent, SharedContent } from "./SharedContent";
 
 export interface ISharedContentUpdate {
-  id: string;
   tags?: string[];
   customProperties?: string[];
   owner?: string;

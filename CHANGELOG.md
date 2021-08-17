@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file.
 - `contentLibraries.create` method accepts object as parameter instead of named params
 - `contentLibrary.export` method with throw an error if the authentication is made with certificates. The export is not done via Repo APIs
 - corrected function names in few error messages
+- removed `id` from engine update interface
+- `engine.update` handling more arguments
+
+### Fixed
+
+- engine init uses the correct endpoint (instead of `tag`)
+- sharedContent get uses the internal `id`
 
 ### Added
 
