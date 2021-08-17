@@ -1,11 +1,17 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
-import { IUserDirectory } from "./UserDirectories";
+import { IHttpStatus } from "./types/interfaces";
+import {
+  IUserDirectory,
+  IUserDirectorySettings,
+  IUserDirectoryUpdate,
+} from "./UserDirectories";
+import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassUserDirectory {
   remove(): Promise<IHttpStatus>;
+  removeAndUsers(): Promise<IHttpStatus>;
   sync(): Promise<IHttpStatus>;
-  update(): Promise<boolean>;
+  update(arg: IUserDirectoryUpdate): Promise<IHttpStatus>;
   details: IUserDirectory;
 }
 
@@ -39,14 +45,39 @@ export class UserDirectory implements IClassUserDirectory {
       .then((res) => res.status);
   }
 
+  public async removeAndUsers() {
+    return await this.repoClient
+      .Delete(
+        `userdirectoryconnector/deleteudandusers?userDirectoryId=${this.id}`
+      )
+      .then((res) => res.status);
+  }
+
   public async sync() {
     return await this.repoClient
       .Post(`userdirectoryconnector/syncuserdirectories`, [this.details.id])
       .then((res) => res.status as IHttpStatus);
   }
 
-  // TODO: Mismatch with the documentation. Investigation required
-  public async update() {
-    return true;
+  public async update(arg: IUserDirectoryUpdate) {
+    if (arg.name) this.details.name = arg.name;
+    if (arg.userDirectoryName)
+      this.details.userDirectoryName = arg.userDirectoryName;
+    if (arg.syncOnlyLoggedInUsers)
+      this.details.syncOnlyLoggedInUsers = arg.syncOnlyLoggedInUsers;
+    if (arg.settings)
+      this.details.settings =
+        arg.settings as unknown as IUserDirectorySettings[];
+
+    const updateCommon = new UpdateCommonProperties(
+      this.repoClient,
+      this.details,
+      arg
+    );
+    this.details = await updateCommon.updateAll();
+
+    return await this.repoClient
+      .Put(`userdirectory/${this.details.id}`, { ...this.details })
+      .then((res) => res.status);
   }
 }
