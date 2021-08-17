@@ -64,11 +64,10 @@ export class Tags implements IClassTags {
   public async create(name: string) {
     if (!name) throw new Error(`tag.create: "name" is required`);
 
-    let createTag = await this.repoClient
+    return await this.repoClient
       .Post(`tag`, { name })
-      .then((res) => res.data as ITag);
-
-    return new Tag(this.repoClient, createTag.id, createTag);
+      .then((res) => res.data as ITag)
+      .then((t) => new Tag(this.repoClient, t.id, t));
   }
 
   public async createMany(names: string[]) {

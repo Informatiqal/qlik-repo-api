@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.1] - 2021-XX-XX
 
-### Changed
+### Added
+
+- User directory connector - create and update methods
+- User directory connector - updated the interfaces/types
 
 ## [0.1.0] - 2021-08-16
 
