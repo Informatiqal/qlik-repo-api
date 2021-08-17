@@ -45,8 +45,8 @@ But multiple authentication configuration can be provided:
   const fs = require("fs");
 
   // read the certificate files
-  const cert = fs.readFileSync(`${process.env.TEST_CERT}/client.pem`);
-  const key = fs.readFileSync(`${process.env.TEST_CERT}/client_key.pem`);
+  const cert = fs.readFileSync(`/path/to/client.pem`);
+  const key = fs.readFileSync(`/path/to/client_key.pem`);
 
   // create httpsAgent. Pass the certificate files and ignore any certificate errors (like self-signed certificates)
   const httpsAgentCert = new https.Agent({
