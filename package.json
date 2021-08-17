@@ -24,10 +24,11 @@
     "api"
   ],
   "files": [
-    "dist/*",
+    "dist/src",
     "*.json",
     "*.md",
-    "LICENSE"
+    "LICENSE",
+    "!CHANGELOG.md"
   ],
   "repository": {
     "type": "git",
