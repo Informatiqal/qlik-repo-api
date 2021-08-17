@@ -89,6 +89,12 @@ But multiple authentication configuration can be provided:
   });
   ```
 
+## Browser usage
+
+Although interacting with `Qlik Repository API` is mainly for automation and administration purposes (backend/server-to-server) this package can be used in browser environment as well.
+
+There are couple of limitations in this case and they are both because of `https` package not being available in the browser. For this reason `certificate` config authentication can't be used and any certificate issues can't be ignored (`rejectUnauthorized: false`).
+
 ## Methods
 
 Full list of available methods can be found [here](https://informatiqal.github.io/qlik-repo-api/modules.html)
