@@ -106,7 +106,7 @@ export class Engines implements IClassEngines {
   }
 
   public async get(id: string) {
-    if (!id) throw new Error(`engine.get: "id" parameter is required`);
+    if (!id) throw new Error(`engines.get: "id" parameter is required`);
     const engine: Engine = new Engine(this.repoClient, id);
     await engine.init();
 

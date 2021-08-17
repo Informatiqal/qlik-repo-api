@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.3] - 2021-08-XX
 
+### Changed
+
+- `contentLibraries.create` method accepts object as parameter instead of named params
+- `contentLibrary.export` method with throw an error if the authentication is made with certificates. The export is not done via Repo APIs
+- corrected function names in few error messages
+
 ### Added
 
 ## [0.1.2] - 2021-08-17

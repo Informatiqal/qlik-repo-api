@@ -37,8 +37,6 @@ export class Proxy implements IClassProxy {
   }
 
   public async update(arg: IProxyUpdate) {
-    if (!arg.id) throw new Error(`proxy.update: "id" parameter is required`);
-
     this.validateRanges(arg);
 
     if (arg.listenPort) this.details.settings.listenPort = arg.listenPort;
@@ -79,7 +77,7 @@ export class Proxy implements IClassProxy {
     this.details = await updateCommon.updateAll();
 
     return await this.repoClient
-      .Post(`proxyservice/${arg.id}`, { ...this.details })
+      .Post(`proxyservice/${this.details.id}`, { ...this.details })
       .then((res) => res.status);
   }
 

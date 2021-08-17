@@ -35,7 +35,6 @@ export interface ISharedContentMetaData {
 }
 
 export interface ISharedContentCreate {
-  id: string;
   tags?: string[];
   customProperties?: string[];
   name?: string;
@@ -135,12 +134,10 @@ export class SharedContents implements IClassSharedContents {
   }
 
   public async create(arg: ISharedContentCreate) {
-    if (!arg.id)
-      throw new Error(`sharedContent.create: "id" parameter is required`);
     if (!arg.name)
-      throw new Error(`sharedContent.create: "id" parameter is required`);
+      throw new Error(`sharedContent.create: "name" parameter is required`);
     if (!arg.type)
-      throw new Error(`sharedContent.create: "id" parameter is required`);
+      throw new Error(`sharedContent.create: "type" parameter is required`);
 
     let sharedContent = {
       name: arg.name,
@@ -158,7 +155,7 @@ export class SharedContents implements IClassSharedContents {
     const commonProps = await getCommon.getAll();
 
     return await this.repoClient
-      .Post(`sharedcontent/${arg.id}`, { ...sharedContent, ...commonProps })
+      .Post(`sharedcontent`, { ...sharedContent, ...commonProps })
       .then((res) => res.data as ISharedContent)
       .then((s) => new SharedContent(this.repoClient, s.id, s));
   }

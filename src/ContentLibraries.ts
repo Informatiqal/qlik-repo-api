@@ -21,6 +21,7 @@ export interface IContentLibraryFile {
 }
 
 export interface IContentLibraryUpdate {
+  name?: string;
   tags?: string[];
   customProperties?: string[];
   owner?: string;
@@ -44,6 +45,13 @@ export interface IContentLibrary extends IContentLibraryCondensed {
   references: IStaticContentReferenceCondensed[];
 }
 
+export interface IContentLibraryCreate {
+  name: string;
+  customProperties?: string[];
+  tags?: string[];
+  owner?: string;
+}
+
 export interface IClassContentLibraries {
   get(id: string): Promise<IClassContentLibrary>;
   getAll(): Promise<IClassContentLibrary[]>;
@@ -64,12 +72,7 @@ export interface IClassContentLibraries {
       overwrite?: boolean;
     }
   ): Promise<IClassContentLibrary>;
-  create(
-    name: string,
-    customProperties: string[],
-    tags: string[],
-    owner: string
-  ): Promise<IClassContentLibrary>;
+  create(arg: IContentLibraryCreate): Promise<IClassContentLibrary>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
   select(filter: string): Promise<ISelection>;
 }
@@ -85,27 +88,21 @@ export class ContentLibraries implements IClassContentLibraries {
     this.genericClient = mainGenericClient;
   }
 
-  // TODO: test how GetCommonProperties behaves!
-  public async create(
-    name: string,
-    customProperties = [],
-    tags = [],
-    owner = ""
-  ) {
-    if (!name)
+  public async create(arg: IContentLibraryCreate) {
+    if (!arg.name)
       throw new Error(`contentLibrary.create: "name" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
       this.repoClient,
-      customProperties,
-      tags,
-      owner
+      arg.customProperties || [],
+      arg.tags || [],
+      arg.owner || ""
     );
 
     let commonProps = await getCommonProps.getAll();
 
     return await this.repoClient
-      .Post(`contentlibrary`, { name, ...commonProps })
+      .Post(`contentlibrary`, { name: arg.name, ...commonProps })
       .then((res) => res.data as IContentLibrary)
       .then((t) => new ContentLibrary(this.repoClient, t.id, t));
   }
@@ -155,7 +152,6 @@ export class ContentLibraries implements IClassContentLibraries {
       });
   }
 
-  // TODO: test + is externalPath required
   public async import(
     name: string,
     file: Buffer,
@@ -185,7 +181,6 @@ export class ContentLibraries implements IClassContentLibraries {
       });
   }
 
-  // TODO: test + is externalPath required
   public async importForApp(
     appId: string,
     file: Buffer,

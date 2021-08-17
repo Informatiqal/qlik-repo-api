@@ -18,7 +18,7 @@ export class SchemaTrigger implements IClassSchemaTrigger {
     id: string,
     details?: ISchemaEvent
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`schemaTrigger.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;

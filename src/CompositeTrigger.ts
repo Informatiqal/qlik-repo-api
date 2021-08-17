@@ -21,7 +21,8 @@ export class CompositeTrigger implements IClassCompositeTrigger {
     id: string,
     details?: ICompositeEvent
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id)
+      throw new Error(`compositeTrigger.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;

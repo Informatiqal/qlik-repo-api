@@ -24,7 +24,7 @@ export class UserDirectory implements IClassUserDirectory {
     id: string,
     details?: IUserDirectory
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`userDirectory.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;

@@ -27,7 +27,7 @@ export class VirtualProxy implements IClassVirtualProxy {
     id: string,
     details?: IVirtualProxyConfig
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`virtualProxy.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;

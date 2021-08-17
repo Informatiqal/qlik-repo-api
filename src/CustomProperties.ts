@@ -30,8 +30,12 @@ export interface ICustomPropertyCreate {
   valueType?: string;
 }
 
-export interface ICustomPropertyUpdate extends ICustomPropertyCreate {
-  id: string;
+export interface ICustomPropertyUpdate {
+  name?: string;
+  description?: string;
+  choiceValues?: string[];
+  objectTypes?: TCustomPropObjectTypes[];
+  valueType?: string;
 }
 
 export interface ICustomPropertyValue {

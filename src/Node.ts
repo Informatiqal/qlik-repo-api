@@ -18,7 +18,7 @@ export class Node implements IClassNode {
     id: string,
     details?: IServerNodeConfiguration
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`node.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;

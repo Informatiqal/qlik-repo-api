@@ -66,7 +66,6 @@ export interface IServiceClusterSettings {
 }
 
 export interface IServiceClusterUpdate {
-  id: string;
   name?: string;
   persistenceMode?: number;
   rootFolder?: string;

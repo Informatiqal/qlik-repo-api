@@ -40,8 +40,6 @@ export class DataConnection implements IClassDataConnection {
   }
 
   public async update(arg: IDataConnectionUpdate) {
-    if (!arg.id)
-      throw new Error(`dataConnection.update: "id" parameter is required`);
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
@@ -50,7 +48,7 @@ export class DataConnection implements IClassDataConnection {
     this.details = await updateCommon.updateAll();
 
     return await this.repoClient
-      .Put(`dataconnection/${arg.id}`, { ...this.details })
+      .Put(`dataconnection/${this.details.id}`, { ...this.details })
       .then((res) => res.status);
   }
 }

@@ -105,7 +105,6 @@ export interface IProxyCreate {
 }
 
 export interface IProxyUpdate {
-  id: string;
   listenPort?: number;
   allowHttp?: boolean;
   unencryptedListenPort?: number;
