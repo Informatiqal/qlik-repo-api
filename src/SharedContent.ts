@@ -55,7 +55,7 @@ export class SharedContent implements IClassSharedContent {
     this.details = await updateCommon.updateAll();
 
     return await this.repoClient
-      .Put(`sharedcontent/${arg.id}`, { ...this.details })
+      .Put(`sharedcontent/${this.details.id}`, { ...this.details })
       .then((res) => res.status);
   }
 

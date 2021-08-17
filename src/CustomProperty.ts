@@ -18,7 +18,7 @@ export class CustomProperty implements IClassCustomProperty {
     id: string,
     details?: ICustomProperty
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`customProperty.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;
@@ -39,10 +39,7 @@ export class CustomProperty implements IClassCustomProperty {
       .then((res) => res.status);
   }
 
-  // REVIEW: verify the logic here
   public async update(arg: ICustomPropertyUpdate) {
-    if (!arg.id)
-      throw new Error(`customProperty.update: "id" parameter is required`);
     if (!arg.name)
       throw new Error(`customProperty.update: "name" parameter is required`);
 
@@ -55,7 +52,7 @@ export class CustomProperty implements IClassCustomProperty {
     this.details.modifiedDate = modifiedDateTime();
 
     return await this.repoClient
-      .Put(`custompropertydefinition/${arg.id}`, this.details)
+      .Put(`custompropertydefinition/${this.details.id}`, this.details)
       .then((res) => res.status);
   }
 }

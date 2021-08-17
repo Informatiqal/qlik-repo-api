@@ -6,6 +6,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 export interface IClassNode {
   remove(): Promise<IHttpStatus>;
   update(arg: INodeUpdate): Promise<IHttpStatus>;
+  setCentral(): Promise<IHttpStatus>;
   details: IServerNodeConfiguration;
 }
 
@@ -18,7 +19,7 @@ export class Node implements IClassNode {
     id: string,
     details?: IServerNodeConfiguration
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`node.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;
@@ -74,6 +75,12 @@ export class Node implements IClassNode {
 
     return await this.repoClient
       .Put(`servernodeconfiguration/${this.details.id}`, { ...this.details })
+      .then((res) => res.status);
+  }
+
+  public async setCentral() {
+    return await this.repoClient
+      .Get(`failover/tonode/${this.details.id}`)
       .then((res) => res.status);
   }
 }

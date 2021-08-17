@@ -28,7 +28,7 @@ export class ContentLibrary implements IClassContentLibrary {
     details?: IContentLibrary,
     genericClient?: QlikGenericRestClient
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`contentLibrary.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;
@@ -44,12 +44,18 @@ export class ContentLibrary implements IClassContentLibrary {
     }
   }
 
-  // TODO: need to be tested!
-  async export(name: string, sourceFileName?: string) {
+  async export(sourceFileName?: string) {
     let files: IStaticContentReferenceCondensed[] = [];
 
-    // if only one file have to be extracted
+    if (
+      this.repoClient.configFull.port &&
+      this.repoClient.configFull.port == 4242
+    )
+      throw new Error(
+        `contentLibrary.export: exporting content library is not possible when the authentication is made with certificates`
+      );
     if (sourceFileName) {
+      // if only one file have to be extracted
       files = this.details.references.filter((r) => {
         return r.logicalPath.replace(/^.*[\\\/]/, "") == sourceFileName;
       });
@@ -60,12 +66,14 @@ export class ContentLibrary implements IClassContentLibrary {
 
     if (files.length == 0)
       throw new Error(
-        `contentLibrary.export: No file(s) in content library "${name}"`
+        `contentLibrary.export: No file(s) in content library "${this.details.name}"`
       );
 
     return await Promise.all<IContentLibraryFile>(
       files.map(async (f) => {
-        let fileContent = await this.genericClient.Get(f.logicalPath);
+        const logicalPath =
+          f.logicalPath[0] == "/" ? f.logicalPath.substr(1) : f.logicalPath;
+        const fileContent = await this.genericClient.Get(logicalPath);
         return {
           name: f.logicalPath.replace(/^.*[\\\/]/, ""),
           file: fileContent.data,
@@ -80,13 +88,15 @@ export class ContentLibrary implements IClassContentLibrary {
       .then((res) => res.status);
   }
 
-  // REVIEW: verify the logic here
   public async update(arg: IContentLibraryUpdate) {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
       arg
     );
+
+    if (arg.name) this.details.name = arg.name;
+
     this.details = await updateCommon.updateAll();
 
     return await this.repoClient

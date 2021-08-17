@@ -7,7 +7,6 @@ import {
 
 export interface IClassServiceCluster {
   remove(): Promise<IHttpStatus>;
-  setCentral(): Promise<IHttpStatus>;
   update(arg: IServiceClusterUpdate): Promise<IHttpStatus>;
   details: IServiceCluster;
 }
@@ -42,18 +41,9 @@ export class ServiceCluster implements IClassServiceCluster {
       .then((res) => res.status);
   }
 
-  // TODO: this should be here or in Node?
-  public async setCentral() {
-    return await this.repoClient
-      .Get(`failover/tonode/${this.details.id}`)
-      .then((res) => res.status);
-  }
-
   public async update(arg: IServiceClusterUpdate) {
     if (!arg)
       throw new Error(`serviceCluster.update: all arguments are missing`);
-    if (arg && !arg.id)
-      throw new Error(`serviceCluster.update: "id" parameter is required`);
 
     if (arg.name) this.details.name = arg.name;
     if (arg.persistenceMode)
@@ -88,7 +78,7 @@ export class ServiceCluster implements IClassServiceCluster {
         arg.failoverTimeout;
 
     return await this.repoClient
-      .Post(`ServiceCluster/${arg.id}`, { ...this.details })
+      .Post(`ServiceCluster/${this.details.id}`, { ...this.details })
       .then((res) => res.status);
   }
 }

@@ -41,9 +41,6 @@ export class Scheduler implements IClassScheduler {
   }
 
   public async update(arg: ISchedulerServiceUpdate) {
-    if (!arg.id)
-      throw new Error(`scheduler.update: "id" parameter is required`);
-
     if (arg.schedulerServiceType) {
       if (arg.schedulerServiceType == "Master")
         this.details.settings.schedulerServiceType = 0;
@@ -78,7 +75,7 @@ export class Scheduler implements IClassScheduler {
     this.details = await updateCommon.updateAll();
 
     return await this.repoClient
-      .Put(`schedulerservice/${arg.id}`, this.details)
+      .Put(`schedulerservice/${this.details.id}`, this.details)
       .then((res) => res.status);
   }
 }

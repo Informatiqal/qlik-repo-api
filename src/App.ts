@@ -49,7 +49,7 @@ export class App implements IClassApp {
     details?: IApp,
     genericClient?: QlikGenericRestClient
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`app.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;
@@ -66,9 +66,6 @@ export class App implements IClassApp {
   }
 
   public async export(fileName?: string, skipData?: boolean) {
-    if (!this.details.id)
-      throw new Error(`app.export: "id" parameter is required`);
-
     const token = uuid();
     const urlBuild = new URLBuild(`app/${this.details.id}/export/${token}`);
     if (!fileName) fileName = `${this.details.id}.qvf`;

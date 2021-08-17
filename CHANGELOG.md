@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2021-08-17
+
+### Changed
+
+- `contentLibraries.create` method accepts object as parameter instead of named params
+- `contentLibrary.export` method with throw an error if the authentication is made with certificates. The export is not done via Repo APIs
+- corrected function names in few error messages
+- removed `id` from engine update interface
+- `engine.update` handling more arguments
+- `metadataExport` is moved under `VirtualProxy` class instead of `Proxy`
+- `setCentral` is moved under `Node` class instead of `ServiceCluster`
+
+### Fixed
+
+- engine init uses the correct endpoint (instead of `tag`)
+- sharedContent get uses the internal `id`
+
+### Added
+
+- Oidc arguments are processed in Proxy/VirtualProxy
+- attribute parsing functions are in separate file (multiple files are using them)
+- schema trigger specific functions are in separate file (multiple files are using them)
+
 ## [0.1.2] - 2021-08-17
 
 ### Added

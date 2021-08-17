@@ -10,20 +10,26 @@ import {
   IVirtualProxyConfigSamlAttributeMapItem,
   IVirtualProxyConfigJwtAttributeMapItem,
   IVirtualProxyConfig,
+  IVirtualProxyConfigOidcAttributeMapItem,
 } from "./Proxy.interface";
 import { IClassNode } from "./Node";
 import { IClassProxy, Proxy } from "./Proxy";
 import { VirtualProxies } from "./VirtualProxies";
+import {
+  parseAuthenticationMethod,
+  parseJwtAttributeMap,
+  parseOidcAttributeMap,
+  parseSamlAttributeMap,
+} from "./util/parseAttributeMap";
 
 export interface IClassProxies {
   add(proxyId: string, virtualProxyId: string): Promise<IClassProxy>;
-  addVirtualProxy(virtualProxyId: string): Promise<IVirtualProxyConfig>;
+  // addVirtualProxy(virtualProxyId: string): Promise<IVirtualProxyConfig>;
   get(id: string): Promise<IClassProxy>;
   getAll(): Promise<IClassProxy[]>;
   getFilter(filter: string): Promise<IClassProxy[]>;
   create(arg: IProxyCreate): Promise<IClassProxy>;
   select(filter: string): Promise<ISelection>;
-  metadataExport(id: string, fileName?: string): Promise<Buffer>;
 }
 
 export class Proxies implements IClassProxies {
@@ -89,7 +95,6 @@ export class Proxies implements IClassProxies {
       .then((res) => res.data as ISelection);
   }
 
-  // TODO: handle oidc arguments
   public async create(arg: IProxyCreate) {
     if (!arg.description)
       throw new Error(`proxy.create: "description" parameter is required`);
@@ -109,7 +114,7 @@ export class Proxies implements IClassProxies {
       );
     }
     if (arg.authenticationMethod)
-      data["authenticationMethod"] = this.parseAuthenticationMethod(
+      data["authenticationMethod"] = parseAuthenticationMethod(
         arg.authenticationMethod
       );
     if (arg.prefix) data["prefix"] = arg.prefix;
@@ -131,11 +136,9 @@ export class Proxies implements IClassProxies {
       data["samlAttributeUserId"] = arg.samlAttributeUserId;
     if (arg.samlAttributeUserDirectory)
       data["samlAttributeUserDirectory"] = arg.samlAttributeUserDirectory;
-    if (arg.samlAttributeMap) {
-      data["samlAttributeMap"] = this.parseSamlAttributeMap(
-        arg.samlAttributeMap
-      );
-    }
+    if (arg.samlAttributeMap)
+      data["samlAttributeMap"] = parseSamlAttributeMap(arg.samlAttributeMap);
+
     if (arg.samlSlo) data["samlSlo"] = arg.samlSlo;
     if (arg.jwtPublicKeyCertificate)
       data["jwtPublicKeyCertificate"] = arg.jwtPublicKeyCertificate;
@@ -143,73 +146,48 @@ export class Proxies implements IClassProxies {
       data["jwtAttributeUserId"] = arg.jwtAttributeUserId;
     if (arg.jwtAttributeUserDirectory)
       data["jwtAttributeUserDirectory"] = arg.jwtAttributeUserDirectory;
-    if (arg.jwtAttributeMap) {
-      data["jwtAttributeMap"] = this.parseJwtAttributeMap(arg.jwtAttributeMap);
-    }
+    if (arg.jwtAttributeMap)
+      data["jwtAttributeMap"] = parseJwtAttributeMap(arg.jwtAttributeMap);
+
+    if (arg.oidcConfigurationEndpointUri)
+      data["oidcConfigurationEndpointUri"] = arg.oidcConfigurationEndpointUri;
+    if (arg.oidcClientId) data["oidcClientId"] = arg.oidcClientId;
+    if (arg.oidcClientSecret) data["oidcClientSecret"] = arg.oidcClientSecret;
+    if (arg.oidcRealm) data["oidcRealm"] = arg.oidcRealm;
+    if (arg.oidcAttributeSub) data["oidcAttributeSub"] = arg.oidcAttributeSub;
+    if (arg.oidcAttributeName)
+      data["oidcAttributeName"] = arg.oidcAttributeName;
+    if (arg.oidcAttributeGroups)
+      data["oidcAttributeGroups"] = arg.oidcAttributeGroups;
+    if (arg.oidcAttributeEmail)
+      data["oidcAttributeEmail"] = arg.oidcAttributeEmail;
+    if (arg.oidcAttributeClientId)
+      data["oidcAttributeClientId"] = arg.oidcAttributeClientId;
+    if (arg.oidcAttributePicture)
+      data["oidcAttributePicture"] = arg.oidcAttributePicture;
+    if (arg.oidcScope) data["oidcScope"] = arg.oidcScope;
+    if (arg.oidcAttributeMap)
+      data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
     return await this.repoClient
       .Post(`virtualproxyconfig`, { ...data })
       .then((res) => new Proxy(this.repoClient, res.data.id, res.data));
   }
 
-  // TODO: this method should be here or in VirtualProxy?
-  public async metadataExport(id: string, fileName?: string) {
-    if (!fileName) {
-      const virtualProxyInstance = new VirtualProxies(this.repoClient);
-      const virtualProxy = virtualProxyInstance.get(id);
+  // // TODO: this might not be needed. leaving here just in case
+  // public async addVirtualProxy(
+  //   virtualProxyId: string,
+  //   loadBalancingServerNodes?: string[],
+  //   websocketCrossOriginWhiteList?: string[]
+  // ) {
+  //   if (!virtualProxyId)
+  //     throw new Error(`proxy.virtualProxyAdd: "virtualProxyId" is required`);
 
-      fileName = `${(await virtualProxy).details.prefix}_metadata_sp.xml`;
-    }
+  //   const virtualProxyInstance = new VirtualProxies(this.repoClient);
+  //   const virtualProxy = await virtualProxyInstance.get(virtualProxyId);
 
-    let exportMetaData: string = await this.repoClient
-      .Get(`virtualproxyconfig/${id}/generate/samlmetadata`)
-      .then((m) => m.data as string);
-
-    return await this.repoClient
-      .Get(`download/samlmetadata/${exportMetaData}/${fileName}`)
-      .then((m) => m.data as Buffer);
-  }
-
-  // TODO: what is this method supposed to do?
-  public async addVirtualProxy(
-    virtualProxyId: string
-    // loadBalancingServerNodes?: string[],
-    // websocketCrossOriginWhiteList?: string[]
-  ) {
-    if (!virtualProxyId)
-      throw new Error(`proxy.virtualProxyAdd: "virtualProxyId" is required`);
-
-    const virtualProxyInstance = new VirtualProxies(this.repoClient);
-    const virtualProxy = await virtualProxyInstance.get(virtualProxyId);
-
-    return virtualProxy.details;
-  }
-
-  private parseSamlAttributeMap(
-    mappings: string[]
-  ): IVirtualProxyConfigSamlAttributeMapItem[] {
-    return mappings.map((mapping) => {
-      let [senseAttribute, samlAttribute] = mapping.split("=");
-      return {
-        senseAttribute: senseAttribute,
-        samlAttribute: samlAttribute,
-        isMandatory: true,
-      } as IVirtualProxyConfigSamlAttributeMapItem;
-    });
-  }
-
-  private parseJwtAttributeMap(
-    mappings: string[]
-  ): IVirtualProxyConfigJwtAttributeMapItem[] {
-    return mappings.map((mapping) => {
-      let [senseAttribute, jwtAttribute] = mapping.split("=");
-      return {
-        senseAttribute: senseAttribute,
-        jwtAttribute: jwtAttribute,
-        isMandatory: true,
-      } as IVirtualProxyConfigJwtAttributeMapItem;
-    });
-  }
+  //   return virtualProxy.details;
+  // }
 
   private async parseLoadBalancingNodes(
     nodes: string[]
@@ -223,15 +201,5 @@ export class Proxies implements IClassProxies {
 
       return nodeCondensed[0].details as IServerNodeConfigurationCondensed;
     });
-  }
-
-  private parseAuthenticationMethod(authenticationMethod: string): number {
-    if (authenticationMethod == "Ticket") return 0;
-    if (authenticationMethod == "static") return 1;
-    if (authenticationMethod == "dynamic") return 2;
-    if (authenticationMethod == "SAML") return 3;
-    if (authenticationMethod == "JWT") return 4;
-
-    return 0;
   }
 }

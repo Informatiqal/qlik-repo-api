@@ -14,7 +14,7 @@ export class Engine implements IClassEngine {
   private repoClient: QlikRepositoryClient;
   details: IEngine;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IEngine) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`engine.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;
@@ -24,14 +24,12 @@ export class Engine implements IClassEngine {
   async init() {
     if (!this.details) {
       this.details = await this.repoClient
-        .Get(`tag/${this.id}`)
+        .Get(`engineservice/${this.id}`)
         .then((res) => res.data as IEngine);
     }
   }
 
-  // REVIEW: double check the whole logic here
   public async update(arg: IEngineUpdate) {
-    if (!arg.id) throw new Error(`engine.update: "id" is required`);
     if (arg.workingSetSizeLoPct) {
       if (arg.workingSetSizeLoPct < 0 || arg.workingSetSizeLoPct > 100)
         throw new Error(
@@ -39,6 +37,37 @@ export class Engine implements IClassEngine {
         );
       this.details.settings.workingSetSizeLoPct = arg.workingSetSizeLoPct;
     }
+
+    if (arg.listenerPorts)
+      this.details.settings.listenerPorts = arg.listenerPorts;
+
+    if (arg.qrsHttpNotificationPort)
+      this.details.settings.qrsHttpNotificationPort =
+        arg.qrsHttpNotificationPort;
+
+    if (arg.hyperCubeMemoryLimit)
+      this.details.settings.hyperCubeMemoryLimit = arg.hyperCubeMemoryLimit;
+
+    if (arg.reloadMemoryLimit)
+      this.details.settings.reloadMemoryLimit = arg.reloadMemoryLimit;
+    if (arg.reloadTimeLimitSec)
+      this.details.settings.reloadTimeLimitSec = arg.reloadTimeLimitSec;
+
+    if (arg.exportMemoryLimit)
+      this.details.settings.exportMemoryLimit = arg.exportMemoryLimit;
+    if (arg.exportTimeLimitSec)
+      this.details.settings.exportTimeLimitSec = arg.exportTimeLimitSec;
+
+    if (arg.objectTimeLimitSec)
+      this.details.settings.objectTimeLimitSec = arg.objectTimeLimitSec;
+
+    if (arg.createSearchIndexOnReloadEnabled)
+      this.details.settings.createSearchIndexOnReloadEnabled =
+        arg.createSearchIndexOnReloadEnabled;
+
+    if (arg.globalLogMinuteInterval)
+      this.details.settings.globalLogMinuteInterval =
+        arg.globalLogMinuteInterval;
 
     if (arg.workingSetSizeHiPct) {
       if (arg.workingSetSizeHiPct < 0 || arg.workingSetSizeHiPct > 100)
@@ -245,7 +274,7 @@ export class Engine implements IClassEngine {
     this.details.modifiedDate = modifiedDateTime();
 
     return await this.repoClient
-      .Put(`engineservice/${arg.id}`, { ...this.details })
+      .Put(`engineservice/${this.details.id}`, { ...this.details })
       .then((res) => res.status);
   }
 }

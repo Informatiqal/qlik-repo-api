@@ -3,6 +3,7 @@ import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 import {
   IVirtualProxyConfig,
   IVirtualProxyConfigJwtAttributeMapItem,
+  IVirtualProxyConfigOidcAttributeMapItem,
   IVirtualProxyConfigSamlAttributeMapItem,
   IVirtualProxyUpdate,
 } from "./Proxy.interface";
@@ -11,10 +12,17 @@ import {
   IServerNodeConfigurationCondensed,
 } from "./Nodes";
 import { IClassNode, Node } from "./Node";
+import {
+  parseAuthenticationMethod,
+  parseJwtAttributeMap,
+  parseOidcAttributeMap,
+  parseSamlAttributeMap,
+} from "./util/parseAttributeMap";
 
 export interface IClassVirtualProxy {
   remove(): Promise<IHttpStatus>;
   update(arg: IVirtualProxyUpdate): Promise<IHttpStatus>;
+  metadataExport(fileName?: string): Promise<Buffer>;
   details: IVirtualProxyConfig;
 }
 
@@ -27,7 +35,7 @@ export class VirtualProxy implements IClassVirtualProxy {
     id: string,
     details?: IVirtualProxyConfig
   ) {
-    if (!id) throw new Error(`tags.get: "id" parameter is required`);
+    if (!id) throw new Error(`virtualProxy.get: "id" parameter is required`);
 
     this.id = id;
     this.repoClient = repoClient;
@@ -48,7 +56,6 @@ export class VirtualProxy implements IClassVirtualProxy {
       .then((res) => res.status);
   }
 
-  // TODO: handle oidc arguments
   public async update(arg: IVirtualProxyUpdate) {
     if (arg.prefix) this.details.prefix = arg.prefix;
     if (arg.description) this.details.description = arg.description;
@@ -76,7 +83,7 @@ export class VirtualProxy implements IClassVirtualProxy {
     if (arg.magicLinkFriendlyName)
       this.details.magicLinkFriendlyName = arg.magicLinkFriendlyName;
     if (arg.authenticationMethod) {
-      this.details.authenticationMethod = this.parseAuthenticationMethod(
+      this.details.authenticationMethod = parseAuthenticationMethod(
         arg.authenticationMethod
       );
     }
@@ -87,11 +94,11 @@ export class VirtualProxy implements IClassVirtualProxy {
       this.details.samlAttributeUserId = arg.samlAttributeUserId;
     if (arg.samlAttributeUserDirectory)
       this.details.samlAttributeUserDirectory = arg.samlAttributeUserDirectory;
-    if (arg.samlAttributeMap) {
-      this.details.samlAttributeMap = this.parseSamlAttributeMap(
+    if (arg.samlAttributeMap)
+      this.details.samlAttributeMap = parseSamlAttributeMap(
         arg.samlAttributeMap
       );
-    }
+
     if (arg.samlSlo) this.details.samlSlo = arg.samlSlo;
     if (arg.jwtPublicKeyCertificate)
       this.details.jwtPublicKeyCertificate = arg.jwtPublicKeyCertificate;
@@ -99,29 +106,51 @@ export class VirtualProxy implements IClassVirtualProxy {
       this.details.jwtAttributeUserId = arg.jwtAttributeUserId;
     if (arg.jwtAttributeUserDirectory)
       this.details.jwtAttributeUserDirectory = arg.jwtAttributeUserDirectory;
-    if (arg.jwtAttributeMap) {
-      this.details.jwtAttributeMap = this.parseJwtAttributeMap(
-        arg.jwtAttributeMap
+    if (arg.jwtAttributeMap)
+      this.details.jwtAttributeMap = parseJwtAttributeMap(arg.jwtAttributeMap);
+
+    if (arg.oidcConfigurationEndpointUri)
+      this.details.oidcConfigurationEndpointUri =
+        arg.oidcConfigurationEndpointUri;
+    if (arg.oidcClientId) this.details.oidcClientId = arg.oidcClientId;
+    if (arg.oidcClientSecret)
+      this.details.oidcClientSecret = arg.oidcClientSecret;
+    if (arg.oidcRealm) this.details.oidcRealm = arg.oidcRealm;
+    if (arg.oidcAttributeSub)
+      this.details.oidcAttributeSub = arg.oidcAttributeSub;
+    if (arg.oidcAttributeName)
+      this.details.oidcAttributeName = arg.oidcAttributeName;
+    if (arg.oidcAttributeGroups)
+      this.details.oidcAttributeGroups = arg.oidcAttributeGroups;
+    if (arg.oidcAttributeEmail)
+      this.details.oidcAttributeEmail = arg.oidcAttributeEmail;
+    if (arg.oidcAttributeClientId)
+      this.details.oidcAttributeClientId = arg.oidcAttributeClientId;
+    if (arg.oidcAttributePicture)
+      this.details.oidcAttributePicture = arg.oidcAttributePicture;
+    if (arg.oidcScope) this.details.oidcScope = arg.oidcScope;
+    if (arg.oidcAttributeMap)
+      this.details.oidcAttributeMap = parseOidcAttributeMap(
+        arg.oidcAttributeMap
       );
-    }
 
     return await this.repoClient
       .Put(`virtualproxyconfig/${this.details.id}`, this.details)
       .then((res) => res.status);
   }
 
-  // TODO: move these to separate file. Duplicating in Proxies.ts
-  private parseSamlAttributeMap(
-    mappings: string[]
-  ): IVirtualProxyConfigSamlAttributeMapItem[] {
-    return mappings.map((mapping) => {
-      let [senseAttribute, samlAttribute] = mapping.split("=");
-      return {
-        senseAttribute: senseAttribute,
-        samlAttribute: samlAttribute,
-        isMandatory: true,
-      } as IVirtualProxyConfigSamlAttributeMapItem;
-    });
+  public async metadataExport(fileName?: string) {
+    if (!fileName) {
+      fileName = `${this.details.prefix}_metadata_sp.xml`;
+    }
+
+    let exportMetaData: string = await this.repoClient
+      .Get(`virtualproxyconfig/${this.details.id}/generate/samlmetadata`)
+      .then((m) => m.data as string);
+
+    return await this.repoClient
+      .Get(`download/samlmetadata/${exportMetaData}/${fileName}`)
+      .then((m) => m.data as Buffer);
   }
 
   private async parseLoadBalancingNodes(
@@ -142,29 +171,6 @@ export class VirtualProxy implements IClassVirtualProxy {
       );
 
       return nodeCondensed[0].details as IServerNodeConfigurationCondensed;
-    });
-  }
-
-  private parseAuthenticationMethod(authenticationMethod: string): number {
-    if (authenticationMethod == "Ticket") return 0;
-    if (authenticationMethod == "static") return 1;
-    if (authenticationMethod == "dynamic") return 2;
-    if (authenticationMethod == "SAML") return 3;
-    if (authenticationMethod == "JWT") return 4;
-
-    return 0;
-  }
-
-  private parseJwtAttributeMap(
-    mappings: string[]
-  ): IVirtualProxyConfigJwtAttributeMapItem[] {
-    return mappings.map((mapping) => {
-      let [senseAttribute, jwtAttribute] = mapping.split("=");
-      return {
-        senseAttribute: senseAttribute,
-        jwtAttribute: jwtAttribute,
-        isMandatory: true,
-      } as IVirtualProxyConfigJwtAttributeMapItem;
     });
   }
 }

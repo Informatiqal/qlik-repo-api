@@ -11,7 +11,6 @@ import { IClassScheduler, Scheduler } from "./Scheduler";
 export type TSchedulerServiceType = "Master" | "Slave" | "MasterAndSlave";
 
 export interface ISchedulerServiceUpdate {
-  id: string;
   schedulerServiceType?: TSchedulerServiceType;
   maxConcurrentEngines?: number;
   engineTimeout?: number;

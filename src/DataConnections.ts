@@ -49,7 +49,6 @@ export interface IDataConnectionCreate {
 }
 
 export interface IDataConnectionUpdate {
-  id: string;
   connectionString?: string;
   username?: string;
   password?: string;
@@ -134,7 +133,7 @@ export class DataConnections implements IClassDataConnections {
 
   public async create(arg: IDataConnectionCreate) {
     if (!arg.name)
-      throw new Error(`dataConnection.create: "id" parameter is required`);
+      throw new Error(`dataConnection.create: "name" parameter is required`);
     if (!arg.connectionString)
       throw new Error(
         `dataConnection.create: "connectionString" parameter is required`
