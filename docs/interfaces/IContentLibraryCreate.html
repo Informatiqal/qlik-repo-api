@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ITaskCreate | Qlik Repo API</title>
+	<title>IContentLibraryCreate | Qlik Repo API</title>
 	<meta name="description" content="Documentation for Qlik Repo API">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">Qlik Repo API</a>
 				</li>
 				<li>
-					<a href="ITaskCreate.html">ITaskCreate</a>
+					<a href="IContentLibraryCreate.html">IContentLibraryCreate</a>
 				</li>
 			</ul>
-			<h1>Interface ITaskCreate</h1>
+			<h1>Interface IContentLibraryCreate</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ITaskCreate</span>
+						<span class="target">IContentLibraryCreate</span>
 					</li>
 				</ul>
 			</section>
@@ -80,10 +80,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreate.html#appId" class="tsd-kind-icon">app<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreate.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ITaskCreate.html#tags" class="tsd-kind-icon">tags</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IContentLibraryCreate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IContentLibraryCreate.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IContentLibraryCreate.html#owner" class="tsd-kind-icon">owner</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IContentLibraryCreate.html#tags" class="tsd-kind-icon">tags</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,22 +92,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="appId" class="tsd-anchor"></a>
-					<h3>app<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">app<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Task.interface.ts#L14">src/Task.interface.ts:14</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="customProperties" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> custom<wbr>Properties</h3>
 					<div class="tsd-signature tsd-kind-icon">custom<wbr>Properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Task.interface.ts#L16">src/Task.interface.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/ContentLibraries.ts#L50">src/ContentLibraries.ts:50</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -117,7 +107,17 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Task.interface.ts#L13">src/Task.interface.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/ContentLibraries.ts#L49">src/ContentLibraries.ts:49</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="owner" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> owner</h3>
+					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/ContentLibraries.ts#L52">src/ContentLibraries.ts:52</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -127,7 +127,7 @@
 					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Task.interface.ts#L15">src/Task.interface.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/ContentLibraries.ts#L51">src/ContentLibraries.ts:51</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -146,19 +146,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="ITaskCreate.html" class="tsd-kind-icon">ITask<wbr>Create</a>
+						<a href="IContentLibraryCreate.html" class="tsd-kind-icon">IContent<wbr>Library<wbr>Create</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreate.html#appId" class="tsd-kind-icon">app<wbr>Id</a>
+								<a href="IContentLibraryCreate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
+								<a href="IContentLibraryCreate.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreate.html#name" class="tsd-kind-icon">name</a>
+								<a href="IContentLibraryCreate.html#owner" class="tsd-kind-icon">owner</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="ITaskCreate.html#tags" class="tsd-kind-icon">tags</a>
+								<a href="IContentLibraryCreate.html#tags" class="tsd-kind-icon">tags</a>
 							</li>
 						</ul>
 					</li>

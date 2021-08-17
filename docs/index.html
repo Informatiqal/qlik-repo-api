@@ -64,8 +64,7 @@
 				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
 					<h2>Compatibility</h2>
 				</a>
-				<p>At the moment the module is compatible with <code>QSEoW</code> version <code>April 2019</code> (all patches)</p>
-				<p>In the next iterations the methods will be adapted to the latter version. Each iteration will be compatible with specific version of <code>QSEoW</code>.</p>
+				<p>At the moment the module is compatible with <code>QSEoW</code> version <code>May 2021</code></p>
 				<hr>
 				<p><strong>NOT AFFILIATED WITH QLIK</strong></p>
 				<hr>
@@ -76,66 +75,85 @@
 				<a href="#generic-clients" id="generic-clients" style="color: inherit; text-decoration: none;">
 					<h2>Generic clients</h2>
 				</a>
-				<p>The package expose two extra (generic) methods. Generic methods that are not bound to specific method/object. Aka raw methods. For them at least <code>url</code> and <code>body</code> (for <code>Post</code> and <code>Put</code> methods) must be provided</p>
+				<p>The package expose two extra (generic) methods. These methods are not &quot;bound&quot; to specific method/object (aka raw methods). These methods can be used in the cases where this package is not handling some specific endpoint. For them the <code>url</code> and <code>body</code> (for <code>Post</code> and <code>Put</code> methods) must be provided.</p>
 				<ul>
-					<li>repoClient - client that uses <code>/qrs</code> as prefix. The required <code>url</code> should be passed without the prefix</li>
-					<li>genericClient - client that have no prefix. Usually used for downloading temporary files</li>
+					<li><code>repoClient</code> - client that uses <code>/qrs</code> as prefix. The required <code>url</code> should be passed without the <code>/qrs</code> prefix</li>
+					<li><code>genericClient</code> - client that have no prefix. Useful for downloading temporary files (but not only)</li>
 				</ul>
-				<a href="#development-phases" id="development-phases" style="color: inherit; text-decoration: none;">
-					<h2>Development phases</h2>
+				<a href="#general-usage" id="general-usage" style="color: inherit; text-decoration: none;">
+					<h2>General usage</h2>
 				</a>
-				<p>Development will be done in few phases. The first few phases will deliver all methods. Followed by bug fixing and completing the tests phases.</p>
-				<a href="#phase-1" id="phase-1" style="color: inherit; text-decoration: none;">
-					<h3>Phase 1</h3>
-				</a>
-				<p>This is the base phase.
-					The code will be structured (but not finalized)
-				Methods for interacting with the following objects will be included:</p>
+				<p>The package expose few logical methods. For example: <code>apps</code>, <code>streams</code>, <code>users</code> etc. Each of these methods:</p>
 				<ul>
-					<li><code>About</code></li>
-					<li><code>App</code></li>
-					<li><code>Content library</code></li>
-					<li><code>Custom property</code></li>
-					<li><code>Engine</code></li>
-					<li><code>Extension</code></li>
-					<li><code>Stream</code></li>
-					<li><code>System rule</code></li>
-					<li><code>Table</code></li>
-					<li><code>Tag</code></li>
-					<li><code>Task</code></li>
-					<li><code>User</code></li>
+					<li>have <code>get</code> method that returns instance of the returned object</li>
+					<li>multiple methods that operates on multiple objects.</li>
 				</ul>
-				<a href="#phase-2" id="phase-2" style="color: inherit; text-decoration: none;">
-					<h3>Phase 2</h3>
+				<p>The <code>get</code> method will then have methods that are operating on the single returned object.</p>
+				<p><strong>For example:</strong></p>
+				<p>The <code>apps</code> method will expose the following methods:
+				<img src="./images/apps-methods.png" alt="Apps methods"></p>
+				<p>If we use the <code>get</code> method then the result variable will have additional methods:
+				<img src="./images/app-methods.png" alt="App methods"></p>
+				<p>All these methods (<code>copy</code>, <code>export</code>, <code>publish</code> etc.) will be executed in the context of the app id provided in the <code>get</code> method (<code>some-app-id</code>)</p>
+				<p><code>details</code> property will contain all the meta data for the app:</p>
+				<p><img src="./images/app-details.png" alt="App details"></p>
+				<p>The other methods (apart from <code>get</code>) might return array of object instances. For example <code>apps.getFilter</code> method will return an array of app instances:</p>
+				<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">someQlikApps</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">repoApi</span><span style="color: #000000">.</span><span style="color: #001080">apps</span><span style="color: #000000">.</span><span style="color: #795E26">getFilter</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;name sw &#039;License Monitor&#039;&quot;</span><span style="color: #000000">);</span>
+</code></pre>
+				<p>The <code>someQlikApps</code> variable will be an array of the <code>App</code> class. Each element of array will have <code>details</code> and the single app methods</p>
+				<p><img src="./images/apps-getFilter.PNG" alt="Apps"></p>
+				<p><img src="./images/apps-getFilter1.PNG" alt="Apps0"></p>
+				<a href="#usage-examples" id="usage-examples" style="color: inherit; text-decoration: none;">
+					<h2>Usage examples</h2>
 				</a>
-				<ul>
-					<li><code>Data connection</code></li>
-					<li><code>License</code></li>
-					<li><code>Node</code></li>
-					<li><code>User directory</code></li>
-					<li><code>Service cluster</code></li>
-					<li><code>Service status</code></li>
-				</ul>
-				<a href="#phase-3" id="phase-3" style="color: inherit; text-decoration: none;">
-					<h3>Phase 3</h3>
+				<a href="#update-app" id="update-app" style="color: inherit; text-decoration: none;">
+					<h3>Update app</h3>
 				</a>
-				<ul>
-					<li><code>Object</code></li>
-					<li><code>Proxy</code></li>
-					<li><code>Scheduler</code></li>
-					<li><code>Session</code></li>
-					<li><code>Shared content</code></li>
-					<li><code>Certificate</code></li>
-					<li><code>Privileges</code></li>
-				</ul>
-				<a href="#phase-4" id="phase-4" style="color: inherit; text-decoration: none;">
-					<h3>Phase 4</h3>
+				<p>For a single app: change the name, add custom properties and tags</p>
+				<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">someQlikApp</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">repoApi</span><span style="color: #000000">.</span><span style="color: #001080">apps</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;some-app-id&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">someQlikApp</span><span style="color: #000000">.</span><span style="color: #001080">details</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">updateResponse</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">someQlikApp</span><span style="color: #000000">.</span><span style="color: #795E26">update</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;new app name&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">tags:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;tag-name-1&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;tag-name-2&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">  </span><span style="color: #001080">customProperties:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;customProperty1=value1&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;customProperty1=value2&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;customProperty2=some-value&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  ],</span>
+<span style="color: #000000">});</span>
+</code></pre>
+				<a href="#update-multiple-apps" id="update-multiple-apps" style="color: inherit; text-decoration: none;">
+					<h3>Update multiple apps</h3>
 				</a>
-				<ul>
-					<li>more complete tests</li>
-					<li>bug fixing</li>
-					<li>releasing <code>v1</code></li>
-				</ul>
+				<p>For a single app: change the name, add custom properties and tags</p>
+				<pre><code class="language-javascript"><span style="color: #008000">// all apps with their name is starting with &quot;License&quot;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">licenseMonitorApps</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">repoApi</span><span style="color: #000000">.</span><span style="color: #001080">apps</span><span style="color: #000000">.</span><span style="color: #795E26">getFilter</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;name sw &#039;License&#039;&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// update each app by adding custom properties</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">updateResults</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #267F99">Promise</span><span style="color: #000000">.</span><span style="color: #795E26">all</span><span style="color: #000000">(</span>
+<span style="color: #000000">  </span><span style="color: #001080">licenseMonitorApps</span><span style="color: #000000">.</span><span style="color: #795E26">map</span><span style="color: #000000">((</span><span style="color: #001080">app</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span>
+<span style="color: #000000">    </span><span style="color: #001080">app</span><span style="color: #000000">.</span><span style="color: #795E26">update</span><span style="color: #000000">({</span>
+<span style="color: #000000">      </span><span style="color: #001080">customProperties:</span><span style="color: #000000"> [</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;customProperty1=value1&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;customProperty1=value2&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;customProperty2=some-value&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">      ],</span>
+<span style="color: #000000">    })</span>
+<span style="color: #000000">  )</span>
+<span style="color: #000000">);</span>
+</code></pre>
+				<p>Once all apps are updated the <code>updateResults</code> variable will be:</p>
+				<pre><code class="language-javascript"><span style="color: #000000">[</span>
+<span style="color: #000000">  { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;app-id-1&quot;</span><span style="color: #000000">, </span><span style="color: #001080">status:</span><span style="color: #000000"> </span><span style="color: #098658">200</span><span style="color: #000000"> },</span>
+<span style="color: #000000">  { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;app-id-2&quot;</span><span style="color: #000000">, </span><span style="color: #001080">status:</span><span style="color: #000000"> </span><span style="color: #098658">200</span><span style="color: #000000"> },</span>
+<span style="color: #000000">  { </span><span style="color: #001080">id:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;app-id-3&quot;</span><span style="color: #000000">, </span><span style="color: #001080">status:</span><span style="color: #000000"> </span><span style="color: #098658">200</span><span style="color: #000000"> },</span>
+<span style="color: #000000">  ...</span>
+<span style="color: #000000">]</span>
+</code></pre>
+				<p>As a &quot;side effect&quot; details for each app in <code>licenseMonitorApps</code> will also be updated in the variable and there is no need to call <code>getFilter</code> to retrieve the updated information.</p>
+				<p>More examples will be added in the <code>Examples</code> folder</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -525,6 +543,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/IContentLibraryCondensed.html" class="tsd-kind-icon">IContent<wbr>Library<wbr>Condensed</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/IContentLibraryCreate.html" class="tsd-kind-icon">IContent<wbr>Library<wbr>Create</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/IContentLibraryFile.html" class="tsd-kind-icon">IContent<wbr>Library<wbr>File</a>
