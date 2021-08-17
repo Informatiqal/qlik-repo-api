@@ -80,16 +80,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#ldapFilter" class="tsd-kind-icon">ldap<wbr>Filter</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#pageSize" class="tsd-kind-icon">page<wbr>Size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#password" class="tsd-kind-icon">password</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#path" class="tsd-kind-icon">path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#settings" class="tsd-kind-icon">settings</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#syncOnlyLoggedInUsers" class="tsd-kind-icon">sync<wbr>Only<wbr>Logged<wbr>InUsers</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#tags" class="tsd-kind-icon">tags</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#timeout" class="tsd-kind-icon">timeout</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#userName" class="tsd-kind-icon">user<wbr>Name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IUserDirectoryUpdate.html#userDirectoryName" class="tsd-kind-icon">user<wbr>Directory<wbr>Name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,72 +93,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="customProperties" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> custom<wbr>Properties</h3>
-					<div class="tsd-signature tsd-kind-icon">custom<wbr>Properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L59">src/UserDirectories.ts:59</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L50">src/UserDirectories.ts:50</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="ldapFilter" class="tsd-anchor"></a>
-					<h3>ldap<wbr>Filter</h3>
-					<div class="tsd-signature tsd-kind-icon">ldap<wbr>Filter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L55">src/UserDirectories.ts:55</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> name</h3>
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L51">src/UserDirectories.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/690861d/src/UserDirectories.ts#L62">src/UserDirectories.ts:62</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="pageSize" class="tsd-anchor"></a>
-					<h3>page<wbr>Size</h3>
-					<div class="tsd-signature tsd-kind-icon">page<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="settings" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> settings</h3>
+					<div class="tsd-signature tsd-kind-icon">settings<span class="tsd-signature-symbol">:</span> <a href="IUserDirectorySettingItem.html" class="tsd-signature-type" data-tsd-kind="Interface">IUserDirectorySettingItem</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L57">src/UserDirectories.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/690861d/src/UserDirectories.ts#L66">src/UserDirectories.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="password" class="tsd-anchor"></a>
-					<h3>password</h3>
-					<div class="tsd-signature tsd-kind-icon">password<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="syncOnlyLoggedInUsers" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> sync<wbr>Only<wbr>Logged<wbr>InUsers</h3>
+					<div class="tsd-signature tsd-kind-icon">sync<wbr>Only<wbr>Logged<wbr>InUsers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L54">src/UserDirectories.ts:54</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="path" class="tsd-anchor"></a>
-					<h3>path</h3>
-					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L52">src/UserDirectories.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/690861d/src/UserDirectories.ts#L64">src/UserDirectories.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -173,27 +128,17 @@
 					<div class="tsd-signature tsd-kind-icon">tags<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L58">src/UserDirectories.ts:58</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/690861d/src/UserDirectories.ts#L65">src/UserDirectories.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="timeout" class="tsd-anchor"></a>
-					<h3>timeout</h3>
-					<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="userDirectoryName" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> user<wbr>Directory<wbr>Name</h3>
+					<div class="tsd-signature tsd-kind-icon">user<wbr>Directory<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L56">src/UserDirectories.ts:56</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="userName" class="tsd-anchor"></a>
-					<h3>user<wbr>Name</h3>
-					<div class="tsd-signature tsd-kind-icon">user<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/4413b46/src/UserDirectories.ts#L53">src/UserDirectories.ts:53</a></li>
+							<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/690861d/src/UserDirectories.ts#L63">src/UserDirectories.ts:63</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -215,34 +160,19 @@
 						<a href="IUserDirectoryUpdate.html" class="tsd-kind-icon">IUser<wbr>Directory<wbr>Update</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#customProperties" class="tsd-kind-icon">custom<wbr>Properties</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#id" class="tsd-kind-icon">id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#ldapFilter" class="tsd-kind-icon">ldap<wbr>Filter</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="IUserDirectoryUpdate.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#pageSize" class="tsd-kind-icon">page<wbr>Size</a>
+								<a href="IUserDirectoryUpdate.html#settings" class="tsd-kind-icon">settings</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#password" class="tsd-kind-icon">password</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#path" class="tsd-kind-icon">path</a>
+								<a href="IUserDirectoryUpdate.html#syncOnlyLoggedInUsers" class="tsd-kind-icon">sync<wbr>Only<wbr>Logged<wbr>InUsers</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="IUserDirectoryUpdate.html#tags" class="tsd-kind-icon">tags</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#timeout" class="tsd-kind-icon">timeout</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="IUserDirectoryUpdate.html#userName" class="tsd-kind-icon">user<wbr>Name</a>
+								<a href="IUserDirectoryUpdate.html#userDirectoryName" class="tsd-kind-icon">user<wbr>Directory<wbr>Name</a>
 							</li>
 						</ul>
 					</li>
