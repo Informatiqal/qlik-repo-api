@@ -12,7 +12,7 @@ At the moment the module is compatible with `QSEoW` version `May 2021`
 
 ## Methods
 
-Full list of available methods can be found [here](https://informatiqal.github.io/qlik-repo-api/classes/QlikRepoApi.html)
+Full list of available methods can be found [here](https://informatiqal.github.io/qlik-repo-api/modules.html)
 
 ## Generic clients
 
