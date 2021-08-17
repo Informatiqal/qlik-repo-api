@@ -7,7 +7,6 @@ import {
 
 export interface IClassServiceCluster {
   remove(): Promise<IHttpStatus>;
-  setCentral(): Promise<IHttpStatus>;
   update(arg: IServiceClusterUpdate): Promise<IHttpStatus>;
   details: IServiceCluster;
 }
@@ -39,13 +38,6 @@ export class ServiceCluster implements IClassServiceCluster {
   public async remove() {
     return await this.repoClient
       .Delete(`ServiceCluster/${this.id}`)
-      .then((res) => res.status);
-  }
-
-  // TODO: this should be here or in Node?
-  public async setCentral() {
-    return await this.repoClient
-      .Get(`failover/tonode/${this.details.id}`)
       .then((res) => res.status);
   }
 

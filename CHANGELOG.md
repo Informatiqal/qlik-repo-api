@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.3] - 2021-08-XX
+## [0.1.3] - 2021-08-17
 
 ### Changed
 
@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 - corrected function names in few error messages
 - removed `id` from engine update interface
 - `engine.update` handling more arguments
+- `metadataExport` is moved under `VirtualProxy` class instead of `Proxy`
+- `setCentral` is moved under `Node` class instead of `ServiceCluster`
 
 ### Fixed
 
@@ -18,6 +20,10 @@ All notable changes to this project will be documented in this file.
 - sharedContent get uses the internal `id`
 
 ### Added
+
+- Oidc arguments are processed in Proxy/VirtualProxy
+- attribute parsing functions are in separate file (multiple files are using them)
+- schema trigger specific functions are in separate file (multiple files are using them)
 
 ## [0.1.2] - 2021-08-17
 

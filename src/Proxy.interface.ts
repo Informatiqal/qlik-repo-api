@@ -40,6 +40,18 @@ export interface IVirtualProxyUpdate {
   sessionInactivityTimeout?: number;
   tags?: string[];
   customProperties?: string[];
+  oidcConfigurationEndpointUri?: string;
+  oidcClientId?: string;
+  oidcClientSecret?: string;
+  oidcRealm?: string;
+  oidcAttributeSub?: string;
+  oidcAttributeName?: string;
+  oidcAttributeGroups?: string;
+  oidcAttributeEmail?: string;
+  oidcAttributeClientId?: string;
+  oidcAttributePicture?: string;
+  oidcScope?: string;
+  oidcAttributeMap?: string[];
 }
 
 export interface IVirtualProxyCreate {
@@ -72,6 +84,18 @@ export interface IVirtualProxyCreate {
   jwtAttributeUserDirectory?: string;
   jwtAttributeMap?: string[];
   sessionInactivityTimeout?: number;
+  oidcConfigurationEndpointUri?: string;
+  oidcClientId?: string;
+  oidcClientSecret?: string;
+  oidcRealm?: string;
+  oidcAttributeSub?: string;
+  oidcAttributeName?: string;
+  oidcAttributeGroups?: string;
+  oidcAttributeEmail?: string;
+  oidcAttributeClientId?: string;
+  oidcAttributePicture?: string;
+  oidcScope?: string;
+  oidcAttributeMap?: string[];
 }
 export interface IProxyCreate {
   prefix?: string;
@@ -102,6 +126,18 @@ export interface IProxyCreate {
   jwtAttributeUserDirectory?: string;
   jwtAttributeMap?: string[];
   sessionInactivityTimeout?: number;
+  oidcConfigurationEndpointUri?: string;
+  oidcClientId?: string;
+  oidcClientSecret?: string;
+  oidcRealm?: string;
+  oidcAttributeSub?: string;
+  oidcAttributeName?: string;
+  oidcAttributeGroups?: string;
+  oidcAttributeEmail?: string;
+  oidcAttributeClientId?: string;
+  oidcAttributePicture?: string;
+  oidcScope?: string;
+  oidcAttributeMap?: string[];
 }
 
 export interface IProxyUpdate {
@@ -156,6 +192,11 @@ export interface IVirtualProxyConfigSamlAttributeMapItem
 export interface IVirtualProxyConfigJwtAttributeMapItem
   extends IVirtualProxyConfigAttributeMapItem {
   jwtAttribute: string;
+}
+
+export interface IVirtualProxyConfigOidcAttributeMapItem
+  extends IVirtualProxyConfigAttributeMapItem {
+  oidcAttribute: string;
 }
 
 export interface IVirtualProxyConfigOidcAttributeMapItem

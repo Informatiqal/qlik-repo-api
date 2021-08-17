@@ -13,6 +13,12 @@ import {
   IServerNodeConfigurationCondensed,
 } from "./Nodes";
 import { IClassNode, Node } from "./Node";
+import {
+  parseAuthenticationMethod,
+  parseJwtAttributeMap,
+  parseOidcAttributeMap,
+  parseSamlAttributeMap,
+} from "./util/parseAttributeMap";
 
 export interface IClassVirtualProxies {
   get(id: string): Promise<IClassVirtualProxy>;
@@ -111,7 +117,7 @@ export class VirtualProxies implements IClassVirtualProxies {
     }
 
     if (arg.authenticationMethod)
-      data["authenticationMethod"] = this.parseAuthenticationMethod(
+      data["authenticationMethod"] = parseAuthenticationMethod(
         arg.authenticationMethod
       );
 
@@ -134,9 +140,7 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (arg.samlAttributeUserDirectory)
       data["samlAttributeUserDirectory"] = arg.samlAttributeUserDirectory;
     if (arg.samlAttributeMap) {
-      data["samlAttributeMap"] = this.parseSamlAttributeMap(
-        arg.samlAttributeMap
-      );
+      data["samlAttributeMap"] = parseSamlAttributeMap(arg.samlAttributeMap);
     }
 
     if (arg.samlSlo) data["samlSlo"] = arg.samlSlo;
@@ -147,8 +151,28 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (arg.jwtAttributeUserDirectory)
       data["jwtAttributeUserDirectory"] = arg.jwtAttributeUserDirectory;
     if (arg.jwtAttributeMap) {
-      data["jwtAttributeMap"] = this.parseJwtAttributeMap(arg.jwtAttributeMap);
+      data["jwtAttributeMap"] = parseJwtAttributeMap(arg.jwtAttributeMap);
     }
+
+    if (arg.oidcConfigurationEndpointUri)
+      data["oidcConfigurationEndpointUri"] = arg.oidcConfigurationEndpointUri;
+    if (arg.oidcClientId) data["oidcClientId"] = arg.oidcClientId;
+    if (arg.oidcClientSecret) data["oidcClientSecret"] = arg.oidcClientSecret;
+    if (arg.oidcRealm) data["oidcRealm"] = arg.oidcRealm;
+    if (arg.oidcAttributeSub) data["oidcAttributeSub"] = arg.oidcAttributeSub;
+    if (arg.oidcAttributeName)
+      data["oidcAttributeName"] = arg.oidcAttributeName;
+    if (arg.oidcAttributeGroups)
+      data["oidcAttributeGroups"] = arg.oidcAttributeGroups;
+    if (arg.oidcAttributeEmail)
+      data["oidcAttributeEmail"] = arg.oidcAttributeEmail;
+    if (arg.oidcAttributeClientId)
+      data["oidcAttributeClientId"] = arg.oidcAttributeClientId;
+    if (arg.oidcAttributePicture)
+      data["oidcAttributePicture"] = arg.oidcAttributePicture;
+    if (arg.oidcScope) data["oidcScope"] = arg.oidcScope;
+    if (arg.oidcAttributeMap)
+      data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
     return await this.repoClient
       .Post(`virtualproxyconfig`, { ...data })
@@ -156,7 +180,6 @@ export class VirtualProxies implements IClassVirtualProxies {
       .then((d) => new VirtualProxy(this.repoClient, d.id, d));
   }
 
-  // TODO: move these to separate file. Duplicating in Proxies.ts
   private async parseLoadBalancingNodes(
     nodes: string[]
   ): Promise<IServerNodeConfigurationCondensed[]> {
@@ -175,42 +198,6 @@ export class VirtualProxies implements IClassVirtualProxies {
       );
 
       return nodeCondensed[0].details as IServerNodeConfigurationCondensed;
-    });
-  }
-
-  private parseAuthenticationMethod(authenticationMethod: string): number {
-    if (authenticationMethod == "Ticket") return 0;
-    if (authenticationMethod == "static") return 1;
-    if (authenticationMethod == "dynamic") return 2;
-    if (authenticationMethod == "SAML") return 3;
-    if (authenticationMethod == "JWT") return 4;
-
-    return 0;
-  }
-
-  private parseSamlAttributeMap(
-    mappings: string[]
-  ): IVirtualProxyConfigSamlAttributeMapItem[] {
-    return mappings.map((mapping) => {
-      let [senseAttribute, samlAttribute] = mapping.split("=");
-      return {
-        senseAttribute: senseAttribute,
-        samlAttribute: samlAttribute,
-        isMandatory: true,
-      } as IVirtualProxyConfigSamlAttributeMapItem;
-    });
-  }
-
-  private parseJwtAttributeMap(
-    mappings: string[]
-  ): IVirtualProxyConfigJwtAttributeMapItem[] {
-    return mappings.map((mapping) => {
-      let [senseAttribute, jwtAttribute] = mapping.split("=");
-      return {
-        senseAttribute: senseAttribute,
-        jwtAttribute: jwtAttribute,
-        isMandatory: true,
-      } as IVirtualProxyConfigJwtAttributeMapItem;
     });
   }
 }
