@@ -113,4 +113,4 @@ Once all apps are updated the `updateResults` variable will be:
 
 As a "side effect" details for each app in `licenseMonitorApps` will also be updated in the variable and there is no need to call `getFilter` to retrieve the updated information.
 
-More examples will be added in the `Examples` folder
+More examples to follow
