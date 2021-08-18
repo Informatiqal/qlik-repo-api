@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.7] - 2021-08-18
+
+### Changed
+
+- admin changes for separating the tests `tsconfig`
+
+### Fixed
+
+- `genericClient` not being passed in all instances
+
 ## [0.1.5] - 2021-08-18
 
 ### Changed

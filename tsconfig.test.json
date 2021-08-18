@@ -4,9 +4,11 @@
         "target": "ES5",
         "declaration": true,
         "declarationDir": "./dist",
-        "module": "ES6",
+        "module": "CommonJS",
         "noImplicitAny": false,
         "sourceMap": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
     },
     "include": [
         "src/**/*"

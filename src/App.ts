@@ -1,6 +1,6 @@
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import { IHttpStatus } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IApp } from "./Apps";
 

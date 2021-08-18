@@ -34,11 +34,9 @@ describe("Phase1", function () {
     let allApps = await repoApi.apps.getAll();
     let singleApp = await repoApi.apps.get(allApps[0].details.id);
     let filterApp = await repoApi.apps.getFilter(
-      `name eq '${singleApp.details.name}'`
+      `id eq ${singleApp.details.id}`
     );
-    let selectApp = await repoApi.apps.select(
-      `name eq '${singleApp.details.name}'`
-    );
+    let selectApp = await repoApi.apps.select(`id eq ${singleApp.details.id}`);
 
     expect(allApps.length).to.be.greaterThan(0) &&
       expect(singleApp.details.id).to.be.equal(allApps[0].details.id) &&

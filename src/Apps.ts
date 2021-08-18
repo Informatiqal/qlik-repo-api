@@ -82,7 +82,9 @@ export class Apps implements IClassApps {
       .Get(`app/full`)
       .then((res) => res.data as IApp[])
       .then((data) => {
-        return data.map((t) => new App(this.repoClient, t.id, t));
+        return data.map(
+          (t) => new App(this.repoClient, t.id, t, this.genericClient)
+        );
       });
   }
 
@@ -98,7 +100,9 @@ export class Apps implements IClassApps {
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IApp[])
       .then((data) => {
-        return data.map((t) => new App(this.repoClient, t.id, t));
+        return data.map(
+          (t) => new App(this.repoClient, t.id, t, this.genericClient)
+        );
       });
   }
 
@@ -118,7 +122,15 @@ export class Apps implements IClassApps {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => new App(this.repoClient, (res.data as IApp).id, res.data));
+      .then(
+        (res) =>
+          new App(
+            this.repoClient,
+            (res.data as IApp).id,
+            res.data,
+            this.genericClient
+          )
+      );
   }
 
   public async uploadAndReplace(
@@ -143,7 +155,15 @@ export class Apps implements IClassApps {
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
-      .then((res) => new App(this.repoClient, (res.data as IApp).id));
+      .then(
+        (res) =>
+          new App(
+            this.repoClient,
+            (res.data as IApp).id,
+            null,
+            this.genericClient
+          )
+      );
   }
 
   public async removeFilter(filter: string) {

@@ -105,7 +105,9 @@ export class ContentLibraries implements IClassContentLibraries {
     return await this.repoClient
       .Post(`contentlibrary`, { name: arg.name, ...commonProps })
       .then((res) => res.data as IContentLibrary)
-      .then((t) => new ContentLibrary(this.repoClient, t.id, t));
+      .then(
+        (t) => new ContentLibrary(this.repoClient, t.id, t, this.genericClient)
+      );
   }
 
   public async get(id: string) {
@@ -128,7 +130,12 @@ export class ContentLibraries implements IClassContentLibraries {
       .then((res) => res.data as IContentLibrary[])
       .then((data) => {
         return data.map((t) => {
-          return new ContentLibrary(this.repoClient, t.id, t);
+          return new ContentLibrary(
+            this.repoClient,
+            t.id,
+            t,
+            this.genericClient
+          );
         });
       });
   }
@@ -148,7 +155,12 @@ export class ContentLibraries implements IClassContentLibraries {
       .then((res) => res.data as IContentLibrary[])
       .then((data) => {
         return data.map((t) => {
-          return new ContentLibrary(this.repoClient, t.id, t);
+          return new ContentLibrary(
+            this.repoClient,
+            t.id,
+            t,
+            this.genericClient
+          );
         });
       });
   }
@@ -177,7 +189,8 @@ export class ContentLibraries implements IClassContentLibraries {
         return new ContentLibrary(
           this.repoClient,
           (res.data as IContentLibrary).id,
-          res.data as IContentLibrary
+          res.data as IContentLibrary,
+          this.genericClient
         );
       });
   }
@@ -203,7 +216,9 @@ export class ContentLibraries implements IClassContentLibraries {
     return await this.repoClient
       .Put(urlBuild.getUrl(), {}, mimeType)
       .then((res) => res.data as IContentLibrary)
-      .then((a) => new ContentLibrary(this.repoClient, a.id, a));
+      .then(
+        (a) => new ContentLibrary(this.repoClient, a.id, a, this.genericClient)
+      );
   }
 
   public async removeFilter(filter: string) {

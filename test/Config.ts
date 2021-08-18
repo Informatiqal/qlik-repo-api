@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 import https from "https";
-import { v4 as uuidv4 } from "uuid";
 
 const dotEnvPath = path.resolve(".env");
 require("dotenv").config({ path: dotEnvPath });
@@ -38,11 +37,18 @@ export class Helpers {
   constructor() {}
 
   uuidString(): string {
-    let guid = uuidv4();
+    let guid = this.uuid();
     return guid.replace(/-/g, "");
   }
 
   uuid(): string {
-    return uuidv4();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   }
 }
