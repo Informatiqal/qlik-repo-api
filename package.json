@@ -53,6 +53,7 @@
     "mocha": "^8.4.0",
     "nyc": "^15.1.0",
     "rollup": "^2.56.2",
+    "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-typescript2": "^0.30.0",
     "ts-node": "^10.0.0",
     "typedoc": "^0.21.5",
