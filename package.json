@@ -28,7 +28,7 @@
     "api"
   ],
   "files": [
-    "dist/src",
+    "dist",
     "*.json",
     "*.md",
     "LICENSE",
