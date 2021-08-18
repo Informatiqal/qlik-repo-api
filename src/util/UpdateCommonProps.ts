@@ -30,7 +30,7 @@ export class UpdateCommonProperties {
   public obj: any;
   constructor(
     qlikUtil: QlikRepositoryClient,
-    obj,
+    obj: any,
     arg:
       | IUserUpdate
       | IAppUpdate

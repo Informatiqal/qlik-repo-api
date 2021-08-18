@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2021-08-18
+
+### Changed
+
+- changes related to building the project
+
 ## [0.1.3] - 2021-08-17
 
 ### Changed

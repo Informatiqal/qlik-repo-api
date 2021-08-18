@@ -139,10 +139,9 @@ export class DataConnections implements IClassDataConnections {
         `dataConnection.create: "connectionString" parameter is required`
       );
 
-    let data = {
-      name: arg.name,
-      connectionstring: arg.connectionString,
-    };
+    let data: { [k: string]: any } = {};
+    data["name"] = arg.name;
+    data["connectionstring"] = arg.connectionString;
 
     if (arg.type) data["type"] = arg.type;
     if (arg.architecture) {

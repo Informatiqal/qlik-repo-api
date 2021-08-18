@@ -5,7 +5,7 @@ import {
 
 export class URLBuild {
   private url: string;
-  private params = [];
+  private params = [] as any;
   constructor(url: string) {
     this.url = url;
   }

@@ -274,18 +274,18 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     if (arg.daylightSavingTime != undefined)
       daylightSaving = arg.daylightSavingTime ? 0 : 1;
 
-    let createObj = {
-      name: arg.name,
-      timeZone: arg.timeZone || "UTC",
-      daylightSavingTime: daylightSaving,
-      startDate: arg.startDate || currentTimeStamp.toISOString(),
-      expirationDate: arg.expirationDate || "9999-01-01T00:00:00.000",
-      schemaFilterDescription: [schemaRepeatOpt.schemaFilterDescr],
-      incrementDescription: schemaRepeatOpt.incrementDescr,
-      incrementOption: 1,
-      eventType: 0,
-      enabled: arg.enabled || true,
-    };
+    let createObj: { [k: string]: any } = {};
+    createObj["name"] = arg.name;
+    createObj["timeZone"] = arg.timeZone || "UTC";
+    createObj["daylightSavingTime"] = daylightSaving;
+    createObj["startDate"] = arg.startDate || currentTimeStamp.toISOString();
+    createObj["expirationDate"] =
+      arg.expirationDate || "9999-01-01T00:00:00.000";
+    createObj["schemaFilterDescription"] = [schemaRepeatOpt.schemaFilterDescr];
+    createObj["incrementDescription"] = schemaRepeatOpt.incrementDescr;
+    createObj["incrementOption"] = 1;
+    createObj["eventType"] = 0;
+    createObj["enabled"] = arg.enabled || true;
 
     if (this.details.taskType == 0) {
       createObj["reloadTask"] = this.details;

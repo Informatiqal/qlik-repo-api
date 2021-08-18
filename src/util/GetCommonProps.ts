@@ -20,7 +20,7 @@ export class GetCommonProperties {
     customProperties: [],
     tags: [],
     owner: {},
-  };
+  } as any;
   private user: IClassUsers;
   private tagsClass: IClassTags;
   private customPropertiesClass: IClassCustomProperties;

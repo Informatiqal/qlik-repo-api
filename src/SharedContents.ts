@@ -138,10 +138,10 @@ export class SharedContents implements IClassSharedContents {
     if (!arg.type)
       throw new Error(`sharedContent.create: "type" parameter is required`);
 
-    let sharedContent = {
-      name: arg.name,
-      type: arg.type,
-    };
+    let sharedContent: { [k: string]: any } = {};
+
+    sharedContent["name"] = arg.name;
+    sharedContent["type"] = arg.type;
 
     if (arg.description) sharedContent["description"] = arg.description;
 

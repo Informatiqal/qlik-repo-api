@@ -126,7 +126,7 @@ export class Proxy implements IClassProxy {
     vpArg: string[]
   ): Promise<IVirtualProxyConfigCondensed[]> {
     let allVP = await this.repoClient.Get(`proxyservice/full`);
-    let vpToAdd = allVP.data.filter((v) => {
+    let vpToAdd = allVP.data.filter((v: any) => {
       return vpArg.includes(v.prefix);
     });
     return vpToAdd;

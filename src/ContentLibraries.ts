@@ -1,3 +1,4 @@
+//@ts-ignore
 import getMime from "name2mime";
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { GetCommonProperties } from "./util/GetCommonProps";

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 const dotEnvPath = path.resolve(".env");
 require("dotenv").config({ path: dotEnvPath });
 
-import { QlikRepoApi } from "../src/main";
+import { QlikRepoApi } from "../src";
 
 export class Config {
   public repoApi: QlikRepoApi.client;

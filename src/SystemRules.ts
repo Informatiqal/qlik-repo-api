@@ -104,20 +104,20 @@ export class SystemRules implements IClassSystemRules {
   }
 
   public async licenseCreate(arg: ISystemRuleLicenseCreate) {
-    let rule = {
-      name: arg.name,
-      type: "Custom",
-      rule: arg.rule || "",
-      disabled: arg.disabled || false,
-      comment: arg.comment || "",
-      resourceFilter: "",
-      actions: 1,
-      ruleContext: 1,
-      schemaPath: "SystemRule",
-      category: "License",
-      customProperties: [],
-      tags: [],
-    };
+    let rule: { [k: string]: any } = {};
+
+    rule["name"] = arg.name;
+    rule["type"] = "Custom";
+    rule["rule"] = arg.rule || "";
+    rule["disabled"] = arg.disabled || false;
+    rule["comment"] = arg.comment || "";
+    rule["resourceFilter"] = "";
+    rule["actions"] = 1;
+    rule["ruleContext"] = 1;
+    rule["schemaPath"] = "SystemRule";
+    rule["category"] = "License";
+    rule["customProperties"] = [];
+    rule["tags"] = [];
 
     let commonProps = new GetCommonProperties(
       this.repoClient,

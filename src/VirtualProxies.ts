@@ -104,11 +104,11 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (!arg.prefix)
       throw new Error(`virtualProxy.prefix: "prefix" parameter is required`);
 
-    let data = {
-      sessionCookieHeaderName: arg.sessionCookieHeaderName,
-      prefix: arg.prefix,
-      description: arg.description || "",
-    };
+    let data: { [k: string]: any } = {};
+
+    data["sessionCookieHeaderName"] = arg.sessionCookieHeaderName;
+    data["prefix"] = arg.prefix;
+    data["description"] = arg.description || "";
 
     if (arg.loadBalancingServerNodes) {
       data["loadBalancingServerNodes"] = await this.parseLoadBalancingNodes(

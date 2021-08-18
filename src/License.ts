@@ -53,10 +53,10 @@ export class License implements IClassLicense {
   public async setSerial(arg: ILicenseSetSerial) {
     let url = `license`;
 
-    let data = {
-      name: arg.name,
-      organization: arg.organization || "",
-    };
+    let data: { [k: string]: any } = {};
+
+    data["name"] = arg.name;
+    data["organization"] = arg.organization || "";
 
     let method: "Post" | "Put";
 
@@ -88,10 +88,10 @@ export class License implements IClassLicense {
   public async setKey(arg: ILicenseSetKey) {
     let url = `license`;
 
-    let data = {
-      name: arg.name,
-      organization: arg.organization || "",
-    };
+    let data: { [k: string]: any } = {};
+
+    data["name"] = arg.name;
+    data["organization"] = arg.organization || "";
 
     let method: "Post" | "Put";
 

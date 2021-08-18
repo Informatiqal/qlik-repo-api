@@ -38,8 +38,7 @@ export interface ISchedulerServiceSettings {
   schedulerServiceType?: number;
   maxConcurrentEngines?: number;
   engineTimeout?: number;
-  logVerbosity;
-  SchedulerServiceSettingsLogVerbosity;
+  logVerbosity?: ISchedulerServiceSettingsLogVerbosity;
 }
 
 export interface ISchedulerService extends ISchedulerServiceCondensed {

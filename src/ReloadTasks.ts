@@ -91,20 +91,19 @@ export class ReloadTasks implements IClassReloadTasks {
       throw new Error(`task.create: "appId" parameter is required`);
     if (!arg.name) throw new Error(`task.create: "name" parameter is required`);
 
-    let reloadTask = {
-      schemaEvents: [],
-      compositeEvents: [],
-      task: {
-        name: arg.name,
-        app: { id: arg.appId },
-        taskType: 0,
-        enabled: true,
-        taskSessionTimeout: 1440,
-        maxRetries: 0,
-        isManuallyTriggered: false,
-        tags: [],
-        customProperties: [],
-      },
+    let reloadTask: { [k: string]: any } = {};
+    reloadTask["schemaEvents"] = [];
+    reloadTask["compositeEvents"] = [];
+    reloadTask["task"] = {
+      name: arg.name,
+      app: { id: arg.appId },
+      taskType: 0,
+      enabled: true,
+      taskSessionTimeout: 1440,
+      maxRetries: 0,
+      isManuallyTriggered: false,
+      tags: [],
+      customProperties: [],
     };
 
     let updateCommon = new UpdateCommonProperties(

@@ -45,11 +45,11 @@ export class Proxies implements IClassProxies {
     if (!virtualProxyId)
       throw new Error(`proxy.add: "virtualProxyId" is required`);
 
-    let proxy = await this.get(proxyId).then((p) => p[0] as IProxyService);
+    let proxy = await this.get(proxyId);
     const virtualProxyInstance = new VirtualProxies(this.repoClient);
     let virtualProxy = await virtualProxyInstance.get(virtualProxyId);
 
-    proxy.settings.virtualProxies.push(virtualProxy.details);
+    proxy.details.settings.virtualProxies.push(virtualProxy.details);
 
     return await this.repoClient
       .Post(`proxyservice/${proxyId}`, proxy)
@@ -103,10 +103,10 @@ export class Proxies implements IClassProxies {
         `proxy.create: "sessionCookieHeaderName" parameter is required`
       );
 
-    let data = {
-      description: arg.description,
-      sessionCookieHeaderName: arg.sessionCookieHeaderName,
-    };
+    let data: { [k: string]: any } = {};
+
+    data["description"] = arg.description;
+    data["sessionCookieHeaderName"] = arg.sessionCookieHeaderName;
 
     if (arg.loadBalancingServerNodes) {
       data["loadBalancingServerNodes"] = await this.parseLoadBalancingNodes(

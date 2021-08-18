@@ -35,9 +35,8 @@ export class Certificate implements IClassCertificate {
         `certificate.export: "machineNames" parameter is required`
       );
 
-    let data = {
-      machineNames: arg.machineNames,
-    };
+    let data: { [k: string]: any } = {};
+    data["machineNames"] = arg.machineNames;
 
     if (arg.certificatePassword)
       data["certificatePassword"] = arg.certificatePassword;
