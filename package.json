@@ -33,7 +33,8 @@
     "*.md",
     "LICENSE",
     "!CHANGELOG.md",
-    "!tsconfig.json"
+    "!tsconfig.json",
+    "!tsconfig.test.json"
   ],
   "repository": {
     "type": "git",
