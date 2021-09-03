@@ -48,7 +48,7 @@ export class GetCommonProperties {
         this.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
           return await this.customPropertiesClass
-            .getFilter(`name eq '${cpName}'`)
+            .getFilter({ filter: `name eq '${cpName}'` })
             .then((cpData) => {
               if (cpData.length == 0)
                 throw new Error(`Non existing custom property "${cpName}"`);
@@ -67,7 +67,7 @@ export class GetCommonProperties {
       this.props.tags = await Promise.all<ITagCondensed>(
         this.tags.map(async (tag) => {
           return await this.tagsClass
-            .getFilter(`name eq '${tag}'`)
+            .getFilter({ filter: `name eq '${tag}'` })
             .then((tagsData) => {
               if (tagsData.length == 0)
                 throw new Error(`Non existing tag "${tag}"`);
@@ -83,9 +83,9 @@ export class GetCommonProperties {
       let [userDirectory, userId] = this.owner.split("\\");
 
       this.props.owner = await this.user
-        .getFilter(
-          `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`
-        )
+        .getFilter({
+          filter: `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`,
+        })
         .then((userData) => {
           if (userData.length == 0)
             throw new Error(`Non existing user "${userDirectory}\\${userId}"`);

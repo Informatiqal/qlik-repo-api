@@ -115,7 +115,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L38">src/Proxies.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L38">src/Proxies.ts:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -138,23 +138,28 @@
 					<a name="add" class="tsd-anchor"></a>
 					<h3>add</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>proxyId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, virtualProxyId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>proxyId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>virtualProxyId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassProxies.html">IClassProxies</a>.<a href="../interfaces/IClassProxies.html#add">add</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L43">src/Proxies.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L43">src/Proxies.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>proxyId: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>virtualProxyId: <span class="tsd-signature-type">string</span></h5>
+									<h5>arg: <span class="tsd-signature-symbol">{ </span>proxyId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>virtualProxyId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>proxy<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>virtual<wbr>Proxy<wbr>Id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -172,7 +177,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassProxies.html">IClassProxies</a>.<a href="../interfaces/IClassProxies.html#create">create</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L98">src/Proxies.ts:98</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L100">src/Proxies.ts:100</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -189,20 +194,25 @@
 					<a name="get" class="tsd-anchor"></a>
 					<h3>get</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassProxies.html">IClassProxies</a>.<a href="../interfaces/IClassProxies.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L60">src/Proxies.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L62">src/Proxies.ts:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>arg: <span class="tsd-signature-symbol">{ </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -220,7 +230,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassProxies.html">IClassProxies</a>.<a href="../interfaces/IClassProxies.html#getAll">getAll</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L68">src/Proxies.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L70">src/Proxies.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -231,20 +241,25 @@
 					<a name="getFilter" class="tsd-anchor"></a>
 					<h3>get<wbr>Filter</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Filter<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Filter<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassProxies.html">IClassProxies</a>.<a href="../interfaces/IClassProxies.html#getFilter">getFilter</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L77">src/Proxies.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L79">src/Proxies.ts:79</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>filter: <span class="tsd-signature-type">string</span></h5>
+									<h5>arg: <span class="tsd-signature-symbol">{ </span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Proxy.html" class="tsd-signature-type" data-tsd-kind="Class">Proxy</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -255,20 +270,25 @@
 					<a name="select" class="tsd-anchor"></a>
 					<h3>select</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>filter<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassProxies.html">IClassProxies</a>.<a href="../interfaces/IClassProxies.html#select">select</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/Proxies.ts#L89">src/Proxies.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/Proxies.ts#L91">src/Proxies.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <span class="tsd-signature-type">string</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> arg: <span class="tsd-signature-symbol">{ </span>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>filter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ISelection.html" class="tsd-signature-type" data-tsd-kind="Interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>

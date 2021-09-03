@@ -11,7 +11,7 @@ import {
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassContentLibrary {
-  export(sourceFileName?: string): Promise<IContentLibraryFile[]>;
+  export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile[]>;
   remove(): Promise<IHttpStatus>;
   update(arg: IContentLibraryUpdate): Promise<IHttpStatus>;
   details: IContentLibrary;
@@ -44,7 +44,7 @@ export class ContentLibrary implements IClassContentLibrary {
     }
   }
 
-  async export(sourceFileName?: string) {
+  async export(arg: { sourceFileName?: string }) {
     let files: IStaticContentReferenceCondensed[] = [];
 
     if (
@@ -54,15 +54,15 @@ export class ContentLibrary implements IClassContentLibrary {
       throw new Error(
         `contentLibrary.export: exporting content library is not possible when the authentication is made with certificates`
       );
-    if (sourceFileName) {
+    if (arg.sourceFileName) {
       // if only one file have to be extracted
       files = this.details.references.filter((r) => {
-        return r.logicalPath.replace(/^.*[\\\/]/, "") == sourceFileName;
+        return r.logicalPath.replace(/^.*[\\\/]/, "") == arg.sourceFileName;
       });
     }
 
     // if all the files from the library have to be extracted
-    if (!sourceFileName) files = this.details.references;
+    if (!arg.sourceFileName) files = this.details.references;
 
     if (files.length == 0)
       throw new Error(

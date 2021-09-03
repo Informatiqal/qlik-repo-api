@@ -65,12 +65,12 @@ export interface IOwner {
 }
 
 export interface IClassUsers {
-  get(id: string): Promise<IClassUser>;
+  get(arg: { id: string }): Promise<IClassUser>;
   getAll(): Promise<IClassUser[]>;
-  getFilter(filter: string): Promise<IClassUser[]>;
+  getFilter(arg: { filter: string }): Promise<IClassUser[]>;
   create(arg: IUserCreate): Promise<IClassUser>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class Users implements IClassUsers {
@@ -79,9 +79,9 @@ export class Users implements IClassUsers {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`users.get: "id" parameter is required`);
-    const user: User = new User(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`users.get: "id" parameter is required`);
+    const user: User = new User(this.repoClient, arg.id);
     await user.init();
 
     return user;
@@ -98,11 +98,11 @@ export class Users implements IClassUsers {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`user.getFilter: "filter" parameter is required`);
     return await this.repoClient
-      .Get(`user/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`user/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IUser[])
       .then((data) => {
         return data.map((t) => new User(this.repoClient, t.id, t));
@@ -136,11 +136,11 @@ export class Users implements IClassUsers {
       .then((u) => new User(this.repoClient, u.id, u));
   }
 
-  public async removeFilter(filter: string): Promise<IEntityRemove[]> {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`user.removeFilter: "filter" parameter is required`);
 
-    const users = await this.getFilter(filter);
+    const users = await this.getFilter({ filter: arg.filter });
     return await Promise.all<IEntityRemove>(
       users.map((user: IClassUser) =>
         user.remove().then((s) => ({ id: user.details.id, status: s }))
@@ -148,9 +148,9 @@ export class Users implements IClassUsers {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/user`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

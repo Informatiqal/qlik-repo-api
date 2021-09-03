@@ -21,11 +21,11 @@ import {
 } from "./util/parseAttributeMap";
 
 export interface IClassVirtualProxies {
-  get(id: string): Promise<IClassVirtualProxy>;
+  get(arg: { id: string }): Promise<IClassVirtualProxy>;
   getAll(): Promise<IClassVirtualProxy[]>;
-  getFilter(filter: string): Promise<IClassVirtualProxy[]>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  getFilter(arg: { filter: string }): Promise<IClassVirtualProxy[]>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IVirtualProxyCreate): Promise<IClassVirtualProxy>;
 }
 
@@ -35,8 +35,8 @@ export class VirtualProxies implements IClassVirtualProxies {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    const vp: VirtualProxy = new VirtualProxy(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    const vp: VirtualProxy = new VirtualProxy(this.repoClient, arg.id);
     await vp.init();
 
     return vp;
@@ -53,27 +53,27 @@ export class VirtualProxies implements IClassVirtualProxies {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `virtualProxies.getFilter: "filter" parameter is required`
       );
 
     return await this.repoClient
-      .Get(`virtualproxyconfig?filter=(${encodeURIComponent(filter)})`)
+      .Get(`virtualproxyconfig?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IVirtualProxyConfig[])
       .then((data) => {
         return data.map((t) => new VirtualProxy(this.repoClient, t.id, t));
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `virtualProxies.removeFilter: "filter" parameter is required`
       );
 
-    const vps = await this.getFilter(filter);
+    const vps = await this.getFilter({ filter: arg.filter });
     if (vps.length == 0)
       throw new Error(
         `virtualProxies.removeFilter: filter query return 0 items`
@@ -86,9 +86,9 @@ export class VirtualProxies implements IClassVirtualProxies {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/virtualproxyconfig`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

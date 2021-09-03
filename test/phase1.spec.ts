@@ -32,11 +32,13 @@ describe("Phase1", function () {
    */
   it("List apps", async function () {
     let allApps = await repoApi.apps.getAll();
-    let singleApp = await repoApi.apps.get(allApps[0].details.id);
-    let filterApp = await repoApi.apps.getFilter(
-      `id eq ${singleApp.details.id}`
-    );
-    let selectApp = await repoApi.apps.select(`id eq ${singleApp.details.id}`);
+    let singleApp = await repoApi.apps.get({ id: allApps[0].details.id });
+    let filterApp = await repoApi.apps.getFilter({
+      filter: `id eq ${singleApp.details.id}`,
+    });
+    let selectApp = await repoApi.apps.select({
+      filter: `id eq ${singleApp.details.id}`,
+    });
 
     expect(allApps.length).to.be.greaterThan(0) &&
       expect(singleApp.details.id).to.be.equal(allApps[0].details.id) &&
@@ -65,7 +67,7 @@ describe("Phase1", function () {
     let streamName = helpers.uuid();
     let qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
 
-    let uploadedApp = await repoApi.apps.upload(appName, qvf);
+    let uploadedApp = await repoApi.apps.upload({ name: appName, file: qvf });
 
     let customProperty = await repoApi.customProperties.create({
       name: cpName,
@@ -75,7 +77,7 @@ describe("Phase1", function () {
 
     let tags = await Promise.all(
       tagNames.map(async (t) => {
-        return await repoApi.tags.create(t);
+        return await repoApi.tags.create({ name: t });
       })
     );
 
@@ -97,14 +99,14 @@ describe("Phase1", function () {
       customProperties: [`${cpName}=${cpValues[1]}`],
     });
 
-    let publishApp = await uploadedApp.publish(streamName);
+    let publishApp = await uploadedApp.publish({ stream: streamName });
 
     let deleteApp = await uploadedApp.remove();
     let deleteCP = await customProperty.remove();
     let deleteTags = await Promise.all(
       tags.map(async (t) => {
         return await repoApi.tags
-          .removeFilter(`name eq '${t.details.name}'`)
+          .removeFilter({ filter: `name eq '${t.details.name}'` })
           .then((t) => t[0]);
       })
     );
@@ -221,9 +223,9 @@ describe("Phase1", function () {
       ],
     });
 
-    const getNewUser = await repoApi.users.getFilter(
-      `name eq '${newUserConfig.userId}'`
-    );
+    const getNewUser = await repoApi.users.getFilter({
+      filter: `name eq '${newUserConfig.userId}'`,
+    });
     const deleteNewUser = await newUser.remove();
     const deleteCP = await newCustomProperty.remove();
 
@@ -248,9 +250,9 @@ describe("Phase1", function () {
     );
 
     await newDataConnection.remove();
-    const filter = await repoApi.dataConnections.getFilter(
-      `name eq '${connectionConfig.name}'`
-    );
+    const filter = await repoApi.dataConnections.getFilter({
+      filter: `name eq '${connectionConfig.name}'`,
+    });
 
     expect(newDataConnection.details.connectionstring).to.be.equal(
       connectionConfig.connectionString
@@ -268,7 +270,7 @@ describe("Phase1", function () {
   it("Reload task", async function () {
     const appName = helpers.uuid();
     const qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
-    const uploadedApp = await repoApi.apps.upload(appName, qvf);
+    const uploadedApp = await repoApi.apps.upload({ name: appName, file: qvf });
 
     const newReloadTask1 = await repoApi.reloadTasks.create({
       name: "New reload task 1",

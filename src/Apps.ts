@@ -39,23 +39,23 @@ export interface IApp extends IAppCondensed {
 }
 
 export interface IClassApps {
-  get(id: string): Promise<IClassApp>;
+  get(arg: { id: string }): Promise<IClassApp>;
   getAll(): Promise<IClassApp[]>;
-  getFilter(filter: string, orderBy?: string): Promise<IClassApp[]>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
-  upload(
-    name: string,
-    file: Buffer,
-    keepData?: boolean,
-    excludeDataConnections?: boolean
-  ): Promise<IClassApp>;
-  uploadAndReplace(
-    name: string,
-    targetAppId: string,
-    file: Buffer,
-    keepData?: boolean
-  ): Promise<IClassApp>;
+  getFilter(arg: { filter: string; orderBy?: string }): Promise<IClassApp[]>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
+  upload(arg: {
+    name: string;
+    file: Buffer;
+    keepData?: boolean;
+    excludeDataConnections?: boolean;
+  }): Promise<IClassApp>;
+  uploadAndReplace(arg: {
+    name: string;
+    targetAppId: string;
+    file: Buffer;
+    keepData?: boolean;
+  }): Promise<IClassApp>;
 }
 
 export class Apps implements IClassApps {
@@ -69,9 +69,9 @@ export class Apps implements IClassApps {
     this.genericClient = mainGenericClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`apps.get: "id" parameter is required`);
-    const app: App = new App(this.repoClient, id, null, this.genericClient);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`apps.get: "id" parameter is required`);
+    const app: App = new App(this.repoClient, arg.id, null, this.genericClient);
     await app.init();
 
     return app;
@@ -88,13 +88,13 @@ export class Apps implements IClassApps {
       });
   }
 
-  public async getFilter(filter: string, orderBy?: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string; orderBy?: string }) {
+    if (!arg.filter)
       throw new Error(`app.getFilter: "filter" parameter is required`);
 
     const urlBuild = new URLBuild(`app/full`);
-    urlBuild.addParam("filter", filter);
-    urlBuild.addParam("orderby", orderBy);
+    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("orderby", arg.orderBy);
 
     return await this.repoClient
       .Get(urlBuild.getUrl())
@@ -106,22 +106,22 @@ export class Apps implements IClassApps {
       });
   }
 
-  public async upload(
-    name: string,
-    file: Buffer,
-    keepData?: boolean,
-    excludeDataConnections?: boolean
-  ) {
-    if (!name) throw new Error(`app.upload: "name" parameter is required`);
-    if (!file) throw new Error(`app.upload: "file" parameter is required`);
+  public async upload(arg: {
+    name: string;
+    file: Buffer;
+    keepData?: boolean;
+    excludeDataConnections?: boolean;
+  }) {
+    if (!arg.name) throw new Error(`app.upload: "name" parameter is required`);
+    if (!arg.file) throw new Error(`app.upload: "file" parameter is required`);
 
     const urlBuild = new URLBuild("app/upload");
-    urlBuild.addParam("name", name);
-    urlBuild.addParam("keepdata", keepData);
-    urlBuild.addParam("excludeconnections", excludeDataConnections);
+    urlBuild.addParam("name", arg.name);
+    urlBuild.addParam("keepdata", arg.keepData);
+    urlBuild.addParam("excludeconnections", arg.excludeDataConnections);
 
     return await this.repoClient
-      .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
+      .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
           new App(
@@ -133,28 +133,28 @@ export class Apps implements IClassApps {
       );
   }
 
-  public async uploadAndReplace(
-    name: string,
-    targetAppId: string,
-    file: Buffer,
-    keepData?: boolean
-  ) {
-    if (!name)
+  public async uploadAndReplace(arg: {
+    name: string;
+    targetAppId: string;
+    file: Buffer;
+    keepData?: boolean;
+  }) {
+    if (!arg.name)
       throw new Error(`app.uploadAndReplace: "name" parameter is required`);
-    if (!file)
+    if (!arg.file)
       throw new Error(`app.uploadAndReplace: "file" parameter is required`);
-    if (!targetAppId)
+    if (!arg.targetAppId)
       throw new Error(
         `app.uploadAndReplace: "targetAppId" parameter is required`
       );
 
     const urlBuild = new URLBuild("app/upload/replace");
-    urlBuild.addParam("name", name);
-    urlBuild.addParam("keepdata", keepData);
-    urlBuild.addParam("targetappid", targetAppId);
+    urlBuild.addParam("name", arg.name);
+    urlBuild.addParam("keepdata", arg.keepData);
+    urlBuild.addParam("targetappid", arg.targetAppId);
 
     return await this.repoClient
-      .Post(urlBuild.getUrl(), file, "application/vnd.qlik.sense.app")
+      .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
           new App(
@@ -166,11 +166,11 @@ export class Apps implements IClassApps {
       );
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`app.removeFilter: "filter" parameter is required`);
 
-    const apps = await this.getFilter(filter);
+    const apps = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       apps.map((app: IClassApp) =>
         app.remove().then((s) => ({ id: app.details.id, status: s }))
@@ -178,9 +178,9 @@ export class Apps implements IClassApps {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/app`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

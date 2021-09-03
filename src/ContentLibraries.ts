@@ -54,28 +54,27 @@ export interface IContentLibraryCreate {
 }
 
 export interface IClassContentLibraries {
-  get(id: string): Promise<IClassContentLibrary>;
+  get(arg: { id: string }): Promise<IClassContentLibrary>;
   getAll(): Promise<IClassContentLibrary[]>;
-  getFilter(filter: string, orderBy?: string): Promise<IClassContentLibrary[]>;
-  import(
-    name: string,
-    file: Buffer,
-    arg?: {
-      externalPath?: string;
-      overwrite?: boolean;
-    }
-  ): Promise<IClassContentLibrary>;
-  importForApp(
-    appId: string,
-    file: Buffer,
-    arg?: {
-      externalPath?: string;
-      overwrite?: boolean;
-    }
-  ): Promise<IClassContentLibrary>;
+  getFilter(arg: {
+    filter: string;
+    orderBy?: string;
+  }): Promise<IClassContentLibrary[]>;
+  import(arg: {
+    name: string;
+    file: Buffer;
+    externalPath?: string;
+    overwrite?: boolean;
+  }): Promise<IClassContentLibrary>;
+  importForApp(arg: {
+    appId: string;
+    file: Buffer;
+    externalPath?: string;
+    overwrite?: boolean;
+  }): Promise<IClassContentLibrary>;
   create(arg: IContentLibraryCreate): Promise<IClassContentLibrary>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class ContentLibraries implements IClassContentLibraries {
@@ -110,12 +109,12 @@ export class ContentLibraries implements IClassContentLibraries {
       );
   }
 
-  public async get(id: string) {
-    if (!id)
+  public async get(arg: { id: string }) {
+    if (!arg.id)
       throw new Error(`contentLibraries.get: "id" parameter is required`);
     const cl: ContentLibrary = new ContentLibrary(
       this.repoClient,
-      id,
+      arg.id,
       null,
       this.genericClient
     );
@@ -140,15 +139,15 @@ export class ContentLibraries implements IClassContentLibraries {
       });
   }
 
-  public async getFilter(filter: string, orderBy?: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string; orderBy?: string }) {
+    if (!arg.filter)
       throw new Error(
         `contentLibrary.getFilter: "filter" parameter is required`
       );
 
     const urlBuild = new URLBuild(`contentlibrary/full`);
-    urlBuild.addParam("filter", filter);
-    urlBuild.addParam("orderby", orderBy);
+    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("orderby", arg.orderBy);
 
     return await this.repoClient
       .Get(urlBuild.getUrl())
@@ -165,24 +164,22 @@ export class ContentLibraries implements IClassContentLibraries {
       });
   }
 
-  public async import(
-    name: string,
-    file: Buffer,
-    arg?: {
-      externalPath?: string;
-      overwrite?: boolean;
-    }
-  ) {
-    if (!name)
+  public async import(arg: {
+    name: string;
+    file: Buffer;
+    externalPath?: string;
+    overwrite?: boolean;
+  }) {
+    if (!arg.name)
       throw new Error(`contentLibrary.import: "name" parameter is required`);
-    if (!file)
+    if (!arg.file)
       throw new Error(`contentLibrary.import: "file" parameter is required`);
 
-    const urlBuild = new URLBuild(`contentlibrary/${name}/uploadfile`);
+    const urlBuild = new URLBuild(`contentlibrary/${arg.name}/uploadfile`);
     urlBuild.addParam("externalpath", arg.externalPath || undefined);
     urlBuild.addParam("overwrite", arg.overwrite || undefined);
 
-    const mimeType = getMime(file);
+    const mimeType = getMime(arg.file);
     return await this.repoClient
       .Put(urlBuild.getUrl(), {}, mimeType)
       .then((res) => {
@@ -195,24 +192,22 @@ export class ContentLibraries implements IClassContentLibraries {
       });
   }
 
-  public async importForApp(
-    appId: string,
-    file: Buffer,
-    arg?: {
-      externalPath?: string;
-      overwrite?: boolean;
-    }
-  ) {
-    if (!appId)
+  public async importForApp(arg: {
+    appId: string;
+    file: Buffer;
+    externalPath?: string;
+    overwrite?: boolean;
+  }) {
+    if (!arg.appId)
       throw new Error(`contentLibrary.import: "name" parameter is required`);
-    if (!file)
+    if (!arg.file)
       throw new Error(`contentLibrary.import: "file" parameter is required`);
 
-    const urlBuild = new URLBuild(`appcontent/${appId}/uploadfile`);
+    const urlBuild = new URLBuild(`appcontent/${arg.appId}/uploadfile`);
     urlBuild.addParam("externalpath", arg.externalPath || undefined);
     urlBuild.addParam("overwrite", arg.overwrite || undefined);
 
-    const mimeType = getMime(file);
+    const mimeType = getMime(arg.file);
     return await this.repoClient
       .Put(urlBuild.getUrl(), {}, mimeType)
       .then((res) => res.data as IContentLibrary)
@@ -221,12 +216,12 @@ export class ContentLibraries implements IClassContentLibraries {
       );
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `contentLibrary.removeFilter: "filter" parameter is required`
       );
-    const contentLibraries = await this.getFilter(filter);
+    const contentLibraries = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       contentLibraries.map((contentLib: IClassContentLibrary) =>
         contentLib
@@ -236,9 +231,9 @@ export class ContentLibraries implements IClassContentLibraries {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/contentlibrary`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

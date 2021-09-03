@@ -88,12 +88,12 @@ export interface INodeCreate {
 
 export interface IClassNodes {
   count(): Promise<number>;
-  get(id: string): Promise<IClassNode>;
+  get(arg: { id: string }): Promise<IClassNode>;
   getAll(): Promise<IClassNode[]>;
-  getFilter(filter: string, full?: boolean): Promise<IClassNode[]>;
+  getFilter(arg: { filter: string; full?: boolean }): Promise<IClassNode[]>;
   create(arg: INodeCreate): Promise<IClassNode>;
   register(arg: INodeCreate): Promise<IHttpStatus>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
 }
 
 export class Nodes implements IClassNodes {
@@ -150,9 +150,9 @@ export class Nodes implements IClassNodes {
     return node;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`node.get: "id" parameter is required`);
-    const node: Node = new Node(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`node.get: "id" parameter is required`);
+    const node: Node = new Node(this.repoClient, arg.id);
     await node.init();
 
     return node;
@@ -167,13 +167,15 @@ export class Nodes implements IClassNodes {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`node.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
       .Get(
-        `servernodeconfiguration/full?filter=(${encodeURIComponent(filter)})`
+        `servernodeconfiguration/full?filter=(${encodeURIComponent(
+          arg.filter
+        )})`
       )
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
@@ -193,11 +195,11 @@ export class Nodes implements IClassNodes {
       .then((res) => res.status);
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`node.removeFilter: "filter" parameter is required`);
 
-    const nodes = await this.getFilter(filter);
+    const nodes = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       nodes.map((node: IClassNode) =>
         node.remove().then((s) => ({ id: node.details.id, status: s }))

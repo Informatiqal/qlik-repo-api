@@ -42,12 +42,15 @@ export interface IExtensionImport {
 }
 
 export interface IClassExtensions {
-  get(id: string): Promise<IClassExtension>;
+  get(arg: { id: string }): Promise<IClassExtension>;
   getAll(): Promise<IClassExtension[]>;
-  getFilter(filter: string, full?: boolean): Promise<IClassExtension[]>;
+  getFilter(arg: {
+    filter: string;
+    full?: boolean;
+  }): Promise<IClassExtension[]>;
   import(arg: IExtensionImport): Promise<IClassExtension>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class Extensions implements IClassExtensions {
@@ -56,9 +59,9 @@ export class Extensions implements IClassExtensions {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`extension.get: "id" parameter is required`);
-    const extension: Extension = new Extension(this.repoClient, id, null);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`extension.get: "id" parameter is required`);
+    const extension: Extension = new Extension(this.repoClient, arg.id, null);
     await extension.init();
 
     return extension;
@@ -73,25 +76,25 @@ export class Extensions implements IClassExtensions {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`extension.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`extension?filter=(${encodeURIComponent(filter)})`)
+      .Get(`extension?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IExtension[])
       .then((data) => {
         return data.map((t) => new Extension(this.repoClient, t.id, t));
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `extensions.removeFilter: "filter" parameter is required`
       );
 
-    const extensions = await this.getFilter(filter);
+    const extensions = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       extensions.map((extension: IClassExtension) =>
         extension
@@ -101,9 +104,9 @@ export class Extensions implements IClassExtensions {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/extension`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

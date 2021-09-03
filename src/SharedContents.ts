@@ -64,12 +64,12 @@ export interface ISharedContent extends ISharedContentCondensed {
 }
 
 export interface IClassSharedContents {
-  get(id: string): Promise<IClassSharedContent>;
+  get(arg: { id: string }): Promise<IClassSharedContent>;
   getAll(): Promise<IClassSharedContent[]>;
-  getFilter(filter: string): Promise<IClassSharedContent[]>;
+  getFilter(arg: { filter: string }): Promise<IClassSharedContent[]>;
   create(arg: ISharedContentCreate): Promise<IClassSharedContent>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class SharedContents implements IClassSharedContents {
@@ -78,9 +78,10 @@ export class SharedContents implements IClassSharedContents {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`sharedContent.get: "id" parameter is required`);
-    const shc: SharedContent = new SharedContent(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id)
+      throw new Error(`sharedContent.get: "id" parameter is required`);
+    const shc: SharedContent = new SharedContent(this.repoClient, arg.id);
     await shc.init();
 
     return shc;
@@ -95,27 +96,27 @@ export class SharedContents implements IClassSharedContents {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `sharedContent.getFilter: "filter" parameter is required`
       );
 
     return await this.repoClient
-      .Get(`sharedcontent/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`sharedcontent/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ISharedContent[])
       .then((data) => {
         return data.map((t) => new SharedContent(this.repoClient, t.id, t));
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `sharedContent.removeFilter: "filter" parameter is required`
       );
 
-    const shc = await this.getFilter(filter);
+    const shc = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       shc.map((sc: IClassSharedContent) =>
         sc.remove().then((s) => ({ id: sc.details.id, status: s }))
@@ -123,9 +124,9 @@ export class SharedContents implements IClassSharedContents {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/sharedcontent`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

@@ -40,12 +40,12 @@ export interface IStream extends IStreamCondensed {
 }
 
 export interface IClassStreams {
-  get(id: string): Promise<IClassStream>;
+  get(arg: { id: string }): Promise<IClassStream>;
   getAll(): Promise<IClassStream[]>;
-  getFilter(filter: string): Promise<IClassStream[]>;
-  create(name: IStreamCreate): Promise<IClassStream>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  getFilter(arg: { filter: string }): Promise<IClassStream[]>;
+  create(arg: IStreamCreate): Promise<IClassStream>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class Streams implements IClassStreams {
@@ -54,9 +54,9 @@ export class Streams implements IClassStreams {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`steam.get: "id" parameter is required`);
-    const stream: Stream = new Stream(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`steam.get: "id" parameter is required`);
+    const stream: Stream = new Stream(this.repoClient, arg.id);
     await stream.init();
 
     return stream;
@@ -71,12 +71,12 @@ export class Streams implements IClassStreams {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`stream.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`stream/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`stream/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IStream[])
       .then((data) => {
         return data.map((t) => new Stream(this.repoClient, t.id, t));
@@ -105,11 +105,11 @@ export class Streams implements IClassStreams {
       .then((s) => new Stream(this.repoClient, s.id, s));
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`stream.removeFilter: "filter" parameter is required`);
 
-    const streams = await this.getFilter(filter);
+    const streams = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       streams.map((stream: IClassStream) =>
         stream.remove().then((s) => ({ id: stream.details.id, status: s }))
@@ -117,9 +117,9 @@ export class Streams implements IClassStreams {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/stream`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

@@ -37,10 +37,11 @@ export interface IAppObject extends IAppObjectCondensed {
 }
 
 export interface IClassAppObjects {
-  get(id: string): Promise<IClassAppObject>;
+  get(arg: { id: string }): Promise<IClassAppObject>;
   getAll(): Promise<IClassAppObject[]>;
-  getFilter(filter: string): Promise<IClassAppObject[]>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  getFilter(arg?: { filter: string }): Promise<IClassAppObject[]>;
+  removeFilter(arg?: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 export class AppObjects implements IClassAppObjects {
   private repoClient: QlikRepositoryClient;
@@ -48,8 +49,8 @@ export class AppObjects implements IClassAppObjects {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    const appObject: AppObject = new AppObject(this.repoClient, id, null);
+  public async get(arg: { id: string }) {
+    const appObject: AppObject = new AppObject(this.repoClient, arg.id, null);
     await appObject.init();
 
     return appObject;
@@ -66,12 +67,12 @@ export class AppObjects implements IClassAppObjects {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`appObject.filter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`app/object/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`app/object/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IAppObject[])
       .then((data) => {
         return data.map((t) => {
@@ -80,11 +81,11 @@ export class AppObjects implements IClassAppObjects {
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`appObject.removeFilter: "filter" parameter is required`);
 
-    const appObjects = await this.getFilter(filter).then(
+    const appObjects = await this.getFilter({ filter: arg.filter }).then(
       (t: IClassAppObject[]) => {
         if (t.length == 0)
           throw new Error(
@@ -103,9 +104,9 @@ export class AppObjects implements IClassAppObjects {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/app/object`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

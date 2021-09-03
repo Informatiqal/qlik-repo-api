@@ -9,12 +9,12 @@ import { IClassReloadTask } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";
 
 export interface IClassExternalTasks {
-  get(id: string): Promise<IClassReloadTask>;
+  get(arg: { id: string }): Promise<IClassReloadTask>;
   getAll(): Promise<IClassReloadTask[]>;
-  getFilter(filter: string): Promise<IClassReloadTask[]>;
-  count(filter?: string): Promise<number>;
-  select(filter?: string): Promise<ISelection>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  getFilter(arg: { filter: string }): Promise<IClassReloadTask[]>;
+  count(arg?: { filter: string }): Promise<number>;
+  select(arg?: { filter: string }): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   create(arg: ITaskCreate): Promise<IClassReloadTask>;
 }
 
@@ -24,10 +24,10 @@ export class ExternalTasks implements IClassExternalTasks {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`reloadTasks.get: "id" parameter is required`);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
-    const extTask: ExternalTask = new ExternalTask(this.repoClient, id);
+    const extTask: ExternalTask = new ExternalTask(this.repoClient, arg.id);
     await extTask.init();
 
     return extTask;
@@ -44,12 +44,14 @@ export class ExternalTasks implements IClassExternalTasks {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
 
     return await this.repoClient
-      .Get(`externalprogramtask/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(
+        `externalprogramtask/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => {
@@ -58,22 +60,22 @@ export class ExternalTasks implements IClassExternalTasks {
       });
   }
 
-  public async count(filter?: string) {
+  public async count(arg?: { filter: string }) {
     let url: string = `externalprogramtask/count`;
-    if (filter) url += `${url}?filter=(${encodeURIComponent(filter)})`;
+    if (arg.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
 
     return await this.repoClient
       .Get(`${url}`)
       .then((res) => res.data.value as number);
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `reloadTasks.removeFilter: "filter" parameter is required`
       );
 
-    const tasks = await this.getFilter(filter);
+    const tasks = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       tasks.map((task: IClassReloadTask) =>
         task.remove().then((s) => ({ id: task.details.id, status: s }))
@@ -81,9 +83,9 @@ export class ExternalTasks implements IClassExternalTasks {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/externalprogramtask`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

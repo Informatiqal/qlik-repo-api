@@ -20,16 +20,19 @@ export interface IClassLicense {
   get(): Promise<ILicense>;
   setSerial(arg: ILicenseSetSerial): Promise<ILicense>;
   setKey(arg: ILicenseSetKey): Promise<ILicense>;
-  accessTypeGet(
-    accessType: TAccessType,
-    id?: string
-  ): Promise<ILicenseAccessTypeCondensed[]>;
+  accessTypeGet(arg: {
+    accessType: TAccessType;
+    id?: string;
+  }): Promise<ILicenseAccessTypeCondensed[]>;
   auditGet(arg: IAuditParameters): Promise<IAudit>;
-  accessTypeRemove(accessType: TAccessType, id: string): Promise<IHttpStatus>;
-  accessGroupCreate(
-    accessType: TAccessType,
-    name: string
-  ): Promise<ILicenseAccessGroup>;
+  accessTypeRemove(arg: {
+    accessType: TAccessType;
+    id: string;
+  }): Promise<IHttpStatus>;
+  accessGroupCreate(arg: {
+    accessType: TAccessType;
+    name: string;
+  }): Promise<ILicenseAccessGroup>;
 }
 
 export class License implements IClassLicense {
@@ -121,9 +124,9 @@ export class License implements IClassLicense {
       .then((res) => res.data as IAudit);
   }
 
-  public async accessTypeGet(accessType: TAccessType, id?: string) {
-    let url = `license/${accessType}AccessType`;
-    if (id) url += `/${id}`;
+  public async accessTypeGet(arg: { accessType: TAccessType; id?: string }) {
+    let url = `license/${arg.accessType}AccessType`;
+    if (arg.id) url += `/${arg.id}`;
 
     return await this.repoClient.Get(url).then((res: IHttpReturn) => {
       if (res.data.length > 0) return res.data as ILicenseAccessTypeCondensed[];
@@ -132,27 +135,30 @@ export class License implements IClassLicense {
     });
   }
 
-  public async accessTypeRemove(accessType: TAccessType, id: string) {
-    if (!id)
+  public async accessTypeRemove(arg: { accessType: TAccessType; id: string }) {
+    if (!arg.id)
       throw new Error(
         `license.accessTypeRemoveLogin: "id" parameter is required`
       );
 
-    let url = `license/${accessType}AccessType/${id}`;
+    let url = `license/${arg.accessType}AccessType/${arg.id}`;
 
     return await this.repoClient
       .Delete(url)
       .then((res: IHttpReturn) => res.status);
   }
 
-  public async accessGroupCreate(accessGroup: TAccessType, name: string) {
-    if (!name)
+  public async accessGroupCreate(arg: {
+    accessType: TAccessType;
+    name: string;
+  }) {
+    if (!arg.name)
       throw new Error(
         `license.accessGroupCreateUser: "name" parameter is required`
       );
 
     return await this.repoClient
-      .Post(`license/${accessGroup}AccessGroup`, { name })
+      .Post(`license/${arg.accessType}AccessGroup`, { name: arg.name })
       .then((res) => {
         return res.data as ILicenseAccessGroup;
       });

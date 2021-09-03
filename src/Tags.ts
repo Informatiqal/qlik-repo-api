@@ -16,13 +16,13 @@ export interface ITag extends ITagCondensed {
 }
 
 export interface IClassTags {
-  get(id: string): Promise<IClassTag>;
+  get(arg: { id: string }): Promise<IClassTag>;
   getAll(): Promise<IClassTag[]>;
-  getFilter(filter: string, full?: boolean): Promise<IClassTag[]>;
-  create(name: string): Promise<Tag>;
-  createMany(name: string[]): Promise<Tag[]>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  getFilter(arg: { filter: string; full?: boolean }): Promise<IClassTag[]>;
+  create(arg: { name: string }): Promise<Tag>;
+  createMany(arg: { names: string[] }): Promise<Tag[]>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class Tags implements IClassTags {
@@ -31,8 +31,8 @@ export class Tags implements IClassTags {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    const tag: Tag = new Tag(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    const tag: Tag = new Tag(this.repoClient, arg.id);
     await tag.init();
 
     return tag;
@@ -49,32 +49,32 @@ export class Tags implements IClassTags {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`tag.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`tag?filter=(${encodeURIComponent(filter)})`)
+      .Get(`tag?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ITag[])
       .then((data) => {
         return data.map((t) => new Tag(this.repoClient, t.id, t));
       });
   }
 
-  public async create(name: string) {
-    if (!name) throw new Error(`tag.create: "name" is required`);
+  public async create(arg: { name: string }) {
+    if (!arg.name) throw new Error(`tag.create: "name" is required`);
 
     return await this.repoClient
-      .Post(`tag`, { name })
+      .Post(`tag`, { name: arg.name })
       .then((res) => res.data as ITag)
       .then((t) => new Tag(this.repoClient, t.id, t));
   }
 
-  public async createMany(names: string[]) {
-    if (!names || names.length == 0)
+  public async createMany(arg: { names: string[] }) {
+    if (!arg.names || arg.names.length == 0)
       throw new Error(`tag.createMany: "names" parameter is required`);
 
-    const data = names.map((n) => {
+    const data = arg.names.map((n) => {
       return { name: n };
     });
 
@@ -84,11 +84,11 @@ export class Tags implements IClassTags {
       .then((tags) => tags.map((t) => new Tag(this.repoClient, t.id, t)));
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`tag.removeFilter: "filter" parameter is required`);
 
-    const tags = await this.getFilter(filter);
+    const tags = await this.getFilter({ filter: arg.filter });
     if (tags.length == 0)
       throw new Error(`tag.removeFilter: filter query return 0 items`);
 
@@ -99,9 +99,9 @@ export class Tags implements IClassTags {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/tag`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

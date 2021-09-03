@@ -30,8 +30,8 @@ export type IObject =
   | any;
 
 export interface IClassPrivileges {
-  get(item: IObject, filter?: string): Promise<string[]>;
-  assert(item: IObject, privileges?: string[]): Promise<boolean>;
+  get(arg: { item: IObject; filter?: string }): Promise<string[]>;
+  assert(arg: { item: IObject; privileges?: string[] }): Promise<boolean>;
 }
 
 export class Privileges implements IClassPrivileges {
@@ -40,26 +40,26 @@ export class Privileges implements IClassPrivileges {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(item: IObject, filter?: string) {
-    if (!item.schemaPath)
+  public async get(arg: { item: IObject; filter?: string }) {
+    if (!arg.item.schemaPath)
       throw new Error(`privileges.get: "object.schemaPath" is missing`);
-    let url = `${item.schemaPath}`;
-    if (filter) url += `/?privilegesFilter=${filter}`;
+    let url = `${arg.item.schemaPath}`;
+    if (arg.filter) url += `/?privilegesFilter=${arg.filter}`;
 
-    return await this.repoClient.Post(url, item).then((res) => {
+    return await this.repoClient.Post(url, arg.item).then((res) => {
       return res.data as string[];
     });
   }
 
-  public async assert(item: IObject, privileges?: string[]) {
-    let access = await this.get(item);
+  public async assert(arg: { item: IObject; privileges?: string[] }) {
+    const access = await this.get(arg.item);
 
-    privileges.filter((p) => {
+    arg.privileges.filter((p) => {
       if (!access.includes(p))
         throw new Error(
           `privileges.assert: Expected "${p}" to ber found in collection "${access.join(
             ", "
-          )}. ${item.schemaPath} - ${item.id}"`
+          )}. ${arg.item.schemaPath} - ${arg.item.id}"`
         );
 
       return p;

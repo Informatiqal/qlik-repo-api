@@ -83,7 +83,10 @@ export type TSelectionAreas =
   | "virtualproxyconfig";
 
 export interface IClassSelections {
-  create(area: TSelectionAreas, filter?: string): Promise<IClassSelection>;
+  create(arg: {
+    area: TSelectionAreas;
+    filter?: string;
+  }): Promise<IClassSelection>;
 }
 
 export class Selections implements IClassSelections {
@@ -92,11 +95,12 @@ export class Selections implements IClassSelections {
     this.repoClient = mainRepoClient;
   }
 
-  public async create(area: TSelectionAreas, filter?: string) {
-    if (!area) throw new Error(`select.create: "area" parameter is required`);
+  public async create(arg: { area: TSelectionAreas; filter?: string }) {
+    if (!arg.area)
+      throw new Error(`select.create: "area" parameter is required`);
 
-    const selection: Selection = new Selection(this.repoClient, area);
-    await selection.init(filter);
+    const selection: Selection = new Selection(this.repoClient, arg.area);
+    await selection.init(arg.filter);
 
     return selection;
   }

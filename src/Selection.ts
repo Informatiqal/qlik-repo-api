@@ -4,7 +4,7 @@ import { URLBuild } from "./util/generic";
 
 export interface IClassSelection {
   remove(): Promise<IHttpStatus>;
-  data(path: string): Promise<any>;
+  data(arg: { path: string }): Promise<any>;
 }
 
 export class Selection implements IClassSelection {
@@ -28,11 +28,12 @@ export class Selection implements IClassSelection {
     }
   }
 
-  async data(path: string) {
-    if (!path) throw new Error(`selection.data: "path" parameter is required`);
+  async data(arg: { path: string }) {
+    if (!arg.path)
+      throw new Error(`selection.data: "path" parameter is required`);
 
     return await this.repoClient
-      .Get(`selection/${this.details.id}/${path}`)
+      .Get(`selection/${this.details.id}/${arg.path}`)
       .then((res) => res.data);
   }
 

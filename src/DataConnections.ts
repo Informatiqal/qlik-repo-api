@@ -58,12 +58,15 @@ export interface IDataConnectionUpdate {
 }
 
 export interface IClassDataConnections {
-  get(id: string): Promise<IClassDataConnection>;
+  get(arg: { id: string }): Promise<IClassDataConnection>;
   getAll(): Promise<IClassDataConnection[]>;
-  getFilter(filter: string, orderBy?: string): Promise<IClassDataConnection[]>;
+  getFilter(arg: {
+    filter: string;
+    orderBy?: string;
+  }): Promise<IClassDataConnection[]>;
   create(arg: IDataConnectionCreate): Promise<IClassDataConnection>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class DataConnections implements IClassDataConnections {
@@ -72,10 +75,15 @@ export class DataConnections implements IClassDataConnections {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`dataConnections.get: "id" parameter is required`);
+  public async get(arg: { id: string }) {
+    if (!arg.id)
+      throw new Error(`dataConnections.get: "id" parameter is required`);
 
-    const dc: DataConnection = new DataConnection(this.repoClient, id, null);
+    const dc: DataConnection = new DataConnection(
+      this.repoClient,
+      arg.id,
+      null
+    );
     await dc.init();
 
     return dc;
@@ -90,15 +98,15 @@ export class DataConnections implements IClassDataConnections {
       });
   }
 
-  public async getFilter(filter: string, orderBy?: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string; orderBy?: string }) {
+    if (!arg.filter)
       throw new Error(
         `dataConnection.getFilter: "filter" parameter is required`
       );
 
     const urlBuild = new URLBuild(`dataconnection/full`);
-    urlBuild.addParam("filter", filter);
-    urlBuild.addParam("orderby", orderBy);
+    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("orderby", arg.orderBy);
 
     return await this.repoClient
       .Get(urlBuild.getUrl())
@@ -108,13 +116,13 @@ export class DataConnections implements IClassDataConnections {
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `dataConnection.removeFilter: "filter" parameter is required`
       );
 
-    const dcs = await this.getFilter(filter);
+    const dcs = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       dcs.map((dc: IClassDataConnection) =>
         dc.remove().then((s) => ({ id: dc.details.id, status: s }))
@@ -122,9 +130,9 @@ export class DataConnections implements IClassDataConnections {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/dataconnection`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

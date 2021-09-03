@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.8] - 2021-09-03
+
+### Changed
+
+- the arguments for all methods are object
+
 ## [0.1.7] - 2021-08-18
 
 ### Changed

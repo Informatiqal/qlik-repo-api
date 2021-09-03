@@ -18,9 +18,9 @@ export interface IClassReloadTask {
   remove(): Promise<IHttpStatus>;
   start(): Promise<IHttpStatus>;
   startSynchronous(): Promise<IHttpReturn>;
-  waitExecution(executionId?: string): Promise<ITaskExecutionResult>;
-  scriptLogGet(fileReferenceId: string): Promise<string>;
-  scriptLogFileGet(executionResultId: string): Promise<string>;
+  waitExecution(arg: { executionId?: string }): Promise<ITaskExecutionResult>;
+  scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
+  scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
   update(arg: ITaskReloadUpdate): Promise<IHttpStatus>;
   addTriggerComposite(arg: ITaskCreateTriggerComposite): Promise<IHttpStatus>;
   addTriggerSchema(arg: ITaskCreateTriggerSchema): Promise<IHttpStatus>;
@@ -75,16 +75,16 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     return await this.repoClient.Post(`task/${this.id}/start/synchronous`, {});
   }
 
-  async waitExecution(executionId?: string) {
+  async waitExecution(arg: { executionId?: string }) {
     let taskStatusCode = -1;
     let resultId: string;
 
-    if (!executionId)
+    if (!arg.executionId)
       resultId = this.details.operational.lastExecutionResult.id;
 
-    if (executionId) {
+    if (arg.executionId) {
       resultId = await this.repoClient
-        .Get(`/executionSession/${executionId}`)
+        .Get(`/executionSession/${arg.executionId}`)
         .then((res) => {
           return res.data.executionResult.Id;
         });
@@ -104,8 +104,8 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     return result;
   }
 
-  async scriptLogGet(fileReferenceId: string) {
-    if (!fileReferenceId)
+  async scriptLogGet(arg: { fileReferenceId: string }) {
+    if (!arg.fileReferenceId)
       throw new Error(
         `task.scriptLogGet: "fileReferenceId" parameter is required`
       );
@@ -118,14 +118,14 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       .Get(
         `${this.baseUrl}/${
           this.details.id
-        }/scriptlog?filereferenceid=${encodeURIComponent(fileReferenceId)}
+        }/scriptlog?filereferenceid=${encodeURIComponent(arg.fileReferenceId)}
     `
       )
       .then((res) => res.data as string);
   }
 
-  async scriptLogFileGet(executionResultId: string) {
-    if (!executionResultId)
+  async scriptLogFileGet(arg: { executionResultId: string }) {
+    if (!arg.executionResultId)
       throw new Error(
         `task.scriptLogFileGet: "executionResultId" parameter is required`
       );
@@ -139,7 +139,9 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       .Get(
         `${this.baseUrl}/${
           this.details.id
-        }/scriptlog?executionresultid =${encodeURIComponent(executionResultId)}
+        }/scriptlog?executionresultid =${encodeURIComponent(
+          arg.executionResultId
+        )}
   `
       )
       .then((res) => res.data as string);

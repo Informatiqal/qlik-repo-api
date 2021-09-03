@@ -117,7 +117,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L37">src/License.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L40">src/License.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -137,23 +137,28 @@
 					<a name="accessGroupCreate" class="tsd-anchor"></a>
 					<h3>access<wbr>Group<wbr>Create</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Group<wbr>Create<span class="tsd-signature-symbol">(</span>accessGroup<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">access<wbr>Group<wbr>Create<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#accessGroupCreate">accessGroupCreate</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L148">src/License.ts:148</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L151">src/License.ts:151</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>accessGroup: <span class="tsd-signature-type">TAccessType</span></h5>
-								</li>
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>arg: <span class="tsd-signature-symbol">{ </span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>access<wbr>Type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ILicenseAccessGroup.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicenseAccessGroup</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -164,23 +169,28 @@
 					<a name="accessTypeGet" class="tsd-anchor"></a>
 					<h3>access<wbr>Type<wbr>Get</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<span class="tsd-signature-symbol">(</span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span>, id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Get<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span><span class="tsd-signature-symbol">; </span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#accessTypeGet">accessTypeGet</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L124">src/License.ts:124</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L127">src/License.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>accessType: <span class="tsd-signature-type">TAccessType</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> id: <span class="tsd-signature-type">string</span></h5>
+									<h5>arg: <span class="tsd-signature-symbol">{ </span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span><span class="tsd-signature-symbol">; </span>id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>access<wbr>Type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> id<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -198,7 +208,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#accessTypeInfoGet">accessTypeInfoGet</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L41">src/License.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L44">src/License.ts:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/IAccessTypeInfo.html" class="tsd-signature-type" data-tsd-kind="Interface">IAccessTypeInfo</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -209,23 +219,28 @@
 					<a name="accessTypeRemove" class="tsd-anchor"></a>
 					<h3>access<wbr>Type<wbr>Remove</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<span class="tsd-signature-symbol">(</span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">access<wbr>Type<wbr>Remove<span class="tsd-signature-symbol">(</span>arg<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span><span class="tsd-signature-symbol">; </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#accessTypeRemove">accessTypeRemove</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L135">src/License.ts:135</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L138">src/License.ts:138</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>accessType: <span class="tsd-signature-type">TAccessType</span></h5>
-								</li>
-								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>arg: <span class="tsd-signature-symbol">{ </span>accessType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span><span class="tsd-signature-symbol">; </span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>access<wbr>Type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TAccessType</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -243,7 +258,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#auditGet">auditGet</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L114">src/License.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L117">src/License.ts:117</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -267,7 +282,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#get">get</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L47">src/License.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L50">src/License.ts:50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/ILicense.html" class="tsd-signature-type" data-tsd-kind="Interface">ILicense</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -285,7 +300,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#setKey">setKey</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L88">src/License.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L91">src/License.ts:91</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -309,7 +324,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/IClassLicense.html">IClassLicense</a>.<a href="../interfaces/IClassLicense.html#setSerial">setSerial</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/8c0a90e/src/License.ts#L53">src/License.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/85b31aa/src/License.ts#L56">src/License.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

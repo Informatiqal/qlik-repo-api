@@ -3,9 +3,9 @@ import { ITask } from "./Task.interface";
 import { IClassTask, Task } from "./Task";
 
 export interface IClassTasks {
-  get(id: string): Promise<IClassTask>;
+  get(arg: { id: string }): Promise<IClassTask>;
   getAll(): Promise<IClassTask[]>;
-  getFilter(filter: string): Promise<IClassTask[]>;
+  getFilter(arg: { filter: string }): Promise<IClassTask[]>;
 }
 
 export class Tasks implements IClassTasks {
@@ -14,8 +14,8 @@ export class Tasks implements IClassTasks {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    const task: Task = new Task(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    const task: Task = new Task(this.repoClient, arg.id);
     await task.init();
 
     return task;
@@ -32,12 +32,12 @@ export class Tasks implements IClassTasks {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`tasks.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`tasks?filter=(${encodeURIComponent(filter)})`)
+      .Get(`tasks?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => new Task(this.repoClient, t.id, t));

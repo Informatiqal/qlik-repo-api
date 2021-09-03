@@ -22,7 +22,7 @@ import {
 export interface IClassVirtualProxy {
   remove(): Promise<IHttpStatus>;
   update(arg: IVirtualProxyUpdate): Promise<IHttpStatus>;
-  metadataExport(fileName?: string): Promise<Buffer>;
+  metadataExport(arg?: { fileName: string }): Promise<Buffer>;
   details: IVirtualProxyConfig;
 }
 
@@ -139,17 +139,15 @@ export class VirtualProxy implements IClassVirtualProxy {
       .then((res) => res.status);
   }
 
-  public async metadataExport(fileName?: string) {
-    if (!fileName) {
-      fileName = `${this.details.prefix}_metadata_sp.xml`;
-    }
+  public async metadataExport(arg?: { fileName: string }) {
+    if (!arg.fileName) arg.fileName = `${this.details.prefix}_metadata_sp.xml`;
 
     let exportMetaData: string = await this.repoClient
       .Get(`virtualproxyconfig/${this.details.id}/generate/samlmetadata`)
       .then((m) => m.data as string);
 
     return await this.repoClient
-      .Get(`download/samlmetadata/${exportMetaData}/${fileName}`)
+      .Get(`download/samlmetadata/${exportMetaData}/${arg.fileName}`)
       .then((m) => m.data as Buffer);
   }
 

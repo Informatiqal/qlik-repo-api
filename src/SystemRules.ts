@@ -14,14 +14,14 @@ import {
 } from "./SystemRule.interface";
 import { IClassSystemRule, SystemRule } from "./SystemRule";
 export interface IClassSystemRules {
-  get(id: string): Promise<IClassSystemRule>;
+  get(arg: { id: string }): Promise<IClassSystemRule>;
   getAll(): Promise<IClassSystemRule[]>;
   getAudit(arg: ISystemRuleAuditGet): Promise<IAudit>;
-  getFilter(filter: string): Promise<IClassSystemRule[]>;
+  getFilter(arg: { filter: string }): Promise<IClassSystemRule[]>;
   create(arg: ISystemRuleCreate): Promise<IClassSystemRule>;
   licenseCreate(arg: ISystemRuleLicenseCreate): Promise<IClassSystemRule>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class SystemRules implements IClassSystemRules {
@@ -30,9 +30,9 @@ export class SystemRules implements IClassSystemRules {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`systemRules.get: "id" parameter is required`);
-    const sr: SystemRule = new SystemRule(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`systemRules.get: "id" parameter is required`);
+    const sr: SystemRule = new SystemRule(this.repoClient, arg.id);
     await sr.init();
 
     return sr;
@@ -53,12 +53,12 @@ export class SystemRules implements IClassSystemRules {
       .then((res) => res.data as IAudit);
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`systemRule.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`systemrule?filter=(${encodeURIComponent(filter)})`)
+      .Get(`systemrule?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ISystemRule[])
       .then((data) => {
         return data.map((t) => new SystemRule(this.repoClient, t.id, t));
@@ -142,13 +142,13 @@ export class SystemRules implements IClassSystemRules {
       .then((s) => new SystemRule(this.repoClient, s.data.id, s.data));
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `systemRule.removeFilter: "filter" parameter is required`
       );
 
-    const srs = await this.getFilter(filter);
+    const srs = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       srs.map((sr: IClassSystemRule) =>
         sr.remove().then((s) => ({ id: sr.details.id, status: s }))
@@ -156,9 +156,9 @@ export class SystemRules implements IClassSystemRules {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/systemrule`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

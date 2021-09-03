@@ -55,7 +55,7 @@ export class UpdateCommonProperties {
         this.arg.customProperties.map(async (customProperty) => {
           let [cpName, cpValue] = customProperty.split("=");
           return await this.customPropertiesClass
-            .getFilter(`name eq '${cpName}'`)
+            .getFilter({ filter: `name eq '${cpName}'` })
             .then((cpData) => {
               return {
                 definition: cpData[0].details as ICustomPropertyCondensed,
@@ -73,7 +73,7 @@ export class UpdateCommonProperties {
       this.obj.tags = await Promise.all<ITagCondensed>(
         this.arg.tags.map(async (tag) => {
           return await this.tagsClass
-            .getFilter(`name eq '${tag}'`)
+            .getFilter({ filter: `name eq '${tag}'` })
             .then((tagsData) => tagsData[0].details as ITagCondensed);
         })
       );
@@ -89,9 +89,9 @@ export class UpdateCommonProperties {
       let [userDirectory, userId] = (this.arg as IAppUpdate).owner.split("\\");
 
       this.obj.owner = await this.user
-        .getFilter(
-          `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`
-        )
+        .getFilter({
+          filter: `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`,
+        })
         .then((u) => u[0]);
     }
   }
@@ -99,7 +99,7 @@ export class UpdateCommonProperties {
   async updateAppStream() {
     if ((this.arg as IAppUpdate).stream) {
       this.obj.stream = await this.streams
-        .getFilter(`name eq '${(this.arg as IAppUpdate).stream}'`)
+        .getFilter({ filter: `name eq '${(this.arg as IAppUpdate).stream}'` })
         .then((streams) => streams[0].details);
     }
   }

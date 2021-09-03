@@ -53,11 +53,11 @@ export interface ISchedulerService extends ISchedulerServiceCondensed {
 }
 
 export interface IClassSchedulers {
-  get(id: string): Promise<IClassScheduler>;
+  get(arg: { id: string }): Promise<IClassScheduler>;
   getAll(): Promise<IClassScheduler[]>;
-  getFilter(filter: string): Promise<IClassScheduler[]>;
-  select(filter: string): Promise<ISelection>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
+  getFilter(arg: { filter: string }): Promise<IClassScheduler[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   // update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
 }
 
@@ -67,9 +67,9 @@ export class Schedulers implements IClassSchedulers {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`scheduler.get: "id" parameter is required`);
-    const scheduler: Scheduler = new Scheduler(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`scheduler.get: "id" parameter is required`);
+    const scheduler: Scheduler = new Scheduler(this.repoClient, arg.id);
     await scheduler.init();
 
     return scheduler;
@@ -84,23 +84,23 @@ export class Schedulers implements IClassSchedulers {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`scheduler.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`schedulerservice/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`schedulerservice/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ISchedulerService[])
       .then((data) => {
         return data.map((t) => new Scheduler(this.repoClient, t.id, t));
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`scheduler.removeFilter: "filter" parameter is required`);
 
-    const schedulers = await this.getFilter(filter);
+    const schedulers = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       schedulers.map((scheduler: IClassScheduler) =>
         scheduler
@@ -110,9 +110,9 @@ export class Schedulers implements IClassSchedulers {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/schedulerservice`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

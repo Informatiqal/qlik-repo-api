@@ -23,13 +23,13 @@ import {
 } from "./util/parseAttributeMap";
 
 export interface IClassProxies {
-  add(proxyId: string, virtualProxyId: string): Promise<IClassProxy>;
+  add(arg: { proxyId: string; virtualProxyId: string }): Promise<IClassProxy>;
   // addVirtualProxy(virtualProxyId: string): Promise<IVirtualProxyConfig>;
-  get(id: string): Promise<IClassProxy>;
+  get(arg: { id: string }): Promise<IClassProxy>;
   getAll(): Promise<IClassProxy[]>;
-  getFilter(filter: string): Promise<IClassProxy[]>;
+  getFilter(arg: { filter: string }): Promise<IClassProxy[]>;
   create(arg: IProxyCreate): Promise<IClassProxy>;
-  select(filter: string): Promise<ISelection>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class Proxies implements IClassProxies {
@@ -40,26 +40,28 @@ export class Proxies implements IClassProxies {
     this.node = node;
   }
 
-  public async add(proxyId: string, virtualProxyId: string) {
-    if (!proxyId) throw new Error(`proxy.add: "proxyId" is required`);
-    if (!virtualProxyId)
+  public async add(arg: { proxyId: string; virtualProxyId: string }) {
+    if (!arg.proxyId) throw new Error(`proxy.add: "proxyId" is required`);
+    if (!arg.virtualProxyId)
       throw new Error(`proxy.add: "virtualProxyId" is required`);
 
-    let proxy = await this.get(proxyId);
+    let proxy = await this.get({ id: arg.proxyId });
     const virtualProxyInstance = new VirtualProxies(this.repoClient);
-    let virtualProxy = await virtualProxyInstance.get(virtualProxyId);
+    let virtualProxy = await virtualProxyInstance.get({
+      id: arg.virtualProxyId,
+    });
 
     proxy.details.settings.virtualProxies.push(virtualProxy.details);
 
     return await this.repoClient
-      .Post(`proxyservice/${proxyId}`, proxy)
+      .Post(`proxyservice/${arg.proxyId}`, proxy)
       .then((res) => res.data as IProxyService)
       .then((s) => new Proxy(this.repoClient, s.id, s));
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`proxy.get: "id" parameter is required`);
-    const proxy: Proxy = new Proxy(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`proxy.get: "id" parameter is required`);
+    const proxy: Proxy = new Proxy(this.repoClient, arg.id);
     await proxy.init();
 
     return proxy;
@@ -74,21 +76,21 @@ export class Proxies implements IClassProxies {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(`proxy.getFilter: "filter" parameter is required`);
 
     return await this.repoClient
-      .Get(`proxyservice/full?filter=(${encodeURIComponent(filter)})`)
+      .Get(`proxyservice/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IProxyService[])
       .then((data) => {
         return data.map((t) => new Proxy(this.repoClient, t.id, t));
       });
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/proxyservice`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

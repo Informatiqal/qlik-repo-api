@@ -17,7 +17,7 @@ export interface IClassAbout {
   openApi(): Promise<string[]>;
   apiRelations(): Promise<string[]>;
   apiDescription(): Promise<string[]>;
-  apiDefaults(path: string): Promise<any>;
+  apiDefaults(arg: { path: string }): Promise<any>;
 }
 
 export class About implements IClassAbout {
@@ -52,11 +52,11 @@ export class About implements IClassAbout {
       .then((res) => res.data as string[]);
   }
 
-  public async apiDefaults(path: string) {
-    if (!path)
+  public async apiDefaults(arg: { path: string }) {
+    if (!arg.path)
       throw new Error(`about.apiDefaults: "path" parameter is required`);
     return await this.repoClient
-      .Get(`about/api/default/${path}`)
+      .Get(`about/api/default/${arg.path}`)
       .then((res) => res.data);
   }
 }

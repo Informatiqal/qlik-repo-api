@@ -5,7 +5,7 @@ import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 
 export interface IClassTag {
   remove(): Promise<IHttpStatus>;
-  update(name: string): Promise<IHttpStatus>;
+  update(arg: { name: string }): Promise<IHttpStatus>;
   details: ITag;
 }
 
@@ -35,10 +35,10 @@ export class Tag implements IClassTag {
       .then((res) => res.status);
   }
 
-  public async update(name: string) {
-    if (!name) throw new Error(`tag.update: "name" parameter is required`);
+  public async update(arg: { name: string }) {
+    if (!arg.name) throw new Error(`tag.update: "name" parameter is required`);
 
-    this.details.name = name;
+    this.details.name = arg.name;
     this.details.modifiedDate = modifiedDateTime();
 
     return await this.repoClient

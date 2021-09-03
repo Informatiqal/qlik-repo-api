@@ -70,12 +70,12 @@ export interface ICustomProperty extends ICustomPropertyCondensed {
 }
 
 export interface IClassCustomProperties {
-  get(id: string): Promise<IClassCustomProperty>;
+  get(arg: { id: string }): Promise<IClassCustomProperty>;
   getAll(): Promise<IClassCustomProperty[]>;
-  getFilter(filter: string): Promise<IClassCustomProperty[]>;
+  getFilter(arg: { filter: string }): Promise<IClassCustomProperty[]>;
   create(arg: ICustomPropertyCreate): Promise<IClassCustomProperty>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
+  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class CustomProperties implements IClassCustomProperties {
@@ -84,10 +84,11 @@ export class CustomProperties implements IClassCustomProperties {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`customProperty.get: "id" parameter is required`);
+  public async get(arg: { id: string }) {
+    if (!arg.id)
+      throw new Error(`customProperty.get: "id" parameter is required`);
 
-    const cp: CustomProperty = new CustomProperty(this.repoClient, id);
+    const cp: CustomProperty = new CustomProperty(this.repoClient, arg.id);
     await cp.init();
 
     return cp;
@@ -102,15 +103,17 @@ export class CustomProperties implements IClassCustomProperties {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `customProperty.getFilter: "filter" parameter is required`
       );
 
     return await this.repoClient
       .Get(
-        `custompropertydefinition/full?filter=(${encodeURIComponent(filter)})`
+        `custompropertydefinition/full?filter=(${encodeURIComponent(
+          arg.filter
+        )})`
       )
       .then((res) => res.data as ICustomProperty[])
       .then((data) => {
@@ -138,13 +141,13 @@ export class CustomProperties implements IClassCustomProperties {
       .then((c) => new CustomProperty(this.repoClient, c.id, c));
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `customProperty.removeFilter: "filter" parameter is required`
       );
 
-    const customProperties = await this.getFilter(filter);
+    const customProperties = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       customProperties.map((cp: IClassCustomProperty) =>
         cp.remove().then((s) => ({ id: cp.details.id, status: s }))
@@ -152,9 +155,9 @@ export class CustomProperties implements IClassCustomProperties {
     );
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/custompropertydefinition`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

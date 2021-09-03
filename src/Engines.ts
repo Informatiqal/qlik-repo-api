@@ -92,11 +92,11 @@ export interface IEngine {
 }
 
 export interface IClassEngines {
-  get(id: string): Promise<IClassEngine>;
+  get(arg: { id: string }): Promise<IClassEngine>;
   getAll(): Promise<IClassEngine[]>;
-  getFilter(filter: string): Promise<IClassEngine[]>;
+  getFilter(arg: { filter: string }): Promise<IClassEngine[]>;
   getValid(arg?: IEngineGetValid): Promise<IEngineGetValidResult[]>;
-  select(filter?: string): Promise<ISelection>;
+  select(arg?: { filter: string }): Promise<ISelection>;
 }
 
 export class Engines implements IClassEngines {
@@ -105,9 +105,9 @@ export class Engines implements IClassEngines {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`engines.get: "id" parameter is required`);
-    const engine: Engine = new Engine(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    if (!arg.id) throw new Error(`engines.get: "id" parameter is required`);
+    const engine: Engine = new Engine(this.repoClient, arg.id);
     await engine.init();
 
     return engine;
@@ -142,22 +142,22 @@ export class Engines implements IClassEngines {
       .then((res) => res.data as IEngineGetValidResult[]);
   }
 
-  public async getFilter(filter: string) {
-    if (!filter) throw new Error(`engine.getFilter: "filter" is required`);
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter) throw new Error(`engine.getFilter: "filter" is required`);
 
     let baseUrl = `engineservice/full`;
 
     return await this.repoClient
-      .Get(`${baseUrl}?filter=(${encodeURIComponent(filter)})`)
+      .Get(`${baseUrl}?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IEngine[])
       .then((data) => {
         return data.map((t) => new Engine(this.repoClient, t.id, t));
       });
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/engineservice`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})

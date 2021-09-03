@@ -61,17 +61,100 @@
 				<a href="#under-development" id="under-development" style="color: inherit; text-decoration: none;">
 					<h2><strong>UNDER DEVELOPMENT!</strong></h2>
 				</a>
+				<hr>
+				<p><strong>NOT AFFILIATED WITH QLIK</strong></p>
+				<hr>
 				<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
 					<h2>Compatibility</h2>
 				</a>
 				<p>At the moment the module is compatible with <code>QSEoW</code> version <code>May 2021</code></p>
-				<hr>
-				<p><strong>NOT AFFILIATED WITH QLIK</strong></p>
-				<hr>
+				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+					<h2>Installation</h2>
+				</a>
+				<p><code>npm install qlik-repo-api</code></p>
+				<a href="#authentication" id="authentication" style="color: inherit; text-decoration: none;">
+					<h2>Authentication</h2>
+				</a>
+				<p>The package itself will <strong>NOT</strong> perform authentication. All authentication information is passed in the config (see next section).</p>
+				<p>But multiple authentication configuration can be provided:</p>
+				<ul>
+					<li>certificates</li>
+					<li>JWT</li>
+					<li>header</li>
+					<li>session</li>
+					<li>ticket</li>
+				</ul>
+				<a href="#initialization" id="initialization" style="color: inherit; text-decoration: none;">
+					<h2>Initialization</h2>
+				</a>
+				<ul>
+					<li><p>JWT</p>
+						<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">repoApi</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">QlikRepoApi</span><span style="color: #000000">.</span><span style="color: #795E26">client</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">host:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;my-sense-server.com&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">proxy:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;virtualProxyPrefix&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">authentication:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">token:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">});</span>
+</code></pre>
+					</li>
+					<li><p>Certificates</p>
+						<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">https</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;https&quot;</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">fs</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;fs&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// read the certificate files</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cert</span><span style="color: #000000"> = </span><span style="color: #001080">fs</span><span style="color: #000000">.</span><span style="color: #795E26">readFileSync</span><span style="color: #000000">(</span><span style="color: #A31515">`/path/to/client.pem`</span><span style="color: #000000">);</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">key</span><span style="color: #000000"> = </span><span style="color: #001080">fs</span><span style="color: #000000">.</span><span style="color: #795E26">readFileSync</span><span style="color: #000000">(</span><span style="color: #A31515">`/path/to/client_key.pem`</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// create httpsAgent. Pass the certificate files and ignore any certificate errors (like self-signed certificates)</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">httpsAgentCert</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">https</span><span style="color: #000000">.</span><span style="color: #795E26">Agent</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">rejectUnauthorized:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">cert:</span><span style="color: #000000"> </span><span style="color: #001080">cert</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">key:</span><span style="color: #000000"> </span><span style="color: #001080">key</span><span style="color: #000000">,</span>
+<span style="color: #000000">});</span>
+
+<span style="color: #008000">// the actual initialization</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">repoApi</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">QlikRepoApi</span><span style="color: #000000">.</span><span style="color: #795E26">client</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">host:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;my-sense-server.com&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">port:</span><span style="color: #000000"> </span><span style="color: #098658">4242</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">httpsAgent:</span><span style="color: #000000"> </span><span style="color: #001080">httpsAgentCert</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">authentication:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">user_dir:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;USER-DIRECTORY&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">user_name:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;userId&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">});</span>
+</code></pre>
+					</li>
+					<li><p>Header</p>
+						<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">https</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;https&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #008000">// httpsAgent (Node.js only) can be used with other authentication methods to ignore certificate errors (if any)</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">httpsAgentIgnoreSelfSigned</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">https</span><span style="color: #000000">.</span><span style="color: #795E26">Agent</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">rejectUnauthorized:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span>
+<span style="color: #000000">});</span>
+
+<span style="color: #008000">// the actual initialization</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">repoApi</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">QlikRepoApi</span><span style="color: #000000">.</span><span style="color: #795E26">client</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">host:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;my-sense-server.com&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">proxy:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;virtualProxyPrefix&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">httpsAgent:</span><span style="color: #000000"> </span><span style="color: #001080">httpsAgentIgnoreSelfSigned</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">authentication:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">    </span><span style="color: #001080">header:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;SomeHeader&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">user:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;USER-DIRECTORY</span><span style="color: #EE0000">\\</span><span style="color: #A31515">userId&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  },</span>
+<span style="color: #000000">});</span>
+</code></pre>
+					</li>
+				</ul>
+				<a href="#browser-usage" id="browser-usage" style="color: inherit; text-decoration: none;">
+					<h2>Browser usage</h2>
+				</a>
+				<p>Although interacting with <code>Qlik Repository API</code> is mainly for automation and administration purposes (backend/server-to-server) this package can be used in browser environment as well.</p>
+				<p>There are couple of limitations in this case and they are both because of <code>https</code> package not being available in the browser. For this reason <code>certificate</code> config authentication can&#39;t be used and any certificate issues can&#39;t be ignored (<code>rejectUnauthorized: false</code>).</p>
 				<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
 					<h2>Methods</h2>
 				</a>
-				<p>Full list of available methods can be found <a href="https://informatiqal.github.io/qlik-repo-api/classes/QlikRepoApi.html">here</a></p>
+				<p>Full list of available methods can be found <a href="https://informatiqal.github.io/qlik-repo-api/modules.html">here</a></p>
 				<a href="#generic-clients" id="generic-clients" style="color: inherit; text-decoration: none;">
 					<h2>Generic clients</h2>
 				</a>
@@ -153,7 +236,7 @@
 <span style="color: #000000">]</span>
 </code></pre>
 				<p>As a &quot;side effect&quot; details for each app in <code>licenseMonitorApps</code> will also be updated in the variable and there is no need to call <code>getFilter</code> to retrieve the updated information.</p>
-				<p>More examples will be added in the <code>Examples</code> folder</p>
+				<p>More examples to follow</p>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">

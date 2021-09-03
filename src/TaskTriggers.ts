@@ -2,7 +2,7 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { Tag, IClassTag } from "./Tag";
 
 export interface IClassTaskTriggers {
-  get(id: string): Promise<IClassTag>;
+  get(arg: { id: string }): Promise<IClassTag>;
 }
 
 export class TaskTriggers implements IClassTaskTriggers {
@@ -11,8 +11,8 @@ export class TaskTriggers implements IClassTaskTriggers {
     this.repoClient = mainRepoClient;
   }
 
-  public async get(id: string) {
-    const tag: Tag = new Tag(this.repoClient, id);
+  public async get(arg: { id: string }) {
+    const tag: Tag = new Tag(this.repoClient, arg.id);
     await tag.init();
 
     return tag;

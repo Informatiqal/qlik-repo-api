@@ -30,11 +30,14 @@ export interface IAppUpdate {
 
 export interface IClassApp {
   details: IApp;
-  copy(): Promise<IClassApp>;
-  export(): Promise<Buffer>;
+  copy(arg: {
+    name?: string;
+    includeCustomProperties?: boolean;
+  }): Promise<IClassApp>;
+  export(arg: { fileName?: string; skipData?: boolean }): Promise<Buffer>;
   remove(): Promise<IHttpStatus>;
-  publish(stream: string, name?: string): Promise<IHttpStatus>;
-  switch(sourceAppId: string, targetAppId: string): Promise<IHttpStatus>;
+  publish(arg: { stream: string; name?: string }): Promise<IHttpStatus>;
+  switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
   update(arg: IAppUpdate): Promise<IHttpStatus>;
 }
 
@@ -65,12 +68,12 @@ export class App implements IClassApp {
     }
   }
 
-  public async export(fileName?: string, skipData?: boolean) {
+  public async export(arg: { fileName?: string; skipData?: boolean }) {
     const token = uuid();
     const urlBuild = new URLBuild(`app/${this.details.id}/export/${token}`);
-    if (!fileName) fileName = `${this.details.id}.qvf`;
+    if (!arg.fileName) arg.fileName = `${this.details.id}.qvf`;
 
-    urlBuild.addParam("skipdata", skipData);
+    urlBuild.addParam("skipdata", arg.skipData);
 
     const downloadPath: string = await this.repoClient
       .Post(urlBuild.getUrl(), {})
@@ -84,11 +87,11 @@ export class App implements IClassApp {
       .then((r) => r.data as Buffer);
   }
 
-  public async copy(name?: string, includeCustomProperties?: boolean) {
+  public async copy(arg: { name?: string; includeCustomProperties?: boolean }) {
     const urlBuild = new URLBuild(`app/${this.details.id}/copy`);
-    if (name) urlBuild.addParam("name", name);
-    if (includeCustomProperties)
-      urlBuild.addParam("includecustomproperties", includeCustomProperties);
+    if (arg.name) urlBuild.addParam("name", name);
+    if (arg.includeCustomProperties)
+      urlBuild.addParam("includecustomproperties", arg.includeCustomProperties);
 
     return await this.repoClient
       .Post(urlBuild.getUrl(), {})
@@ -101,18 +104,19 @@ export class App implements IClassApp {
       .then((res) => res.status);
   }
 
-  public async publish(stream: string, name?: string) {
-    if (!stream) throw new Error(`app.publish: "stream" parameter is required`);
+  public async publish(arg: { stream: string; name?: string }) {
+    if (!arg.stream)
+      throw new Error(`app.publish: "stream" parameter is required`);
 
     let streamRes = await this.repoClient.Get(
-      `stream?filter=(name eq '${stream}')`
+      `stream?filter=(name eq '${arg.stream}')`
     );
 
     if (streamRes.data.length == 0)
-      throw new Error(`app.publish: Stream "${stream}" not found`);
+      throw new Error(`app.publish: Stream "${arg.stream}" not found`);
 
     if (streamRes.data.length > 1)
-      throw new Error(`app.publish: Multiple streams found "${stream}"`);
+      throw new Error(`app.publish: Multiple streams found "${arg.stream}"`);
 
     const urlBuild = new URLBuild(`app/${this.details.id}/publish`);
     urlBuild.addParam("stream", streamRes.data[0].id);
@@ -140,12 +144,12 @@ export class App implements IClassApp {
       .then((res) => res.status);
   }
 
-  public async switch(targetAppId: string) {
-    if (!targetAppId)
+  public async switch(arg: { targetAppId: string }) {
+    if (!arg.targetAppId)
       throw new Error(`app.switch: "targetAppId" parameter is required`);
 
     return await this.repoClient
-      .Put(`app/${this.details.id}/replace?app=${targetAppId}`, {})
+      .Put(`app/${this.details.id}/replace?app=${arg.targetAppId}`, {})
       .then((res) => {
         this.details = res.data;
         return res.status;

@@ -7,8 +7,8 @@ import { URLBuild } from "./util/generic";
 export interface IClassSharedContent {
   remove(): Promise<IHttpStatus>;
   update(arg: ISharedContentUpdate): Promise<IHttpStatus>;
-  uploadFile(file: Buffer, externalPath: string): Promise<IHttpStatus>;
-  deleteFile(externalPath: string): Promise<IHttpStatus>;
+  uploadFile(arg: { file: Buffer; externalPath: string }): Promise<IHttpStatus>;
+  deleteFile(arg: { externalPath: string }): Promise<IHttpStatus>;
   details: ISharedContent;
 }
 
@@ -59,10 +59,10 @@ export class SharedContent implements IClassSharedContent {
       .then((res) => res.status);
   }
 
-  public async uploadFile(file: Buffer, externalPath: string) {
-    if (!file)
+  public async uploadFile(arg: { file: Buffer; externalPath: string }) {
+    if (!arg.file)
       throw new Error(`sharedContent.uploadFile: "file" parameter is required`);
-    if (!externalPath)
+    if (!arg.externalPath)
       throw new Error(
         `sharedContent.uploadFile: "externalPath" parameter is required`
       );
@@ -70,10 +70,10 @@ export class SharedContent implements IClassSharedContent {
     const urlBuild = new URLBuild(
       `sharedcontent/${this.details.id}/uploadfile`
     );
-    urlBuild.addParam("externalpath", externalPath);
+    urlBuild.addParam("externalpath", arg.externalPath);
 
     const status = await this.repoClient
-      .Post(urlBuild.getUrl(), file)
+      .Post(urlBuild.getUrl(), arg.file)
       .then((res) => res.status);
 
     // clear the details
@@ -84,8 +84,8 @@ export class SharedContent implements IClassSharedContent {
     return status;
   }
 
-  public async deleteFile(externalPath: string) {
-    if (!externalPath)
+  public async deleteFile(arg: { externalPath: string }) {
+    if (!arg.externalPath)
       throw new Error(
         `sharedContent.deleteFile: "externalPath" parameter is required`
       );
@@ -93,7 +93,7 @@ export class SharedContent implements IClassSharedContent {
     const urlBuild = new URLBuild(
       `sharedcontent/${this.details.id}/deletecontent`
     );
-    urlBuild.addParam("externalpath", externalPath);
+    urlBuild.addParam("externalpath", arg.externalPath);
 
     const status = await this.repoClient
       .Delete(urlBuild.getUrl())
