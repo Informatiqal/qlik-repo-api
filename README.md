@@ -191,7 +191,7 @@ Once all apps are updated the `updateResults` variable will be:
 [
   { id: "app-id-1", status: 200 },
   { id: "app-id-2", status: 200 },
-  { id: "app-id-3", status: 200 },
+  { id: "app-id-3", status: 200 }
   ...
 ]
 ```

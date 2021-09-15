@@ -5,7 +5,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassUser {
   remove(): Promise<IHttpStatus>;
-  update(arg: IUserUpdate): Promise<IHttpStatus>;
+  update(arg: IUserUpdate): Promise<IUser>;
   details: IUser;
 }
 
@@ -48,6 +48,6 @@ export class User implements IClassUser {
 
     return await this.repoClient
       .Put(`user/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IUser);
   }
 }

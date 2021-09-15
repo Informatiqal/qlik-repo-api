@@ -5,7 +5,7 @@ import { ICustomProperty, ICustomPropertyUpdate } from "./CustomProperties";
 
 export interface IClassCustomProperty {
   remove(): Promise<IHttpStatus>;
-  update(arg: ICustomPropertyUpdate): Promise<IHttpStatus>;
+  update(arg: ICustomPropertyUpdate): Promise<ICustomProperty>;
   details: ICustomProperty;
 }
 
@@ -53,6 +53,6 @@ export class CustomProperty implements IClassCustomProperty {
 
     return await this.repoClient
       .Put(`custompropertydefinition/${this.details.id}`, this.details)
-      .then((res) => res.status);
+      .then((res) => res.data as ICustomProperty);
   }
 }

@@ -13,7 +13,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 export interface IClassContentLibrary {
   export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile[]>;
   remove(): Promise<IHttpStatus>;
-  update(arg: IContentLibraryUpdate): Promise<IHttpStatus>;
+  update(arg: IContentLibraryUpdate): Promise<IContentLibrary>;
   details: IContentLibrary;
 }
 
@@ -101,6 +101,6 @@ export class ContentLibrary implements IClassContentLibrary {
 
     return await this.repoClient
       .Put(`contentlibrary/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IContentLibrary);
   }
 }

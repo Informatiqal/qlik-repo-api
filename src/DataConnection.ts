@@ -5,7 +5,7 @@ import { IDataConnection, IDataConnectionUpdate } from "./DataConnections";
 
 export interface IClassDataConnection {
   remove(): Promise<IHttpStatus>;
-  update(arg: IDataConnectionUpdate): Promise<IHttpStatus>;
+  update(arg: IDataConnectionUpdate): Promise<IDataConnection>;
   details: IDataConnection;
 }
 
@@ -49,6 +49,6 @@ export class DataConnection implements IClassDataConnection {
 
     return await this.repoClient
       .Put(`dataconnection/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IDataConnection);
   }
 }

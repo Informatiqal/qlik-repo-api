@@ -5,7 +5,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassExtension {
   remove(): Promise<IHttpStatus>;
-  update(arg: IExtensionUpdate): Promise<IHttpStatus>;
+  update(arg: IExtensionUpdate): Promise<IExtension>;
   details: IExtension;
 }
 
@@ -49,6 +49,6 @@ export class Extension implements IClassExtension {
 
     return await this.repoClient
       .Put(`extension/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IExtension);
   }
 }

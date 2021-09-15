@@ -6,7 +6,7 @@ import { URLBuild } from "./util/generic";
 
 export interface IClassSharedContent {
   remove(): Promise<IHttpStatus>;
-  update(arg: ISharedContentUpdate): Promise<IHttpStatus>;
+  update(arg: ISharedContentUpdate): Promise<ISharedContent>;
   uploadFile(arg: { file: Buffer; externalPath: string }): Promise<IHttpStatus>;
   deleteFile(arg: { externalPath: string }): Promise<IHttpStatus>;
   details: ISharedContent;
@@ -56,7 +56,7 @@ export class SharedContent implements IClassSharedContent {
 
     return await this.repoClient
       .Put(`sharedcontent/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as ISharedContent);
   }
 
   public async uploadFile(arg: { file: Buffer; externalPath: string }) {

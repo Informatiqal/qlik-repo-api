@@ -6,7 +6,7 @@ import { calculateActions, getRuleContext } from "./util/generic";
 
 export interface IClassSystemRule {
   remove(): Promise<IHttpStatus>;
-  update(arg: ISystemRuleUpdate): Promise<IHttpStatus>;
+  update(arg: ISystemRuleUpdate): Promise<ISystemRule>;
   details: ISystemRule;
 }
 
@@ -59,6 +59,6 @@ export class SystemRule implements IClassSystemRule {
 
     return await this.repoClient
       .Put(`systemrule/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as ISystemRule);
   }
 }

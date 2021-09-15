@@ -11,7 +11,7 @@ export interface IClassUserDirectory {
   remove(): Promise<IHttpStatus>;
   removeAndUsers(): Promise<IHttpStatus>;
   sync(): Promise<IHttpStatus>;
-  update(arg: IUserDirectoryUpdate): Promise<IHttpStatus>;
+  update(arg: IUserDirectoryUpdate): Promise<IUserDirectory>;
   details: IUserDirectory;
 }
 
@@ -78,6 +78,6 @@ export class UserDirectory implements IClassUserDirectory {
 
     return await this.repoClient
       .Put(`userdirectory/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IUserDirectory);
   }
 }

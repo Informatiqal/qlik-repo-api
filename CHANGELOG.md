@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.9] - 2021-09-15
+
+### Changed
+
+- all `update` methods are returning the response details instead of the status
+
 ## [0.1.8] - 2021-09-03
 
 ### Changed
