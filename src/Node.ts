@@ -5,7 +5,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassNode {
   remove(): Promise<IHttpStatus>;
-  update(arg: INodeUpdate): Promise<IHttpStatus>;
+  update(arg: INodeUpdate): Promise<IServerNodeConfiguration>;
   setCentral(): Promise<IHttpStatus>;
   details: IServerNodeConfiguration;
 }
@@ -75,7 +75,7 @@ export class Node implements IClassNode {
 
     return await this.repoClient
       .Put(`servernodeconfiguration/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IServerNodeConfiguration);
   }
 
   public async setCentral() {

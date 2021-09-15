@@ -1,12 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
-import {
-  IVirtualProxyConfig,
-  IVirtualProxyConfigJwtAttributeMapItem,
-  IVirtualProxyConfigOidcAttributeMapItem,
-  IVirtualProxyConfigSamlAttributeMapItem,
-  IVirtualProxyUpdate,
-} from "./Proxy.interface";
+import { IHttpStatus } from "./types/interfaces";
+import { IVirtualProxyConfig, IVirtualProxyUpdate } from "./Proxy.interface";
 import {
   IServerNodeConfiguration,
   IServerNodeConfigurationCondensed,
@@ -21,7 +15,7 @@ import {
 
 export interface IClassVirtualProxy {
   remove(): Promise<IHttpStatus>;
-  update(arg: IVirtualProxyUpdate): Promise<IHttpStatus>;
+  update(arg: IVirtualProxyUpdate): Promise<IVirtualProxyConfig>;
   metadataExport(arg?: { fileName: string }): Promise<Buffer>;
   details: IVirtualProxyConfig;
 }
@@ -136,7 +130,7 @@ export class VirtualProxy implements IClassVirtualProxy {
 
     return await this.repoClient
       .Put(`virtualproxyconfig/${this.details.id}`, this.details)
-      .then((res) => res.status);
+      .then((res) => res.data as IVirtualProxyConfig);
   }
 
   public async metadataExport(arg?: { fileName: string }) {

@@ -13,7 +13,7 @@ export interface IClassAppObject {
   publish(): Promise<IHttpStatus>;
   remove(): Promise<IHttpStatus>;
   unPublish(): Promise<IHttpStatus>;
-  update(arg: IAppObjectUpdate): Promise<IHttpStatus>;
+  update(arg: IAppObjectUpdate): Promise<IAppObject>;
 }
 
 export class AppObject implements IClassAppObject {
@@ -76,6 +76,6 @@ export class AppObject implements IClassAppObject {
 
     return await this.repoClient
       .Put(`app/object/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IAppObject);
   }
 }

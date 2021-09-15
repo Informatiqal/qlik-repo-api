@@ -6,7 +6,7 @@ import { schemaRepeat } from "./util/schemaTrigger";
 
 export interface IClassSchemaTrigger {
   remove(): Promise<IEntityRemove>;
-  update(arg: ITaskUpdateTriggerSchema): Promise<IEntityRemove>;
+  update(arg: ITaskUpdateTriggerSchema): Promise<ISchemaEvent>;
   details: ISchemaEvent;
 }
 
@@ -67,6 +67,6 @@ export class SchemaTrigger implements IClassSchemaTrigger {
 
     return await this.repoClient
       .Put(`schemaevent/${this.details.id}`, this.details)
-      .then((res) => ({ id: this.details.id, status: res.status }));
+      .then((res) => res.data as ISchemaEvent);
   }
 }

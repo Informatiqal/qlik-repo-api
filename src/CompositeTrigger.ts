@@ -8,7 +8,7 @@ import { IEntityRemove } from "./types/interfaces";
 
 export interface IClassCompositeTrigger {
   remove(): Promise<IEntityRemove>;
-  update(arg: ITaskUpdateTriggerComposite): Promise<IEntityRemove>;
+  update(arg: ITaskUpdateTriggerComposite): Promise<ICompositeEvent>;
   details: ICompositeEvent;
 }
 
@@ -97,11 +97,6 @@ export class CompositeTrigger implements IClassCompositeTrigger {
 
     return await this.repoClient
       .Post(`compositeevent/${this.details.id}`, this.details)
-      .then((res) => {
-        return {
-          id: this.details.id,
-          status: res.status,
-        };
-      });
+      .then((res) => res.data as ICompositeEvent);
   }
 }

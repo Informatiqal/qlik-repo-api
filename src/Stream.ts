@@ -5,7 +5,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassStream {
   remove(): Promise<IHttpStatus>;
-  update(arg: IStreamUpdate): Promise<IHttpStatus>;
+  update(arg: IStreamUpdate): Promise<IStream>;
   details: IStream;
 }
 
@@ -47,6 +47,6 @@ export class Stream implements IClassStream {
 
     return await this.repoClient
       .Put(`stream/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IStream);
   }
 }

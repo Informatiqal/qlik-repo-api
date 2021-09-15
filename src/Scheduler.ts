@@ -5,7 +5,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassScheduler {
   remove(): Promise<IHttpStatus>;
-  update(arg: ISchedulerServiceUpdate): Promise<IHttpStatus>;
+  update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
   details: ISchedulerService;
 }
 
@@ -76,6 +76,6 @@ export class Scheduler implements IClassScheduler {
 
     return await this.repoClient
       .Put(`schedulerservice/${this.details.id}`, this.details)
-      .then((res) => res.status);
+      .then((res) => res.data as ISchedulerService);
   }
 }

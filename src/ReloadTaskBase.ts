@@ -21,7 +21,7 @@ export interface IClassReloadTask {
   waitExecution(arg: { executionId?: string }): Promise<ITaskExecutionResult>;
   scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
   scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
-  update(arg: ITaskReloadUpdate): Promise<IHttpStatus>;
+  update(arg: ITaskReloadUpdate): Promise<ITask>;
   addTriggerComposite(arg: ITaskCreateTriggerComposite): Promise<IHttpStatus>;
   addTriggerSchema(arg: ITaskCreateTriggerSchema): Promise<IHttpStatus>;
   addTriggerMany(
@@ -162,7 +162,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
     return await this.repoClient
       .Put(`${this.baseUrl}/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as ITask);
   }
 
   /**

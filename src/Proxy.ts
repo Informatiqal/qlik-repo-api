@@ -8,7 +8,7 @@ import { IHttpStatus } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassProxy {
-  update(arg: IProxyUpdate): Promise<IHttpStatus>;
+  update(arg: IProxyUpdate): Promise<IProxyService>;
   details: IProxyService;
 }
 
@@ -78,7 +78,7 @@ export class Proxy implements IClassProxy {
 
     return await this.repoClient
       .Post(`proxyservice/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IProxyService);
   }
 
   private validateRanges(arg: IProxyUpdate) {

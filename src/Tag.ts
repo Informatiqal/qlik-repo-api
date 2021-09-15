@@ -5,7 +5,7 @@ import { IEntityRemove, IHttpStatus } from "./types/interfaces";
 
 export interface IClassTag {
   remove(): Promise<IHttpStatus>;
-  update(arg: { name: string }): Promise<IHttpStatus>;
+  update(arg: { name: string }): Promise<ITag>;
   details: ITag;
 }
 
@@ -45,6 +45,6 @@ export class Tag implements IClassTag {
       .Put(`tag/${this.id}`, {
         ...this.details,
       })
-      .then((res) => res.status);
+      .then((res) => res.data as ITag);
   }
 }

@@ -7,7 +7,7 @@ import {
 
 export interface IClassServiceCluster {
   remove(): Promise<IHttpStatus>;
-  update(arg: IServiceClusterUpdate): Promise<IHttpStatus>;
+  update(arg: IServiceClusterUpdate): Promise<IServiceCluster>;
   details: IServiceCluster;
 }
 
@@ -79,6 +79,6 @@ export class ServiceCluster implements IClassServiceCluster {
 
     return await this.repoClient
       .Post(`ServiceCluster/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IServiceCluster);
   }
 }

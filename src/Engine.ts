@@ -5,7 +5,7 @@ import { IEngineUpdate } from "./Engine.interface";
 import { modifiedDateTime } from "./util/generic";
 
 export interface IClassEngine {
-  update(arg: IEngineUpdate): Promise<IHttpStatus>;
+  update(arg: IEngineUpdate): Promise<IEngine>;
   details: IEngine;
 }
 
@@ -275,6 +275,6 @@ export class Engine implements IClassEngine {
 
     return await this.repoClient
       .Put(`engineservice/${this.details.id}`, { ...this.details })
-      .then((res) => res.status);
+      .then((res) => res.data as IEngine);
   }
 }
