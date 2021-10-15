@@ -3,7 +3,7 @@ import { URLBuild } from "./util/generic";
 
 import { IHttpReturn } from "./types/interfaces";
 
-interface ITableColumnBase {
+export interface ITableColumnBase {
   columnType: string;
   definition: string;
   name?: string;
