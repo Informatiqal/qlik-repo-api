@@ -1,6 +1,6 @@
 {
   "name": "qlik-repo-api",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Interact with Qlik Sense Repository API (QSEoW)",
   "author": {
     "email": "info@informatiqal.com",

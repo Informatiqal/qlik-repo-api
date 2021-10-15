@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.10] - 2021-10-XX
+
+### Fixed
+
+- `virtualProxy.create` - `name` was not passed to Repo API. Now is mandatory parameter [#39](https://github.com/Informatiqal/qlik-repo-api/issues/39)
+- `virtualProxy.update` - `modifiedDate` was not passed to Repo API [#40](https://github.com/Informatiqal/qlik-repo-api/issues/40)
+- `certificate.export` - typo in export format [#41](https://github.com/Informatiqal/qlik-repo-api/issues/41)
+
 ## [0.1.9] - 2021-09-15
 
 ### Changed

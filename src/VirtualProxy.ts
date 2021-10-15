@@ -1,4 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
+import { modifiedDateTime } from "./util/generic";
 import { IHttpStatus } from "./types/interfaces";
 import { IVirtualProxyConfig, IVirtualProxyUpdate } from "./Proxy.interface";
 import {
@@ -51,6 +52,7 @@ export class VirtualProxy implements IClassVirtualProxy {
   }
 
   public async update(arg: IVirtualProxyUpdate) {
+    this.details.modifiedDate = modifiedDateTime();
     if (arg.prefix) this.details.prefix = arg.prefix;
     if (arg.description) this.details.description = arg.description;
     if (arg.sessionCookieHeaderName)

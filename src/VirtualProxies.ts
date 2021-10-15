@@ -104,6 +104,9 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (!arg.prefix)
       throw new Error(`virtualProxy.prefix: "prefix" parameter is required`);
 
+    if (!arg.name)
+      throw new Error(`virtualProxy.prefix: "name" parameter is required`);
+
     let data: { [k: string]: any } = {};
 
     data["sessionCookieHeaderName"] = arg.sessionCookieHeaderName;

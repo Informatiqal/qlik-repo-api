@@ -6,6 +6,7 @@ import {
 } from "./Nodes";
 
 export interface IVirtualProxyUpdate {
+  name?: string;
   // id: string;
   prefix?: string;
   description?: string;
@@ -55,6 +56,7 @@ export interface IVirtualProxyUpdate {
 }
 
 export interface IVirtualProxyCreate {
+  name: string;
   customProperties?: [];
   tags?: [];
   prefix: string;
