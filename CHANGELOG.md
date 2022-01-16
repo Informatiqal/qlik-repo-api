@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- dependency updates
+- doc exports
+- IHttpReturn import fix in `ReloadTaskBase.ts`
 
 ## [0.1.11] - 2022-01-16
 
