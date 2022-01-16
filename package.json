@@ -1,6 +1,6 @@
 {
   "name": "qlik-repo-api",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Interact with Qlik Sense Repository API (QSEoW)",
   "author": {
     "email": "info@informatiqal.com",
@@ -17,7 +17,9 @@
     "build-tsc": "tsc",
     "build": "rollup -c",
     "watch": "rollup -cw",
-    "docs": "npx typedoc src/index.doc.ts --name \"Qlik Repo API\" --excludePrivate --hideGenerator --darkHighlightTheme dark-plus"
+    "docs": "npx typedoc src/index.doc.ts --name \"Qlik Repo API\" --excludePrivate --hideGenerator --darkHighlightTheme dark-plus",
+    "test": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --require ts-node/register test/**/*.spec.ts",
+    "test-badge": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --reporter .\\node_modules\\mocha-badge-generator\\src --reporter-options=badge_format=svg,badge_output=badge.svg --require ts-node/register test/**/*.spec.ts"
   },
   "keywords": [
     "qlik",

@@ -1,5 +1,5 @@
-import { IHttpReturn, QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, ISelection } from "./types/interfaces";
+import { QlikRepositoryClient } from "qlik-rest-api";
+import { IHttpStatus, ISelection, IHttpReturn } from "./types/interfaces";
 import {
   ISchemaEvent,
   ITask,

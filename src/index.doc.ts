@@ -61,11 +61,10 @@ export {
   IHttpReturn,
   IConfig,
   IConfigFull,
-  QlikGenericRestClient,
-  QlikRepositoryClient,
   IHeaderConfig,
   IJWTConfig,
   ISessionConfig,
   ITicketConfig,
   ICertUser,
-} from "qlik-rest-api";
+} from "qlik-rest-api/dist/interfaces/interfaces";
+export { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";

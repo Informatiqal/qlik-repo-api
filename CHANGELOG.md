@@ -2,7 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.10] - 2021-10-XX
+## [0.1.12] - 2022-01-16
+
+### Fixed
+
+- dependency updates
+
+## [0.1.11] - 2022-01-16
+
+### Fixed
+
+- dependency updates
+
+## [0.1.10] - 2021-10-15
 
 ### Fixed
 
