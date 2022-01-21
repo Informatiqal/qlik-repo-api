@@ -28,6 +28,8 @@ export class UpdateCommonProperties {
     | ISystemRuleCreate
     | ITaskCreate;
   public obj: any;
+  private appendCustomProps: boolean;
+  private appendTags: boolean;
   constructor(
     qlikUtil: QlikRepositoryClient,
     obj: any,
@@ -36,7 +38,8 @@ export class UpdateCommonProperties {
       | IAppUpdate
       | IStreamUpdate
       | ISystemRuleCreate
-      | ITaskCreate
+      | ITaskCreate,
+    options?: { appendCustomProps?: boolean; appendTags?: boolean }
   ) {
     this.qlikUtil = qlikUtil;
     this.obj = obj;
@@ -45,6 +48,25 @@ export class UpdateCommonProperties {
     this.streams = new Streams(this.qlikUtil);
     this.tagsClass = new Tags(this.qlikUtil);
     this.user = new Users(this.qlikUtil);
+
+    if (!options) {
+      this.appendCustomProps = false;
+      this.appendTags = false;
+    }
+
+    if (options) {
+      if (options.hasOwnProperty("appendCustomProps")) {
+        this.appendCustomProps = options.appendCustomProps;
+      } else {
+        this.appendCustomProps = options.appendCustomProps;
+      }
+
+      if (options.hasOwnProperty("appendTags")) {
+        this.appendTags = options.appendTags;
+      } else {
+        this.appendTags = options.appendTags;
+      }
+    }
   }
 
   async updateCustomProperties() {
@@ -70,13 +92,20 @@ export class UpdateCommonProperties {
   async updateTags() {
     if (this.arg.tags && this.arg.tags.length == 0) this.obj.tags = [];
     if (this.arg.tags && this.arg.tags.length > 0) {
-      this.obj.tags = await Promise.all<ITagCondensed>(
-        this.arg.tags.map(async (tag) => {
-          return await this.tagsClass
-            .getFilter({ filter: `name eq '${tag}'` })
-            .then((tagsData) => tagsData[0].details as ITagCondensed);
-        })
-      );
+      // overwriting the existing (if any) tags
+      if (this.appendTags == false) {
+        this.obj.tags = await Promise.all<ITagCondensed>(
+          this.arg.tags.map(async (tag) => {
+            return await this.tagsClass
+              .getFilter({ filter: `name eq '${tag}'` })
+              .then((tagsData) => tagsData[0].details as ITagCondensed);
+          })
+        );
+      }
+
+      // append the values to the existing (if any) tags (no duplications)
+      if (this.appendCustomProps == true) {
+      }
     }
   }
 
