@@ -94,17 +94,50 @@ export class UpdateCommonProperties {
     if (this.arg.tags && this.arg.tags.length > 0) {
       // overwriting the existing (if any) tags
       if (this.appendTags == false) {
+        // get the tags objects for the tags that to be added
+        // if the tag do not exists - throw an error
         this.obj.tags = await Promise.all<ITagCondensed>(
           this.arg.tags.map(async (tag) => {
             return await this.tagsClass
               .getFilter({ filter: `name eq '${tag}'` })
-              .then((tagsData) => tagsData[0].details as ITagCondensed);
+              .then((tagsData) => {
+                if (tagsData.length == 0)
+                  throw new Error(
+                    `tags.get: Tag with name "${tag}" do not exists`
+                  );
+                return tagsData[0].details as ITagCondensed;
+              });
           })
         );
       }
 
       // append the values to the existing (if any) tags (no duplications)
-      if (this.appendCustomProps == true) {
+      if (this.appendTags == true) {
+        //get the values for the existing tags in the object
+        const existingValues: string[] = this.obj.tags.map((tag) => tag.name);
+        // filter out the existing values from the requested values
+        const tagsValuesToAppend = this.arg.tags.filter((argTag) => {
+          return existingValues.includes(argTag) == false;
+        });
+
+        // get the tags objects for the tags that to be added
+        // if the tag do not exists - throw an error
+        const tagsToAppend = await Promise.all<ITagCondensed>(
+          tagsValuesToAppend.map(async (tag) => {
+            return await this.tagsClass
+              .getFilter({ filter: `name eq '${tag}'` })
+              .then((tagsData) => {
+                if (tagsData.length == 0)
+                  throw new Error(
+                    `tags.get: Tag with name "${tag}" do not exists`
+                  );
+                return tagsData[0].details as ITagCondensed;
+              });
+          })
+        );
+
+        // append the new tags to the existing tags
+        this.obj.tags = [...this.obj.tags, ...tagsToAppend];
       }
     }
   }
