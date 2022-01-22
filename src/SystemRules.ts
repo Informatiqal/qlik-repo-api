@@ -13,6 +13,7 @@ import {
   ISystemRuleAuditGet,
 } from "./SystemRule.interface";
 import { IClassSystemRule, SystemRule } from "./SystemRule";
+//TODO: why is no update method here?
 export interface IClassSystemRules {
   get(arg: { id: string }): Promise<IClassSystemRule>;
   getAll(): Promise<IClassSystemRule[]>;

@@ -2,6 +2,7 @@ import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import {
   IHttpStatus,
   IStaticContentReferenceCondensed,
+  IUpdateObjectOptions,
 } from "./types/interfaces";
 import {
   IContentLibrary,
@@ -13,7 +14,10 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 export interface IClassContentLibrary {
   export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile[]>;
   remove(): Promise<IHttpStatus>;
-  update(arg: IContentLibraryUpdate): Promise<IContentLibrary>;
+  update(
+    arg: IContentLibraryUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<IContentLibrary>;
   details: IContentLibrary;
 }
 
@@ -88,11 +92,15 @@ export class ContentLibrary implements IClassContentLibrary {
       .then((res) => res.status);
   }
 
-  public async update(arg: IContentLibraryUpdate) {
+  public async update(
+    arg: IContentLibraryUpdate,
+    options?: IUpdateObjectOptions
+  ) {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
 
     if (arg.name) this.details.name = arg.name;
