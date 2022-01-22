@@ -1,5 +1,9 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import {
+  IEntityRemove,
+  IHttpStatus,
+  IUpdateObjectOptions,
+} from "./types/interfaces";
 import { ISystemRule, ISystemRuleUpdate } from "./SystemRule.interface";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { calculateActions, getRuleContext } from "./util/generic";
@@ -40,7 +44,7 @@ export class SystemRule implements IClassSystemRule {
       .then((res) => res.status);
   }
 
-  public async update(arg: ISystemRuleUpdate) {
+  public async update(arg: ISystemRuleUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name = arg.name;
     if (arg.rule) this.details.rule = arg.rule;
     if (arg.resourceFilter) this.details.resourceFilter = arg.resourceFilter;
@@ -53,7 +57,8 @@ export class SystemRule implements IClassSystemRule {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

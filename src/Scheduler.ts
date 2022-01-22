@@ -1,11 +1,14 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { ISchedulerService, ISchedulerServiceUpdate } from "./Schedulers";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassScheduler {
   remove(): Promise<IHttpStatus>;
-  update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
+  update(
+    arg: ISchedulerServiceUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<ISchedulerService>;
   details: ISchedulerService;
 }
 
@@ -40,7 +43,10 @@ export class Scheduler implements IClassScheduler {
       .then((res) => res.status);
   }
 
-  public async update(arg: ISchedulerServiceUpdate) {
+  public async update(
+    arg: ISchedulerServiceUpdate,
+    options?: IUpdateObjectOptions
+  ) {
     if (arg.schedulerServiceType) {
       if (arg.schedulerServiceType == "Master")
         this.details.settings.schedulerServiceType = 0;
@@ -70,7 +76,8 @@ export class Scheduler implements IClassScheduler {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

@@ -4,11 +4,14 @@ import {
   IProxyUpdate,
   IVirtualProxyConfigCondensed,
 } from "./Proxy.interface";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassProxy {
-  update(arg: IProxyUpdate): Promise<IProxyService>;
+  update(
+    arg: IProxyUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<IProxyService>;
   details: IProxyService;
 }
 
@@ -36,7 +39,7 @@ export class Proxy implements IClassProxy {
     }
   }
 
-  public async update(arg: IProxyUpdate) {
+  public async update(arg: IProxyUpdate, options?: IUpdateObjectOptions) {
     this.validateRanges(arg);
 
     if (arg.listenPort) this.details.settings.listenPort = arg.listenPort;
@@ -72,7 +75,8 @@ export class Proxy implements IClassProxy {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 
