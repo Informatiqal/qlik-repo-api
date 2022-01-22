@@ -58,3 +58,8 @@ export interface ISelection {
   privileges?: string[];
   items?: ISelectionItem[];
 }
+
+export interface IUpdateObjectOptions {
+  appendCustomProps?: boolean;
+  appendTags?: boolean;
+}

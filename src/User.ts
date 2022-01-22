@@ -1,11 +1,15 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import {
+  IEntityRemove,
+  IHttpStatus,
+  IUpdateObjectOptions,
+} from "./types/interfaces";
 import { IUser, IUserUpdate } from "./Users";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassUser {
   remove(): Promise<IHttpStatus>;
-  update(arg: IUserUpdate): Promise<IUser>;
+  update(arg: IUserUpdate, options?: IUpdateObjectOptions): Promise<IUser>;
   details: IUser;
 }
 
@@ -35,14 +39,15 @@ export class User implements IClassUser {
       .then((res) => res.status);
   }
 
-  public async update(arg: IUserUpdate) {
+  public async update(arg: IUserUpdate, options?: IUpdateObjectOptions) {
     if (arg.roles) this.details.roles = arg.roles;
     if (arg.name) this.details.name = arg.name;
 
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

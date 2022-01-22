@@ -1,12 +1,15 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { ISharedContent, ISharedContentUpdate } from "./SharedContents";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { URLBuild } from "./util/generic";
 
 export interface IClassSharedContent {
   remove(): Promise<IHttpStatus>;
-  update(arg: ISharedContentUpdate): Promise<ISharedContent>;
+  update(
+    arg: ISharedContentUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<ISharedContent>;
   uploadFile(arg: { file: Buffer; externalPath: string }): Promise<IHttpStatus>;
   deleteFile(arg: { externalPath: string }): Promise<IHttpStatus>;
   details: ISharedContent;
@@ -42,7 +45,10 @@ export class SharedContent implements IClassSharedContent {
       .then((res) => res.status);
   }
 
-  public async update(arg: ISharedContentUpdate) {
+  public async update(
+    arg: ISharedContentUpdate,
+    options?: IUpdateObjectOptions
+  ) {
     if (arg.name) this.details.name = arg.name;
     if (arg.description) this.details.description = arg.description;
     if (arg.type) this.details.type = arg.type;
@@ -50,7 +56,8 @@ export class SharedContent implements IClassSharedContent {
     const updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

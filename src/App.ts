@@ -1,6 +1,6 @@
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IApp } from "./Apps";
 
@@ -38,7 +38,7 @@ export interface IClassApp {
   remove(): Promise<IHttpStatus>;
   publish(arg: { stream: string; name?: string }): Promise<IClassApp>;
   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
-  update(arg: IAppUpdate): Promise<IApp>;
+  update(arg: IAppUpdate, options?: IUpdateObjectOptions): Promise<IApp>;
 }
 
 export class App implements IClassApp {
@@ -128,14 +128,15 @@ export class App implements IClassApp {
     });
   }
 
-  public async update(arg: IAppUpdate) {
+  public async update(arg: IAppUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name = arg.name;
     if (arg.description) this.details.description = arg.description;
 
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

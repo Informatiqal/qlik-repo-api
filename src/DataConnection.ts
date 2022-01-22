@@ -1,11 +1,14 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IDataConnection, IDataConnectionUpdate } from "./DataConnections";
 
 export interface IClassDataConnection {
   remove(): Promise<IHttpStatus>;
-  update(arg: IDataConnectionUpdate): Promise<IDataConnection>;
+  update(
+    arg: IDataConnectionUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<IDataConnection>;
   details: IDataConnection;
 }
 
@@ -39,11 +42,15 @@ export class DataConnection implements IClassDataConnection {
       .then((res) => res.status);
   }
 
-  public async update(arg: IDataConnectionUpdate) {
+  public async update(
+    arg: IDataConnectionUpdate,
+    options?: IUpdateObjectOptions
+  ) {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

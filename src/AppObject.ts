@@ -1,5 +1,9 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import {
+  IEntityRemove,
+  IHttpStatus,
+  IUpdateObjectOptions,
+} from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IAppObject } from "./AppObjects";
 
@@ -13,7 +17,10 @@ export interface IClassAppObject {
   publish(): Promise<IHttpStatus>;
   remove(): Promise<IHttpStatus>;
   unPublish(): Promise<IHttpStatus>;
-  update(arg: IAppObjectUpdate): Promise<IAppObject>;
+  update(
+    arg: IAppObjectUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<IAppObject>;
 }
 
 export class AppObject implements IClassAppObject {
@@ -64,13 +71,14 @@ export class AppObject implements IClassAppObject {
       .then((res) => res.status);
   }
 
-  public async update(arg: IAppObjectUpdate) {
+  public async update(arg: IAppObjectUpdate, options?: IUpdateObjectOptions) {
     if (arg.approved) this.details.approved = arg.approved;
 
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

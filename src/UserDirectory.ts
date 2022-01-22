@@ -1,5 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import {
   IUserDirectory,
   IUserDirectorySettings,
@@ -11,7 +11,10 @@ export interface IClassUserDirectory {
   remove(): Promise<IHttpStatus>;
   removeAndUsers(): Promise<IHttpStatus>;
   sync(): Promise<IHttpStatus>;
-  update(arg: IUserDirectoryUpdate): Promise<IUserDirectory>;
+  update(
+    arg: IUserDirectoryUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<IUserDirectory>;
   details: IUserDirectory;
 }
 
@@ -59,7 +62,10 @@ export class UserDirectory implements IClassUserDirectory {
       .then((res) => res.status as IHttpStatus);
   }
 
-  public async update(arg: IUserDirectoryUpdate) {
+  public async update(
+    arg: IUserDirectoryUpdate,
+    options?: IUpdateObjectOptions
+  ) {
     if (arg.name) this.details.name = arg.name;
     if (arg.userDirectoryName)
       this.details.userDirectoryName = arg.userDirectoryName;
@@ -72,7 +78,8 @@ export class UserDirectory implements IClassUserDirectory {
     const updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 
