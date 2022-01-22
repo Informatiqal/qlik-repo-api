@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { IStream, IStreamUpdate } from "./Streams";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassStream {
   remove(): Promise<IHttpStatus>;
-  update(arg: IStreamUpdate): Promise<IStream>;
+  update(arg: IStreamUpdate, options?: IUpdateObjectOptions): Promise<IStream>;
   details: IStream;
 }
 
@@ -35,13 +35,14 @@ export class Stream implements IClassStream {
       .then((res) => res.status);
   }
 
-  public async update(arg: IStreamUpdate) {
+  public async update(arg: IStreamUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name = arg.name;
 
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

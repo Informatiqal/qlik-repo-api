@@ -1,5 +1,10 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, ISelection, IHttpReturn } from "./types/interfaces";
+import {
+  IHttpStatus,
+  ISelection,
+  IHttpReturn,
+  IUpdateObjectOptions,
+} from "./types/interfaces";
 import {
   ISchemaEvent,
   ITask,
@@ -21,7 +26,10 @@ export interface IClassReloadTask {
   waitExecution(arg: { executionId?: string }): Promise<ITaskExecutionResult>;
   scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
   scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
-  update(arg: ITaskReloadUpdate): Promise<ITask>;
+  update(
+    arg: ITaskReloadUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<ITask>;
   addTriggerComposite(arg: ITaskCreateTriggerComposite): Promise<IHttpStatus>;
   addTriggerSchema(arg: ITaskCreateTriggerSchema): Promise<IHttpStatus>;
   addTriggerMany(
@@ -147,7 +155,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       .then((res) => res.data as string);
   }
 
-  async update(arg: ITaskReloadUpdate) {
+  async update(arg: ITaskReloadUpdate, options?: IUpdateObjectOptions) {
     if (arg.enabled) this.details.enabled = arg.enabled;
     if (arg.taskSessionTimeout)
       this.details.taskSessionTimeout = arg.taskSessionTimeout;
@@ -156,7 +164,8 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 

@@ -8,6 +8,7 @@ import { ITask, ITaskCreate } from "./Task.interface";
 import { ReloadTask } from "./ReloadTask";
 import { IClassReloadTask } from "./ReloadTaskBase";
 
+//TODO: why is no update method here?
 export interface IClassReloadTasks {
   get(arg: { id: string }): Promise<IClassReloadTask>;
   getAll(): Promise<IClassReloadTask[]>;

@@ -1,11 +1,14 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
+import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
 import { INodeUpdate, IServerNodeConfiguration } from "./Nodes";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassNode {
   remove(): Promise<IHttpStatus>;
-  update(arg: INodeUpdate): Promise<IServerNodeConfiguration>;
+  update(
+    arg: INodeUpdate,
+    options?: IUpdateObjectOptions
+  ): Promise<IServerNodeConfiguration>;
   setCentral(): Promise<IHttpStatus>;
   details: IServerNodeConfiguration;
 }
@@ -40,7 +43,7 @@ export class Node implements IClassNode {
       .then((res) => res.status);
   }
 
-  public async update(arg: INodeUpdate) {
+  public async update(arg: INodeUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name;
     if (arg.nodePurpose) {
       if (arg.nodePurpose == "Production") this.details.nodePurpose = 0;
@@ -69,7 +72,8 @@ export class Node implements IClassNode {
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,
       this.details,
-      arg
+      arg,
+      options
     );
     this.details = await updateCommon.updateAll();
 
