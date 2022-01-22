@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.13] - 2022-01-16
+
+### Changed
+
+- when updating object's tags (#44) or custom properties (#43) the values can be appended to the object instead of being overwritten (#45)
+
 ## [0.1.12] - 2022-01-16
 
 ### Fixed
