@@ -40,10 +40,14 @@ export class CustomProperty implements IClassCustomProperty {
   }
 
   public async update(arg: ICustomPropertyUpdate) {
-    if (!arg.name)
-      throw new Error(`customProperty.update: "name" parameter is required`);
+    if (arg.name) {
+      if (/^[A-Za-z0-9_]+$/.test(arg.name) == false)
+        throw new Error(
+          `customProperty.update: "name" should be alphanumeric value`
+        );
 
-    if (arg.name) this.details.name = arg.name;
+      this.details.name = arg.name;
+    }
     if (arg.description) this.details.description = arg.description;
     if (arg.choiceValues) this.details.choiceValues = arg.choiceValues;
     if (arg.objectTypes) this.details.objectTypes = arg.objectTypes;

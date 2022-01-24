@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.14] - 2022-01-24
+
+### Fixed
+
+- customer property (update and create) - check if the provided name is alphanumeric ([#42](https://github.com/Informatiqal/qlik-repo-api/issues/42))
+- custom property update - `name` is no longer mandatory parameter
+
 ## [0.1.13] - 2022-01-16
 
 ### Changed

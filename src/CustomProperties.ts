@@ -125,6 +125,11 @@ export class CustomProperties implements IClassCustomProperties {
     if (!arg.name)
       throw new Error(`customProperty.create: "name" parameter is required`);
 
+    if (/^[A-Za-z0-9_]+$/.test(arg.name) == false)
+      throw new Error(
+        `customProperty.create: "name" should be alphanumeric value`
+      );
+
     return await this.repoClient
       .Post(
         `custompropertydefinition`,
