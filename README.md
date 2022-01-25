@@ -32,7 +32,7 @@ But multiple authentication configuration can be provided:
   ```javascript
   const repoApi = new QlikRepoApi.client({
     host: "my-sense-server.com",
-    proxy: "virtualProxyPrefix",
+    proxy: "virtualProxyPrefix", // optional
     authentication: {
       token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
     },
@@ -58,7 +58,7 @@ But multiple authentication configuration can be provided:
   // the actual initialization
   const repoApi = new QlikRepoApi.client({
     host: "my-sense-server.com",
-    port: 4242,
+    port: 4242, // optional. default 4242
     httpsAgent: httpsAgentCert,
     authentication: {
       user_dir: "USER-DIRECTORY",
@@ -132,7 +132,9 @@ All these methods (`copy`, `export`, `publish` etc.) will be executed in the con
 The other methods (apart from `get`) might return array of object instances. For example `apps.getFilter` method will return an array of app instances:
 
 ```javascript
-const someQlikApps = await repoApi.apps.getFilter("name sw 'License Monitor'");
+const someQlikApps = await repoApi.apps.getFilter({
+  filter: "name sw 'License Monitor'",
+});
 ```
 
 The `someQlikApps` variable will be an array of the `App` class. Each element of array will have `details` and the single app methods
@@ -148,7 +150,7 @@ The `someQlikApps` variable will be an array of the `App` class. Each element of
 For a single app: change the name, add custom properties and tags
 
 ```javascript
-const someQlikApp = await repoApi.apps.get("some-app-id");
+const someQlikApp = await repoApi.apps.get({ id: "some-app-id" });
 
 console.log(someQlikApp.details.name);
 
@@ -169,7 +171,9 @@ For a single app: change the name, add custom properties and tags
 
 ```javascript
 // all apps with their name is starting with "License"
-const licenseMonitorApps = await repoApi.apps.getFilter("name sw 'License'");
+const licenseMonitorApps = await repoApi.apps.getFilter({
+  filter: "name sw 'License'",
+});
 
 // update each app by adding custom properties
 const updateResults = await Promise.all(
