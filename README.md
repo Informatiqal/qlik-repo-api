@@ -1,14 +1,12 @@
-## **UNDER DEVELOPMENT!**
-
----
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T0148ZP)
 
 **NOT AFFILIATED WITH QLIK**
 
----
+# Qlik Sense Repo API
 
-## Compatibility
+Node.js/browser package to interact with Qlik Sense Repository API (QSEoW)
 
-At the moment the module is compatible with `QSEoW` version `May 2021`
+## Please check out the [Wiki section](https://github.com/Informatiqal/qlik-repo-api/wiki) for details and examples
 
 ## Installation
 
