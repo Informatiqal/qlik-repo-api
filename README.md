@@ -2,7 +2,7 @@
 
 **NOT AFFILIATED WITH QLIK**
 
-# Qlik Sense Repo API
+# Qlik Sense Repo API (Beta)
 
 Node.js/browser package to interact with Qlik Sense Repository API (QSEoW)
 
