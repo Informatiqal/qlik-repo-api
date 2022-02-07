@@ -1,4 +1,4 @@
-import { QlikRepositoryClient } from "qlik-rest-api";
+import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
@@ -7,6 +7,7 @@ import { ITask, ITaskCreate } from "./Task.interface";
 
 import { ReloadTask } from "./ReloadTask";
 import { IClassReloadTask } from "./ReloadTaskBase";
+import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 
 //TODO: why is no update method here?
 export interface IClassReloadTasks {
@@ -21,6 +22,7 @@ export interface IClassReloadTasks {
 
 export class ReloadTasks implements IClassReloadTasks {
   private repoClient: QlikRepositoryClient;
+  private genericClient: QlikGenericRestClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
     this.repoClient = mainRepoClient;
   }
@@ -88,16 +90,20 @@ export class ReloadTasks implements IClassReloadTasks {
   }
 
   public async create(arg: ITaskCreate) {
-    if (!arg.appId)
-      throw new Error(`task.create: "appId" parameter is required`);
     if (!arg.name) throw new Error(`task.create: "name" parameter is required`);
+
+    const app = await getAppForReloadTask(
+      arg.appId,
+      arg.appFilter,
+      this.repoClient
+    );
 
     let reloadTask: { [k: string]: any } = {};
     reloadTask["schemaEvents"] = [];
     reloadTask["compositeEvents"] = [];
     reloadTask["task"] = {
       name: arg.name,
-      app: { id: arg.appId },
+      app: { id: app.details.id },
       taskType: 0,
       enabled: true,
       taskSessionTimeout: 1440,

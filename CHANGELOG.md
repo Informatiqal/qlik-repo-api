@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.14] - 2022-02-07
+
+### Fixed
+
+- `reloadTask.create` and `reloadTask.update` accepts and `appFilter` argument [#47](https://github.com/Informatiqal/qlik-repo-api/issues/47)
+
 ## [0.1.14] - 2022-01-24
 
 ### Fixed
