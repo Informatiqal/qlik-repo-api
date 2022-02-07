@@ -11,7 +11,8 @@ import {
 
 export interface ITaskCreate {
   name: string;
-  appId: string;
+  appId?: string;
+  appFilter?: string;
   tags?: string[];
   customProperties?: string[];
 }
@@ -25,6 +26,8 @@ export interface ITaskReloadUpdate {
   tags?: string[];
   customProperties?: string[];
   owner?: string;
+  appId?: string;
+  appFilter?: string;
 }
 
 export type TTaskTriggerCompositeState = "success" | "fail";

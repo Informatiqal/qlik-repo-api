@@ -18,6 +18,7 @@ import { IClassSchemaTrigger, SchemaTrigger } from "./SchemaTrigger";
 import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
 import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
 import { schemaRepeat } from "./util/schemaTrigger";
+import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 
 export interface IClassReloadTask {
   remove(): Promise<IHttpStatus>;
@@ -160,6 +161,15 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     if (arg.taskSessionTimeout)
       this.details.taskSessionTimeout = arg.taskSessionTimeout;
     if (arg.maxRetries) this.details.maxRetries = arg.maxRetries;
+
+    if (arg.appId || arg.appFilter) {
+      const app = await getAppForReloadTask(
+        arg.appId,
+        arg.appFilter,
+        this.repoClient
+      );
+      this.details.app = app.details;
+    }
 
     let updateCommon = new UpdateCommonProperties(
       this.repoClient,

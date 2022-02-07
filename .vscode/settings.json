@@ -15,6 +15,7 @@
         "binarydelete",
         "binarydownload",
         "binarysyncruleevaluation",
+        "certificatedistribution",
         "compositeevent",
         "compositeeventoperational",
         "compositeeventruleoperational",
