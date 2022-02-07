@@ -31,9 +31,9 @@ export interface IClassTable {
 }
 
 export class Table {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async create(arg: ITableCreate) {
@@ -49,7 +49,7 @@ export class Table {
     urlBuild.addParam("sortColumn", arg.sortColumn);
     urlBuild.addParam("orderAscending", arg.orderAscending);
 
-    return await this.repoClient.Post(`${urlBuild.getUrl()}`, {
+    return await this.#repoClient.Post(`${urlBuild.getUrl()}`, {
       type: arg.type,
       columns: arg.columns,
     });

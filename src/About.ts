@@ -21,33 +21,37 @@ export interface IClassAbout {
 }
 
 export class About implements IClassAbout {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get() {
-    return await this.repoClient.Get(`about`).then((res) => res.data as IAbout);
+    return await this.#repoClient
+      .Get(`about`)
+      .then((res) => res.data as IAbout);
   }
 
   public async enums() {
-    return await this.repoClient.Get(`about/api/enums`).then((res) => res.data);
+    return await this.#repoClient
+      .Get(`about/api/enums`)
+      .then((res) => res.data);
   }
 
   public async openApi() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`about/openapi`)
       .then((res) => res.data as string[]);
   }
 
   public async apiRelations() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`about/api/relations`)
       .then((res) => res.data as string[]);
   }
 
   public async apiDescription() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`about/api/description`)
       .then((res) => res.data as string[]);
   }
@@ -55,7 +59,7 @@ export class About implements IClassAbout {
   public async apiDefaults(arg: { path: string }) {
     if (!arg.path)
       throw new Error(`about.apiDefaults: "path" parameter is required`);
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`about/api/default/${arg.path}`)
       .then((res) => res.data);
   }

@@ -10,28 +10,28 @@ export interface IClassTag {
 }
 
 export class Tag implements IClassTag {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ITag;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITag) {
     if (!id) throw new Error(`tags.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`tag/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`tag/${this.#id}`)
         .then((res) => res.data as ITag);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`tag/${this.id}`)
+    return await this.#repoClient
+      .Delete(`tag/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -41,8 +41,8 @@ export class Tag implements IClassTag {
     this.details.name = arg.name;
     this.details.modifiedDate = modifiedDateTime();
 
-    return await this.repoClient
-      .Put(`tag/${this.id}`, {
+    return await this.#repoClient
+      .Put(`tag/${this.#id}`, {
         ...this.details,
       })
       .then((res) => res.data as ITag);

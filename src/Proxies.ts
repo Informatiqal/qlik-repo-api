@@ -33,10 +33,10 @@ export interface IClassProxies {
 }
 
 export class Proxies implements IClassProxies {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   private node: IClassNodes;
   constructor(private mainRepoClient: QlikRepositoryClient, node: IClassNodes) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
     this.node = node;
   }
 
@@ -46,33 +46,33 @@ export class Proxies implements IClassProxies {
       throw new Error(`proxy.add: "virtualProxyId" is required`);
 
     let proxy = await this.get({ id: arg.proxyId });
-    const virtualProxyInstance = new VirtualProxies(this.repoClient);
+    const virtualProxyInstance = new VirtualProxies(this.#repoClient);
     let virtualProxy = await virtualProxyInstance.get({
       id: arg.virtualProxyId,
     });
 
     proxy.details.settings.virtualProxies.push(virtualProxy.details);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`proxyservice/${arg.proxyId}`, proxy)
       .then((res) => res.data as IProxyService)
-      .then((s) => new Proxy(this.repoClient, s.id, s));
+      .then((s) => new Proxy(this.#repoClient, s.id, s));
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`proxy.get: "id" parameter is required`);
-    const proxy: Proxy = new Proxy(this.repoClient, arg.id);
+    const proxy: Proxy = new Proxy(this.#repoClient, arg.id);
     await proxy.init();
 
     return proxy;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`proxyservice/full`)
       .then((res) => res.data as IProxyService[])
       .then((data) => {
-        return data.map((t) => new Proxy(this.repoClient, t.id, t));
+        return data.map((t) => new Proxy(this.#repoClient, t.id, t));
       });
   }
 
@@ -80,11 +80,11 @@ export class Proxies implements IClassProxies {
     if (!arg.filter)
       throw new Error(`proxy.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`proxyservice/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IProxyService[])
       .then((data) => {
-        return data.map((t) => new Proxy(this.repoClient, t.id, t));
+        return data.map((t) => new Proxy(this.#repoClient, t.id, t));
       });
   }
 
@@ -92,7 +92,7 @@ export class Proxies implements IClassProxies {
     const urlBuild = new URLBuild(`selection/proxyservice`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -171,9 +171,9 @@ export class Proxies implements IClassProxies {
     if (arg.oidcAttributeMap)
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`virtualproxyconfig`, { ...data })
-      .then((res) => new Proxy(this.repoClient, res.data.id, res.data));
+      .then((res) => new Proxy(this.#repoClient, res.data.id, res.data));
   }
 
   // // TODO: this might not be needed. leaving here just in case
@@ -185,7 +185,7 @@ export class Proxies implements IClassProxies {
   //   if (!virtualProxyId)
   //     throw new Error(`proxy.virtualProxyAdd: "virtualProxyId" is required`);
 
-  //   const virtualProxyInstance = new VirtualProxies(this.repoClient);
+  //   const virtualProxyInstance = new VirtualProxies(this.#repoClient);
   //   const virtualProxy = await virtualProxyInstance.get(virtualProxyId);
 
   //   return virtualProxy.details;

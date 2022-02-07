@@ -73,26 +73,26 @@ export interface IClassSharedContents {
 }
 
 export class SharedContents implements IClassSharedContents {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id)
       throw new Error(`sharedContent.get: "id" parameter is required`);
-    const shc: SharedContent = new SharedContent(this.repoClient, arg.id);
+    const shc: SharedContent = new SharedContent(this.#repoClient, arg.id);
     await shc.init();
 
     return shc;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`sharedcontent/full`)
       .then((res) => res.data as ISharedContent[])
       .then((data) => {
-        return data.map((t) => new SharedContent(this.repoClient, t.id, t));
+        return data.map((t) => new SharedContent(this.#repoClient, t.id, t));
       });
   }
 
@@ -102,11 +102,11 @@ export class SharedContents implements IClassSharedContents {
         `sharedContent.getFilter: "filter" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`sharedcontent/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ISharedContent[])
       .then((data) => {
-        return data.map((t) => new SharedContent(this.repoClient, t.id, t));
+        return data.map((t) => new SharedContent(this.#repoClient, t.id, t));
       });
   }
 
@@ -128,7 +128,7 @@ export class SharedContents implements IClassSharedContents {
     const urlBuild = new URLBuild(`selection/sharedcontent`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -147,16 +147,16 @@ export class SharedContents implements IClassSharedContents {
     if (arg.description) sharedContent["description"] = arg.description;
 
     const getCommon = new GetCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       arg.customProperties || [],
       arg.tags || [],
       ""
     );
     const commonProps = await getCommon.getAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`sharedcontent`, { ...sharedContent, ...commonProps })
       .then((res) => res.data as ISharedContent)
-      .then((s) => new SharedContent(this.repoClient, s.id, s));
+      .then((s) => new SharedContent(this.#repoClient, s.id, s));
   }
 }

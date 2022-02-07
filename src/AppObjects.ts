@@ -44,25 +44,25 @@ export interface IClassAppObjects {
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 export class AppObjects implements IClassAppObjects {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
-    const appObject: AppObject = new AppObject(this.repoClient, arg.id, null);
+    const appObject: AppObject = new AppObject(this.#repoClient, arg.id, null);
     await appObject.init();
 
     return appObject;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`app/object/full`)
       .then((res) => res.data as IAppObject[])
       .then((data) => {
         return data.map((t) => {
-          return new AppObject(this.repoClient, t.id, t);
+          return new AppObject(this.#repoClient, t.id, t);
         });
       });
   }
@@ -71,12 +71,12 @@ export class AppObjects implements IClassAppObjects {
     if (!arg.filter)
       throw new Error(`appObject.filter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`app/object/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IAppObject[])
       .then((data) => {
         return data.map((t) => {
-          return new AppObject(this.repoClient, t.id, t);
+          return new AppObject(this.#repoClient, t.id, t);
         });
       });
   }
@@ -108,7 +108,7 @@ export class AppObjects implements IClassAppObjects {
     const urlBuild = new URLBuild(`selection/app/object`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

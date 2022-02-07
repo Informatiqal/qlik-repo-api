@@ -16,13 +16,13 @@ export interface IClassCertificate {
 }
 
 export class Certificate implements IClassCertificate {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async distributionPathGet() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`certificatedistribution/exportcertificatespath`)
       .then((res) => {
         return res.data as string;
@@ -45,7 +45,7 @@ export class Certificate implements IClassCertificate {
     if (arg.includeCa) data["includeCa"] = arg.includeCa;
     if (arg.exportFormat) data["exportFormat"] = arg.exportFormat;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`certificatedistribution/exportcertificates`, data)
       .then((res) => {
         return res.status;

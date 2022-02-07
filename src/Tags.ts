@@ -26,26 +26,26 @@ export interface IClassTags {
 }
 
 export class Tags implements IClassTags {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
-    const tag: Tag = new Tag(this.repoClient, arg.id);
+    const tag: Tag = new Tag(this.#repoClient, arg.id);
     await tag.init();
 
     return tag;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`tag/full`)
       .then((res) => {
         return res.data as ITag[];
       })
       .then((data) => {
-        return data.map((t) => new Tag(this.repoClient, t.id, t));
+        return data.map((t) => new Tag(this.#repoClient, t.id, t));
       });
   }
 
@@ -53,21 +53,21 @@ export class Tags implements IClassTags {
     if (!arg.filter)
       throw new Error(`tag.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`tag?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ITag[])
       .then((data) => {
-        return data.map((t) => new Tag(this.repoClient, t.id, t));
+        return data.map((t) => new Tag(this.#repoClient, t.id, t));
       });
   }
 
   public async create(arg: { name: string }) {
     if (!arg.name) throw new Error(`tag.create: "name" is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`tag`, { name: arg.name })
       .then((res) => res.data as ITag)
-      .then((t) => new Tag(this.repoClient, t.id, t));
+      .then((t) => new Tag(this.#repoClient, t.id, t));
   }
 
   public async createMany(arg: { names: string[] }) {
@@ -78,10 +78,10 @@ export class Tags implements IClassTags {
       return { name: n };
     });
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`tag/many`, data)
       .then((res) => res.data as ITag[])
-      .then((tags) => tags.map((t) => new Tag(this.repoClient, t.id, t)));
+      .then((tags) => tags.map((t) => new Tag(this.#repoClient, t.id, t)));
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -103,7 +103,7 @@ export class Tags implements IClassTags {
     const urlBuild = new URLBuild(`selection/tag`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

@@ -19,8 +19,8 @@ export interface IClassUserDirectory {
 }
 
 export class UserDirectory implements IClassUserDirectory {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IUserDirectory;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -29,35 +29,35 @@ export class UserDirectory implements IClassUserDirectory {
   ) {
     if (!id) throw new Error(`userDirectory.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`userdirectory/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`userdirectory/${this.#id}`)
         .then((res) => res.data as IUserDirectory);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`userdirectory/${this.id}`)
+    return await this.#repoClient
+      .Delete(`userdirectory/${this.#id}`)
       .then((res) => res.status);
   }
 
   public async removeAndUsers() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(
-        `userdirectoryconnector/deleteudandusers?userDirectoryId=${this.id}`
+        `userdirectoryconnector/deleteudandusers?userDirectoryId=${this.#id}`
       )
       .then((res) => res.status);
   }
 
   public async sync() {
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`userdirectoryconnector/syncuserdirectories`, [this.details.id])
       .then((res) => res.status as IHttpStatus);
   }
@@ -76,14 +76,14 @@ export class UserDirectory implements IClassUserDirectory {
         arg.settings as unknown as IUserDirectorySettings[];
 
     const updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`userdirectory/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IUserDirectory);
   }

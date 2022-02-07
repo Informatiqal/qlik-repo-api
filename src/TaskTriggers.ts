@@ -6,13 +6,13 @@ export interface IClassTaskTriggers {
 }
 
 export class TaskTriggers implements IClassTaskTriggers {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
-    const tag: Tag = new Tag(this.repoClient, arg.id);
+    const tag: Tag = new Tag(this.#repoClient, arg.id);
     await tag.init();
 
     return tag;

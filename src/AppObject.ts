@@ -24,8 +24,8 @@ export interface IClassAppObject {
 }
 
 export class AppObject implements IClassAppObject {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IAppObject;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -34,21 +34,21 @@ export class AppObject implements IClassAppObject {
   ) {
     if (!id) throw new Error(`appObjects.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`app/object/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`app/object/${this.#id}`)
         .then((res) => res.data as IAppObject);
     }
   }
 
   public async publish() {
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`app/object/${this.details.id}/publish`, {})
       .then((res) => {
         this.details = res.data;
@@ -57,7 +57,7 @@ export class AppObject implements IClassAppObject {
   }
 
   public async unPublish() {
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`app/object/${this.details.id}/unpublish`, {})
       .then((res) => {
         this.details = res.data;
@@ -66,7 +66,7 @@ export class AppObject implements IClassAppObject {
   }
 
   public async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`app/object/${this.details.id}`)
       .then((res) => res.status);
   }
@@ -75,14 +75,14 @@ export class AppObject implements IClassAppObject {
     if (arg.approved) this.details.approved = arg.approved;
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`app/object/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IAppObject);
   }

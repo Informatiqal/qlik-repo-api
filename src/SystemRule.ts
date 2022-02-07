@@ -15,8 +15,8 @@ export interface IClassSystemRule {
 }
 
 export class SystemRule implements IClassSystemRule {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ISystemRule;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -25,22 +25,22 @@ export class SystemRule implements IClassSystemRule {
   ) {
     if (!id) throw new Error(`systemRules.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`systemrule/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`systemrule/${this.#id}`)
         .then((res) => res.data as ISystemRule);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`systemrule/${this.id}`)
+    return await this.#repoClient
+      .Delete(`systemrule/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -55,14 +55,14 @@ export class SystemRule implements IClassSystemRule {
     if (arg.context) this.details.ruleContext = getRuleContext(arg.context);
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`systemrule/${this.details.id}`, { ...this.details })
       .then((res) => res.data as ISystemRule);
   }

@@ -36,19 +36,19 @@ export interface IClassLicense {
 }
 
 export class License implements IClassLicense {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async accessTypeInfoGet() {
-    return await this.repoClient.Get(`license/accesstypeinfo`).then((res) => {
+    return await this.#repoClient.Get(`license/accesstypeinfo`).then((res) => {
       return res.data as IAccessTypeInfo;
     });
   }
 
   public async get() {
-    return await this.repoClient.Get(`license`).then((res) => {
+    return await this.#repoClient.Get(`license`).then((res) => {
       return res.data as ILicense;
     });
   }
@@ -83,7 +83,7 @@ export class License implements IClassLicense {
 
     url += `?control=${arg.control}`;
 
-    return await this.repoClient[method](url, data).then((res) => {
+    return await this.#repoClient[method](url, data).then((res) => {
       return res.data as ILicense;
     });
   }
@@ -109,7 +109,7 @@ export class License implements IClassLicense {
 
     data["key"] = arg.key;
 
-    return await this.repoClient[method](url, data).then((res) => {
+    return await this.#repoClient[method](url, data).then((res) => {
       return res.data as ILicense;
     });
   }
@@ -119,7 +119,7 @@ export class License implements IClassLicense {
 
     if (arg.resourceId) data.resourceFilter = `id eq ${arg.resourceId}`;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`systemrule/license/audit`, data)
       .then((res) => res.data as IAudit);
   }
@@ -128,7 +128,7 @@ export class License implements IClassLicense {
     let url = `license/${arg.accessType}AccessType`;
     if (arg.id) url += `/${arg.id}`;
 
-    return await this.repoClient.Get(url).then((res: IHttpReturn) => {
+    return await this.#repoClient.Get(url).then((res: IHttpReturn) => {
       if (res.data.length > 0) return res.data as ILicenseAccessTypeCondensed[];
 
       return [res.data];
@@ -143,7 +143,7 @@ export class License implements IClassLicense {
 
     let url = `license/${arg.accessType}AccessType/${arg.id}`;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(url)
       .then((res: IHttpReturn) => res.status);
   }
@@ -157,7 +157,7 @@ export class License implements IClassLicense {
         `license.accessGroupCreateUser: "name" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`license/${arg.accessType}AccessGroup`, { name: arg.name })
       .then((res) => {
         return res.data as ILicenseAccessGroup;

@@ -26,30 +26,30 @@ export interface IClassSystemRules {
 }
 
 export class SystemRules implements IClassSystemRules {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`systemRules.get: "id" parameter is required`);
-    const sr: SystemRule = new SystemRule(this.repoClient, arg.id);
+    const sr: SystemRule = new SystemRule(this.#repoClient, arg.id);
     await sr.init();
 
     return sr;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`systemrule/full`)
       .then((res) => res.data as ISystemRule[])
       .then((data) => {
-        return data.map((t) => new SystemRule(this.repoClient, t.id, t));
+        return data.map((t) => new SystemRule(this.#repoClient, t.id, t));
       });
   }
 
   public async getAudit(arg: ISystemRuleAuditGet): Promise<IAudit> {
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`systemrule/security/audit`, { ...arg })
       .then((res) => res.data as IAudit);
   }
@@ -58,11 +58,11 @@ export class SystemRules implements IClassSystemRules {
     if (!arg.filter)
       throw new Error(`systemRule.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`systemrule?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ISystemRule[])
       .then((data) => {
-        return data.map((t) => new SystemRule(this.repoClient, t.id, t));
+        return data.map((t) => new SystemRule(this.#repoClient, t.id, t));
       });
   }
 
@@ -93,15 +93,19 @@ export class SystemRules implements IClassSystemRules {
     };
 
     if (arg.tags) {
-      let updateCommon = new UpdateCommonProperties(this.repoClient, rule, arg);
+      let updateCommon = new UpdateCommonProperties(
+        this.#repoClient,
+        rule,
+        arg
+      );
       rule = await updateCommon.updateAll();
       delete rule.modifiedDate;
     }
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`systemrule`, { ...rule })
       .then((res) => res.data as ISystemRule)
-      .then((r) => new SystemRule(this.repoClient, r.id, r));
+      .then((r) => new SystemRule(this.#repoClient, r.id, r));
   }
 
   public async licenseCreate(arg: ISystemRuleLicenseCreate) {
@@ -121,7 +125,7 @@ export class SystemRules implements IClassSystemRules {
     rule["tags"] = [];
 
     let commonProps = new GetCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       arg.customProperties || [],
       arg.tags || [],
       ""
@@ -131,16 +135,16 @@ export class SystemRules implements IClassSystemRules {
     rule.customProperties = props.customProperties;
     rule.tags = props.tags;
 
-    let accessGroup = await this.repoClient.Post(
+    let accessGroup = await this.#repoClient.Post(
       `license/${arg.type}accessgroup`,
       { name: arg.name }
     );
 
     rule.resourceFilter = `License.${arg.type}AccessGroup_${accessGroup.data.id}`;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`systemrule`, rule)
-      .then((s) => new SystemRule(this.repoClient, s.data.id, s.data));
+      .then((s) => new SystemRule(this.#repoClient, s.data.id, s.data));
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -161,7 +165,7 @@ export class SystemRules implements IClassSystemRules {
     const urlBuild = new URLBuild(`selection/systemrule`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

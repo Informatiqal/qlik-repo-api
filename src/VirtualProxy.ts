@@ -22,8 +22,8 @@ export interface IClassVirtualProxy {
 }
 
 export class VirtualProxy implements IClassVirtualProxy {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IVirtualProxyConfig;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -32,22 +32,22 @@ export class VirtualProxy implements IClassVirtualProxy {
   ) {
     if (!id) throw new Error(`virtualProxy.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`virtualproxyconfig/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`virtualproxyconfig/${this.#id}`)
         .then((res) => res.data as IVirtualProxyConfig);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`virtualproxyconfig/${this.id}`)
+    return await this.#repoClient
+      .Delete(`virtualproxyconfig/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -130,7 +130,7 @@ export class VirtualProxy implements IClassVirtualProxy {
         arg.oidcAttributeMap
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`virtualproxyconfig/${this.details.id}`, this.details)
       .then((res) => res.data as IVirtualProxyConfig);
   }
@@ -138,11 +138,11 @@ export class VirtualProxy implements IClassVirtualProxy {
   public async metadataExport(arg?: { fileName: string }) {
     if (!arg.fileName) arg.fileName = `${this.details.prefix}_metadata_sp.xml`;
 
-    let exportMetaData: string = await this.repoClient
+    let exportMetaData: string = await this.#repoClient
       .Get(`virtualproxyconfig/${this.details.id}/generate/samlmetadata`)
       .then((m) => m.data as string);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`download/samlmetadata/${exportMetaData}/${arg.fileName}`)
       .then((m) => m.data as Buffer);
   }
@@ -150,12 +150,12 @@ export class VirtualProxy implements IClassVirtualProxy {
   private async parseLoadBalancingNodes(
     nodes: string[]
   ): Promise<IServerNodeConfigurationCondensed[]> {
-    let existingNodes = await this.repoClient
+    let existingNodes = await this.#repoClient
       .Get(`servernodeconfiguration/full`)
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
         return data.map((t) => {
-          return new Node(this.repoClient, t.id, t);
+          return new Node(this.#repoClient, t.id, t);
         });
       });
 

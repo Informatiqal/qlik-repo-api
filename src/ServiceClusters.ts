@@ -15,13 +15,13 @@ export interface IClassServiceClusters {
 }
 
 export class ServiceClusters implements IClassServiceClusters {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async count() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceCluster/count`)
       .then((res) => res.data as number);
   }
@@ -30,18 +30,18 @@ export class ServiceClusters implements IClassServiceClusters {
     if (!arg.id)
       throw new Error(`serviceCluster.get: "id" parameter is required`);
 
-    const sc: ServiceCluster = new ServiceCluster(this.repoClient, arg.id);
+    const sc: ServiceCluster = new ServiceCluster(this.#repoClient, arg.id);
     await sc.init();
 
     return sc;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceCluster/full`)
       .then((res) => res.data as IServiceCluster[])
       .then((data) => {
-        return data.map((t) => new ServiceCluster(this.repoClient, t.id, t));
+        return data.map((t) => new ServiceCluster(this.#repoClient, t.id, t));
       });
   }
 
@@ -51,11 +51,11 @@ export class ServiceClusters implements IClassServiceClusters {
         `serviceCluster.getFilter: "filter" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceCluster/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IServiceCluster[])
       .then((data) => {
-        return data.map((t) => new ServiceCluster(this.repoClient, t.id, t));
+        return data.map((t) => new ServiceCluster(this.#repoClient, t.id, t));
       });
   }
 
@@ -75,7 +75,7 @@ export class ServiceClusters implements IClassServiceClusters {
     const urlBuild = new URLBuild(`selection/ServiceCluster`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

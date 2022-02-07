@@ -16,8 +16,8 @@ export interface IClassProxy {
 }
 
 export class Proxy implements IClassProxy {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IProxyService;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -26,15 +26,15 @@ export class Proxy implements IClassProxy {
   ) {
     if (!id) throw new Error(`proxy.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`proxyService/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`proxyService/${this.#id}`)
         .then((res) => res.data as IProxyService);
     }
   }
@@ -73,14 +73,14 @@ export class Proxy implements IClassProxy {
       );
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`proxyservice/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IProxyService);
   }
@@ -129,7 +129,7 @@ export class Proxy implements IClassProxy {
   private async parseVirtualProxies(
     vpArg: string[]
   ): Promise<IVirtualProxyConfigCondensed[]> {
-    let allVP = await this.repoClient.Get(`proxyservice/full`);
+    let allVP = await this.#repoClient.Get(`proxyservice/full`);
     let vpToAdd = allVP.data.filter((v: any) => {
       return vpArg.includes(v.prefix);
     });

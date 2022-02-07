@@ -79,27 +79,27 @@ export interface IClassCustomProperties {
 }
 
 export class CustomProperties implements IClassCustomProperties {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id)
       throw new Error(`customProperty.get: "id" parameter is required`);
 
-    const cp: CustomProperty = new CustomProperty(this.repoClient, arg.id);
+    const cp: CustomProperty = new CustomProperty(this.#repoClient, arg.id);
     await cp.init();
 
     return cp;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`custompropertydefinition/full`)
       .then((res) => res.data as ICustomProperty[])
       .then((data) => {
-        return data.map((t) => new CustomProperty(this.repoClient, t.id, t));
+        return data.map((t) => new CustomProperty(this.#repoClient, t.id, t));
       });
   }
 
@@ -109,7 +109,7 @@ export class CustomProperties implements IClassCustomProperties {
         `customProperty.getFilter: "filter" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(
         `custompropertydefinition/full?filter=(${encodeURIComponent(
           arg.filter
@@ -117,7 +117,7 @@ export class CustomProperties implements IClassCustomProperties {
       )
       .then((res) => res.data as ICustomProperty[])
       .then((data) => {
-        return data.map((t) => new CustomProperty(this.repoClient, t.id, t));
+        return data.map((t) => new CustomProperty(this.#repoClient, t.id, t));
       });
   }
 
@@ -130,7 +130,7 @@ export class CustomProperties implements IClassCustomProperties {
         `customProperty.create: "name" should be alphanumeric value`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(
         `custompropertydefinition`,
         {
@@ -143,7 +143,7 @@ export class CustomProperties implements IClassCustomProperties {
         "application/json"
       )
       .then((res) => res.data as ICustomProperty)
-      .then((c) => new CustomProperty(this.repoClient, c.id, c));
+      .then((c) => new CustomProperty(this.#repoClient, c.id, c));
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -164,7 +164,7 @@ export class CustomProperties implements IClassCustomProperties {
     const urlBuild = new URLBuild(`selection/custompropertydefinition`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

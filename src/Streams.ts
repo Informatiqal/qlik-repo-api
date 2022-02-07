@@ -49,25 +49,25 @@ export interface IClassStreams {
 }
 
 export class Streams implements IClassStreams {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`steam.get: "id" parameter is required`);
-    const stream: Stream = new Stream(this.repoClient, arg.id);
+    const stream: Stream = new Stream(this.#repoClient, arg.id);
     await stream.init();
 
     return stream;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`stream/full`)
       .then((res) => res.data as IStream[])
       .then((data) => {
-        return data.map((t) => new Stream(this.repoClient, t.id, t));
+        return data.map((t) => new Stream(this.#repoClient, t.id, t));
       });
   }
 
@@ -75,11 +75,11 @@ export class Streams implements IClassStreams {
     if (!arg.filter)
       throw new Error(`stream.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`stream/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IStream[])
       .then((data) => {
-        return data.map((t) => new Stream(this.repoClient, t.id, t));
+        return data.map((t) => new Stream(this.#repoClient, t.id, t));
       });
   }
 
@@ -88,7 +88,7 @@ export class Streams implements IClassStreams {
       throw new Error(`stream.create: "path" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       arg.customProperties,
       arg.tags,
       arg.owner
@@ -96,13 +96,13 @@ export class Streams implements IClassStreams {
 
     let commonProps = await getCommonProps.getAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`stream`, {
         name: arg.name,
         ...commonProps,
       })
       .then((res) => res.data as IStream)
-      .then((s) => new Stream(this.repoClient, s.id, s));
+      .then((s) => new Stream(this.#repoClient, s.id, s));
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -121,7 +121,7 @@ export class Streams implements IClassStreams {
     const urlBuild = new URLBuild(`selection/stream`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

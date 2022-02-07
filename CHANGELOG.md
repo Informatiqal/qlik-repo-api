@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2022-02-07
+
+### Fixed
+
+- all methods expose only the required properties. Removed exposure of `repoClient` or `genericClient` or `id`. Whenever available these properties should be kept internal to the class [#49](https://github.com/Informatiqal/qlik-repo-api/issues/49)
+
 ## [0.1.14] - 2022-02-07
 
 ### Fixed

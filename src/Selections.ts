@@ -90,16 +90,16 @@ export interface IClassSelections {
 }
 
 export class Selections implements IClassSelections {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async create(arg: { area: TSelectionAreas; filter?: string }) {
     if (!arg.area)
       throw new Error(`select.create: "area" parameter is required`);
 
-    const selection: Selection = new Selection(this.repoClient, arg.area);
+    const selection: Selection = new Selection(this.#repoClient, arg.area);
     await selection.init(arg.filter);
 
     return selection;

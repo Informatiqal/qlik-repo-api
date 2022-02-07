@@ -10,25 +10,25 @@ export interface IClassTask {
 }
 
 export class Task implements IClassTask {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ITask;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITask) {
     if (!id) throw new Error(`tasks.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`task/full?filter=(id eq ${this.id})`)
+      this.details = await this.#repoClient
+        .Get(`task/full?filter=(id eq ${this.#id})`)
         .then((res) => {
           if (res.data.length == 0)
             throw new Error(
-              `tasks.get: task with id "${this.id}" was not found`
+              `tasks.get: task with id "${this.#id}" was not found`
             );
 
           return res.data[0] as ITask;
@@ -37,18 +37,21 @@ export class Task implements IClassTask {
   }
 
   async start() {
-    return await this.repoClient
-      .Post(`task/${this.id}/start`, {})
+    return await this.#repoClient
+      .Post(`task/${this.#id}/start`, {})
       .then((res) => res.status);
   }
 
   async startSynchronous() {
-    return await this.repoClient.Post(`task/${this.id}/start/synchronous`, {});
+    return await this.#repoClient.Post(
+      `task/${this.#id}/start/synchronous`,
+      {}
+    );
   }
 
   async stop() {
-    return await this.repoClient
-      .Post(`task/${this.id}/stop`, {})
+    return await this.#repoClient
+      .Post(`task/${this.#id}/stop`, {})
       .then((res) => res.status);
   }
 }

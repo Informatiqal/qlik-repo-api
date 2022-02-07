@@ -13,8 +13,8 @@ export interface IClassDataConnection {
 }
 
 export class DataConnection implements IClassDataConnection {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IDataConnection;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -23,21 +23,21 @@ export class DataConnection implements IClassDataConnection {
   ) {
     if (!id) throw new Error(`dataConnections.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`dataconnection/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`dataconnection/${this.#id}`)
         .then((res) => res.data as IDataConnection);
     }
   }
 
   async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`dataconnection/${this.details.id}`)
       .then((res) => res.status);
   }
@@ -47,14 +47,14 @@ export class DataConnection implements IClassDataConnection {
     options?: IUpdateObjectOptions
   ) {
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`dataconnection/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IDataConnection);
   }

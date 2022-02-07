@@ -22,9 +22,9 @@ export interface IClassContentLibrary {
 }
 
 export class ContentLibrary implements IClassContentLibrary {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
-  private genericClient: QlikGenericRestClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
+  #genericClient: QlikGenericRestClient;
   details: IContentLibrary;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -34,16 +34,16 @@ export class ContentLibrary implements IClassContentLibrary {
   ) {
     if (!id) throw new Error(`contentLibrary.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
-    this.genericClient = genericClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
+    this.#genericClient = genericClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`contentlibrary/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`contentlibrary/${this.#id}`)
         .then((res) => res.data as IContentLibrary);
     }
   }
@@ -52,8 +52,8 @@ export class ContentLibrary implements IClassContentLibrary {
     let files: IStaticContentReferenceCondensed[] = [];
 
     if (
-      this.repoClient.configFull.port &&
-      this.repoClient.configFull.port == 4242
+      this.#repoClient.configFull.port &&
+      this.#repoClient.configFull.port == 4242
     )
       throw new Error(
         `contentLibrary.export: exporting content library is not possible when the authentication is made with certificates`
@@ -77,7 +77,7 @@ export class ContentLibrary implements IClassContentLibrary {
       files.map(async (f) => {
         const logicalPath =
           f.logicalPath[0] == "/" ? f.logicalPath.substr(1) : f.logicalPath;
-        const fileContent = await this.genericClient.Get(logicalPath);
+        const fileContent = await this.#genericClient.Get(logicalPath);
         return {
           name: f.logicalPath.replace(/^.*[\\\/]/, ""),
           file: fileContent.data,
@@ -87,7 +87,7 @@ export class ContentLibrary implements IClassContentLibrary {
   }
 
   public async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`contentlibrary/${this.details.id}`)
       .then((res) => res.status);
   }
@@ -97,7 +97,7 @@ export class ContentLibrary implements IClassContentLibrary {
     options?: IUpdateObjectOptions
   ) {
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
@@ -107,7 +107,7 @@ export class ContentLibrary implements IClassContentLibrary {
 
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`contentlibrary/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IContentLibrary);
   }

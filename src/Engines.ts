@@ -100,25 +100,25 @@ export interface IClassEngines {
 }
 
 export class Engines implements IClassEngines {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`engines.get: "id" parameter is required`);
-    const engine: Engine = new Engine(this.repoClient, arg.id);
+    const engine: Engine = new Engine(this.#repoClient, arg.id);
     await engine.init();
 
     return engine;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`engineservice/full`)
       .then((res) => res.data as IEngine[])
       .then((data) => {
-        return data.map((t) => new Engine(this.repoClient, t.id, t));
+        return data.map((t) => new Engine(this.#repoClient, t.id, t));
       });
   }
 
@@ -137,7 +137,7 @@ export class Engines implements IClassEngines {
       loadBalancingPurpose: loadBalancingPurpose,
     };
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`loadbalancing/validengines"`, body)
       .then((res) => res.data as IEngineGetValidResult[]);
   }
@@ -147,11 +147,11 @@ export class Engines implements IClassEngines {
 
     let baseUrl = `engineservice/full`;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`${baseUrl}?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IEngine[])
       .then((data) => {
-        return data.map((t) => new Engine(this.repoClient, t.id, t));
+        return data.map((t) => new Engine(this.#repoClient, t.id, t));
       });
   }
 
@@ -159,7 +159,7 @@ export class Engines implements IClassEngines {
     const urlBuild = new URLBuild(`selection/engineservice`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

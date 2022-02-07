@@ -59,31 +59,36 @@ export interface IClassApps {
 }
 
 export class Apps implements IClassApps {
-  private repoClient: QlikRepositoryClient;
-  private genericClient: QlikGenericRestClient;
+  #repoClient: QlikRepositoryClient;
+  #genericClient: QlikGenericRestClient;
   constructor(
     private mainRepoClient: QlikRepositoryClient,
     private mainGenericClient: QlikGenericRestClient
   ) {
-    this.repoClient = mainRepoClient;
-    this.genericClient = mainGenericClient;
+    this.#repoClient = mainRepoClient;
+    this.#genericClient = mainGenericClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`apps.get: "id" parameter is required`);
-    const app: App = new App(this.repoClient, arg.id, null, this.genericClient);
+    const app: App = new App(
+      this.#repoClient,
+      arg.id,
+      null,
+      this.#genericClient
+    );
     await app.init();
 
     return app;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`app/full`)
       .then((res) => res.data as IApp[])
       .then((data) => {
         return data.map(
-          (t) => new App(this.repoClient, t.id, t, this.genericClient)
+          (t) => new App(this.#repoClient, t.id, t, this.#genericClient)
         );
       });
   }
@@ -96,12 +101,12 @@ export class Apps implements IClassApps {
     urlBuild.addParam("filter", arg.filter);
     urlBuild.addParam("orderby", arg.orderBy);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IApp[])
       .then((data) => {
         return data.map(
-          (t) => new App(this.repoClient, t.id, t, this.genericClient)
+          (t) => new App(this.#repoClient, t.id, t, this.#genericClient)
         );
       });
   }
@@ -120,15 +125,15 @@ export class Apps implements IClassApps {
     urlBuild.addParam("keepdata", arg.keepData);
     urlBuild.addParam("excludeconnections", arg.excludeDataConnections);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
           new App(
-            this.repoClient,
+            this.#repoClient,
             (res.data as IApp).id,
             res.data,
-            this.genericClient
+            this.#genericClient
           )
       );
   }
@@ -153,15 +158,15 @@ export class Apps implements IClassApps {
     urlBuild.addParam("keepdata", arg.keepData);
     urlBuild.addParam("targetappid", arg.targetAppId);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
           new App(
-            this.repoClient,
+            this.#repoClient,
             (res.data as IApp).id,
             null,
-            this.genericClient
+            this.#genericClient
           )
       );
   }
@@ -182,7 +187,7 @@ export class Apps implements IClassApps {
     const urlBuild = new URLBuild(`selection/app`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
