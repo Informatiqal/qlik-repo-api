@@ -16,8 +16,8 @@ export interface IClassSharedContent {
 }
 
 export class SharedContent implements IClassSharedContent {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ISharedContent;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -26,22 +26,22 @@ export class SharedContent implements IClassSharedContent {
   ) {
     if (!id) throw new Error(`sharedContent.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`sharedcontent/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`sharedcontent/${this.#id}`)
         .then((res) => res.data as ISharedContent);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`sharedcontent/${this.id}`)
+    return await this.#repoClient
+      .Delete(`sharedcontent/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -54,14 +54,14 @@ export class SharedContent implements IClassSharedContent {
     if (arg.type) this.details.type = arg.type;
 
     const updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`sharedcontent/${this.details.id}`, { ...this.details })
       .then((res) => res.data as ISharedContent);
   }
@@ -79,7 +79,7 @@ export class SharedContent implements IClassSharedContent {
     );
     urlBuild.addParam("externalpath", arg.externalPath);
 
-    const status = await this.repoClient
+    const status = await this.#repoClient
       .Post(urlBuild.getUrl(), arg.file)
       .then((res) => res.status);
 
@@ -102,7 +102,7 @@ export class SharedContent implements IClassSharedContent {
     );
     urlBuild.addParam("externalpath", arg.externalPath);
 
-    const status = await this.repoClient
+    const status = await this.#repoClient
       .Delete(urlBuild.getUrl())
       .then((res) => res.status);
 

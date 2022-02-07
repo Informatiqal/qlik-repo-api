@@ -77,14 +77,14 @@ export interface IClassContentLibraries {
 }
 
 export class ContentLibraries implements IClassContentLibraries {
-  private repoClient: QlikRepositoryClient;
-  private genericClient: QlikGenericRestClient;
+  #repoClient: QlikRepositoryClient;
+  #genericClient: QlikGenericRestClient;
   constructor(
     private mainRepoClient: QlikRepositoryClient,
     private mainGenericClient: QlikGenericRestClient
   ) {
-    this.repoClient = mainRepoClient;
-    this.genericClient = mainGenericClient;
+    this.#repoClient = mainRepoClient;
+    this.#genericClient = mainGenericClient;
   }
 
   public async create(arg: IContentLibraryCreate) {
@@ -92,7 +92,7 @@ export class ContentLibraries implements IClassContentLibraries {
       throw new Error(`contentLibrary.create: "name" parameter is required`);
 
     let getCommonProps = new GetCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       arg.customProperties || [],
       arg.tags || [],
       arg.owner || ""
@@ -100,11 +100,12 @@ export class ContentLibraries implements IClassContentLibraries {
 
     let commonProps = await getCommonProps.getAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`contentlibrary`, { name: arg.name, ...commonProps })
       .then((res) => res.data as IContentLibrary)
       .then(
-        (t) => new ContentLibrary(this.repoClient, t.id, t, this.genericClient)
+        (t) =>
+          new ContentLibrary(this.#repoClient, t.id, t, this.#genericClient)
       );
   }
 
@@ -112,10 +113,10 @@ export class ContentLibraries implements IClassContentLibraries {
     if (!arg.id)
       throw new Error(`contentLibraries.get: "id" parameter is required`);
     const cl: ContentLibrary = new ContentLibrary(
-      this.repoClient,
+      this.#repoClient,
       arg.id,
       null,
-      this.genericClient
+      this.#genericClient
     );
     await cl.init();
 
@@ -123,16 +124,16 @@ export class ContentLibraries implements IClassContentLibraries {
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`contentlibrary/full`)
       .then((res) => res.data as IContentLibrary[])
       .then((data) => {
         return data.map((t) => {
           return new ContentLibrary(
-            this.repoClient,
+            this.#repoClient,
             t.id,
             t,
-            this.genericClient
+            this.#genericClient
           );
         });
       });
@@ -148,16 +149,16 @@ export class ContentLibraries implements IClassContentLibraries {
     urlBuild.addParam("filter", arg.filter);
     urlBuild.addParam("orderby", arg.orderBy);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IContentLibrary[])
       .then((data) => {
         return data.map((t) => {
           return new ContentLibrary(
-            this.repoClient,
+            this.#repoClient,
             t.id,
             t,
-            this.genericClient
+            this.#genericClient
           );
         });
       });
@@ -179,14 +180,14 @@ export class ContentLibraries implements IClassContentLibraries {
     urlBuild.addParam("overwrite", arg.overwrite || undefined);
 
     const mimeType = getMime(arg.file);
-    return await this.repoClient
+    return await this.#repoClient
       .Put(urlBuild.getUrl(), {}, mimeType)
       .then((res) => {
         return new ContentLibrary(
-          this.repoClient,
+          this.#repoClient,
           (res.data as IContentLibrary).id,
           res.data as IContentLibrary,
-          this.genericClient
+          this.#genericClient
         );
       });
   }
@@ -207,11 +208,12 @@ export class ContentLibraries implements IClassContentLibraries {
     urlBuild.addParam("overwrite", arg.overwrite || undefined);
 
     const mimeType = getMime(arg.file);
-    return await this.repoClient
+    return await this.#repoClient
       .Put(urlBuild.getUrl(), {}, mimeType)
       .then((res) => res.data as IContentLibrary)
       .then(
-        (a) => new ContentLibrary(this.repoClient, a.id, a, this.genericClient)
+        (a) =>
+          new ContentLibrary(this.#repoClient, a.id, a, this.#genericClient)
       );
   }
 
@@ -234,7 +236,7 @@ export class ContentLibraries implements IClassContentLibraries {
     const urlBuild = new URLBuild(`selection/contentlibrary`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

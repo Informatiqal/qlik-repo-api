@@ -35,9 +35,9 @@ export interface IClassPrivileges {
 }
 
 export class Privileges implements IClassPrivileges {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { item: IObject; filter?: string }) {
@@ -46,7 +46,7 @@ export class Privileges implements IClassPrivileges {
     let url = `${arg.item.schemaPath}`;
     if (arg.filter) url += `/?privilegesFilter=${arg.filter}`;
 
-    return await this.repoClient.Post(url, arg.item).then((res) => {
+    return await this.#repoClient.Post(url, arg.item).then((res) => {
       return res.data as string[];
     });
   }

@@ -125,13 +125,13 @@ export interface IClassUserDirectories {
 }
 
 export class UserDirectories implements IClassUserDirectories {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async count() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`userdirectory/count`)
       .then((res) => res.data as number);
   }
@@ -139,18 +139,18 @@ export class UserDirectories implements IClassUserDirectories {
   public async get(id: string) {
     if (!id) throw new Error(`userDirectories.get: "id" parameter is required`);
 
-    const ud: UserDirectory = new UserDirectory(this.repoClient, id);
+    const ud: UserDirectory = new UserDirectory(this.#repoClient, id);
     await ud.init();
 
     return ud;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`userdirectory/full`)
       .then((res) => res.data as IUserDirectory[])
       .then((data) => {
-        return data.map((t) => new UserDirectory(this.repoClient, t.id, t));
+        return data.map((t) => new UserDirectory(this.#repoClient, t.id, t));
       });
   }
 
@@ -160,11 +160,11 @@ export class UserDirectories implements IClassUserDirectories {
         `userDirectory.getFilter: "filter" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`userdirectory/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => res.data as IUserDirectory[])
       .then((data) => {
-        return data.map((t) => new UserDirectory(this.repoClient, t.id, t));
+        return data.map((t) => new UserDirectory(this.#repoClient, t.id, t));
       });
   }
 
@@ -186,7 +186,7 @@ export class UserDirectories implements IClassUserDirectories {
     const urlBuild = new URLBuild(`selection/userdirectory`);
     urlBuild.addParam("filter", filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -195,7 +195,7 @@ export class UserDirectories implements IClassUserDirectories {
     if (!userDirectoryIds)
       throw new Error(`userDirectory.sync: "ids" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`userdirectoryconnector/syncuserdirectories`, [...userDirectoryIds])
       .then((res) => res.status as IHttpStatus);
   }
@@ -214,7 +214,7 @@ export class UserDirectories implements IClassUserDirectories {
     obj.type = `Repository.UserDirectoryConnectors.${arg.type}`;
 
     const getCommonProps = new GetCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       [],
       arg.tags,
       ""
@@ -222,9 +222,9 @@ export class UserDirectories implements IClassUserDirectories {
 
     const commonProps = await getCommonProps.getAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`userdirectory`, { ...obj, ...commonProps })
       .then((res) => res.data as IUserDirectory)
-      .then((ud) => new UserDirectory(this.repoClient, ud.id, ud));
+      .then((ud) => new UserDirectory(this.#repoClient, ud.id, ud));
   }
 }

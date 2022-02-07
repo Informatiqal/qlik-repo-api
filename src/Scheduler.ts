@@ -13,8 +13,8 @@ export interface IClassScheduler {
 }
 
 export class Scheduler implements IClassScheduler {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ISchedulerService;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -24,22 +24,22 @@ export class Scheduler implements IClassScheduler {
     if (!id)
       throw new Error(`schedulerservice.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`schedulerservice/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`schedulerservice/${this.#id}`)
         .then((res) => res.data as ISchedulerService);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`schedulerservice/${this.id}`)
+    return await this.#repoClient
+      .Delete(`schedulerservice/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -74,14 +74,14 @@ export class Scheduler implements IClassScheduler {
     }
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`schedulerservice/${this.details.id}`, this.details)
       .then((res) => res.data as ISchedulerService);
   }

@@ -42,9 +42,9 @@ export interface IClassApp {
 }
 
 export class App implements IClassApp {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
-  private genericClient: QlikGenericRestClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
+  #genericClient: QlikGenericRestClient;
   details: IApp;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -54,16 +54,16 @@ export class App implements IClassApp {
   ) {
     if (!id) throw new Error(`app.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
-    this.genericClient = genericClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
+    this.#genericClient = genericClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`app/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`app/${this.#id}`)
         .then((res) => res.data as IApp);
     }
   }
@@ -75,14 +75,14 @@ export class App implements IClassApp {
 
     urlBuild.addParam("skipdata", arg.skipData);
 
-    const downloadPath: string = await this.repoClient
+    const downloadPath: string = await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((response) => response.data)
       .then((data) => {
         return data.downloadPath.replace("/tempcontent", "tempcontent");
       });
 
-    return await this.genericClient
+    return await this.#genericClient
       .Get(downloadPath)
       .then((r) => r.data as Buffer);
   }
@@ -93,13 +93,13 @@ export class App implements IClassApp {
     if (arg.includeCustomProperties)
       urlBuild.addParam("includecustomproperties", arg.includeCustomProperties);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
-      .then((res) => new App(this.repoClient, res.data.id, res.data));
+      .then((res) => new App(this.#repoClient, res.data.id, res.data));
   }
 
   public async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`app/${this.details.id}`)
       .then((res) => res.status);
   }
@@ -108,7 +108,7 @@ export class App implements IClassApp {
     if (!arg.stream)
       throw new Error(`app.publish: "stream" parameter is required`);
 
-    let streamRes = await this.repoClient.Get(
+    let streamRes = await this.#repoClient.Get(
       `stream?filter=(name eq '${arg.stream}')`
     );
 
@@ -122,7 +122,7 @@ export class App implements IClassApp {
     urlBuild.addParam("stream", streamRes.data[0].id);
     urlBuild.addParam("name", arg.name);
 
-    return await this.repoClient.Put(urlBuild.getUrl(), {}).then((res) => {
+    return await this.#repoClient.Put(urlBuild.getUrl(), {}).then((res) => {
       this.details = res.data;
       return res.data;
     });
@@ -133,14 +133,14 @@ export class App implements IClassApp {
     if (arg.description) this.details.description = arg.description;
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`app/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IApp);
   }
@@ -149,7 +149,7 @@ export class App implements IClassApp {
     if (!arg.targetAppId)
       throw new Error(`app.switch: "targetAppId" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`app/${this.details.id}/replace?app=${arg.targetAppId}`, {})
       .then((res) => {
         this.details = res.data;

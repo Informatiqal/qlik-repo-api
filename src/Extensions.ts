@@ -54,25 +54,25 @@ export interface IClassExtensions {
 }
 
 export class Extensions implements IClassExtensions {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`extension.get: "id" parameter is required`);
-    const extension: Extension = new Extension(this.repoClient, arg.id, null);
+    const extension: Extension = new Extension(this.#repoClient, arg.id, null);
     await extension.init();
 
     return extension;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`extension/full`)
       .then((res) => res.data as IExtension[])
       .then((data) => {
-        return data.map((t) => new Extension(this.repoClient, t.id, t));
+        return data.map((t) => new Extension(this.#repoClient, t.id, t));
       });
   }
 
@@ -80,11 +80,11 @@ export class Extensions implements IClassExtensions {
     if (!arg.filter)
       throw new Error(`extension.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`extension?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IExtension[])
       .then((data) => {
-        return data.map((t) => new Extension(this.repoClient, t.id, t));
+        return data.map((t) => new Extension(this.#repoClient, t.id, t));
       });
   }
 
@@ -108,7 +108,7 @@ export class Extensions implements IClassExtensions {
     const urlBuild = new URLBuild(`selection/extension`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -120,11 +120,11 @@ export class Extensions implements IClassExtensions {
     const urlBuild = new URLBuild(`extension/upload`);
     if (arg.password) urlBuild.addParam("password", arg.password);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), arg.file)
       .then((res) => {
         return new Extension(
-          this.repoClient,
+          this.#repoClient,
           (res.data[0] as IExtension).id,
           res.data[0]
         );

@@ -10,8 +10,8 @@ export interface IClassCustomProperty {
 }
 
 export class CustomProperty implements IClassCustomProperty {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ICustomProperty;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -20,22 +20,22 @@ export class CustomProperty implements IClassCustomProperty {
   ) {
     if (!id) throw new Error(`customProperty.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`custompropertydefinition/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`custompropertydefinition/${this.#id}`)
         .then((res) => res.data as ICustomProperty);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`custompropertydefinition/${this.id}`)
+    return await this.#repoClient
+      .Delete(`custompropertydefinition/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -55,7 +55,7 @@ export class CustomProperty implements IClassCustomProperty {
 
     this.details.modifiedDate = modifiedDateTime();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`custompropertydefinition/${this.details.id}`, this.details)
       .then((res) => res.data as ICustomProperty);
   }

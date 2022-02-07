@@ -10,28 +10,28 @@ export interface IClassStream {
 }
 
 export class Stream implements IClassStream {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IStream;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IStream) {
     if (!id) throw new Error(`stream.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`stream/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`stream/${this.#id}`)
         .then((res) => res.data as IStream);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`stream/${this.id}`)
+    return await this.#repoClient
+      .Delete(`stream/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -39,14 +39,14 @@ export class Stream implements IClassStream {
     if (arg.name) this.details.name = arg.name;
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`stream/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IStream);
   }

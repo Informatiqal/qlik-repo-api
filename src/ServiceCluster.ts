@@ -12,8 +12,8 @@ export interface IClassServiceCluster {
 }
 
 export class ServiceCluster implements IClassServiceCluster {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IServiceCluster;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -22,22 +22,22 @@ export class ServiceCluster implements IClassServiceCluster {
   ) {
     if (!id) throw new Error(`serviceClusters.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`ServiceCluster/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`ServiceCluster/${this.#id}`)
         .then((res) => res.data as IServiceCluster);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`ServiceCluster/${this.id}`)
+    return await this.#repoClient
+      .Delete(`ServiceCluster/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -77,7 +77,7 @@ export class ServiceCluster implements IClassServiceCluster {
       this.details.settings.sharedPersistenceProperties.failoverTimeout =
         arg.failoverTimeout;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`ServiceCluster/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IServiceCluster);
   }

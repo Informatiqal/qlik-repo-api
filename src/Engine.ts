@@ -10,21 +10,21 @@ export interface IClassEngine {
 }
 
 export class Engine implements IClassEngine {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IEngine;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IEngine) {
     if (!id) throw new Error(`engine.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`engineservice/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`engineservice/${this.#id}`)
         .then((res) => res.data as IEngine);
     }
   }
@@ -273,7 +273,7 @@ export class Engine implements IClassEngine {
 
     this.details.modifiedDate = modifiedDateTime();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`engineservice/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IEngine);
   }

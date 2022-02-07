@@ -14,28 +14,28 @@ export interface IClassUser {
 }
 
 export class User implements IClassUser {
-  private repoClient: QlikRepositoryClient;
-  public id: string;
+  #repoClient: QlikRepositoryClient;
+  #id: string;
   details: IUser;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IUser) {
     if (!id) throw new Error(`users.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`user/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`user/${this.#id}`)
         .then((res) => res.data as IUser);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`user/${this.id}`)
+    return await this.#repoClient
+      .Delete(`user/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -44,14 +44,14 @@ export class User implements IClassUser {
     if (arg.name) this.details.name = arg.name;
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`user/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IUser);
   }

@@ -20,27 +20,27 @@ export interface IClassExternalTasks {
 }
 
 export class ExternalTasks implements IClassExternalTasks {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
-    const extTask: ExternalTask = new ExternalTask(this.repoClient, arg.id);
+    const extTask: ExternalTask = new ExternalTask(this.#repoClient, arg.id);
     await extTask.init();
 
     return extTask;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`externalprogramtask/full`)
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => {
-          return new ExternalTask(this.repoClient, t.id, t);
+          return new ExternalTask(this.#repoClient, t.id, t);
         });
       });
   }
@@ -49,14 +49,14 @@ export class ExternalTasks implements IClassExternalTasks {
     if (!arg.filter)
       throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(
         `externalprogramtask/full?filter=(${encodeURIComponent(arg.filter)})`
       )
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => {
-          return new ExternalTask(this.repoClient, t.id, t);
+          return new ExternalTask(this.#repoClient, t.id, t);
         });
       });
   }
@@ -65,7 +65,7 @@ export class ExternalTasks implements IClassExternalTasks {
     let url: string = `externalprogramtask/count`;
     if (arg.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`${url}`)
       .then((res) => res.data.value as number);
   }
@@ -88,7 +88,7 @@ export class ExternalTasks implements IClassExternalTasks {
     const urlBuild = new URLBuild(`selection/externalprogramtask`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -115,7 +115,7 @@ export class ExternalTasks implements IClassExternalTasks {
     };
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       reloadTask,
       arg
     );
@@ -128,9 +128,9 @@ export class ExternalTasks implements IClassExternalTasks {
     delete (reloadTask as any).customProperties;
     delete (reloadTask as any).tags;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`reloadtask/create`, { ...reloadTask })
       .then((res) => res.data as ITask)
-      .then((t) => new ExternalTask(this.repoClient, t.id, t));
+      .then((t) => new ExternalTask(this.#repoClient, t.id, t));
   }
 }

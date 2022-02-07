@@ -15,6 +15,7 @@ const helpers = new Helpers();
  */
 describe("Phase1", function () {
   this.timeout(30000);
+  this.slow(1000);
 
   /**
    * Get about
@@ -71,7 +72,7 @@ describe("Phase1", function () {
 
     let customProperty = await repoApi.customProperties.create({
       name: cpName,
-      choiceValues: [helpers.uuid(), helpers.uuid()],
+      choiceValues: cpValues,
       objectTypes: ["App", "Stream"],
     });
 
@@ -176,7 +177,7 @@ describe("Phase1", function () {
 
     const updatedExtension = await importExtension.update({
       customProperties: [
-        `${newCustomProperty.details.name}="${newCustomProperty.details.choiceValues[0]}`,
+        `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[0]}`,
       ],
     });
 
@@ -303,7 +304,7 @@ describe("Phase1", function () {
       .then((t) => t.length);
 
     await newReloadTask2.triggersDetails[0].remove();
-    await newReloadTask2.triggersDetails[1].remove();
+    // await newReloadTask2.triggersDetails[1].remove();
     await newReloadTask1.remove();
     await newReloadTask2.remove();
     await uploadedApp.remove();

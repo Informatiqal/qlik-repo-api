@@ -14,8 +14,8 @@ export interface IClassNode {
 }
 
 export class Node implements IClassNode {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: IServerNodeConfiguration;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -24,22 +24,22 @@ export class Node implements IClassNode {
   ) {
     if (!id) throw new Error(`node.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`servernodeconfiguration/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`servernodeconfiguration/${this.#id}`)
         .then((res) => res.data as IServerNodeConfiguration);
     }
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`servernodeconfiguration/${this.id}`)
+    return await this.#repoClient
+      .Delete(`servernodeconfiguration/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -70,20 +70,20 @@ export class Node implements IClassNode {
     }
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`servernodeconfiguration/${this.details.id}`, { ...this.details })
       .then((res) => res.data as IServerNodeConfiguration);
   }
 
   public async setCentral() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`failover/tonode/${this.details.id}`)
       .then((res) => res.status);
   }

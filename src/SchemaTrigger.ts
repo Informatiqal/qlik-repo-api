@@ -11,8 +11,8 @@ export interface IClassSchemaTrigger {
 }
 
 export class SchemaTrigger implements IClassSchemaTrigger {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ISchemaEvent;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -21,21 +21,21 @@ export class SchemaTrigger implements IClassSchemaTrigger {
   ) {
     if (!id) throw new Error(`schemaTrigger.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details as ISchemaEvent;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`schemaevent/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`schemaevent/${this.#id}`)
         .then((res) => res.data as ISchemaEvent);
     }
   }
 
   async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`schemaevent/${this.details.id}`)
       .then((r) => {
         return { id: this.details.id, status: r.status } as IEntityRemove;
@@ -65,7 +65,7 @@ export class SchemaTrigger implements IClassSchemaTrigger {
       this.details.incrementDescription = schemaRepeatOpt.incrementDescr;
     }
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`schemaevent/${this.details.id}`, this.details)
       .then((res) => res.data as ISchemaEvent);
   }

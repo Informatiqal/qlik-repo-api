@@ -62,25 +62,25 @@ export interface IClassSchedulers {
 }
 
 export class Schedulers implements IClassSchedulers {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`scheduler.get: "id" parameter is required`);
-    const scheduler: Scheduler = new Scheduler(this.repoClient, arg.id);
+    const scheduler: Scheduler = new Scheduler(this.#repoClient, arg.id);
     await scheduler.init();
 
     return scheduler;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`schedulerservice/full`)
       .then((res) => res.data as ISchedulerService[])
       .then((data) => {
-        return data.map((t) => new Scheduler(this.repoClient, t.id, t));
+        return data.map((t) => new Scheduler(this.#repoClient, t.id, t));
       });
   }
 
@@ -88,11 +88,11 @@ export class Schedulers implements IClassSchedulers {
     if (!arg.filter)
       throw new Error(`scheduler.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`schedulerservice/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ISchedulerService[])
       .then((data) => {
-        return data.map((t) => new Scheduler(this.repoClient, t.id, t));
+        return data.map((t) => new Scheduler(this.#repoClient, t.id, t));
       });
   }
 
@@ -114,7 +114,7 @@ export class Schedulers implements IClassSchedulers {
     const urlBuild = new URLBuild(`selection/schedulerservice`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }

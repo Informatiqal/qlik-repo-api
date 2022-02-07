@@ -97,18 +97,18 @@ export interface IClassNodes {
 }
 
 export class Nodes implements IClassNodes {
-  private repoClient: QlikRepositoryClient;
-  private genericClient: QlikGenericRestClient;
+  #repoClient: QlikRepositoryClient;
+  #genericClient: QlikGenericRestClient;
   constructor(
     private mainRepoClient: QlikRepositoryClient,
     private mainGenericClient: QlikGenericRestClient
   ) {
-    this.repoClient = mainRepoClient;
-    this.genericClient = mainGenericClient;
+    this.#repoClient = mainRepoClient;
+    this.#genericClient = mainGenericClient;
   }
 
   public async count(): Promise<number> {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`servernodeconfiguration/count`)
       .then((res) => res.data as number);
   }
@@ -145,25 +145,25 @@ export class Nodes implements IClassNodes {
 
     const container = await this.createNewNode(nodeConfig);
 
-    const node = new Node(this.repoClient, container.id);
+    const node = new Node(this.#repoClient, container.id);
     await node.init();
     return node;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`node.get: "id" parameter is required`);
-    const node: Node = new Node(this.repoClient, arg.id);
+    const node: Node = new Node(this.#repoClient, arg.id);
     await node.init();
 
     return node;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`servernodeconfiguration/full`)
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
-        return data.map((t) => new Node(this.repoClient, t.id, t));
+        return data.map((t) => new Node(this.#repoClient, t.id, t));
       });
   }
 
@@ -171,7 +171,7 @@ export class Nodes implements IClassNodes {
     if (!arg.filter)
       throw new Error(`node.getFilter: "filter" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(
         `servernodeconfiguration/full?filter=(${encodeURIComponent(
           arg.filter
@@ -179,18 +179,18 @@ export class Nodes implements IClassNodes {
       )
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
-        return data.map((t) => new Node(this.repoClient, t.id, t));
+        return data.map((t) => new Node(this.#repoClient, t.id, t));
       });
   }
 
   public async register(arg: INodeCreate) {
     const node = await this.createNewNode(arg);
 
-    const registration = await this.repoClient
+    const registration = await this.#repoClient
       .Get(`servernoderegistration/start/${node.id}`)
       .then((n) => n.data as IServerNodeConfiguration);
 
-    return await this.genericClient
+    return await this.#genericClient
       .Post(`http://localhost:4570/certificateSetup`, registration)
       .then((res) => res.status);
   }
@@ -211,7 +211,7 @@ export class Nodes implements IClassNodes {
     const urlBuild = new URLBuild(`selection/servernodeconfiguration`);
     urlBuild.addParam("filter", filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -248,7 +248,7 @@ export class Nodes implements IClassNodes {
       if (arg.nodePurpose == "Both") nodeConfig.configuration.nodePurpose = 2;
     }
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`servernodeconfiguration/container`, nodeConfig)
       .then((c) => c.data.configuration as IServerNodeConfigurationCondensed);
   }

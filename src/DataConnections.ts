@@ -70,9 +70,9 @@ export interface IClassDataConnections {
 }
 
 export class DataConnections implements IClassDataConnections {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
@@ -80,7 +80,7 @@ export class DataConnections implements IClassDataConnections {
       throw new Error(`dataConnections.get: "id" parameter is required`);
 
     const dc: DataConnection = new DataConnection(
-      this.repoClient,
+      this.#repoClient,
       arg.id,
       null
     );
@@ -90,11 +90,11 @@ export class DataConnections implements IClassDataConnections {
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`dataconnection/full`)
       .then((res) => res.data as IDataConnection[])
       .then((data) => {
-        return data.map((t) => new DataConnection(this.repoClient, t.id, t));
+        return data.map((t) => new DataConnection(this.#repoClient, t.id, t));
       });
   }
 
@@ -108,11 +108,11 @@ export class DataConnections implements IClassDataConnections {
     urlBuild.addParam("filter", arg.filter);
     urlBuild.addParam("orderby", arg.orderBy);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IDataConnection[])
       .then((data) => {
-        return data.map((t) => new DataConnection(this.repoClient, t.id, t));
+        return data.map((t) => new DataConnection(this.#repoClient, t.id, t));
       });
   }
 
@@ -134,7 +134,7 @@ export class DataConnections implements IClassDataConnections {
     const urlBuild = new URLBuild(`selection/dataconnection`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -168,7 +168,7 @@ export class DataConnections implements IClassDataConnections {
     // data["engineObjectId"] = uuid();
 
     let getCommonProps = new GetCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       arg.customProperties,
       arg.tags,
       arg.owner
@@ -177,9 +177,9 @@ export class DataConnections implements IClassDataConnections {
     let commonProps = await getCommonProps.getAll();
     let d = { ...data, ...commonProps };
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`dataconnection`, { ...data, ...commonProps })
       .then((res) => res.data as IDataConnection)
-      .then((d) => new DataConnection(this.repoClient, d.id, d));
+      .then((d) => new DataConnection(this.#repoClient, d.id, d));
   }
 }

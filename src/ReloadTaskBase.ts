@@ -24,7 +24,7 @@ export interface IClassReloadTask {
   remove(): Promise<IHttpStatus>;
   start(): Promise<IHttpStatus>;
   startSynchronous(): Promise<IHttpReturn>;
-  waitExecution(arg: { executionId?: string }): Promise<ITaskExecutionResult>;
+  waitExecution(arg?: { executionId: string }): Promise<ITaskExecutionResult>;
   scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
   scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
   update(
@@ -43,11 +43,11 @@ export interface IClassReloadTask {
 }
 
 export abstract class ReloadTaskBase implements IClassReloadTask {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ITask;
   triggersDetails: (IClassSchemaTrigger | IClassCompositeTrigger)[];
-  baseUrl: string;
+  private baseUrl: string;
   constructor(
     repoClient: QlikRepositoryClient,
     id: string,
@@ -56,8 +56,8 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
   ) {
     if (!id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     this.baseUrl = baseUrl;
     if (details) this.details = details;
   }
@@ -69,22 +69,25 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
   }
 
   public async remove() {
-    return await this.repoClient
-      .Delete(`${this.baseUrl}/${this.id}`)
+    return await this.#repoClient
+      .Delete(`${this.baseUrl}/${this.#id}`)
       .then((res) => res.status);
   }
 
   async start() {
-    return await this.repoClient
-      .Post(`task/${this.id}/start`, {})
+    return await this.#repoClient
+      .Post(`task/${this.#id}/start`, {})
       .then((res) => res.status);
   }
 
   async startSynchronous() {
-    return await this.repoClient.Post(`task/${this.id}/start/synchronous`, {});
+    return await this.#repoClient.Post(
+      `task/${this.#id}/start/synchronous`,
+      {}
+    );
   }
 
-  async waitExecution(arg: { executionId?: string }) {
+  async waitExecution(arg?: { executionId: string }) {
     let taskStatusCode = -1;
     let resultId: string;
 
@@ -92,7 +95,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       resultId = this.details.operational.lastExecutionResult.id;
 
     if (arg.executionId) {
-      resultId = await this.repoClient
+      resultId = await this.#repoClient
         .Get(`/executionSession/${arg.executionId}`)
         .then((res) => {
           return res.data.executionResult.Id;
@@ -101,7 +104,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
     let result: ITaskExecutionResult;
     while (taskStatusCode < 3) {
-      result = await this.repoClient
+      result = await this.#repoClient
         .Get(`/executionResult/${resultId}`)
         .then((res) => {
           return res.data;
@@ -123,7 +126,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
         `scriptLogGet: Unfortunately only task of type Reload have this option `
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(
         `${this.baseUrl}/${
           this.details.id
@@ -144,7 +147,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
         `scriptLogGet: Unfortunately only task of type Reload have this option `
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(
         `${this.baseUrl}/${
           this.details.id
@@ -166,20 +169,20 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       const app = await getAppForReloadTask(
         arg.appId,
         arg.appFilter,
-        this.repoClient
+        this.#repoClient
       );
       this.details.app = app.details;
     }
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       this.details,
       arg,
       options
     );
     this.details = await updateCommon.updateAll();
 
-    return await this.repoClient
+    return await this.#repoClient
       .Put(`${this.baseUrl}/${this.details.id}`, { ...this.details })
       .then((res) => res.data as ITask);
   }
@@ -205,6 +208,10 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
           );
         if (!r.state)
           `task.createCompositeTrigger: "eventTasks.state" parameter is required`;
+        if (r.state != "fail" && r.state != "success")
+          throw new Error(
+            `task.createCompositeTrigger: "eventTasks.state" value must be "success" or "fail" but provided "${r.state}"`
+          );
 
         let ruleState = -1;
         if (r.state == "fail") ruleState = 2;
@@ -221,7 +228,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
         }
 
         // if task id is not specified then find the id based on the provided name
-        const task = await this.repoClient
+        const task = await this.#repoClient
           .Get(`task?filter=(name eq '${r.name}')`)
           .then((t) => t.data as ITask[]);
 
@@ -243,7 +250,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       })
     );
 
-    let updateObject = {
+    const updateObject = {
       compositeEvents: [
         {
           compositeRules: reloadTasks,
@@ -252,7 +259,8 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
           name: `${arg.name}`,
           privileges: ["read", "update", "create", "delete"],
           reloadTask: {
-            id: `${this.id}`,
+            id: this.details.id,
+            name: this.details.name,
           },
           timeConstraint: {
             days: 0,
@@ -264,8 +272,10 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       ],
     };
 
-    const createResponse = await this.repoClient
-      .Post(`ReloadTask/update`, { ...updateObject })
+    let a = this.#repoClient;
+
+    const createResponse = await this.#repoClient
+      .Post(`ReloadTask/update`, updateObject)
       .then((res) => {
         return res.status as IHttpStatus;
       });
@@ -320,7 +330,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       createObj["userSyncTask"] = null;
     }
 
-    const createResponse = await this.repoClient
+    const createResponse = await this.#repoClient
       .Post(`schemaevent`, { ...createObj })
       .then((res) => res.status as IHttpStatus);
 
@@ -360,25 +370,25 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
         ? "ExternalProgramTask"
         : "ReloadTask";
 
-    const selection = await this.repoClient
+    const selection = await this.#repoClient
       .Post(`selection`, {
         items: [
           {
             type: type,
-            objectID: `${this.id}`,
+            objectID: `${this.#id}`,
           },
         ],
       })
       .then((res) => res.data as ISelection);
 
-    const selectionData = await this.repoClient
+    const selectionData = await this.#repoClient
       .Get(`selection/${selection.id}/Event/full`)
       .then(async (s0) => {
         return await Promise.all(
           (s0.data as ISchemaEvent[]).map(async (s1) => {
             if (s1.eventType == 0) {
               const t: SchemaTrigger = new SchemaTrigger(
-                this.repoClient,
+                this.#repoClient,
                 s1.id
               );
               await t.init();
@@ -388,7 +398,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
             if (s1.eventType == 1) {
               const t: CompositeTrigger = new CompositeTrigger(
-                this.repoClient,
+                this.#repoClient,
                 s1.id
               );
               await t.init();
@@ -404,8 +414,8 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
   private async getTaskDetails() {
     return await Promise.all([
-      this.repoClient
-        .Get(`${this.baseUrl}/${this.id}`)
+      this.#repoClient
+        .Get(`${this.baseUrl}/${this.#id}`)
         .then((res) => res.data as ITask),
       this.triggersGetAll(),
     ]);

@@ -8,12 +8,12 @@ export interface IClassSelection {
 }
 
 export class Selection implements IClassSelection {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   private area: string;
   details: ISelection;
   constructor(repoClient: QlikRepositoryClient, area: string) {
     this.area = area;
-    this.repoClient = repoClient;
+    this.#repoClient = repoClient;
     this.details = {} as ISelection;
   }
 
@@ -22,7 +22,7 @@ export class Selection implements IClassSelection {
       const urlBuild = new URLBuild(`selection/${this.area}`);
       urlBuild.addParam("filter", filter);
 
-      this.details = await this.repoClient
+      this.details = await this.#repoClient
         .Post(`${urlBuild.getUrl()}`, {})
         .then((res) => res.data as ISelection);
     }
@@ -32,13 +32,13 @@ export class Selection implements IClassSelection {
     if (!arg.path)
       throw new Error(`selection.data: "path" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`selection/${this.details.id}/${arg.path}`)
       .then((res) => res.data);
   }
 
   public async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`selection/${this.details.id}`)
       .then((res) => res.status);
   }

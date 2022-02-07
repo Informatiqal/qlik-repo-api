@@ -13,8 +13,8 @@ export interface IClassCompositeTrigger {
 }
 
 export class CompositeTrigger implements IClassCompositeTrigger {
-  private id: string;
-  private repoClient: QlikRepositoryClient;
+  #id: string;
+  #repoClient: QlikRepositoryClient;
   details: ICompositeEvent;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -24,21 +24,21 @@ export class CompositeTrigger implements IClassCompositeTrigger {
     if (!id)
       throw new Error(`compositeTrigger.get: "id" parameter is required`);
 
-    this.id = id;
-    this.repoClient = repoClient;
+    this.#id = id;
+    this.#repoClient = repoClient;
     if (details) this.details = details as ICompositeEvent;
   }
 
   async init() {
     if (!this.details) {
-      this.details = await this.repoClient
-        .Get(`compositeevent/${this.id}`)
+      this.details = await this.#repoClient
+        .Get(`compositeevent/${this.#id}`)
         .then((res) => res.data as ICompositeEvent);
     }
   }
 
   async remove() {
-    return await this.repoClient
+    return await this.#repoClient
       .Delete(`compositeevent/${this.details.id}`)
       .then((r) => {
         return { id: this.details.id, status: r.status } as IEntityRemove;
@@ -73,7 +73,7 @@ export class CompositeTrigger implements IClassCompositeTrigger {
           }
 
           // if task id is not specified then find the id based on the provided name
-          const task = await this.repoClient
+          const task = await this.#repoClient
             .Get(`task?filter=(name eq '${r.name}')`)
             .then((t) => t.data as ITask[]);
 
@@ -95,7 +95,7 @@ export class CompositeTrigger implements IClassCompositeTrigger {
       );
     }
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`compositeevent/${this.details.id}`, this.details)
       .then((res) => res.data as ICompositeEvent);
   }

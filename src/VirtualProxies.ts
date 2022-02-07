@@ -30,26 +30,26 @@ export interface IClassVirtualProxies {
 }
 
 export class VirtualProxies implements IClassVirtualProxies {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
-    const vp: VirtualProxy = new VirtualProxy(this.repoClient, arg.id);
+    const vp: VirtualProxy = new VirtualProxy(this.#repoClient, arg.id);
     await vp.init();
 
     return vp;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`virtualproxyconfig/full`)
       .then((res) => {
         return res.data as IVirtualProxyConfig[];
       })
       .then((data) => {
-        return data.map((t) => new VirtualProxy(this.repoClient, t.id, t));
+        return data.map((t) => new VirtualProxy(this.#repoClient, t.id, t));
       });
   }
 
@@ -59,11 +59,11 @@ export class VirtualProxies implements IClassVirtualProxies {
         `virtualProxies.getFilter: "filter" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`virtualproxyconfig?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IVirtualProxyConfig[])
       .then((data) => {
-        return data.map((t) => new VirtualProxy(this.repoClient, t.id, t));
+        return data.map((t) => new VirtualProxy(this.#repoClient, t.id, t));
       });
   }
 
@@ -90,7 +90,7 @@ export class VirtualProxies implements IClassVirtualProxies {
     const urlBuild = new URLBuild(`selection/virtualproxyconfig`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -177,21 +177,21 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (arg.oidcAttributeMap)
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`virtualproxyconfig`, { ...data })
       .then((res) => res.data as IVirtualProxyConfig)
-      .then((d) => new VirtualProxy(this.repoClient, d.id, d));
+      .then((d) => new VirtualProxy(this.#repoClient, d.id, d));
   }
 
   private async parseLoadBalancingNodes(
     nodes: string[]
   ): Promise<IServerNodeConfigurationCondensed[]> {
-    let existingNodes = await this.repoClient
+    let existingNodes = await this.#repoClient
       .Get(`servernodeconfiguration/full`)
       .then((res) => res.data as IServerNodeConfiguration[])
       .then((data) => {
         return data.map((t) => {
-          return new Node(this.repoClient, t.id, t);
+          return new Node(this.#repoClient, t.id, t);
         });
       });
 

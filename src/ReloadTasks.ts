@@ -21,27 +21,27 @@ export interface IClassReloadTasks {
 }
 
 export class ReloadTasks implements IClassReloadTasks {
-  private repoClient: QlikRepositoryClient;
-  private genericClient: QlikGenericRestClient;
+  #repoClient: QlikRepositoryClient;
+  #genericClient: QlikGenericRestClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
-    const reloadTask: ReloadTask = new ReloadTask(this.repoClient, arg.id);
+    const reloadTask: ReloadTask = new ReloadTask(this.#repoClient, arg.id);
     await reloadTask.init();
 
     return reloadTask;
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`reloadtask/full`)
       .then((res) => res.data as ITask[])
       .then((data) => {
-        return data.map((t) => new ReloadTask(this.repoClient, t.id, t));
+        return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
       });
   }
 
@@ -49,11 +49,11 @@ export class ReloadTasks implements IClassReloadTasks {
     if (!arg.filter)
       throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`reloadtask/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ITask[])
       .then((data) => {
-        return data.map((t) => new ReloadTask(this.repoClient, t.id, t));
+        return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
       });
   }
 
@@ -61,7 +61,7 @@ export class ReloadTasks implements IClassReloadTasks {
     let url: string = `reloadtask/count`;
     if (arg.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`${url}`)
       .then((res) => res.data.value as number);
   }
@@ -84,7 +84,7 @@ export class ReloadTasks implements IClassReloadTasks {
     const urlBuild = new URLBuild(`selection/reloadtask`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
@@ -95,7 +95,7 @@ export class ReloadTasks implements IClassReloadTasks {
     const app = await getAppForReloadTask(
       arg.appId,
       arg.appFilter,
-      this.repoClient
+      this.#repoClient
     );
 
     let reloadTask: { [k: string]: any } = {};
@@ -114,7 +114,7 @@ export class ReloadTasks implements IClassReloadTasks {
     };
 
     let updateCommon = new UpdateCommonProperties(
-      this.repoClient,
+      this.#repoClient,
       reloadTask,
       arg
     );
@@ -127,9 +127,9 @@ export class ReloadTasks implements IClassReloadTasks {
     delete (reloadTask as any).customProperties;
     delete (reloadTask as any).tags;
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(`reloadtask/create`, { ...reloadTask })
       .then((res) => res.data as ITask)
-      .then((t) => new ReloadTask(this.repoClient, t.id, t));
+      .then((t) => new ReloadTask(this.#repoClient, t.id, t));
   }
 }

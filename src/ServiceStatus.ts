@@ -29,13 +29,13 @@ export interface IClassServiceStatus {
 }
 
 export class ServiceStatus implements IClassServiceStatus {
-  private repoClient: QlikRepositoryClient;
+  #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.repoClient = mainRepoClient;
+    this.#repoClient = mainRepoClient;
   }
 
   public async count(): Promise<number> {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceStatus/count`)
       .then((res) => res.data as number);
   }
@@ -43,13 +43,13 @@ export class ServiceStatus implements IClassServiceStatus {
   public async get(arg: { id: string }) {
     if (!arg.id)
       throw new Error(`serviceStatus.get: "id" parameter is required`);
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceStatus/${arg.id}`)
       .then((res) => res.data as IServiceStatus);
   }
 
   public async getAll() {
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceStatus`)
       .then((res) => res.data as IServiceStatusCondensed[]);
   }
@@ -60,7 +60,7 @@ export class ServiceStatus implements IClassServiceStatus {
         `serviceStatus.getFilter: "filter" parameter is required`
       );
 
-    return await this.repoClient
+    return await this.#repoClient
       .Get(`ServiceStatus/full?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as IServiceStatus[]);
   }
@@ -69,7 +69,7 @@ export class ServiceStatus implements IClassServiceStatus {
     const urlBuild = new URLBuild(`selection/ServiceStatus`);
     urlBuild.addParam("filter", arg.filter);
 
-    return await this.repoClient
+    return await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((res) => res.data as ISelection);
   }
