@@ -13,7 +13,7 @@ import {
   ILicenseSetSerial,
 } from "./License.interface";
 
-type TAccessType = "Analyzer" | "Professional" | "Login" | "User";
+export type TAccessType = "Analyzer" | "Professional" | "Login" | "User";
 
 export interface IClassLicense {
   accessTypeInfoGet(): Promise<IAccessTypeInfo>;
