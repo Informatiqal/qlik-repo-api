@@ -80,8 +80,6 @@ export interface ISystemRuleUpdate {
   customProperties?: string[];
 }
 
-export interface ISystemRuleLicenseCreate {}
-
 export interface ISystemRuleAuditGet {
   schemaPath?: string;
   resourceType?: string;

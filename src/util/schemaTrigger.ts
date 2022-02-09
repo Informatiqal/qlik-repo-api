@@ -31,7 +31,7 @@ export function schemaRepeat(
     };
 
   if (repeat == "Weekly") {
-    let weekDay = this.getWeekDayNumber(daysOfWeek);
+    let weekDay = getWeekDayNumber(daysOfWeek);
     return {
       incrementDescr: `0 0 1 0`,
       schemaFilterDescr: `* * - ${weekDay} ${repeatEvery} * * *`,

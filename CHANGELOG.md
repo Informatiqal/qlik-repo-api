@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2022-02-XX
+
+### Added
+
+- `contentLibrary.importFile` - moved the method from `contentLibraries` and renamed to `importFile` instead of `import` [#55](https://github.com/Informatiqal/qlik-repo-api/issues/55)
+- `contentLibrary.importFileMany` - import bulk files to content library [#54](https://github.com/Informatiqal/qlik-repo-api/issues/54)
+- `contentLibrary.removeFile` - remove single file from content library [#56](https://github.com/Informatiqal/qlik-repo-api/issues/56)
+- `contentLibrary.removeFileMany` - remove bulk files from content library [#56](https://github.com/Informatiqal/qlik-repo-api/issues/56)
+
+### Fixed
+
+- Weekly schema trigger correctly retrieves the days number representation [#51](https://github.com/Informatiqal/qlik-repo-api/issues/51)
+-
+
 ## [0.2.0] - 2022-02-07
 
 ### Fixed

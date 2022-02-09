@@ -1,3 +1,4 @@
+// import { getMime } from "name2mime";
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import {
   IHttpStatus,
@@ -8,12 +9,27 @@ import {
   IContentLibrary,
   IContentLibraryFile,
   IContentLibraryUpdate,
+  IContentLibraryImport,
 } from "./ContentLibraries";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
+import { URLBuild } from "./util/generic";
 
 export interface IClassContentLibrary {
   export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile[]>;
   remove(): Promise<IHttpStatus>;
+  importFile(arg: IContentLibraryImport): Promise<{
+    status: IHttpStatus;
+    fileDetails: IStaticContentReferenceCondensed;
+  }>;
+  importFileMany(
+    arg: IContentLibraryImport[]
+  ): Promise<
+    { status: IHttpStatus; fileDetails: IStaticContentReferenceCondensed }[]
+  >;
+  removeFile(arg: { externalPath: string }): Promise<IHttpStatus>;
+  removeFileMany(
+    arg: string[]
+  ): Promise<{ status: number; externalPath: string }[]>;
   update(
     arg: IContentLibraryUpdate,
     options?: IUpdateObjectOptions
@@ -82,6 +98,74 @@ export class ContentLibrary implements IClassContentLibrary {
           name: f.logicalPath.replace(/^.*[\\\/]/, ""),
           file: fileContent.data,
         };
+      })
+    );
+  }
+
+  public async importFile(arg: IContentLibraryImport) {
+    if (!arg.file)
+      throw new Error(`contentLibrary.import: "file" parameter is required`);
+
+    if (!arg.externalPath)
+      throw new Error(
+        `contentLibrary.import: "externalPath" parameter is required`
+      );
+
+    const urlBuild = new URLBuild(
+      `contentlibrary/${this.details.name}/uploadfile`
+    );
+    urlBuild.addParam("externalpath", arg.externalPath);
+    urlBuild.addParam("overwrite", arg.overwrite || undefined);
+
+    // const mimeType = getMime(arg.file);
+
+    return await this.#repoClient
+      .Post(urlBuild.getUrl(), arg.file)
+      .then(async (res) => {
+        this.details = await this.#repoClient
+          .Get(`contentlibrary/${this.#id}`)
+          .then((res) => res.data as IContentLibrary);
+
+        const toReplace = `/content/${this.details.name}/`;
+        const fileDetails = this.details.references.filter(
+          (r) => r.externalPath.replace(toReplace, "") == arg.externalPath
+        )[0];
+
+        return { status: res.status, fileDetails: fileDetails };
+      });
+  }
+
+  public async importFileMany(arg: IContentLibraryImport[]) {
+    return Promise.all(
+      arg.map((cl) => {
+        return this.importFile(cl);
+      })
+    );
+  }
+
+  public async removeFile(arg: { externalPath: string }) {
+    if (!arg.externalPath)
+      throw new Error(
+        `contentLibrary.removeFile: "externalPath" parameter is required`
+      );
+
+    const urlBuild = new URLBuild(
+      `contentlibrary/${this.details.name}/deletecontent`
+    );
+    urlBuild.addParam("externalpath", arg.externalPath);
+
+    return await this.#repoClient
+      .Delete(urlBuild.getUrl())
+      .then((res) => res.status);
+  }
+
+  public async removeFileMany(arg: string[]) {
+    return await Promise.all(
+      arg.map((fileName) => {
+        return this.removeFile({ externalPath: fileName }).then((r) => ({
+          status: r,
+          externalPath: fileName,
+        }));
       })
     );
   }
