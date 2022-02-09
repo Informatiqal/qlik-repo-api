@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Weekly schema trigger correctly retrieves the days number representation [#51](https://github.com/Informatiqal/qlik-repo-api/issues/51)
--
+- `extensions.import` now accepts `tags`, `customProperties` and `owner` [#52](https://github.com/Informatiqal/qlik-repo-api/issues/52) params
 
 ## [0.2.0] - 2022-02-07
 

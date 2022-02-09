@@ -12,6 +12,7 @@ import {
   IStaticContentReferenceCondensed,
 } from "./types/interfaces";
 import { IOwner } from "./Users";
+import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IExtensionCondensed {
   id: string;
@@ -39,6 +40,9 @@ export interface IExtensionUpdate {
 export interface IExtensionImport {
   file: Buffer;
   password?: string;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
 }
 
 export interface IClassExtensions {
@@ -128,6 +132,33 @@ export class Extensions implements IClassExtensions {
           (res.data[0] as IExtension).id,
           res.data[0]
         );
+      })
+      .then(async (extension) => {
+        if (arg.customProperties || arg.tags || arg.owner) {
+          let props: {
+            customProperties?: string[];
+            tags?: string[];
+            owner?: string;
+          } = {};
+
+          if (arg.customProperties)
+            props.customProperties = arg.customProperties;
+          if (arg.tags) props.tags = arg.tags;
+          if (arg.owner) props.owner = arg.owner;
+
+          const updateCommon = new UpdateCommonProperties(
+            this.#repoClient,
+            extension.details,
+            props
+          );
+
+          extension.details = await updateCommon.updateAll();
+
+          extension.details = await this.#repoClient
+            .Put(`extension/${extension.details.id}`, { ...extension.details })
+            .then((res) => res.data as IExtension);
+        }
+        return extension;
       })
       .catch((e) => {
         if (e.message == "Request failed with status code 400")
