@@ -86,7 +86,7 @@ export namespace QlikRepoApi {
       this.customProperties = new CustomProperties(this.repoClient);
       this.dataConnections = new DataConnections(this.repoClient);
       this.engines = new Engines(this.repoClient);
-      this.extensions = new Extensions(this.repoClient);
+      this.extensions = new Extensions(this.repoClient, this.genericClient);
       this.license = new License(this.repoClient);
       this.nodes = new Nodes(this.repoClient, this.genericClient);
       this.privileges = new Privileges(this.repoClient);

@@ -1,4 +1,4 @@
-import { QlikRepositoryClient } from "qlik-rest-api";
+import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { ISelection } from "./types/interfaces";
@@ -59,13 +59,23 @@ export interface IClassExtensions {
 
 export class Extensions implements IClassExtensions {
   #repoClient: QlikRepositoryClient;
-  constructor(private mainRepoClient: QlikRepositoryClient) {
+  #genericClient: QlikGenericRestClient;
+  constructor(
+    private mainRepoClient: QlikRepositoryClient,
+    private mainGenericClient: QlikGenericRestClient
+  ) {
     this.#repoClient = mainRepoClient;
+    this.#genericClient = mainGenericClient;
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`extension.get: "id" parameter is required`);
-    const extension: Extension = new Extension(this.#repoClient, arg.id, null);
+    const extension: Extension = new Extension(
+      this.#repoClient,
+      arg.id,
+      null,
+      this.#genericClient
+    );
     await extension.init();
 
     return extension;
