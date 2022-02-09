@@ -52,6 +52,12 @@ export interface IContentLibraryCreate {
   owner?: string;
 }
 
+export interface IContentLibraryImport {
+  file: Buffer;
+  externalPath: string;
+  overwrite?: boolean;
+}
+
 export interface IClassContentLibraries {
   get(arg: { id: string }): Promise<IClassContentLibrary>;
   getAll(): Promise<IClassContentLibrary[]>;
@@ -59,12 +65,6 @@ export interface IClassContentLibraries {
     filter: string;
     orderBy?: string;
   }): Promise<IClassContentLibrary[]>;
-  import(arg: {
-    name: string;
-    file: Buffer;
-    externalPath?: string;
-    overwrite?: boolean;
-  }): Promise<IClassContentLibrary>;
   importForApp(arg: {
     appId: string;
     file: Buffer;
@@ -161,34 +161,6 @@ export class ContentLibraries implements IClassContentLibraries {
             this.#genericClient
           );
         });
-      });
-  }
-
-  public async import(arg: {
-    name: string;
-    file: Buffer;
-    externalPath?: string;
-    overwrite?: boolean;
-  }) {
-    if (!arg.name)
-      throw new Error(`contentLibrary.import: "name" parameter is required`);
-    if (!arg.file)
-      throw new Error(`contentLibrary.import: "file" parameter is required`);
-
-    const urlBuild = new URLBuild(`contentlibrary/${arg.name}/uploadfile`);
-    urlBuild.addParam("externalpath", arg.externalPath || undefined);
-    urlBuild.addParam("overwrite", arg.overwrite || undefined);
-
-    const mimeType = getMime(arg.file);
-    return await this.#repoClient
-      .Put(urlBuild.getUrl(), {}, mimeType)
-      .then((res) => {
-        return new ContentLibrary(
-          this.#repoClient,
-          (res.data as IContentLibrary).id,
-          res.data as IContentLibrary,
-          this.#genericClient
-        );
       });
   }
 
