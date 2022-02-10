@@ -8,6 +8,7 @@ import {
 } from "./Nodes";
 import { IClassNode, Node } from "./Node";
 import {
+  parseAnonymousAccessMode,
   parseAuthenticationMethod,
   parseJwtAttributeMap,
   parseOidcAttributeMap,
@@ -66,7 +67,9 @@ export class VirtualProxy implements IClassVirtualProxy {
     if (arg.additionalResponseHeaders)
       this.details.additionalResponseHeaders = arg.additionalResponseHeaders;
     if (arg.anonymousAccessMode)
-      this.details.anonymousAccessMode = arg.anonymousAccessMode;
+      this.details.anonymousAccessMode = parseAnonymousAccessMode(
+        arg.anonymousAccessMode
+      );
     if (arg.windowsAuthenticationEnabledDevicePattern)
       this.details.windowsAuthenticationEnabledDevicePattern =
         arg.windowsAuthenticationEnabledDevicePattern;
@@ -74,14 +77,37 @@ export class VirtualProxy implements IClassVirtualProxy {
       this.details.loadBalancingServerNodes =
         await this.parseLoadBalancingNodes(arg.loadBalancingServerNodes);
     }
+    if (arg.headerAuthenticationHeaderName)
+      this.details.headerAuthenticationHeaderName =
+        arg.headerAuthenticationHeaderName;
+    if (arg.extendedSecurityEnvironment)
+      this.details.extendedSecurityEnvironment =
+        arg.extendedSecurityEnvironment;
+    if (arg.headerAuthenticationStaticUserDirectory)
+      this.details.headerAuthenticationStaticUserDirectory =
+        arg.headerAuthenticationStaticUserDirectory;
+
+    if (arg.headerAuthenticationDynamicUserDirectory)
+      this.details.headerAuthenticationDynamicUserDirectory =
+        arg.headerAuthenticationDynamicUserDirectory;
+
+    if (arg.hasSecureAttributeHttp)
+      this.details.hasSecureAttributeHttp = arg.hasSecureAttributeHttp;
+    if (arg.hasSecureAttributeHttps)
+      this.details.hasSecureAttributeHttps = arg.hasSecureAttributeHttps;
+
     if (arg.magicLinkHostUri)
       this.details.magicLinkHostUri = arg.magicLinkHostUri;
     if (arg.magicLinkFriendlyName)
       this.details.magicLinkFriendlyName = arg.magicLinkFriendlyName;
     if (arg.authenticationMethod) {
-      this.details.authenticationMethod = parseAuthenticationMethod(
-        arg.authenticationMethod
-      );
+      const authMethod = parseAuthenticationMethod(arg.authenticationMethod);
+      if (authMethod == -1)
+        throw new Error(
+          `virtualProxy.create: "authenticationMethod" not found "${arg.authenticationMethod}"`
+        );
+
+      this.details.authenticationMethod = authMethod;
     }
     if (arg.samlMetadataIdP) this.details.samlMetadataIdP = arg.samlMetadataIdP;
     if (arg.samlHostUri) this.details.samlHostUri = arg.samlHostUri;

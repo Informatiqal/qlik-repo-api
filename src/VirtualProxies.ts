@@ -14,9 +14,11 @@ import {
 } from "./Nodes";
 import { IClassNode, Node } from "./Node";
 import {
+  parseAnonymousAccessMode,
   parseAuthenticationMethod,
   parseJwtAttributeMap,
   parseOidcAttributeMap,
+  parseSameSiteAttribute,
   parseSamlAttributeMap,
 } from "./util/parseAttributeMap";
 
@@ -104,8 +106,10 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (!arg.prefix)
       throw new Error(`virtualProxy.prefix: "prefix" parameter is required`);
 
-    if (!arg.name)
-      throw new Error(`virtualProxy.prefix: "name" parameter is required`);
+    if (!arg.description)
+      throw new Error(
+        `virtualProxy.prefix: "description" parameter is required`
+      );
 
     let data: { [k: string]: any } = {};
 
@@ -113,15 +117,48 @@ export class VirtualProxies implements IClassVirtualProxies {
     data["prefix"] = arg.prefix;
     data["description"] = arg.description || "";
 
-    if (arg.loadBalancingServerNodes) {
+    if (arg.loadBalancingServerNodes)
       data["loadBalancingServerNodes"] = await this.parseLoadBalancingNodes(
         arg.loadBalancingServerNodes
       );
-    }
+
+    if (arg.headerAuthenticationHeaderName)
+      data["headerAuthenticationHeaderName"] =
+        arg.headerAuthenticationHeaderName;
+
+    if (arg.extendedSecurityEnvironment)
+      data["extendedSecurityEnvironment"] = arg.extendedSecurityEnvironment;
+
+    if (arg.headerAuthenticationStaticUserDirectory)
+      data["headerAuthenticationStaticUserDirectory"] =
+        arg.headerAuthenticationStaticUserDirectory;
+
+    if (arg.headerAuthenticationDynamicUserDirectory)
+      data["headerAuthenticationDynamicUserDirectory"] =
+        arg.headerAuthenticationDynamicUserDirectory;
+
+    if (arg.windowsAuthenticationEnabledDevicePattern)
+      data["windowsAuthenticationEnabledDevicePattern"] =
+        arg.windowsAuthenticationEnabledDevicePattern;
+
+    if (arg.hasSecureAttributeHttp)
+      data["hasSecureAttributeHttp"] = arg.hasSecureAttributeHttp;
+    if (arg.hasSecureAttributeHttps)
+      data["hasSecureAttributeHttps"] = arg.hasSecureAttributeHttps;
 
     if (arg.authenticationMethod)
       data["authenticationMethod"] = parseAuthenticationMethod(
         arg.authenticationMethod
+      );
+
+    if (arg.sameSiteAttributeHttp)
+      data["sameSiteAttributeHttp"] = parseSameSiteAttribute(
+        arg.sameSiteAttributeHttp
+      );
+
+    if (arg.sameSiteAttributeHttps)
+      data["sameSiteAttributeHttps"] = parseSameSiteAttribute(
+        arg.sameSiteAttributeHttps
       );
 
     if (arg.authenticationModuleRedirectUri)
@@ -134,6 +171,10 @@ export class VirtualProxies implements IClassVirtualProxies {
       data["additionalResponseHeaders"] = arg.additionalResponseHeaders;
     if (arg.sessionInactivityTimeout)
       data["sessionInactivityTimeout"] = arg.sessionInactivityTimeout;
+    if (arg.anonymousAccessMode)
+      data["anonymousAccessMode"] = parseAnonymousAccessMode(
+        arg.anonymousAccessMode
+      );
 
     if (arg.samlMetadataIdP) data["samlMetadataIdP"] = arg.samlMetadataIdP;
     if (arg.samlHostUri) data["samlHostUri"] = arg.samlHostUri;
@@ -199,6 +240,9 @@ export class VirtualProxies implements IClassVirtualProxies {
       let nodeCondensed = (existingNodes as IClassNode[]).filter(
         (n1) => n1.details.hostName == n
       );
+
+      if (nodeCondensed.length == 0)
+        throw new Error(`virtualProxies: node not found! "${n}"`);
 
       return nodeCondensed[0].details as IServerNodeConfigurationCondensed;
     });

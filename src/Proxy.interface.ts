@@ -16,7 +16,8 @@ export interface IVirtualProxyUpdate {
   loadBalancingServerNodes?: string[];
   websocketCrossOriginWhiteList?: string[];
   additionalResponseHeaders?: string;
-  anonymousAccessMode?: number;
+  // anonymousAccessMode?: number;
+  anonymousAccessMode?: "No anonymous" | "Allow anonymous" | "Always anonymous";
   magicLinkHostUri?: string;
   magicLinkFriendlyName?: string;
   authenticationMethod?:
@@ -27,6 +28,14 @@ export interface IVirtualProxyUpdate {
     | "dynamic"
     | "SAML"
     | "JWT";
+  hasSecureAttributeHttp?: boolean;
+  sameSiteAttributeHttp: "No attribute" | "None" | "Lax" | "Strict";
+  hasSecureAttributeHttps?: boolean;
+  sameSiteAttributeHttps: "No attribute" | "None" | "Lax" | "Strict";
+  headerAuthenticationHeaderName?: string;
+  extendedSecurityEnvironment?: boolean;
+  headerAuthenticationStaticUserDirectory?: string;
+  headerAuthenticationDynamicUserDirectory?: string;
   samlMetadataIdP?: string;
   samlHostUri?: string;
   samlEntityId?: string;
@@ -56,16 +65,18 @@ export interface IVirtualProxyUpdate {
 }
 
 export interface IVirtualProxyCreate {
-  name: string;
+  // name: string;
   customProperties?: [];
   tags?: [];
   prefix: string;
   sessionCookieHeaderName: string;
-  description?: string;
+  description: string;
   authenticationModuleRedirectUri?: string;
+  windowsAuthenticationEnabledDevicePattern?: string;
   loadBalancingServerNodes?: string[];
   websocketCrossOriginWhiteList?: string;
   additionalResponseHeaders?: string;
+  anonymousAccessMode?: "No anonymous" | "Allow anonymous" | "Always anonymous";
   authenticationMethod?:
     | "Ticket"
     | "HeaderStaticUserDirectory"
@@ -74,6 +85,14 @@ export interface IVirtualProxyCreate {
     | "dynamic"
     | "SAML"
     | "JWT";
+  hasSecureAttributeHttp?: boolean;
+  sameSiteAttributeHttp: "No attribute" | "None" | "Lax" | "Strict";
+  hasSecureAttributeHttps?: boolean;
+  sameSiteAttributeHttps: "No attribute" | "None" | "Lax" | "Strict";
+  headerAuthenticationHeaderName?: string;
+  extendedSecurityEnvironment?: boolean;
+  headerAuthenticationStaticUserDirectory?: string;
+  headerAuthenticationDynamicUserDirectory?: string;
   samlMetadataIdP?: string;
   samlHostUri?: string;
   samlEntityId?: string;
@@ -222,6 +241,7 @@ export interface IVirtualProxyConfigCondensed {
   headerAuthenticationStaticUserDirectory?: string;
   headerAuthenticationDynamicUserDirectory?: string;
   anonymousAccessMode?: number;
+  // anonymousAccessMode?: "No anonymous" | "Allow anonymous" | "Always anonymous";
   windowsAuthenticationEnabledDevicePattern?: string;
   sessionCookieHeaderName: string;
   sessionCookieDomain?: string;

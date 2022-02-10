@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.1] - 2022-02-XX
+## [0.2.2] - 2022-02-10
+
+### Added
+
+- Virtual proxies changes. Header authentication, extended security, sameSite properties are parsed
+
+## [0.2.1] - 2022-02-09
 
 ### Added
 

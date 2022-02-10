@@ -39,6 +39,8 @@
         "fileextensionwhitelist",
         "filereference",
         "filereferenceid",
+        "headerdynamicuserdirectory",
+        "headerstaticuserdirectory",
         "hubinfo",
         "includecustomproperties",
         "Infomatiqal",
