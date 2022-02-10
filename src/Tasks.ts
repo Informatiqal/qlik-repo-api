@@ -37,7 +37,7 @@ export class Tasks implements IClassTasks {
       throw new Error(`tasks.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`tasks?filter=(${encodeURIComponent(arg.filter)})`)
+      .Get(`task?filter=(${encodeURIComponent(arg.filter)})`)
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => new Task(this.#repoClient, t.id, t));

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2022-02-XX
+
+### Fixed
+
+- `task.getFilter` is using the correct url endpoints [#59](https://github.com/Informatiqal/qlik-repo-api/issues/59)
+
 ## [0.2.2] - 2022-02-10
 
 ### Added
