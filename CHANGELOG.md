@@ -2,11 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.2] - 2022-02-XX
+## [0.2.2] - 2022-02-13
 
 ### Fixed
 
 - `task.getFilter` is using the correct url endpoints [#59](https://github.com/Informatiqal/qlik-repo-api/issues/59)
+- external tasks are semi-separated from reload tasks abstract class. Some methods are not available for external tasks but available for reload tasks [#60](https://github.com/Informatiqal/qlik-repo-api/issues/60)
+
+## Added
+
+- test for external task(s)
 
 ## [0.2.2] - 2022-02-10
 
