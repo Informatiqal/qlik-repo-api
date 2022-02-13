@@ -16,17 +16,17 @@ import {
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IClassSchemaTrigger, SchemaTrigger } from "./SchemaTrigger";
 import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
-import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
+// import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
 import { schemaRepeat } from "./util/schemaTrigger";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 
-export interface IClassReloadTask {
+export interface IClassReloadTaskBase {
   remove(): Promise<IHttpStatus>;
   start(): Promise<IHttpStatus>;
   startSynchronous(): Promise<IHttpReturn>;
   waitExecution(arg?: { executionId: string }): Promise<ITaskExecutionResult>;
-  scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
-  scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
+  // scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
+  // scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
   update(
     arg: ITaskReloadUpdate,
     options?: IUpdateObjectOptions
@@ -42,12 +42,12 @@ export interface IClassReloadTask {
   triggersDetails: (IClassSchemaTrigger | IClassCompositeTrigger)[];
 }
 
-export abstract class ReloadTaskBase implements IClassReloadTask {
+export abstract class ReloadTaskBase implements IClassReloadTaskBase {
   #id: string;
   #repoClient: QlikRepositoryClient;
   details: ITask;
   triggersDetails: (IClassSchemaTrigger | IClassCompositeTrigger)[];
-  private baseUrl: string;
+  #baseUrl: string;
   constructor(
     repoClient: QlikRepositoryClient,
     id: string,
@@ -58,7 +58,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
     this.#id = id;
     this.#repoClient = repoClient;
-    this.baseUrl = baseUrl;
+    this.#baseUrl = baseUrl;
     if (details) this.details = details;
   }
 
@@ -70,7 +70,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
   public async remove() {
     return await this.#repoClient
-      .Delete(`${this.baseUrl}/${this.#id}`)
+      .Delete(`${this.#baseUrl}/${this.#id}`)
       .then((res) => res.status);
   }
 
@@ -116,48 +116,48 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     return result;
   }
 
-  async scriptLogGet(arg: { fileReferenceId: string }) {
-    if (!arg.fileReferenceId)
-      throw new Error(
-        `task.scriptLogGet: "fileReferenceId" parameter is required`
-      );
-    if (this.baseUrl == "externalprogramtask")
-      throw new Error(
-        `scriptLogGet: Unfortunately only task of type Reload have this option `
-      );
+  // async scriptLogGet(arg: { fileReferenceId: string }) {
+  //   if (!arg.fileReferenceId)
+  //     throw new Error(
+  //       `task.scriptLogGet: "fileReferenceId" parameter is required`
+  //     );
+  //   if (this.baseUrl == "externalprogramtask")
+  //     throw new Error(
+  //       `scriptLogGet: Unfortunately only task of type Reload have this option `
+  //     );
 
-    return await this.#repoClient
-      .Get(
-        `${this.baseUrl}/${
-          this.details.id
-        }/scriptlog?filereferenceid=${encodeURIComponent(arg.fileReferenceId)}
-    `
-      )
-      .then((res) => res.data as string);
-  }
+  //   return await this.#repoClient
+  //     .Get(
+  //       `${this.baseUrl}/${
+  //         this.details.id
+  //       }/scriptlog?filereferenceid=${encodeURIComponent(arg.fileReferenceId)}
+  //   `
+  //     )
+  //     .then((res) => res.data as string);
+  // }
 
-  async scriptLogFileGet(arg: { executionResultId: string }) {
-    if (!arg.executionResultId)
-      throw new Error(
-        `task.scriptLogFileGet: "executionResultId" parameter is required`
-      );
+  // async scriptLogFileGet(arg: { executionResultId: string }) {
+  //   if (!arg.executionResultId)
+  //     throw new Error(
+  //       `task.scriptLogFileGet: "executionResultId" parameter is required`
+  //     );
 
-    if (this.baseUrl == "externalprogramtask")
-      throw new Error(
-        `scriptLogGet: Unfortunately only task of type Reload have this option `
-      );
+  //   if (this.baseUrl == "externalprogramtask")
+  //     throw new Error(
+  //       `scriptLogGet: Unfortunately only task of type Reload have this option `
+  //     );
 
-    return await this.#repoClient
-      .Get(
-        `${this.baseUrl}/${
-          this.details.id
-        }/scriptlog?executionresultid =${encodeURIComponent(
-          arg.executionResultId
-        )}
-  `
-      )
-      .then((res) => res.data as string);
-  }
+  //   return await this.#repoClient
+  //     .Get(
+  //       `${this.baseUrl}/${
+  //         this.details.id
+  //       }/scriptlog?executionresultid =${encodeURIComponent(
+  //         arg.executionResultId
+  //       )}
+  // `
+  //     )
+  //     .then((res) => res.data as string);
+  // }
 
   async update(arg: ITaskReloadUpdate, options?: IUpdateObjectOptions) {
     if (arg.enabled) this.details.enabled = arg.enabled;
@@ -183,7 +183,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`${this.baseUrl}/${this.details.id}`, { ...this.details })
+      .Put(`${this.#baseUrl}/${this.details.id}`, { ...this.details })
       .then((res) => res.data as ITask);
   }
 
@@ -272,7 +272,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
       ],
     };
 
-    let a = this.#repoClient;
+    // let a = this.#repoClient;
 
     const createResponse = await this.#repoClient
       .Post(`ReloadTask/update`, updateObject)
@@ -366,7 +366,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
 
   private async triggersGetAll() {
     const type =
-      this.baseUrl == "externalprogramtask"
+      this.#baseUrl == "externalprogramtask"
         ? "ExternalProgramTask"
         : "ReloadTask";
 
@@ -415,7 +415,7 @@ export abstract class ReloadTaskBase implements IClassReloadTask {
   private async getTaskDetails() {
     return await Promise.all([
       this.#repoClient
-        .Get(`${this.baseUrl}/${this.#id}`)
+        .Get(`${this.#baseUrl}/${this.#id}`)
         .then((res) => res.data as ITask),
       this.triggersGetAll(),
     ]);
