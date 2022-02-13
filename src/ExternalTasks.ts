@@ -3,20 +3,22 @@ import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import { IEntityRemove, ISelection } from "./types/interfaces";
-import { ITask, ITaskCreate } from "./Task.interface";
+import { ITask, ITaskCreate, IExternalTaskCreate } from "./Task.interface";
 
-import { IClassReloadTask } from "./ReloadTaskBase";
+import { IClassReloadTaskBase } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";
+
+export interface IClassExternalTask extends IClassReloadTaskBase {}
 
 //TODO: why is no update method here?
 export interface IClassExternalTasks {
-  get(arg: { id: string }): Promise<IClassReloadTask>;
-  getAll(): Promise<IClassReloadTask[]>;
-  getFilter(arg: { filter: string }): Promise<IClassReloadTask[]>;
+  get(arg: { id: string }): Promise<IClassExternalTask>;
+  getAll(): Promise<IClassExternalTask[]>;
+  getFilter(arg: { filter: string }): Promise<IClassExternalTask[]>;
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
-  create(arg: ITaskCreate): Promise<IClassReloadTask>;
+  create(arg: IExternalTaskCreate): Promise<IClassExternalTask>;
 }
 
 export class ExternalTasks implements IClassExternalTasks {
@@ -26,7 +28,8 @@ export class ExternalTasks implements IClassExternalTasks {
   }
 
   public async get(arg: { id: string }) {
-    if (!arg.id) throw new Error(`reloadTasks.get: "id" parameter is required`);
+    if (!arg.id)
+      throw new Error(`externalTasks.get: "id" parameter is required`);
 
     const extTask: ExternalTask = new ExternalTask(this.#repoClient, arg.id);
     await extTask.init();
@@ -47,7 +50,7 @@ export class ExternalTasks implements IClassExternalTasks {
 
   public async getFilter(arg: { filter: string }) {
     if (!arg.filter)
-      throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
+      throw new Error(`externalTasks.getFilter: "path" parameter is required`);
 
     return await this.#repoClient
       .Get(
@@ -73,12 +76,12 @@ export class ExternalTasks implements IClassExternalTasks {
   public async removeFilter(arg: { filter: string }) {
     if (!arg.filter)
       throw new Error(
-        `reloadTasks.removeFilter: "filter" parameter is required`
+        `externalTasks.removeFilter: "filter" parameter is required`
       );
 
     const tasks = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      tasks.map((task: IClassReloadTask) =>
+      tasks.map((task: IClassExternalTask) =>
         task.remove().then((s) => ({ id: task.details.id, status: s }))
       )
     );
@@ -93,43 +96,44 @@ export class ExternalTasks implements IClassExternalTasks {
       .then((res) => res.data as ISelection);
   }
 
-  public async create(arg: ITaskCreate) {
-    if (!arg.appId)
-      throw new Error(`task.create: "appId" parameter is required`);
-    if (!arg.name) throw new Error(`task.create: "name" parameter is required`);
+  public async create(arg: IExternalTaskCreate) {
+    if (!arg.path)
+      throw new Error(`externalTask.create: "path" parameter is required`);
+    if (!arg.name)
+      throw new Error(`externalTask.create: "name" parameter is required`);
 
-    let reloadTask: { [k: string]: any } = {};
+    let externalTask: { [k: string]: any } = {};
 
-    reloadTask["schemaEvents"] = [];
-    reloadTask["compositeEvents"] = [];
-    reloadTask["task"] = {
+    // externalTask["schemaEvents"] = [];
+    // externalTask["compositeEvents"] = [];
+    externalTask = {
       name: arg.name,
-      app: { id: arg.appId },
-      taskType: 0,
+      path: arg.path,
+      parameters: arg.parameters,
+      taskType: 1,
       enabled: true,
       taskSessionTimeout: 1440,
       maxRetries: 0,
-      isManuallyTriggered: false,
       tags: [],
       customProperties: [],
     };
 
     let updateCommon = new UpdateCommonProperties(
       this.#repoClient,
-      reloadTask,
+      externalTask,
       arg
     );
-    reloadTask = await updateCommon.updateAll();
+    externalTask = await updateCommon.updateAll();
 
-    reloadTask.task.customProperties = (reloadTask as any).customProperties;
-    reloadTask.task.tags = (reloadTask as any).tags;
+    externalTask.customProperties = (externalTask as any).customProperties;
+    externalTask.tags = (externalTask as any).tags;
 
-    delete (reloadTask as any).modifiedDate;
-    delete (reloadTask as any).customProperties;
-    delete (reloadTask as any).tags;
+    delete (externalTask as any).modifiedDate;
+    delete (externalTask as any).customProperties;
+    delete (externalTask as any).tags;
 
     return await this.#repoClient
-      .Post(`reloadtask/create`, { ...reloadTask })
+      .Post(`externalprogramtask`, { ...externalTask })
       .then((res) => res.data as ITask)
       .then((t) => new ExternalTask(this.#repoClient, t.id, t));
   }

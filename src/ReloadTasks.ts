@@ -5,8 +5,7 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IEntityRemove, ISelection } from "./types/interfaces";
 import { ITask, ITaskCreate } from "./Task.interface";
 
-import { ReloadTask } from "./ReloadTask";
-import { IClassReloadTask } from "./ReloadTaskBase";
+import { IClassReloadTask, ReloadTask } from "./ReloadTask";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 
 //TODO: why is no update method here?
