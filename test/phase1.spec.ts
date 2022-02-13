@@ -315,4 +315,31 @@ describe("Phase1", function () {
 
     expect(allTasksCountBefore).to.be.greaterThan(allTasksCountAfter);
   });
+
+  it("External task", async function () {
+    const newExternalTask = await repoApi.externalTasks.create({
+      name: "New External task 1",
+      path: "c:\\ProgramFiles\\Qlik\\Sense\\ServiceDispatcher\\Node\\node.exe",
+      parameters: "d:\\dev\\temp\\index.js",
+    });
+
+    await newExternalTask.addTriggerSchema({
+      name: "Reload every day",
+      repeat: "Daily",
+      repeatEvery: 1,
+    });
+
+    const allTasksCountBefore = await repoApi.tasks
+      .getAll()
+      .then((t) => t.length);
+
+    await newExternalTask.triggersDetails[0].remove();
+    await newExternalTask.remove();
+
+    const allTasksCountAfter = await repoApi.tasks
+      .getAll()
+      .then((t) => t.length);
+
+    expect(allTasksCountBefore).to.be.greaterThan(allTasksCountAfter);
+  });
 });

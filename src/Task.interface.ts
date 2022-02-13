@@ -17,6 +17,14 @@ export interface ITaskCreate {
   customProperties?: string[];
 }
 
+export interface IExternalTaskCreate {
+  name: string;
+  path: string;
+  parameters?: string;
+  tags?: string[];
+  customProperties?: string[];
+}
+
 export interface ITaskReloadUpdate {
   // id: string;
   name?: string;
