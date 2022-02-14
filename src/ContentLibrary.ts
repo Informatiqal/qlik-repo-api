@@ -15,7 +15,10 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { URLBuild } from "./util/generic";
 
 export interface IClassContentLibrary {
-  export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile[]>;
+  export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile>;
+  exportMany(arg?: {
+    sourceFileNames: string[];
+  }): Promise<IContentLibraryFile[]>;
   remove(): Promise<IHttpStatus>;
   importFile(arg: IContentLibraryImport): Promise<{
     status: IHttpStatus;
@@ -64,8 +67,11 @@ export class ContentLibrary implements IClassContentLibrary {
     }
   }
 
-  async export(arg: { sourceFileName?: string }) {
-    let files: IStaticContentReferenceCondensed[] = [];
+  async export(arg: { sourceFileName: string }) {
+    if (!arg.sourceFileName)
+      throw new Error(
+        `contentLibrary.export: "sourceFileName" parameter is required`
+      );
 
     if (
       this.#repoClient.configFull.port &&
@@ -74,30 +80,58 @@ export class ContentLibrary implements IClassContentLibrary {
       throw new Error(
         `contentLibrary.export: exporting content library is not possible when the authentication is made with certificates`
       );
-    if (arg.sourceFileName) {
-      // if only one file have to be extracted
-      files = this.details.references.filter((r) => {
-        return r.logicalPath.replace(/^.*[\\\/]/, "") == arg.sourceFileName;
-      });
-    }
 
-    // if all the files from the library have to be extracted
-    if (!arg.sourceFileName) files = this.details.references;
+    const file = this.details.references.filter((r) => {
+      return r.logicalPath.replace(/^.*[\\\/]/, "") == arg.sourceFileName;
+    });
 
-    if (files.length == 0)
+    if (file.length == 0)
       throw new Error(
-        `contentLibrary.export: No file(s) in content library "${this.details.name}"`
+        `contentLibrary.export: file "${arg.sourceFileName}" not found in content library "${this.details.name}"`
       );
 
-    return await Promise.all<IContentLibraryFile>(
-      files.map(async (f) => {
+    const logicalPath =
+      file[0].logicalPath[0] == "/"
+        ? file[0].logicalPath.substring(1)
+        : file[0].logicalPath;
+    const fileContent = await this.#genericClient.Get(
+      logicalPath,
+      "",
+      "arraybuffer"
+    );
+    return {
+      name: file[0].logicalPath.replace(/^.*[\\\/]/, ""),
+      file: fileContent.data,
+    };
+  }
+
+  async exportMany(arg?: { sourceFileNames: string[] }) {
+    let files: IStaticContentReferenceCondensed[] = [];
+
+    if (!arg) files = this.details.references;
+    if (arg && !arg.sourceFileNames)
+      throw new Error(
+        `contentLibrary.exportMany: "sourceFileNames" parameter is required`
+      );
+
+    if (arg)
+      files = this.details.references.filter((r) => {
+        return arg.sourceFileNames.includes(
+          r.logicalPath.replace(`/content/${this.details.name}/`, "")
+        );
+      });
+
+    return Promise.all(
+      files.map((r) => {
         const logicalPath =
-          f.logicalPath[0] == "/" ? f.logicalPath.substr(1) : f.logicalPath;
-        const fileContent = await this.#genericClient.Get(logicalPath);
-        return {
-          name: f.logicalPath.replace(/^.*[\\\/]/, ""),
-          file: fileContent.data,
-        };
+          r.logicalPath[0] == "/" ? r.logicalPath.substring(1) : r.logicalPath;
+        return this.#genericClient.Get(logicalPath, "", "arraybuffer").then(
+          (res) =>
+            ({
+              name: r.logicalPath.replace(/^.*[\\\/]/, ""),
+              file: res.data,
+            } as IContentLibraryFile)
+        );
       })
     );
   }

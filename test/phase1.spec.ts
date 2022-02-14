@@ -5,6 +5,7 @@ import { Config, Helpers } from "./Config";
 const expect = chai.expect;
 const config = new Config();
 const repoApi = config.repoApi;
+const repoApiJWT = config.repoApiJWT;
 
 const helpers = new Helpers();
 
@@ -365,5 +366,43 @@ describe("Phase1", function () {
 
     expect(Buffer.isBuffer(downloadApp.file)).to.be.true &&
       expect(removeResponse).to.be.equal(204);
+  });
+
+  it("Export content library", async function () {
+    const clAll = await repoApiJWT.contentLibraries.getAll();
+
+    const cl = await repoApiJWT.contentLibraries.getFilter({
+      filter: "name eq 'Default'",
+    });
+
+    const singleFile = await cl[0].export({
+      sourceFileName: "Qlik_default_green.png",
+    });
+
+    const allFiles = await cl[0].exportMany();
+    const fewFiles = await cl[0].exportMany({
+      sourceFileNames: [
+        "Qlik_default_green.png",
+        "Qlik_default_leaf.png",
+        "Qlik_default_orange.png",
+        "Qlik_default_flower.png",
+      ],
+    });
+
+    const fewFilesWithMissing = await cl[0].exportMany({
+      sourceFileNames: [
+        "Qlik_default_green.png",
+        "Qlik_default_leaf.png",
+        "Qlik_default_orange.png",
+        "MISSING.png",
+      ],
+    });
+
+    expect(clAll.length).to.be.greaterThan(0) &&
+      expect(cl[0].details.references.length).to.be.equal(7) &&
+      expect(Buffer.isBuffer(singleFile.file)).to.be.true &&
+      expect(allFiles.length).to.be.equal(7) &&
+      expect(fewFiles.length).to.be.equal(4) &&
+      expect(fewFilesWithMissing.length).to.be.equal(3);
   });
 });

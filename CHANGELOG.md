@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.5] - 2022-02-14
+
+### Changed
+
+- `contentLibrary.export` - this method now target specific file and its not possible to export all files through this methods. For multiple files export have a look at `contentLibrary.exportMany`
+
+### Added
+
+- new method `contentLibrary.exportMany`. This method can export either all files in the library (if no params are provided) or a list of provided file names (the base file name)
+- tests to cover export functionality for content library
+
 ## [0.2.4] - 2022-02-14
 
 ### Fixed
