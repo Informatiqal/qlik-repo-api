@@ -34,7 +34,10 @@ export interface IClassApp {
     name?: string;
     includeCustomProperties?: boolean;
   }): Promise<IClassApp>;
-  export(arg: { fileName?: string; skipData?: boolean }): Promise<Buffer>;
+  export(arg?: {
+    token?: string;
+    skipData?: boolean;
+  }): Promise<{ file: Buffer; exportToken: string }>;
   remove(): Promise<IHttpStatus>;
   publish(arg: { stream: string; name?: string }): Promise<IClassApp>;
   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
@@ -68,23 +71,36 @@ export class App implements IClassApp {
     }
   }
 
-  public async export(arg: { fileName?: string; skipData?: boolean }) {
+  public async export(arg?: { token?: string; skipData?: boolean }) {
     const token = uuid();
-    const urlBuild = new URLBuild(`app/${this.details.id}/export/${token}`);
-    if (!arg.fileName) arg.fileName = `${this.details.id}.qvf`;
 
-    urlBuild.addParam("skipdata", arg.skipData);
+    const props = arg || {
+      token: token,
+      skipData: false,
+    };
+
+    if (!props.token) props.token = token;
+
+    const urlBuild = new URLBuild(
+      `app/${this.details.id}/export/${props.token}`
+    );
+    urlBuild.addParam("skipdata", props.skipData);
 
     const downloadPath: string = await this.#repoClient
       .Post(urlBuild.getUrl(), {})
       .then((response) => response.data)
-      .then((data) => {
-        return data.downloadPath.replace("/tempcontent", "tempcontent");
-      });
+      .then((data) => data.downloadPath.replace("/tempcontent", "tempcontent"));
 
-    return await this.#genericClient
-      .Get(downloadPath)
-      .then((r) => r.data as Buffer);
+    const localGenericClient = this.#genericClient;
+
+    localGenericClient.configFull.port = this.#repoClient.configFull.port;
+    localGenericClient.configFull.baseUrl = `${
+      localGenericClient.configFull.baseUrl
+    }:${this.#repoClient.configFull.port}`;
+
+    return await localGenericClient
+      .Get(downloadPath, "", "arraybuffer")
+      .then((r) => ({ file: r.data as Buffer, exportToken: props.token }));
   }
 
   public async copy(arg: { name?: string; includeCustomProperties?: boolean }) {

@@ -8,3 +8,4 @@ temp.md
 src/main.doc.ts
 .npmrc
 test/Test.zip
+*.qvf

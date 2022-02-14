@@ -2,7 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.2.2] - 2022-02-13
+## [0.2.4] - 2022-02-14
+
+### Fixed
+
+- `app.export` accepts `token` as **optional** parameter. If not provided the method will auto-generate
+- `app.export` no longer accepts `fileName` (was not used anyway)
+- `app.export` correctly returns the exported content (via `QlikGenericRestClient`)
+- `app.export` returns the `exportToken` as well
+- added `ExternalProgramTask` to custom properties object types
+
+### Added
+
+- test for app export
+
+## [0.2.3] - 2022-02-13
 
 ### Fixed
 

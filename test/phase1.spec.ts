@@ -342,4 +342,28 @@ describe("Phase1", function () {
 
     expect(allTasksCountBefore).to.be.greaterThan(allTasksCountAfter);
   });
+
+  it("Export app", async function () {
+    const appContent = fs.readFileSync(
+      ".\\test\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf"
+    );
+
+    const importTempApp = await repoApi.apps.upload({
+      name: "Temp app",
+      file: appContent,
+    });
+
+    const downloadApp = await importTempApp.export();
+
+    fs.writeFileSync(
+      ".\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf",
+      downloadApp.file
+    );
+
+    const removeResponse = await importTempApp.remove();
+    fs.unlinkSync(".\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf");
+
+    expect(Buffer.isBuffer(downloadApp.file)).to.be.true &&
+      expect(removeResponse).to.be.equal(204);
+  });
 });

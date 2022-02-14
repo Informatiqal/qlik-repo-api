@@ -11,6 +11,7 @@ export type TCustomPropObjectTypes =
   | "DataConnection"
   | "EngineService"
   | "Extension"
+  | "ExternalProgramTask"
   | "ServerNodeConfiguration"
   | "PrintingService"
   | "ProxyService"
