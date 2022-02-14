@@ -12,13 +12,13 @@ export interface ICertificateExportParameters {
 
 export interface IClassCertificate {
   distributionPathGet(): Promise<string>;
-  export(arg: ICertificateExportParameters): Promise<IHttpStatus>;
+  generate(arg: ICertificateExportParameters): Promise<IHttpStatus>;
 }
 
 export class Certificate implements IClassCertificate {
   #repoClient: QlikRepositoryClient;
-  constructor(private mainRepoClient: QlikRepositoryClient) {
-    this.#repoClient = mainRepoClient;
+  constructor(repoClient: QlikRepositoryClient) {
+    this.#repoClient = repoClient;
   }
 
   public async distributionPathGet() {
@@ -29,10 +29,10 @@ export class Certificate implements IClassCertificate {
       });
   }
 
-  public async export(arg: ICertificateExportParameters) {
+  public async generate(arg: ICertificateExportParameters) {
     if (!arg.machineNames)
       throw new Error(
-        `certificate.export: "machineNames" parameter is required`
+        `certificate.generate: "machineNames" parameter is required`
       );
 
     let data: { [k: string]: any } = {};

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.6] - 2022-02-14
+
+### Changed
+
+- **BREAKING** `certificate.export` is renamed to `certificate.generate`
+- `app.export` is returning the app name as well (`<appID>.qvf`)
+
 ## [0.2.5] - 2022-02-14
 
 ### Changed

@@ -37,7 +37,7 @@ export interface IClassApp {
   export(arg?: {
     token?: string;
     skipData?: boolean;
-  }): Promise<{ file: Buffer; exportToken: string }>;
+  }): Promise<{ file: Buffer; exportToken: string; name: string }>;
   remove(): Promise<IHttpStatus>;
   publish(arg: { stream: string; name?: string }): Promise<IClassApp>;
   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
@@ -100,7 +100,11 @@ export class App implements IClassApp {
 
     return await localGenericClient
       .Get(downloadPath, "", "arraybuffer")
-      .then((r) => ({ file: r.data as Buffer, exportToken: props.token }));
+      .then((r) => ({
+        file: r.data as Buffer,
+        exportToken: props.token,
+        name: `${this.details.id}.qvf`,
+      }));
   }
 
   public async copy(arg: { name?: string; includeCustomProperties?: boolean }) {
