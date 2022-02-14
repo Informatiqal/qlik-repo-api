@@ -123,15 +123,9 @@ export class ContentLibrary implements IClassContentLibrary {
 
     return Promise.all(
       files.map((r) => {
-        const logicalPath =
-          r.logicalPath[0] == "/" ? r.logicalPath.substring(1) : r.logicalPath;
-        return this.#genericClient.Get(logicalPath, "", "arraybuffer").then(
-          (res) =>
-            ({
-              name: r.logicalPath.replace(/^.*[\\\/]/, ""),
-              file: res.data,
-            } as IContentLibraryFile)
-        );
+        return this.export({
+          sourceFileName: r.logicalPath.replace(/^.*[\\\/]/, ""),
+        });
       })
     );
   }

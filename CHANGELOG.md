@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.7] - 2022-02-14
+
+### Changed
+
+- `contentLibrary.exportMany` is correctly using `contentLibrary.export` in the background. This way the correct error message is thrown when certificates authentication is used
+
 ## [0.2.6] - 2022-02-14
 
 ### Changed
