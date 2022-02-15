@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.8] - 2022-02-15
+
+### Fix
+
+- corrected url formatting when calling `app.export` with virtual proxy prefix
+
 ## [0.2.7] - 2022-02-14
 
 ### Changed

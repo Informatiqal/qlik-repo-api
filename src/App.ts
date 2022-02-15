@@ -94,9 +94,10 @@ export class App implements IClassApp {
     const localGenericClient = this.#genericClient;
 
     localGenericClient.configFull.port = this.#repoClient.configFull.port;
-    localGenericClient.configFull.baseUrl = `${
-      localGenericClient.configFull.baseUrl
-    }:${this.#repoClient.configFull.port}`;
+
+    let t = localGenericClient.configFull.baseUrl.split("/");
+    t[2] = t[2] + `:${this.#repoClient.configFull.port}`;
+    localGenericClient.configFull.baseUrl = t.join("/");
 
     return await localGenericClient
       .Get(downloadPath, "", "arraybuffer")

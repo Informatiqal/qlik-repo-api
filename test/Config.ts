@@ -20,6 +20,10 @@ export class Config {
       key: key,
     });
 
+    const httpsAgentReject = new https.Agent({
+      rejectUnauthorized: false,
+    });
+
     const repoApi = new QlikRepoApi.client({
       host: process.env.TEST_HOST,
       port: 4242,
@@ -34,7 +38,7 @@ export class Config {
       host: process.env.TEST_HOST,
       port: 443,
       proxy: "jwt",
-      httpsAgent: httpsAgentCert,
+      httpsAgent: httpsAgentReject,
       authentication: {
         token: `${process.env.AUTH_JWT_TOKEN}`,
       },
