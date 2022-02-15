@@ -33,6 +33,7 @@ export namespace QlikRepoApi {
   export class client {
     public repoClient: QlikRepositoryClient;
     public genericClient: QlikGenericRestClient;
+    public genericClientWithPort: QlikGenericRestClient;
     public genericRepoClient: QlikRepositoryClient;
     public genericWESClient: QlikRepositoryClient;
 
@@ -71,12 +72,21 @@ export namespace QlikRepoApi {
       const genericConfig = { ...repoConfig };
       delete genericConfig.port;
       this.genericClient = new QlikGenericRestClient(genericConfig);
+      this.genericClientWithPort = new QlikGenericRestClient(genericConfig);
+
+      let t = this.genericClientWithPort.configFull.baseUrl.split("/");
+      t[2] = `${t[2]}:${this.repoClient.configFull.port}`;
+      this.genericClientWithPort.configFull.baseUrl = t.join("/");
 
       const genericRepoConfig = { ...repoConfig };
       delete genericRepoConfig.port;
       this.genericRepoClient = new QlikGenericRestClient(genericConfig);
       this.about = new About(this.repoClient);
-      this.apps = new Apps(this.repoClient, this.genericClient);
+      this.apps = new Apps(
+        this.repoClient,
+        this.genericClient,
+        this.genericClientWithPort
+      );
       this.appObjects = new AppObjects(this.repoClient);
       this.certificate = new Certificate(this.repoClient);
       this.contentLibraries = new ContentLibraries(

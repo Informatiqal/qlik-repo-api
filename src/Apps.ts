@@ -56,17 +56,24 @@ export interface IClassApps {
     file: Buffer;
     keepData?: boolean;
   }): Promise<IClassApp>;
+  exportMany(arg?: {
+    filter: string;
+    skipData?: boolean;
+  }): Promise<{ file: Buffer; exportToken: string; name: string }[]>;
 }
 
 export class Apps implements IClassApps {
   #repoClient: QlikRepositoryClient;
   #genericClient: QlikGenericRestClient;
+  #genericClientWithPort?: QlikGenericRestClient;
   constructor(
-    private mainRepoClient: QlikRepositoryClient,
-    private mainGenericClient: QlikGenericRestClient
+    mainRepoClient: QlikRepositoryClient,
+    mainGenericClient: QlikGenericRestClient,
+    mainGenericClientWithPort?: QlikGenericRestClient
   ) {
     this.#repoClient = mainRepoClient;
     this.#genericClient = mainGenericClient;
+    this.#genericClientWithPort = mainGenericClientWithPort;
   }
 
   public async get(arg: { id: string }) {
@@ -75,7 +82,8 @@ export class Apps implements IClassApps {
       this.#repoClient,
       arg.id,
       null,
-      this.#genericClient
+      this.#genericClient,
+      this.#genericClientWithPort
     );
     await app.init();
 
@@ -88,7 +96,14 @@ export class Apps implements IClassApps {
       .then((res) => res.data as IApp[])
       .then((data) => {
         return data.map(
-          (t) => new App(this.#repoClient, t.id, t, this.#genericClient)
+          (t) =>
+            new App(
+              this.#repoClient,
+              t.id,
+              t,
+              this.#genericClient,
+              this.#genericClientWithPort
+            )
         );
       });
   }
@@ -104,11 +119,29 @@ export class Apps implements IClassApps {
     return await this.#repoClient
       .Get(urlBuild.getUrl())
       .then((res) => res.data as IApp[])
-      .then((data) => {
-        return data.map(
-          (t) => new App(this.#repoClient, t.id, t, this.#genericClient)
+      .then((apps) => {
+        return apps.map(
+          (app) =>
+            new App(
+              this.#repoClient,
+              app.id,
+              app,
+              this.#genericClient,
+              this.#genericClientWithPort
+            )
         );
       });
+  }
+
+  public async exportMany(arg: { filter: string; skipData?: boolean }) {
+    if (!arg.filter)
+      throw new Error(`app.exportMany: "filter" parameter is required`);
+
+    const apps = await this.getFilter(arg);
+
+    return await Promise.all(
+      apps.map((a) => a.export({ skipData: arg.skipData || false }))
+    );
   }
 
   public async upload(arg: {
@@ -133,7 +166,8 @@ export class Apps implements IClassApps {
             this.#repoClient,
             (res.data as IApp).id,
             res.data,
-            this.#genericClient
+            this.#genericClient,
+            this.#genericClientWithPort
           )
       );
   }
@@ -166,7 +200,8 @@ export class Apps implements IClassApps {
             this.#repoClient,
             (res.data as IApp).id,
             null,
-            this.#genericClient
+            this.#genericClient,
+            this.#genericClientWithPort
           )
       );
   }

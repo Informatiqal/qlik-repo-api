@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.9] - 2022-02-15
+
+### Fix
+
+- passing new instance of the generic client class (with port). Needed for `app.exportMany`
+
+### Added
+
+- new method `app.exportMany`. Exports apps based on provided filter. Optional parameter `skipData` is applied to all apps returned by the filter query
+
 ## [0.2.8] - 2022-02-15
 
 ### Fix

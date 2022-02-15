@@ -48,18 +48,21 @@ export class App implements IClassApp {
   #id: string;
   #repoClient: QlikRepositoryClient;
   #genericClient: QlikGenericRestClient;
+  #genericClientWithPort: QlikGenericRestClient;
   details: IApp;
   constructor(
     repoClient: QlikRepositoryClient,
     id: string,
     details?: IApp,
-    genericClient?: QlikGenericRestClient
+    genericClient?: QlikGenericRestClient,
+    genericClientWithPort?: QlikGenericRestClient
   ) {
     if (!id) throw new Error(`app.get: "id" parameter is required`);
 
     this.#id = id;
     this.#repoClient = repoClient;
     this.#genericClient = genericClient;
+    this.#genericClientWithPort = genericClientWithPort;
     if (details) this.details = details;
   }
 
@@ -91,15 +94,7 @@ export class App implements IClassApp {
       .then((response) => response.data)
       .then((data) => data.downloadPath.replace("/tempcontent", "tempcontent"));
 
-    const localGenericClient = this.#genericClient;
-
-    localGenericClient.configFull.port = this.#repoClient.configFull.port;
-
-    let t = localGenericClient.configFull.baseUrl.split("/");
-    t[2] = t[2] + `:${this.#repoClient.configFull.port}`;
-    localGenericClient.configFull.baseUrl = t.join("/");
-
-    return await localGenericClient
+    return await this.#genericClientWithPort
       .Get(downloadPath, "", "arraybuffer")
       .then((r) => ({
         file: r.data as Buffer,

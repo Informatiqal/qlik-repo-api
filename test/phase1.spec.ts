@@ -405,4 +405,13 @@ describe("Phase1", function () {
       expect(fewFiles.length).to.be.equal(4) &&
       expect(fewFilesWithMissing.length).to.be.equal(3);
   });
+
+  it("Export multiple apps", async function () {
+    const monitoringApps = await repoApiJWT.apps.exportMany({
+      filter: "stream.name eq 'Monitoring apps'",
+      skipData: true,
+    });
+
+    expect(monitoringApps.length).to.be.greaterThan(0);
+  });
 });
