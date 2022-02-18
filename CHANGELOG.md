@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.10] - 2022-02-19
+
+### Fix
+
+- When fetching reload/external task details the triggers data is also fetched
+
 ## [0.2.10] - 2022-02-18
 
 ### Fix

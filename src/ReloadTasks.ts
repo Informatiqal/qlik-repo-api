@@ -44,6 +44,13 @@ export class ReloadTasks implements IClassReloadTasks {
       });
   }
 
+  // "funny story" but tasks are slightly different from the rest
+  // not only their data must be init but also all the data for the
+  // triggers will have to be init at the same time
+  // for this reason we cant return only the instance (new ReloadTask)
+  // but actually have to call the init() method for each task
+  // this way when the task returned it will have
+  // triggersDetails populated
   public async getFilter(arg: { filter: string }) {
     if (!arg.filter)
       throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
@@ -53,7 +60,15 @@ export class ReloadTasks implements IClassReloadTasks {
       .then((res) => res.data as ITask[])
       .then((data) => {
         return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
-      });
+      })
+      .then(async (rt) => {
+        return await Promise.all<IClassReloadTask>(
+          rt.map((r) => {
+            return r.init().then((r1) => r);
+          })
+        );
+      })
+      .then((r) => r);
   }
 
   public async count(arg?: { filter: string }) {

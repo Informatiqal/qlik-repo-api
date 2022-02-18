@@ -70,6 +70,10 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
     if (!this.details) {
       [this.details, this.triggersDetails] = await this.getTaskDetails();
     }
+
+    if (!this.triggersDetails) {
+      this.triggersDetails = await this.triggersGetAll();
+    }
   }
 
   public async remove() {
