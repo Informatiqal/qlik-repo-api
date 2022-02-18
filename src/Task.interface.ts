@@ -82,7 +82,7 @@ export interface ITaskCreateTriggerSchema {
   // reloadTaskId: string;
   enabled?: boolean;
   name: string;
-  repeat?: TRepeatOptions;
+  repeat: TRepeatOptions;
   repeatEvery?: number;
   startDate?: string;
   expirationDate?: string;

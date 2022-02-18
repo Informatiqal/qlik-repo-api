@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.10] - 2022-02-18
+
+### Fix
+
+- Creating task trigger (Schema) require mandatory `repeat` parameter to be passed. Previously this parameter was optional
+- Creating task triggers (Schema, Composite or Many) now returns the instance of the triggers, instead of the response status
+
 ## [0.2.9] - 2022-02-15
 
 ### Fix

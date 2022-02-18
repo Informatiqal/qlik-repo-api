@@ -6,6 +6,7 @@ import {
   IUpdateObjectOptions,
 } from "./types/interfaces";
 import {
+  ICompositeEvent,
   ISchemaEvent,
   ITask,
   ITaskCreateTriggerComposite,
@@ -19,6 +20,7 @@ import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
 // import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
 import { schemaRepeat } from "./util/schemaTrigger";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
+import { uuid } from "./util/generic";
 
 export interface IClassReloadTaskBase {
   remove(): Promise<IHttpStatus>;
@@ -31,11 +33,13 @@ export interface IClassReloadTaskBase {
     arg: ITaskReloadUpdate,
     options?: IUpdateObjectOptions
   ): Promise<ITask>;
-  addTriggerComposite(arg: ITaskCreateTriggerComposite): Promise<IHttpStatus>;
-  addTriggerSchema(arg: ITaskCreateTriggerSchema): Promise<IHttpStatus>;
+  addTriggerComposite(
+    arg: ITaskCreateTriggerComposite
+  ): Promise<IClassCompositeTrigger>;
+  addTriggerSchema(arg: ITaskCreateTriggerSchema): Promise<IClassSchemaTrigger>;
   addTriggerMany(
     triggers: (ITaskCreateTriggerComposite | ITaskCreateTriggerSchema)[]
-  ): Promise<{ name: string; status: number }[]>;
+  ): Promise<(IClassSchemaTrigger | IClassCompositeTrigger)[]>;
   // triggersGetAll(): Promise<IClassSchemaTrigger[]>;
   // triggersGetSchema(id: string): Promise<IClassSchemaTrigger>;
   details: ITask;
@@ -272,17 +276,28 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
       ],
     };
 
-    // let a = this.#repoClient;
-
+    // TODO: capture error status
     const createResponse = await this.#repoClient
       .Post(`ReloadTask/update`, updateObject)
       .then((res) => {
         return res.status as IHttpStatus;
       });
 
+    const triggersDetails = [...this.triggersDetails].map((t) => t.details.id);
+
     [this.details, this.triggersDetails] = await this.getTaskDetails();
 
-    return createResponse;
+    const newTriggerDetails = this.triggersDetails.filter((t) => {
+      return !triggersDetails.includes(t.details.id);
+    })[0];
+
+    const newCompositeTrigger = new CompositeTrigger(
+      this.#repoClient,
+      newTriggerDetails.details.id,
+      newTriggerDetails.details as ICompositeEvent
+    );
+
+    return newCompositeTrigger;
   }
 
   /**
@@ -334,9 +349,21 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
       .Post(`schemaevent`, { ...createObj })
       .then((res) => res.status as IHttpStatus);
 
+    const triggersDetails = [...this.triggersDetails].map((t) => t.details.id);
+
     [this.details, this.triggersDetails] = await this.getTaskDetails();
 
-    return createResponse;
+    const newTriggerDetails = this.triggersDetails.filter((t) => {
+      return !triggersDetails.includes(t.details.id);
+    })[0];
+
+    const newCompositeTrigger = new SchemaTrigger(
+      this.#repoClient,
+      newTriggerDetails.details.id,
+      newTriggerDetails.details as ISchemaEvent
+    );
+
+    return newCompositeTrigger;
   }
 
   /**
@@ -345,23 +372,28 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
   async addTriggerMany(
     triggers: (ITaskCreateTriggerComposite | ITaskCreateTriggerSchema)[]
   ) {
-    return await Promise.all(
-      triggers.map(async (t) => {
-        if ((t as ITaskCreateTriggerComposite).eventTasks) {
-          return this.addTriggerComposite(
-            t as ITaskCreateTriggerComposite
-          ).then((d) => {
-            return { status: d, name: t.name };
-          });
-        }
-
-        return this.addTriggerSchema(t as ITaskCreateTriggerSchema).then(
-          (d) => {
-            return { status: d, name: t.name };
-          }
+    // TODO: optimization here. Can we update the task in one run?
+    //       atm we are making calls for each trigger. Not very efficient
+    let newTriggers: (IClassSchemaTrigger | IClassCompositeTrigger)[] = [];
+    for (let trigger of triggers) {
+      if ((trigger as ITaskCreateTriggerComposite).eventTasks) {
+        let newCompTrigger = await this.addTriggerComposite(
+          trigger as ITaskCreateTriggerComposite
         );
-      })
-    );
+
+        newTriggers.push(newCompTrigger);
+      }
+
+      if ((trigger as ITaskCreateTriggerSchema).repeat) {
+        let newSchemaTrigger = await this.addTriggerSchema(
+          trigger as ITaskCreateTriggerSchema
+        );
+
+        newTriggers.push(newSchemaTrigger);
+      }
+    }
+
+    return newTriggers;
   }
 
   private async triggersGetAll() {
