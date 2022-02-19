@@ -107,7 +107,7 @@ export class ReloadTasks implements IClassReloadTasks {
     if (!arg.name) throw new Error(`task.create: "name" parameter is required`);
 
     const app = await getAppForReloadTask(
-      arg.appId,
+      arg.id,
       arg.appFilter,
       this.#repoClient
     );

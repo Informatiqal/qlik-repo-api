@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.12] - 2022-02-19
+
+### Changed
+
+- **BREAKING** `reloadTasks.create` argument `appId` renamed to `id`
+
 ## [0.2.11] - 2022-02-19
 
 ### Fix

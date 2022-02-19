@@ -276,12 +276,12 @@ describe("Phase1", function () {
 
     const newReloadTask1 = await repoApi.reloadTasks.create({
       name: "New reload task 1",
-      appId: uploadedApp.details.id,
+      id: uploadedApp.details.id,
     });
 
     const newReloadTask2 = await repoApi.reloadTasks.create({
       name: "New reload task 2",
-      appId: uploadedApp.details.id,
+      id: uploadedApp.details.id,
     });
 
     await newReloadTask2.addTriggerComposite({
