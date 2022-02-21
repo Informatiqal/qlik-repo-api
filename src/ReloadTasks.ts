@@ -144,6 +144,11 @@ export class ReloadTasks implements IClassReloadTasks {
     return await this.#repoClient
       .Post(`reloadtask/create`, { ...reloadTask })
       .then((res) => res.data as ITask)
-      .then((t) => new ReloadTask(this.#repoClient, t.id, t));
+      .then(async (t) => {
+        const rt = new ReloadTask(this.#repoClient, t.id, t);
+        await rt.init();
+
+        return rt;
+      });
   }
 }
