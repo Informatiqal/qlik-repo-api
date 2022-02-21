@@ -11,7 +11,7 @@ import {
 
 export interface ITaskCreate {
   name: string;
-  id?: string;
+  appId?: string;
   appFilter?: string;
   tags?: string[];
   customProperties?: string[];
