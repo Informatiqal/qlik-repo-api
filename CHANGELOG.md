@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.14] - 2022-02-21
+
+### Added
+
+- `reloadTask.removeAllTriggers` and `externalTask.removeAllTriggers` methods are implemented
+
+## Fix
+
+- `reloadTask.update` and `externalTask.update` will update the task name as well (`name` was missing from the logic)
+
 ## [0.2.13] - 2022-02-21
 
 ### Changed

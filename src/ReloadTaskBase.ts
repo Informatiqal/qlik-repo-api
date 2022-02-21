@@ -4,6 +4,7 @@ import {
   ISelection,
   IHttpReturn,
   IUpdateObjectOptions,
+  IEntityRemove,
 } from "./types/interfaces";
 import {
   ICompositeEvent,
@@ -20,7 +21,6 @@ import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
 // import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
 import { schemaRepeat } from "./util/schemaTrigger";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
-import { uuid } from "./util/generic";
 
 export interface IClassReloadTaskBase {
   remove(): Promise<IHttpStatus>;
@@ -42,6 +42,10 @@ export interface IClassReloadTaskBase {
   ): Promise<(IClassSchemaTrigger | IClassCompositeTrigger)[]>;
   // triggersGetAll(): Promise<IClassSchemaTrigger[]>;
   // triggersGetSchema(id: string): Promise<IClassSchemaTrigger>;
+  removeAllTriggers(arg?: {
+    onlyDisabled?: boolean;
+    onlyEnabled?: boolean;
+  }): Promise<IEntityRemove[]>;
   details: ITask;
   triggersDetails: (IClassSchemaTrigger | IClassCompositeTrigger)[];
 }
@@ -168,6 +172,7 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
   // }
 
   async update(arg: ITaskReloadUpdate, options?: IUpdateObjectOptions) {
+    if (arg.name) this.details.name = arg.name;
     if (arg.enabled) this.details.enabled = arg.enabled;
     if (arg.taskSessionTimeout)
       this.details.taskSessionTimeout = arg.taskSessionTimeout;
@@ -398,6 +403,36 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
     }
 
     return newTriggers;
+  }
+
+  async removeAllTriggers(arg?: {
+    onlyDisabled?: boolean;
+    onlyEnabled?: boolean;
+  }) {
+    let res: IEntityRemove[] = [];
+
+    // make sure we have the latest data before execution
+    [this.details, this.triggersDetails] = await this.getTaskDetails();
+
+    let localTriggers: (IClassCompositeTrigger | IClassSchemaTrigger)[] = [];
+
+    if (arg && arg.onlyDisabled)
+      localTriggers = this.triggersDetails.filter((tr) => !tr.details.enabled);
+
+    if (arg && arg.onlyEnabled)
+      localTriggers = this.triggersDetails.filter((tr) => tr.details.enabled);
+
+    if (!arg || (arg.onlyEnabled == undefined && arg.onlyDisabled == undefined))
+      localTriggers = [...this.triggersDetails];
+
+    for (let trigger of localTriggers) {
+      let delRes = await trigger.remove();
+      res.push(delRes);
+    }
+
+    [this.details, this.triggersDetails] = await this.getTaskDetails();
+
+    return res;
   }
 
   private async triggersGetAll() {
