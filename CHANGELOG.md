@@ -2,11 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.16] - 2022-03-13
+
+- Dependency updates
+
+### Fix
+
 ## [0.2.15] - 2022-02-21
 
 ### Fix
 
--
+- `reloadTask.create` populates `triggersDetails` (empty array)
 
 ## [0.2.14] - 2022-02-21
 
