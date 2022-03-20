@@ -55,7 +55,7 @@
     "dotenv": "10.0.0",
     "mocha": "9.2.1",
     "nyc": "15.1.0",
-    "rollup": "2.67.1",
+    "rollup": "2.70.1",
     "rollup-plugin-delete": "2.0.0",
     "rollup-plugin-typescript2": "0.30.0",
     "ts-node": "10.4.0",
