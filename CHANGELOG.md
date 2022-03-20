@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.17] - 2022-03-20
+
+- Dependency updates
+
+### Fix
+
+- `externalTask.create` also populates the `triggerDetails` (same logs as in `reloadTask.create`)
+
 ## [0.2.16] - 2022-03-13
 
 - Dependency updates

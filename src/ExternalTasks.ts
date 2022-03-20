@@ -135,6 +135,11 @@ export class ExternalTasks implements IClassExternalTasks {
     return await this.#repoClient
       .Post(`externalprogramtask`, { ...externalTask })
       .then((res) => res.data as ITask)
-      .then((t) => new ExternalTask(this.#repoClient, t.id, t));
+      .then(async (t) => {
+        const et = new ExternalTask(this.#repoClient, t.id, t);
+        await et.init();
+
+        return et;
+      });
   }
 }

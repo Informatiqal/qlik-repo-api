@@ -10,6 +10,7 @@ import { QlikRepoApi } from "../src";
 export class Config {
   public repoApi: QlikRepoApi.client;
   public repoApiJWT: QlikRepoApi.client;
+  public repoApiJWTNoAgent: QlikRepoApi.client;
   constructor() {
     const cert = fs.readFileSync(`${process.env.TEST_CERT}/client.pem`);
     const key = fs.readFileSync(`${process.env.TEST_CERT}/client_key.pem`);
@@ -44,8 +45,19 @@ export class Config {
       },
     });
 
+    const repoApiJWTNoAgent = new QlikRepoApi.client({
+      host: process.env.TEST_HOST,
+      port: 443,
+      proxy: "jwt",
+      // httpsAgent: httpsAgentReject,
+      authentication: {
+        token: `${process.env.AUTH_JWT_TOKEN}`,
+      },
+    });
+
     this.repoApi = repoApi;
     this.repoApiJWT = repoApiJWT;
+    this.repoApiJWTNoAgent = repoApiJWTNoAgent;
   }
 }
 
