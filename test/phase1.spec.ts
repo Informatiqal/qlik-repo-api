@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 import fs from "fs";
 import chai from "chai";
 import { Config, Helpers } from "./Config";
