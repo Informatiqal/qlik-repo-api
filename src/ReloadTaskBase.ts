@@ -3,36 +3,26 @@ import {
   IHttpStatus,
   ISelection,
   IHttpReturn,
-  IUpdateObjectOptions,
   IEntityRemove,
 } from "./types/interfaces";
 import {
   ICompositeEvent,
+  IExternalProgramTask,
   ISchemaEvent,
   ITask,
   ITaskCreateTriggerComposite,
   ITaskCreateTriggerSchema,
   ITaskExecutionResult,
-  ITaskReloadUpdate,
 } from "./Task.interface";
-import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IClassSchemaTrigger, SchemaTrigger } from "./SchemaTrigger";
 import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
-// import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
 import { schemaRepeat } from "./util/schemaTrigger";
-import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 
 export interface IClassReloadTaskBase {
   remove(): Promise<IHttpStatus>;
   start(): Promise<IHttpStatus>;
   startSynchronous(): Promise<IHttpReturn>;
   waitExecution(arg?: { executionId: string }): Promise<ITaskExecutionResult>;
-  // scriptLogGet(arg: { fileReferenceId: string }): Promise<string>;
-  // scriptLogFileGet(arg: { executionResultId: string }): Promise<string>;
-  update(
-    arg: ITaskReloadUpdate,
-    options?: IUpdateObjectOptions
-  ): Promise<ITask>;
   addTriggerComposite(
     arg: ITaskCreateTriggerComposite
   ): Promise<IClassCompositeTrigger>;
@@ -40,27 +30,25 @@ export interface IClassReloadTaskBase {
   addTriggerMany(
     triggers: (ITaskCreateTriggerComposite | ITaskCreateTriggerSchema)[]
   ): Promise<(IClassSchemaTrigger | IClassCompositeTrigger)[]>;
-  // triggersGetAll(): Promise<IClassSchemaTrigger[]>;
-  // triggersGetSchema(id: string): Promise<IClassSchemaTrigger>;
   removeAllTriggers(arg?: {
     onlyDisabled?: boolean;
     onlyEnabled?: boolean;
   }): Promise<IEntityRemove[]>;
-  details: ITask;
+  details: ITask | IExternalProgramTask;
   triggersDetails: (IClassSchemaTrigger | IClassCompositeTrigger)[];
 }
 
 export abstract class ReloadTaskBase implements IClassReloadTaskBase {
   #id: string;
   #repoClient: QlikRepositoryClient;
-  details: ITask;
+  details: ITask | IExternalProgramTask;
   triggersDetails: (IClassSchemaTrigger | IClassCompositeTrigger)[];
   #baseUrl: string;
   constructor(
     repoClient: QlikRepositoryClient,
     id: string,
     baseUrl: string,
-    details?: ITask
+    details?: ITask | IExternalProgramTask
   ) {
     if (!id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
@@ -126,78 +114,6 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
     }
 
     return result;
-  }
-
-  // async scriptLogGet(arg: { fileReferenceId: string }) {
-  //   if (!arg.fileReferenceId)
-  //     throw new Error(
-  //       `task.scriptLogGet: "fileReferenceId" parameter is required`
-  //     );
-  //   if (this.baseUrl == "externalprogramtask")
-  //     throw new Error(
-  //       `scriptLogGet: Unfortunately only task of type Reload have this option `
-  //     );
-
-  //   return await this.#repoClient
-  //     .Get(
-  //       `${this.baseUrl}/${
-  //         this.details.id
-  //       }/scriptlog?filereferenceid=${encodeURIComponent(arg.fileReferenceId)}
-  //   `
-  //     )
-  //     .then((res) => res.data as string);
-  // }
-
-  // async scriptLogFileGet(arg: { executionResultId: string }) {
-  //   if (!arg.executionResultId)
-  //     throw new Error(
-  //       `task.scriptLogFileGet: "executionResultId" parameter is required`
-  //     );
-
-  //   if (this.baseUrl == "externalprogramtask")
-  //     throw new Error(
-  //       `scriptLogGet: Unfortunately only task of type Reload have this option `
-  //     );
-
-  //   return await this.#repoClient
-  //     .Get(
-  //       `${this.baseUrl}/${
-  //         this.details.id
-  //       }/scriptlog?executionresultid =${encodeURIComponent(
-  //         arg.executionResultId
-  //       )}
-  // `
-  //     )
-  //     .then((res) => res.data as string);
-  // }
-
-  async update(arg: ITaskReloadUpdate, options?: IUpdateObjectOptions) {
-    if (arg.name) this.details.name = arg.name;
-    if (arg.enabled) this.details.enabled = arg.enabled;
-    if (arg.taskSessionTimeout)
-      this.details.taskSessionTimeout = arg.taskSessionTimeout;
-    if (arg.maxRetries) this.details.maxRetries = arg.maxRetries;
-
-    if (arg.appId || arg.appFilter) {
-      const app = await getAppForReloadTask(
-        arg.appId,
-        arg.appFilter,
-        this.#repoClient
-      );
-      this.details.app = app.details;
-    }
-
-    let updateCommon = new UpdateCommonProperties(
-      this.#repoClient,
-      this.details,
-      arg,
-      options
-    );
-    this.details = await updateCommon.updateAll();
-
-    return await this.#repoClient
-      .Put(`${this.#baseUrl}/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as ITask);
   }
 
   /**

@@ -3,7 +3,7 @@ import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import { IEntityRemove, ISelection } from "./types/interfaces";
-import { ITask, ITaskCreate, IExternalTaskCreate } from "./Task.interface";
+import { IExternalTaskCreate, IExternalProgramTask } from "./Task.interface";
 
 import { IClassReloadTaskBase } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";
@@ -40,7 +40,7 @@ export class ExternalTasks implements IClassExternalTasks {
   public async getAll() {
     return await this.#repoClient
       .Get(`externalprogramtask/full`)
-      .then((res) => res.data as ITask[])
+      .then((res) => res.data as IExternalProgramTask[])
       .then((data) => {
         return data.map((t) => {
           return new ExternalTask(this.#repoClient, t.id, t);
@@ -56,7 +56,7 @@ export class ExternalTasks implements IClassExternalTasks {
       .Get(
         `externalprogramtask/full?filter=(${encodeURIComponent(arg.filter)})`
       )
-      .then((res) => res.data as ITask[])
+      .then((res) => res.data as IExternalProgramTask[])
       .then((data) => {
         return data.map((t) => {
           return new ExternalTask(this.#repoClient, t.id, t);
@@ -134,7 +134,7 @@ export class ExternalTasks implements IClassExternalTasks {
 
     return await this.#repoClient
       .Post(`externalprogramtask`, { ...externalTask })
-      .then((res) => res.data as ITask)
+      .then((res) => res.data as IExternalProgramTask)
       .then(async (t) => {
         const et = new ExternalTask(this.#repoClient, t.id, t);
         await et.init();

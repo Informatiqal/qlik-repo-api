@@ -38,6 +38,19 @@ export interface ITaskReloadUpdate {
   appFilter?: string;
 }
 
+export interface ITaskExternalUpdate {
+  // id: string;
+  name?: string;
+  enabled?: boolean;
+  taskSessionTimeout?: number;
+  maxRetries?: number;
+  tags?: string[];
+  customProperties?: string[];
+  owner?: string;
+  path?: string;
+  parameters?: string;
+}
+
 export type TTaskTriggerCompositeState = "success" | "fail";
 
 export interface ITaskCreateTriggerComposite {
@@ -159,6 +172,17 @@ export interface IExternalProgramTaskCondensed {
   taskSessionTimeout?: number;
   maxRetries?: number;
   operational?: IExternalProgramTaskOperationalCondensed;
+}
+
+export interface IExternalProgramTask extends IExternalProgramTaskCondensed {
+  createdDate: string;
+  modifiedDate: string;
+  privileges: string[];
+  schemaPath: string;
+  customProperties: ICustomPropertyCondensed[];
+  tags: ITagCondensed[];
+  path: string;
+  parameters: string;
 }
 
 export interface ISchemaEventCondensed {

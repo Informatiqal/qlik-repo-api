@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.18] - 2022-03-29
+
+### Fix
+
+- `externalTask.update` and `reloadTask.update` are now two different methods. Both object share a lot in common but the update methods are slightly different (in arguments). `reloadTask` **accept** `appId` and `appFilter` and `externalTask` is accepting `path` and `parameters` [#64](https://github.com/Informatiqal/qlik-repo-api/issues/64)
+
 ## [0.2.17] - 2022-03-20
 
 - Dependency updates
