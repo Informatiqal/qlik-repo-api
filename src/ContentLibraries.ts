@@ -17,6 +17,7 @@ import { IOwner } from "./Users";
 
 export interface IContentLibraryFile {
   name: string;
+  path: string;
   file: string;
 }
 

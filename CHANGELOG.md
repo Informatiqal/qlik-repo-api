@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.19] - 2022-04-21
+
+## Fix
+
+- `contentLibrary.export` and `contentLibrary.exportMany` return the full path as well [#65](https://github.com/Informatiqal/qlik-repo-api/issues/65)
+- dependency updates
+
 ## [0.2.18] - 2022-03-29
 
 ### Fix

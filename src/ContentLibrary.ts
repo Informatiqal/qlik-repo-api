@@ -94,6 +94,7 @@ export class ContentLibrary implements IClassContentLibrary {
       file[0].logicalPath[0] == "/"
         ? file[0].logicalPath.substring(1)
         : file[0].logicalPath;
+
     const fileContent = await this.#genericClient.Get(
       logicalPath,
       "",
@@ -101,6 +102,7 @@ export class ContentLibrary implements IClassContentLibrary {
     );
     return {
       name: file[0].logicalPath.replace(/^.*[\\\/]/, ""),
+      path: `/${file[0].logicalPath.split("/").slice(2).join("/")}`,
       file: fileContent.data,
     };
   }
