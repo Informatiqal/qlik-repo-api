@@ -1,10 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import {
-  IEntityRemove,
-  IHttpStatus,
-  IUpdateObjectOptions,
-} from "./types/interfaces";
-import { ISystemRule, ISystemRuleUpdate } from "./SystemRule.interface";
+import { IUpdateObjectOptions } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
+import { ISystemRule, ISystemRuleUpdate } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { calculateActions, getRuleContext } from "./util/generic";
 

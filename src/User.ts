@@ -1,10 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import {
-  IEntityRemove,
-  IHttpStatus,
-  IUpdateObjectOptions,
-} from "./types/interfaces";
-import { IUser, IUserUpdate } from "./Users";
+import { IUpdateObjectOptions, IUser, IUserUpdate } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
+
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassUser {

@@ -1,40 +1,8 @@
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { IAppCondensed } from "./Apps";
+import { IEntityRemove, ISelection, IAppObject } from "./types/interfaces";
 import { AppObject, IClassAppObject } from "./AppObject";
-import { ITagCondensed } from "./Tags";
-import { IUserCondensed } from "./Users";
 import { QlikRepositoryClient } from "qlik-rest-api";
-
-export interface IAppObjectCondensed {
-  id?: string;
-  privileges?: string[];
-  name?: string;
-  engineObjectId?: string;
-  contentHash?: string;
-  engineObjectType?: string;
-  description?: string;
-  objectType?: string;
-  publishTime?: string;
-  published?: boolean;
-}
-
-export interface IAppObject extends IAppObjectCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  owner: IUserCondensed;
-  tags: ITagCondensed[];
-  app: IAppCondensed;
-  size?: number;
-  attributes: string;
-  approved?: boolean;
-  sourceObject: string;
-  draftObject: string;
-  appObjectBlobId: string;
-}
 
 export interface IClassAppObjects {
   get(arg: { id: string }): Promise<IClassAppObject>;

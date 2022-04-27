@@ -2,42 +2,16 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { ICustomPropertyCondensed } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
-import { IOwner } from "./Users";
+import {
+  IEntityRemove,
+  ISelection,
+  IStream,
+  IStreamCreate,
+} from "./types/interfaces";
+// import { ICustomPropertyCondensed } from "./CustomProperties";
+// import { ITagCondensed } from "./Tags";
+// import { IOwner } from "./Users";
 import { IClassStream, Stream } from "./Stream";
-
-export interface IStreamCreate {
-  name: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
-
-export interface IStreamUpdate {
-  // id: string;
-  name?: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
-
-export interface IStreamCondensed {
-  id: string;
-  name: string;
-  privileges: [];
-}
-
-export interface IStream extends IStreamCondensed {
-  createdDate: string;
-  modifiedDate: string;
-  modifiedByUserName?: string;
-  schemaPath: string;
-  customProperties: ICustomPropertyCondensed[];
-  owner: IOwner;
-  tags: ITagCondensed[];
-}
 
 export interface IClassStreams {
   get(arg: { id: string }): Promise<IClassStream>;
@@ -87,7 +61,7 @@ export class Streams implements IClassStreams {
     if (!arg.name)
       throw new Error(`stream.create: "path" parameter is required`);
 
-    let getCommonProps = new GetCommonProperties(
+    const getCommonProps = new GetCommonProperties(
       this.#repoClient,
       arg.customProperties,
       arg.tags,

@@ -1,9 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
-import {
-  IServiceCluster,
-  IServiceClusterUpdate,
-} from "./ServiceCluster.interface";
+import { IHttpStatus } from "./types/ranges";
+import { IServiceCluster, IServiceClusterUpdate } from "./types/interfaces";
 
 export interface IClassServiceCluster {
   remove(): Promise<IHttpStatus>;

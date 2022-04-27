@@ -1,56 +1,12 @@
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { IProxyServiceSettingsLogVerbosity } from "./Proxy.interface";
-import { ICustomPropertyCondensed } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
-import { IServerNodeConfigurationCondensed } from "./Nodes";
+import {
+  IEntityRemove,
+  ISelection,
+  ISchedulerService,
+} from "./types/interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { IClassScheduler, Scheduler } from "./Scheduler";
-
-export type TSchedulerServiceType = "Master" | "Slave" | "MasterAndSlave";
-
-export interface ISchedulerServiceUpdate {
-  schedulerServiceType?: TSchedulerServiceType;
-  maxConcurrentEngines?: number;
-  engineTimeout?: number;
-  tags?: string[];
-  customProperties?: string[];
-}
-
-export interface ISchedulerServiceCondensed {
-  id?: string;
-  privileges?: string[];
-}
-
-export interface ISchedulerServiceSettingsLogVerbosity
-  extends IProxyServiceSettingsLogVerbosity {
-  logVerbosityApplication?: number;
-  logVerbosityTaskExecution?: number;
-}
-
-export interface ISchedulerServiceSettings {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  schedulerServiceType?: number;
-  maxConcurrentEngines?: number;
-  engineTimeout?: number;
-  logVerbosity?: ISchedulerServiceSettingsLogVerbosity;
-}
-
-export interface ISchedulerService extends ISchedulerServiceCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  customProperties?: ICustomPropertyCondensed[];
-  tags?: ITagCondensed[];
-  serverNodeConfiguration: IServerNodeConfigurationCondensed;
-  settings: ISchedulerServiceSettings;
-}
 
 export interface IClassSchedulers {
   get(arg: { id: string }): Promise<IClassScheduler>;

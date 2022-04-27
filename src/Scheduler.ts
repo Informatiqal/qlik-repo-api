@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
-import { ISchedulerService, ISchedulerServiceUpdate } from "./Schedulers";
+import { IUpdateObjectOptions } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
+import { ISchedulerService, ISchedulerServiceUpdate } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassScheduler {

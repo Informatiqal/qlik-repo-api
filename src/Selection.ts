@@ -1,5 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, ISelection } from "./types/interfaces";
+import { ISelection } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { URLBuild } from "./util/generic";
 
 export interface IClassSelection {

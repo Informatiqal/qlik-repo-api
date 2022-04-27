@@ -1,16 +1,16 @@
 // import { getMime } from "name2mime";
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import {
-  IHttpStatus,
   IStaticContentReferenceCondensed,
   IUpdateObjectOptions,
 } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import {
   IContentLibrary,
   IContentLibraryFile,
   IContentLibraryUpdate,
   IContentLibraryImport,
-} from "./ContentLibraries";
+} from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { URLBuild } from "./util/generic";
 

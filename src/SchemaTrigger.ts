@@ -1,7 +1,9 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { ISchemaEvent, ITaskUpdateTriggerSchema } from "./Task.interface";
-import { IEntityRemove } from "./types/interfaces";
-import { TDaysOfMonth, TDaysOfWeek, TRepeatOptions } from "./types/ranges";
+import {
+  IEntityRemove,
+  ISchemaEvent,
+  ITaskUpdateTriggerSchema,
+} from "./types/interfaces";
 import { schemaRepeat } from "./util/schemaTrigger";
 
 export interface IClassSchemaTrigger {

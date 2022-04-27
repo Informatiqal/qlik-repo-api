@@ -1,7 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
+import {
+  IUpdateObjectOptions,
+  IDataConnection,
+  IDataConnectionUpdate,
+} from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
-import { IDataConnection, IDataConnectionUpdate } from "./DataConnections";
 
 export interface IClassDataConnection {
   remove(): Promise<IHttpStatus>;

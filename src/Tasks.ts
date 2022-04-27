@@ -1,5 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { ITask } from "./Task.interface";
+import { ITask } from "./types/interfaces";
 import { IClassTask, Task } from "./Task";
 
 export interface IClassTasks {

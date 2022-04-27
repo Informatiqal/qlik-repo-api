@@ -1,10 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
+
 import {
+  IEntityRemove,
   ICompositeEvent,
   ITask,
   ITaskUpdateTriggerComposite,
-} from "./Task.interface";
-import { IEntityRemove } from "./types/interfaces";
+} from "./types/interfaces";
 
 export interface IClassCompositeTrigger {
   remove(): Promise<IEntityRemove>;

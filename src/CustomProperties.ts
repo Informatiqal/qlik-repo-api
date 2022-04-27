@@ -1,74 +1,13 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
+import {
+  IEntityRemove,
+  ISelection,
+  ICustomPropertyCreate,
+  ICustomProperty,
+} from "./types/interfaces";
 import { CustomProperty, IClassCustomProperty } from "./CustomProperty";
-
-export type TCustomPropObjectTypes =
-  | "App"
-  | "AnalyticConnection"
-  | "ContentLibrary"
-  | "DataConnection"
-  | "EngineService"
-  | "Extension"
-  | "ExternalProgramTask"
-  | "ServerNodeConfiguration"
-  | "PrintingService"
-  | "ProxyService"
-  | "ReloadTask"
-  | "RepositoryService"
-  | "SchedulerService"
-  | "Stream"
-  | "UserSyncTask"
-  | "User"
-  | "VirtualProxyConfig";
-
-export interface ICustomPropertyCreate {
-  name: string;
-  description?: string;
-  choiceValues?: string[];
-  objectTypes?: TCustomPropObjectTypes[];
-  valueType?: string;
-}
-
-export interface ICustomPropertyUpdate {
-  name?: string;
-  description?: string;
-  choiceValues?: string[];
-  objectTypes?: TCustomPropObjectTypes[];
-  valueType?: string;
-}
-
-export interface ICustomPropertyValue {
-  createdDate: string;
-  schemaPath: string;
-  modifiedDate: string;
-  definition: {
-    privileges: [];
-    valueType: string;
-    name: string;
-    choiceValues: string[];
-    id: string;
-  };
-  id: string;
-  value: string;
-}
-
-export interface ICustomPropertyCondensed {
-  privileges: string[];
-  valueType: string;
-  name: string;
-  choiceValues: string[];
-  id: string;
-}
-
-export interface ICustomProperty extends ICustomPropertyCondensed {
-  createdDate: string;
-  schemaPath: string;
-  modifiedDate: string;
-  description: string;
-  objectTypes: TCustomPropObjectTypes[];
-}
 
 export interface IClassCustomProperties {
   get(arg: { id: string }): Promise<IClassCustomProperty>;

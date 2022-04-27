@@ -1,7 +1,8 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
 
-import { IHttpReturn, IHttpStatus } from "./types/interfaces";
+import { IHttpReturn } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import {
   IAccessTypeInfo,
   ILicense,
@@ -11,7 +12,7 @@ import {
   IAuditParameters,
   ILicenseSetKey,
   ILicenseSetSerial,
-} from "./License.interface";
+} from "./types/interfaces";
 
 export type TAccessType = "Analyzer" | "Professional" | "Login" | "User";
 

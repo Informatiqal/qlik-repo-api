@@ -1,7 +1,10 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { IClassReloadTaskBase, ReloadTaskBase } from "./ReloadTaskBase";
-import { ITask, ITaskReloadUpdate } from "./Task.interface";
-import { IUpdateObjectOptions } from "./types/interfaces";
+import {
+  IUpdateObjectOptions,
+  ITask,
+  ITaskReloadUpdate,
+} from "./types/interfaces";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 

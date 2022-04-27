@@ -2,8 +2,12 @@ import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { ITask, ITaskCreate } from "./Task.interface";
+import {
+  IEntityRemove,
+  ISelection,
+  ITask,
+  ITaskCreate,
+} from "./types/interfaces";
 
 import { IClassReloadTask, ReloadTask } from "./ReloadTask";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";

@@ -1,68 +1,13 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
-import { ISelection, IEntityRemove } from "./types/interfaces";
-import { ITagCondensed } from "./Tags";
-import { ICustomPropertyValue } from "./CustomProperties";
+import {
+  ISelection,
+  IEntityRemove,
+  IUserCreate,
+  IUser,
+} from "./types/interfaces";
 import { IClassUser, User } from "./User";
-
-export interface IUserCondensed {
-  privileges: string[];
-  userDirectoryConnectorName: string;
-  userDirectory: string;
-  userId: string;
-  name: string;
-  id: string;
-}
-
-export interface IUserAttributes {
-  createdDate: string;
-  attributeValue: string;
-  attributeType: string;
-  schemaPath: string;
-  modifiedDate: string;
-  externalId: string;
-  id: string;
-}
-
-export interface IUser extends IUserCondensed {
-  removedExternally: boolean;
-  schemaPath: string;
-  roles: string[];
-  deleteProhibited: boolean;
-  tags: ITagCondensed[];
-  blacklisted: boolean;
-  createdDate: string;
-  customProperties: ICustomPropertyValue[];
-  inactive: boolean;
-  modifiedDate: string;
-  attributes: IUserAttributes[];
-}
-export interface IUserUpdate {
-  // id: string;
-  tags?: string[];
-  customProperties?: string[];
-  name?: string;
-  roles?: string[];
-}
-
-export interface IUserCreate {
-  userId: string;
-  userDirectory: string;
-  name?: string;
-  roles?: string[];
-  tags?: string[];
-  customProperties?: string[];
-}
-
-export interface IOwner {
-  privileges: [];
-  userDirectory: string;
-  userDirectoryConnectorName: string;
-  name: string;
-  id: string;
-  userId: string;
-}
 
 export interface IClassUsers {
   get(arg: { id: string }): Promise<IClassUser>;
@@ -115,14 +60,14 @@ export class Users implements IClassUsers {
     if (!arg.userDirectory)
       throw new Error(`user.create: "userDirectory" parameter is required`);
 
-    let getCommonProps = new GetCommonProperties(
+    const getCommonProps = new GetCommonProperties(
       this.#repoClient,
       arg.customProperties,
       arg.tags,
       ""
     );
 
-    let commonProps = await getCommonProps.getAll();
+    const commonProps = await getCommonProps.getAll();
 
     return await this.#repoClient
       .Post(`user`, {

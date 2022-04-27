@@ -1,6 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
-import { IExtension, IExtensionUpdate } from "./Extensions";
+import {
+  IUpdateObjectOptions,
+  IExtension,
+  IExtensionUpdate,
+} from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
+
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassExtension {

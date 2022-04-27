@@ -1,15 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-
-export interface IAbout {
-  buildDate: string;
-  buildVersion: string;
-  databaseProvider: string;
-  nodeType: number;
-  requiresBootstrap: boolean;
-  schemaPath: string;
-  sharedPersistence: boolean;
-  singleNodeOnly: boolean;
-}
+import { IAbout } from "./types/interfaces";
 
 export interface IClassAbout {
   get(): Promise<IAbout>;

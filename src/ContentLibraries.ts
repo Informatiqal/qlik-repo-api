@@ -4,60 +4,13 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
 import {
-  IStaticContentReferenceCondensed,
   IEntityRemove,
   ISelection,
-  IFileExtensionWhiteListCondensed,
+  IContentLibraryCreate,
+  IContentLibrary,
 } from "./types/interfaces";
 
 import { ContentLibrary, IClassContentLibrary } from "./ContentLibrary";
-import { ICustomPropertyValue } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
-import { IOwner } from "./Users";
-
-export interface IContentLibraryFile {
-  name: string;
-  path: string;
-  file: string;
-}
-
-export interface IContentLibraryUpdate {
-  name?: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
-
-export interface IContentLibraryCondensed {
-  privileges: string[];
-  name: string;
-  id: string;
-  type: string;
-}
-
-export interface IContentLibrary extends IContentLibraryCondensed {
-  createdDate: string;
-  modifiedDate: string;
-  schemaPath: string;
-  customProperties: ICustomPropertyValue[];
-  owner: IOwner;
-  tags: ITagCondensed[];
-  whiteList: IFileExtensionWhiteListCondensed;
-  references: IStaticContentReferenceCondensed[];
-}
-
-export interface IContentLibraryCreate {
-  name: string;
-  customProperties?: string[];
-  tags?: string[];
-  owner?: string;
-}
-
-export interface IContentLibraryImport {
-  file: Buffer;
-  externalPath: string;
-  overwrite?: boolean;
-}
 
 export interface IClassContentLibraries {
   get(arg: { id: string }): Promise<IClassContentLibrary>;

@@ -1,11 +1,8 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import {
-  IHttpStatus,
   ISelection,
   IHttpReturn,
   IEntityRemove,
-} from "./types/interfaces";
-import {
   ICompositeEvent,
   IExternalProgramTask,
   ISchemaEvent,
@@ -13,7 +10,8 @@ import {
   ITaskCreateTriggerComposite,
   ITaskCreateTriggerSchema,
   ITaskExecutionResult,
-} from "./Task.interface";
+} from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { IClassSchemaTrigger, SchemaTrigger } from "./SchemaTrigger";
 import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
 import { schemaRepeat } from "./util/schemaTrigger";

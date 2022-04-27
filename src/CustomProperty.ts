@@ -1,7 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
-import { IHttpStatus } from "./types/interfaces";
-import { ICustomProperty, ICustomPropertyUpdate } from "./CustomProperties";
+import { IHttpStatus } from "./types/ranges";
+import { ICustomProperty, ICustomPropertyUpdate } from "./types/interfaces";
 
 export interface IClassCustomProperty {
   remove(): Promise<IHttpStatus>;

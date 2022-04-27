@@ -1,7 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
-import { ITag } from "./Tags";
-import { IEntityRemove, IHttpStatus } from "./types/interfaces";
+import { ITag } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 
 export interface IClassTag {
   remove(): Promise<IHttpStatus>;

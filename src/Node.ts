@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
-import { INodeUpdate, IServerNodeConfiguration } from "./Nodes";
+import { IUpdateObjectOptions } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
+import { INodeUpdate, IServerNodeConfiguration } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassNode {

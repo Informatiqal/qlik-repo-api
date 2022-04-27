@@ -1,6 +1,10 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
-import { ISharedContent, ISharedContentUpdate } from "./SharedContents";
+import {
+  ISharedContent,
+  ISharedContentUpdate,
+  IUpdateObjectOptions,
+} from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { URLBuild } from "./util/generic";
 

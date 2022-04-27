@@ -1,7 +1,4 @@
-import {
-  TSystemRuleActions,
-  TSystemRuleContext,
-} from "../SystemRule.interface";
+import { TSystemRuleActions, TSystemRuleContext } from "../types/ranges";
 
 export class URLBuild {
   private url: string;

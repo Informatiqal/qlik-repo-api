@@ -1,8 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { ISelection, IEntityRemove } from "./types/interfaces";
-import { IServiceCluster } from "./ServiceCluster.interface";
+import { ISelection, IEntityRemove, IServiceCluster } from "./types/interfaces";
 import { IClassServiceCluster, ServiceCluster } from "./ServiceCluster";
 
 export interface IClassServiceClusters {

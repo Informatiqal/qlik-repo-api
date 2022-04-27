@@ -1,26 +1,21 @@
 import { modifiedDateTime } from "./generic";
-
 import { QlikRepositoryClient } from "qlik-rest-api";
-
+import { CustomProperties, IClassCustomProperties } from "../CustomProperties";
+import { IClassTags, Tags } from "../Tags";
 import {
-  CustomProperties,
-  IClassCustomProperties,
+  ITaskCreate,
+  IUserUpdate,
+  IAppUpdate,
+  ITagCondensed,
+  ICustomPropertyCondensed,
+  IStreamUpdate,
+  ISystemRuleCreate,
   ICustomPropertyValue,
-} from "../CustomProperties";
-import { ICustomPropertyCondensed } from "../CustomProperties";
-import { IClassCustomProperty, CustomProperty } from "../CustomProperty";
-import { IAppUpdate } from "../App";
-import { ITagCondensed, IClassTags, Tags } from "../Tags";
-import { ITaskCreate } from "../Task.interface";
-import { IUserUpdate, IClassUsers, Users } from "../Users";
-import { IStreamUpdate, Streams, IClassStreams } from "../Streams";
-import { ISystemRuleCreate } from "../SystemRule.interface";
+} from "../types/interfaces";
 export class UpdateCommonProperties {
   private qlikUtil: QlikRepositoryClient;
   private customPropertiesClass: IClassCustomProperties;
   private tagsClass: IClassTags;
-  private streams: IClassStreams;
-  private user: IClassUsers;
   private arg:
     | IUserUpdate
     | IAppUpdate
@@ -45,9 +40,7 @@ export class UpdateCommonProperties {
     this.obj = obj;
     this.arg = arg;
     this.customPropertiesClass = new CustomProperties(this.qlikUtil);
-    this.streams = new Streams(this.qlikUtil);
     this.tagsClass = new Tags(this.qlikUtil);
-    this.user = new Users(this.qlikUtil);
 
     if (!options) {
       this.appendCustomProps = false;
@@ -206,33 +199,33 @@ export class UpdateCommonProperties {
   }
 
   async updateOwner() {
-    if ((this.arg as IAppUpdate).owner) {
-      let [userDirectory, userId] = (this.arg as IAppUpdate).owner.split("\\");
+    let [userDirectory, userId] = (this.arg as IAppUpdate).owner.split("\\");
 
-      this.obj.owner = await this.user
-        .getFilter({
-          filter: `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`,
-        })
-        .then((u) => u[0]);
-    }
+    const filter = `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`;
+
+    this.obj.owner = this.qlikUtil
+      .Get(`user/full?filter=(${encodeURIComponent(filter)})`)
+      .then((res) => res.data[0]);
   }
 
   async updateAppStream() {
-    if ((this.arg as IAppUpdate).stream) {
-      this.obj.stream = await this.streams
-        .getFilter({ filter: `name eq '${(this.arg as IAppUpdate).stream}'` })
-        .then((streams) => streams[0].details);
-    }
+    const filter = `name eq '${(this.arg as IAppUpdate).stream}'`;
+
+    this.obj.stream = await this.qlikUtil
+      .Get(`stream/full?filter=(${encodeURIComponent(filter)})`)
+      .then((res) => res.data[0]);
   }
 
   async updateAll() {
-    await Promise.all([
-      this.updateModifiedTimeStamp(),
-      this.updateCustomProperties(),
-      this.updateTags(),
-      this.updateOwner(),
-      this.updateAppStream(),
-    ]);
+    const promises = [];
+    if ((this.arg as IAppUpdate).stream) promises.push(this.updateAppStream());
+    if ((this.arg as IAppUpdate).owner) promises.push(this.updateOwner());
+    if (this.arg.customProperties) promises.push(this.updateCustomProperties());
+    if (this.arg.tags) promises.push(this.updateTags());
+
+    promises.push(this.updateModifiedTimeStamp());
+
+    await Promise.all(promises);
 
     return this.obj;
   }
