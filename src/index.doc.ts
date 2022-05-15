@@ -44,6 +44,7 @@ export * from "./Tags";
 export * from "./Task";
 export * from "./Tasks";
 export * from "./ReloadTask";
+export * from "./Notification";
 export { IClassReloadTaskBase } from "./ReloadTaskBase";
 export * from "./ReloadTasks";
 export * from "./ExternalTask";
