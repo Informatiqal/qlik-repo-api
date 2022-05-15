@@ -1,33 +1,5 @@
-import { IApp } from "./Apps";
-import { IAppObject } from "./AppObjects";
-import { IContentLibrary } from "./ContentLibraries";
-import { ICustomProperty } from "./CustomProperties";
-import { IDataConnection } from "./DataConnections";
-import { IEngine } from "./Engines";
-import { IExtension } from "./Extensions";
-import { IStream } from "./Streams";
-import { ISystemRule } from "./SystemRule.interface";
-import { ITag } from "./Tags";
-import { ITask } from "./Task.interface";
-import { IUser } from "./Users";
-import { IUserDirectory } from "./UserDirectories";
 import { QlikRepositoryClient } from "qlik-rest-api";
-
-export type IObject =
-  | IApp
-  | IAppObject
-  | IContentLibrary
-  | ICustomProperty
-  | IDataConnection
-  | IEngine
-  | IExtension
-  | IStream
-  | ISystemRule
-  | ITag
-  | ITask
-  | IUser
-  | IUserDirectory
-  | any;
+import { IObject } from "./types/interfaces";
 
 export interface IClassPrivileges {
   get(arg: { item: IObject; filter?: string }): Promise<string[]>;

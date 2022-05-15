@@ -2,7 +2,7 @@ import {
   IVirtualProxyConfigJwtAttributeMapItem,
   IVirtualProxyConfigOidcAttributeMapItem,
   IVirtualProxyConfigSamlAttributeMapItem,
-} from "../Proxy.interface";
+} from "../types/interfaces";
 
 export function parseOidcAttributeMap(
   mappings: string[]

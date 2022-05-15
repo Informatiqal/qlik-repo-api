@@ -2,23 +2,7 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { ISelection } from "./types/interfaces";
-import { IServerNodeConfigurationCondensed } from "./Nodes";
-
-export interface IServiceStatusCondensed {
-  id?: string;
-  privileges?: string[];
-}
-
-export interface IServiceStatus extends IServiceStatusCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  serviceType: number;
-  serviceState: number;
-  timestamp?: string;
-  serverNodeConfiguration: IServerNodeConfigurationCondensed;
-}
+import { IServiceStatus, IServiceStatusCondensed } from "./types/interfaces";
 
 export interface IClassServiceStatus {
   count(arg: { id: string }): Promise<number>;
@@ -50,7 +34,7 @@ export class ServiceStatus implements IClassServiceStatus {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`ServiceStatus`)
+      .Get(`ServiceStatus/full`)
       .then((res) => res.data as IServiceStatusCondensed[]);
   }
 

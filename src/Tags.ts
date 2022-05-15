@@ -1,19 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import { IEntityRemove, ISelection } from "./types/interfaces";
+import { IEntityRemove, ISelection, ITag } from "./types/interfaces";
 import { Tag, IClassTag } from "./Tag";
-
-export interface ITagCondensed {
-  privileges: string[];
-  name: string;
-  id: string;
-}
-
-export interface ITag extends ITagCondensed {
-  createdDate: string;
-  schemaPath: string;
-  modifiedDate: string;
-}
 
 export interface IClassTags {
   get(arg: { id: string }): Promise<IClassTag>;

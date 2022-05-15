@@ -1,14 +1,6 @@
-import { IHttpStatus } from "./types/interfaces";
+import { ICertificateExportParameters } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { QlikRepositoryClient } from "qlik-rest-api";
-
-export type TCertificateExportFormat = "Windows" | "Pem";
-export interface ICertificateExportParameters {
-  machineNames: string[];
-  certificatePassword?: string;
-  includeSecretsKey?: boolean;
-  exportFormat?: TCertificateExportFormat;
-  includeCa?: boolean;
-}
 
 export interface IClassCertificate {
   distributionPathGet(): Promise<string>;

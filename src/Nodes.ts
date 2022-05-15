@@ -1,90 +1,17 @@
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, IHttpStatus, ISelection } from "./types/interfaces";
-import { ICustomPropertyCondensed } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
+import {
+  IEntityRemove,
+  ISelection,
+  INodeCreate,
+  IServerNodeConfiguration,
+  IServerNodeConfigurationCondensed,
+  IServerNodeResultContainer,
+  INodeUpdate,
+} from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { IClassNode, Node } from "./Node";
-
-export interface IServerNodeConfiguration {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  privileges?: string[];
-  customProperties?: ICustomPropertyCondensed[];
-  tags?: ITagCondensed[];
-  name: string;
-  hostName: string;
-  isCentral?: boolean;
-  nodePurpose?: number;
-  engineEnabled?: boolean;
-  proxyEnabled?: boolean;
-  printingEnabled?: boolean;
-  schedulerEnabled?: boolean;
-  temporaryfilepath: string;
-  failoverCandidate?: boolean;
-  serviceCluster: {
-    id: string;
-    name: string;
-    privileges: string[];
-  };
-  roles: {
-    id: string;
-    definition: number;
-    privileges: string[];
-  }[];
-}
-
-export interface IServerNodeConfigurationCondensed {
-  id: string;
-  name: string;
-  hostName: string;
-  temporaryfilepath: string;
-  privileges: string[];
-  serviceCluster: {
-    id: string;
-    name: string;
-    privileges: string[];
-  };
-  roles: {
-    id: string;
-    definition: number;
-    privileges: string[];
-  }[];
-}
-
-export interface INodeUpdate {
-  name?: string;
-  nodePurpose?:
-    | "Production"
-    | "Development"
-    | "Both"
-    | "ProductionAndDevelopment";
-  engineEnabled?: boolean;
-  proxyEnabled?: boolean;
-  schedulerEnabled?: boolean;
-  printingEnabled?: boolean;
-  failoverCandidate?: boolean;
-}
-
-export interface INodeCreate {
-  hostName: string;
-  name?: string;
-  nodePurpose?:
-    | "Production"
-    | "Development"
-    | "Both"
-    | "ProductionAndDevelopment";
-  engineEnabled?: boolean;
-  proxyEnabled?: boolean;
-  schedulerEnabled?: boolean;
-  printingEnabled?: boolean;
-  failoverCandidate?: boolean;
-  tags?: string[];
-  customProperties?: string[];
-}
 
 export interface IClassNodes {
   count(): Promise<number>;
@@ -145,7 +72,7 @@ export class Nodes implements IClassNodes {
 
     const container = await this.createNewNode(nodeConfig);
 
-    const node = new Node(this.#repoClient, container.id);
+    const node = new Node(this.#repoClient, container.details.id);
     await node.init();
     return node;
   }
@@ -187,7 +114,7 @@ export class Nodes implements IClassNodes {
     const node = await this.createNewNode(arg);
 
     const registration = await this.#repoClient
-      .Get(`servernoderegistration/start/${node.id}`)
+      .Get(`servernoderegistration/start/${node.details.id}`)
       .then((n) => n.data as IServerNodeConfiguration);
 
     return await this.#genericClient
@@ -216,9 +143,7 @@ export class Nodes implements IClassNodes {
       .then((res) => res.data as ISelection);
   }
 
-  private async createNewNode(
-    arg: INodeCreate
-  ): Promise<IServerNodeConfigurationCondensed> {
+  private async createNewNode(arg: INodeCreate): Promise<IClassNode> {
     let nodeConfig = {
       hostName: arg.hostName,
       name: arg.name || arg.hostName,
@@ -248,8 +173,26 @@ export class Nodes implements IClassNodes {
       if (arg.nodePurpose == "Both") nodeConfig.configuration.nodePurpose = 2;
     }
 
-    return await this.#repoClient
+    const node = await this.#repoClient
       .Post(`servernodeconfiguration/container`, nodeConfig)
-      .then((c) => c.data.configuration as IServerNodeConfigurationCondensed);
+      // .then((c) => c.data.configuration as IServerNodeConfigurationCondensed);
+      .then(
+        (res) =>
+          new Node(
+            this.#repoClient,
+            (res.data as IServerNodeResultContainer).configuration.id,
+            (res.data as IServerNodeResultContainer).configuration
+          )
+      );
+
+    if (arg.customProperties || arg.tags) {
+      const options: INodeUpdate = {};
+      if (arg.customProperties) options.customProperties = arg.customProperties;
+      if (arg.tags) options.tags = arg.tags;
+
+      await node.update({ ...options });
+    }
+
+    return node;
   }
 }

@@ -3,65 +3,13 @@ import { URLBuild } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
+  ISharedContent,
   IEntityRemove,
-  IFileExtensionWhiteListCondensed,
-  IStaticContentReferenceCondensed,
   ISelection,
+  ISharedContentCreate,
 } from "./types/interfaces";
 
-import { ICustomPropertyCondensed } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
-import { IOwner } from "./Users";
 import { IClassSharedContent, SharedContent } from "./SharedContent";
-
-export interface ISharedContentUpdate {
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-  name?: string;
-  type?: string;
-  description?: string;
-}
-
-export interface ISharedContentMetaData {
-  id?: string;
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  key?: string;
-  value?: string;
-}
-
-export interface ISharedContentCreate {
-  tags?: string[];
-  customProperties?: string[];
-  name?: string;
-  type?: string;
-  description?: string;
-}
-
-export interface ISharedContentCondensed {
-  id?: string;
-  privileges?: string[];
-  name: string;
-  type: string;
-  description?: string;
-  uri?: string;
-  metaData?: ISharedContentMetaData[];
-}
-
-export interface ISharedContent extends ISharedContentCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  customProperties?: ICustomPropertyCondensed[];
-  tags?: ITagCondensed[];
-  owner: IOwner;
-  whiteList: IFileExtensionWhiteListCondensed;
-  references?: IStaticContentReferenceCondensed[];
-}
 
 export interface IClassSharedContents {
   get(arg: { id: string }): Promise<IClassSharedContent>;

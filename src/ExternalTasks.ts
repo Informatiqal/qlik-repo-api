@@ -2,8 +2,12 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { IExternalTaskCreate, IExternalProgramTask } from "./Task.interface";
+import {
+  IEntityRemove,
+  ISelection,
+  IExternalTaskCreate,
+  IExternalProgramTask,
+} from "./types/interfaces";
 
 import { IClassReloadTaskBase } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";

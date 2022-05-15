@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
-import { IHttpStatus } from "./types/interfaces";
-import { IVirtualProxyConfig, IVirtualProxyUpdate } from "./Proxy.interface";
+import { IVirtualProxyConfig, IVirtualProxyUpdate } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import {
   IServerNodeConfiguration,
   IServerNodeConfigurationCondensed,
-} from "./Nodes";
+} from "./types/interfaces";
 import { IClassNode, Node } from "./Node";
 import {
   parseAnonymousAccessMode,
@@ -14,6 +14,7 @@ import {
   parseOidcAttributeMap,
   parseSamlAttributeMap,
 } from "./util/parseAttributeMap";
+import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassVirtualProxy {
   remove(): Promise<IHttpStatus>;
@@ -155,6 +156,14 @@ export class VirtualProxy implements IClassVirtualProxy {
       this.details.oidcAttributeMap = parseOidcAttributeMap(
         arg.oidcAttributeMap
       );
+
+    const updateCommon = new UpdateCommonProperties(
+      this.#repoClient,
+      this.details,
+      arg,
+      {}
+    );
+    this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
       .Put(`virtualproxyconfig/${this.details.id}`, this.details)

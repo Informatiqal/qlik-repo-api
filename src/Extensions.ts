@@ -1,49 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { ISelection } from "./types/interfaces";
+import { IExtension, IExtensionImport, ISelection } from "./types/interfaces";
 import { Extension, IClassExtension } from "./Extension";
-import { ICustomPropertyCondensed } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
 
-import {
-  IEntityRemove,
-  IFileExtensionWhiteListCondensed,
-  IStaticContentReferenceCondensed,
-} from "./types/interfaces";
-import { IOwner } from "./Users";
+import { IEntityRemove } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
-
-export interface IExtensionCondensed {
-  id: string;
-  privileges: string[];
-  name: string;
-}
-
-export interface IExtension extends IExtensionCondensed {
-  createdDate: string;
-  modifiedDate: string;
-  schemaPath: string;
-  customProperties: ICustomPropertyCondensed[];
-  owner: IOwner;
-  tags: ITagCondensed[];
-  whiteList: IFileExtensionWhiteListCondensed;
-  references: IStaticContentReferenceCondensed[];
-}
-
-export interface IExtensionUpdate {
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
-
-export interface IExtensionImport {
-  file: Buffer;
-  password?: string;
-  tags?: string[];
-  customProperties?: string[];
-  owner?: string;
-}
 
 export interface IClassExtensions {
   get(arg: { id: string }): Promise<IClassExtension>;

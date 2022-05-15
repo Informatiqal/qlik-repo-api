@@ -1,32 +1,9 @@
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
+import { IUpdateObjectOptions } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
-import { IApp } from "./Apps";
-
-export interface IAppUpdate {
-  /**
-   * Application name
-   */
-  name?: string;
-  /**
-   * Application description
-   */
-  description?: string;
-  tags?: string[];
-  /**
-   * In format `["cpName=value1", "cpName=value2", "otherCpName=value123", ...]`
-   */
-  customProperties?: string[];
-  /**
-   * In format `USER_DIRECTORY/USER_ID`
-   */
-  owner?: string;
-  /**
-   * Stream name
-   */
-  stream?: string;
-}
+import { IApp, IAppUpdate } from "./types/interfaces";
 
 export interface IClassApp {
   details: IApp;

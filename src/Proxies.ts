@@ -1,17 +1,15 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { IClassNodes, IServerNodeConfigurationCondensed } from "./Nodes";
-import { ISelection } from "./types/interfaces";
-
+import { IClassNodes } from "./Nodes";
 import {
+  ISelection,
+  IServerNodeConfigurationCondensed,
   IProxyCreate,
   IProxyService,
-  IVirtualProxyConfigSamlAttributeMapItem,
-  IVirtualProxyConfigJwtAttributeMapItem,
-  IVirtualProxyConfig,
-  IVirtualProxyConfigOidcAttributeMapItem,
-} from "./Proxy.interface";
+  IProxyUpdate,
+} from "./types/interfaces";
+
 import { IClassNode } from "./Node";
 import { IClassProxy, Proxy } from "./Proxy";
 import { VirtualProxies } from "./VirtualProxies";
@@ -171,9 +169,19 @@ export class Proxies implements IClassProxies {
     if (arg.oidcAttributeMap)
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
-    return await this.#repoClient
+    const proxy = await this.#repoClient
       .Post(`virtualproxyconfig`, { ...data })
       .then((res) => new Proxy(this.#repoClient, res.data.id, res.data));
+
+    if (arg.customProperties || arg.tags) {
+      const options: IProxyUpdate = {};
+      if (arg.customProperties) options.customProperties = arg.customProperties;
+      if (arg.tags) options.tags = arg.tags;
+
+      await proxy.update({ ...options });
+    }
+
+    return proxy;
   }
 
   // // TODO: this might not be needed. leaving here just in case

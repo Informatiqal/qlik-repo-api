@@ -2,60 +2,13 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
+import {
+  IEntityRemove,
+  ISelection,
+  IDataConnectionCreate,
+  IDataConnection,
+} from "./types/interfaces";
 import { IClassDataConnection, DataConnection } from "./DataConnection";
-import { ICustomPropertyValue } from "./CustomProperties";
-import { ITagCondensed } from "./Tags";
-import { IUserCondensed } from "./Users";
-
-export interface IDataConnectionCondensed {
-  id?: string;
-  privileges?: string[];
-  name: string;
-  connectionstring: string;
-  type?: string;
-  engineObjectId?: string;
-  username?: string;
-  password?: string;
-  logOn?: number;
-  architecture?: number;
-}
-
-export interface IDataConnection extends IDataConnectionCondensed {
-  createdDate?: string;
-  modifiedDate?: string;
-  modifiedByUserName?: string;
-  schemaPath?: string;
-  customProperties: ICustomPropertyValue[];
-  tags: ITagCondensed[];
-  owner: IUserCondensed;
-}
-
-export type TDataConnectionArchitecture = "x86" | "x64" | "Undefined";
-
-export type TDataConnectionLogOn = "Current user" | "Service user";
-
-export interface IDataConnectionCreate {
-  name: string;
-  connectionString: string;
-  owner?: string;
-  type?: string;
-  username?: string;
-  password?: string;
-  architecture?: TDataConnectionArchitecture;
-  logOn?: TDataConnectionLogOn;
-  tags?: string[];
-  customProperties?: string[];
-}
-
-export interface IDataConnectionUpdate {
-  connectionString?: string;
-  username?: string;
-  password?: string;
-  owner?: string;
-  tags?: string[];
-  customProperties?: string[];
-}
 
 export interface IClassDataConnections {
   get(arg: { id: string }): Promise<IClassDataConnection>;
@@ -167,15 +120,15 @@ export class DataConnections implements IClassDataConnections {
     if (arg.password) data["password"] = arg.password;
     // data["engineObjectId"] = uuid();
 
-    let getCommonProps = new GetCommonProperties(
+    const getCommonProps = new GetCommonProperties(
       this.#repoClient,
       arg.customProperties,
       arg.tags,
       arg.owner
     );
 
-    let commonProps = await getCommonProps.getAll();
-    let d = { ...data, ...commonProps };
+    const commonProps = await getCommonProps.getAll();
+    const d = { ...data, ...commonProps };
 
     return await this.#repoClient
       .Post(`dataconnection`, { ...data, ...commonProps })

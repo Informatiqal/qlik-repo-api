@@ -1,16 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import {
-  IEntityRemove,
-  IHttpStatus,
+  IAppObjectUpdate,
   IUpdateObjectOptions,
+  IAppObject,
 } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
-import { IAppObject } from "./AppObjects";
-
-export interface IAppObjectUpdate {
-  owner?: string;
-  approved?: boolean;
-}
 
 export interface IClassAppObject {
   details: IAppObject;

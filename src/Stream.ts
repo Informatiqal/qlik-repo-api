@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
-import { IStream, IStreamUpdate } from "./Streams";
+import { IUpdateObjectOptions } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
+import { IStream, IStreamUpdate } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassStream {
@@ -38,7 +39,7 @@ export class Stream implements IClassStream {
   public async update(arg: IStreamUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name = arg.name;
 
-    let updateCommon = new UpdateCommonProperties(
+    const updateCommon = new UpdateCommonProperties(
       this.#repoClient,
       this.details,
       arg,

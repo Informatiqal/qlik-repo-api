@@ -1,11 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
+import { ReloadTaskBase } from "./ReloadTaskBase";
 import {
+  IUpdateObjectOptions,
   IExternalProgramTask,
   ITask,
   ITaskExternalUpdate,
-} from "./Task.interface";
-import { ReloadTaskBase } from "./ReloadTaskBase";
-import { IUpdateObjectOptions } from "./types/interfaces";
+} from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export class ExternalTask extends ReloadTaskBase {

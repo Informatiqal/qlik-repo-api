@@ -1,42 +1,15 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { ITagCondensed } from "./Tags";
-import { ISelection, IEntityRemove, IHttpStatus } from "./types/interfaces";
-
+import {
+  ISelection,
+  IEntityRemove,
+  IApp,
+  IAppUpload,
+  IAppUpdate,
+  IAppUploadAndReplace,
+} from "./types/interfaces";
 import { App, IClassApp } from "./App";
-import { ICustomPropertyValue } from "./CustomProperties";
-import { IStream } from "./Streams";
-import { IOwner } from "./Users";
-
-export interface IAppCondensed {
-  appId: string;
-  availabilityStatus: {};
-  id?: string;
-  migrationHash: string;
-  name: string;
-  privileges?: string[];
-  published: boolean;
-  publishTime: string;
-  savedInProductVersion: string;
-  stream: IStream;
-}
-
-export interface IApp extends IAppCondensed {
-  createdDate: string;
-  customProperties: ICustomPropertyValue[];
-  description: string;
-  dynamicColor: string;
-  fileSize: number;
-  lastReloadTime: string;
-  modifiedDate: string;
-  owner: IOwner;
-  schemaPath: string;
-  sourceAppId: string;
-  tags: ITagCondensed[];
-  targetAppId: string;
-  thumbnail: string;
-}
 
 export interface IClassApps {
   get(arg: { id: string }): Promise<IClassApp>;
@@ -144,12 +117,7 @@ export class Apps implements IClassApps {
     );
   }
 
-  public async upload(arg: {
-    name: string;
-    file: Buffer;
-    keepData?: boolean;
-    excludeDataConnections?: boolean;
-  }) {
+  public async upload(arg: IAppUpload) {
     if (!arg.name) throw new Error(`app.upload: "name" parameter is required`);
     if (!arg.file) throw new Error(`app.upload: "file" parameter is required`);
 
@@ -158,7 +126,7 @@ export class Apps implements IClassApps {
     urlBuild.addParam("keepdata", arg.keepData);
     urlBuild.addParam("excludeconnections", arg.excludeDataConnections);
 
-    return await this.#repoClient
+    const app = await this.#repoClient
       .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
@@ -170,14 +138,19 @@ export class Apps implements IClassApps {
             this.#genericClientWithPort
           )
       );
+
+    if (arg.customProperties || arg.tags) {
+      const options: IAppUpdate = {};
+      if (arg.customProperties) options.customProperties = arg.customProperties;
+      if (arg.tags) options.tags = arg.tags;
+
+      await app.update({ ...options });
+    }
+
+    return app;
   }
 
-  public async uploadAndReplace(arg: {
-    name: string;
-    targetAppId: string;
-    file: Buffer;
-    keepData?: boolean;
-  }) {
+  public async uploadAndReplace(arg: IAppUploadAndReplace) {
     if (!arg.name)
       throw new Error(`app.uploadAndReplace: "name" parameter is required`);
     if (!arg.file)
@@ -192,7 +165,7 @@ export class Apps implements IClassApps {
     urlBuild.addParam("keepdata", arg.keepData);
     urlBuild.addParam("targetappid", arg.targetAppId);
 
-    return await this.#repoClient
+    const app = await this.#repoClient
       .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
@@ -204,6 +177,16 @@ export class Apps implements IClassApps {
             this.#genericClientWithPort
           )
       );
+
+    if (arg.customProperties || arg.tags) {
+      const options: IAppUpdate = {};
+      if (arg.customProperties) options.customProperties = arg.customProperties;
+      if (arg.tags) options.tags = arg.tags;
+
+      await app.update({ ...options });
+    }
+
+    return app;
   }
 
   public async removeFilter(arg: { filter: string }) {

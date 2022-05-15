@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.21] - 2022-05-15
+
+### Fix
+
+- `serviceStatus.getAll` is returning the `full` data [#101](https://github.com/Informatiqal/qlik-repo-api/issues/101)
+
+### Added
+
+- Notification endpoints added (`create`, `delete` and `changes`) [#99](https://github.com/Informatiqal/qlik-repo-api/issues/99)
+- dependency updates
+
+## [0.2.20] - 2022-04-27
+
+### Fix
+
+- (internal) no more circular dependencies [#95](https://github.com/Informatiqal/qlik-repo-api/issues/95)
+- interfaces are moved into separate file [#94](https://github.com/Informatiqal/qlik-repo-api/issues/94)
+- review of most of create/update methods and make sure that they accept custom properties and tags [#58](https://github.com/Informatiqal/qlik-repo-api/issues/58)
+
 ## [0.2.19] - 2022-04-21
 
 ## Fix

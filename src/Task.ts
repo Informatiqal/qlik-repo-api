@@ -1,6 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpReturn, IHttpStatus } from "./types/interfaces";
-import { ITask } from "./Task.interface";
+import { IHttpReturn, ITask } from "./types/interfaces";
+import { IHttpStatus } from "./types/ranges";
 
 export interface IClassTask {
   start(): Promise<IHttpStatus>;

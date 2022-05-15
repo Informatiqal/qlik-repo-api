@@ -1,7 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IHttpStatus } from "./types/interfaces";
-import { IEngine } from "./Engines";
-import { IEngineUpdate } from "./Engine.interface";
+import { IEngineUpdate, IEngine } from "./types/interfaces";
 import { modifiedDateTime } from "./util/generic";
 
 export interface IClassEngine {

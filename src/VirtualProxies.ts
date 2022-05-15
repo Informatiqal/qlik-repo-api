@@ -1,17 +1,16 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { IClassVirtualProxy, VirtualProxy } from "./VirtualProxy";
 import {
-  IVirtualProxyConfig,
-  IVirtualProxyConfigJwtAttributeMapItem,
-  IVirtualProxyConfigSamlAttributeMapItem,
-  IVirtualProxyCreate,
-} from "./Proxy.interface";
+  IEntityRemove,
+  ISelection,
+  IVirtualProxyUpdate,
+} from "./types/interfaces";
+import { IClassVirtualProxy, VirtualProxy } from "./VirtualProxy";
+import { IVirtualProxyConfig, IVirtualProxyCreate } from "./types/interfaces";
 import {
   IServerNodeConfiguration,
   IServerNodeConfigurationCondensed,
-} from "./Nodes";
+} from "./types/interfaces";
 import { IClassNode, Node } from "./Node";
 import {
   parseAnonymousAccessMode,
@@ -218,10 +217,20 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (arg.oidcAttributeMap)
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
-    return await this.#repoClient
+    const vp = await this.#repoClient
       .Post(`virtualproxyconfig`, { ...data })
       .then((res) => res.data as IVirtualProxyConfig)
       .then((d) => new VirtualProxy(this.#repoClient, d.id, d));
+
+    if (arg.customProperties || arg.tags) {
+      const options: IVirtualProxyUpdate = {};
+      if (arg.customProperties) options.customProperties = arg.customProperties;
+      if (arg.tags) options.tags = arg.tags;
+
+      await vp.update({ ...options });
+    }
+
+    return vp;
   }
 
   private async parseLoadBalancingNodes(

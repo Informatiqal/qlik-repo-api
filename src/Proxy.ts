@@ -1,10 +1,10 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import {
+  IUpdateObjectOptions,
   IProxyService,
   IProxyUpdate,
   IVirtualProxyConfigCondensed,
-} from "./Proxy.interface";
-import { IHttpStatus, IUpdateObjectOptions } from "./types/interfaces";
+} from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassProxy {

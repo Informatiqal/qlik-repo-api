@@ -1,30 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { IHttpReturn } from "./types/interfaces";
-
-export interface ITableColumnBase {
-  columnType: string;
-  definition: string;
-  name?: string;
-}
-
-export interface ITableColumn {
-  columnType: string;
-  definition: string;
-  name?: string;
-  list?: ITableColumnBase[];
-}
-
-export interface ITableCreate {
-  type: string;
-  columns: ITableColumn[];
-  filter?: string;
-  skip?: number;
-  take?: number;
-  sortColumn?: string;
-  orderAscending?: boolean;
-}
+import { IHttpReturn, ITableCreate } from "./types/interfaces";
 
 export interface IClassTable {
   create(arg: ITableCreate): Promise<IHttpReturn>;

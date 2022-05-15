@@ -3,15 +3,16 @@ import { URLBuild, calculateActions, getRuleContext } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
-import { IEntityRemove, ISelection } from "./types/interfaces";
-import { IAudit } from "./License.interface";
-
 import {
+  IEntityRemove,
+  ISelection,
+  IAudit,
   ISystemRule,
   ISystemRuleCreate,
   ISystemRuleLicenseCreate,
   ISystemRuleAuditGet,
-} from "./SystemRule.interface";
+} from "./types/interfaces";
+
 import { IClassSystemRule, SystemRule } from "./SystemRule";
 //TODO: why is no update method here?
 export interface IClassSystemRules {
