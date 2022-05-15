@@ -57,7 +57,7 @@ export class Engines implements IClassEngines {
     };
 
     return await this.#repoClient
-      .Post(`loadbalancing/validengines"`, body)
+      .Post(`loadbalancing/validengines`, body)
       .then((res) => res.data as IEngineGetValidResult[]);
   }
 

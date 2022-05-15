@@ -34,7 +34,7 @@ export class ServiceStatus implements IClassServiceStatus {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`ServiceStatus`)
+      .Get(`ServiceStatus/full`)
       .then((res) => res.data as IServiceStatusCondensed[]);
   }
 

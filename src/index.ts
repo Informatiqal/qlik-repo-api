@@ -24,8 +24,8 @@ import { Tags, IClassTags } from "./Tags";
 import { Tasks, IClassTasks } from "./Tasks";
 import { ReloadTasks, IClassReloadTasks } from "./ReloadTasks";
 import { ExternalTasks, IClassExternalTasks } from "./ExternalTasks";
-// import { TaskTriggers, IClassTaskTriggers } from "./TaskTriggers";
 import { Users, IClassUsers } from "./Users";
+import { Notification, IClassNotifications } from "./Notification";
 import { VirtualProxies, IClassVirtualProxies } from "./VirtualProxies";
 import { UserDirectories, IClassUserDirectories } from "./UserDirectories";
 
@@ -50,6 +50,7 @@ export namespace QlikRepoApi {
     public privileges: IClassPrivileges;
     public proxies: IClassProxies;
     public nodes: IClassNodes;
+    public notification: IClassNotifications;
     public schedulerServices: IClassSchedulers;
     public serviceClusters: IClassServiceClusters;
     public serviceStatus: IClassServiceStatus;
@@ -62,7 +63,6 @@ export namespace QlikRepoApi {
     public tasks: IClassTasks;
     public reloadTasks: IClassReloadTasks;
     public externalTasks: IClassExternalTasks;
-    // public taskTriggers: IClassExternalTasks;
     public users: IClassUsers;
     public userDirectories: IClassUserDirectories;
     public virtualProxies: IClassVirtualProxies;
@@ -116,6 +116,7 @@ export namespace QlikRepoApi {
       this.users = new Users(this.repoClient);
       this.userDirectories = new UserDirectories(this.repoClient);
       this.virtualProxies = new VirtualProxies(this.repoClient);
+      this.notification = new Notification(this.repoClient);
     }
   }
 }

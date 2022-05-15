@@ -1875,3 +1875,47 @@ export interface ISharedContent extends ISharedContentCondensed {
   whiteList: IFileExtensionWhiteListCondensed;
   references?: IStaticContentReferenceCondensed[];
 }
+
+export type NotificationChangeType = "Add" | "Update" | "Delete";
+export type NotificationObjectType =
+  | "App"
+  | "AnalyticConnection"
+  | "ContentLibrary"
+  | "DataConnection"
+  | "Extension"
+  | "ReloadTask"
+  | "Stream"
+  | "User"
+  | "UserSyncTask"
+  | "SystemRule"
+  | "Tag"
+  | "CustomPropertyDefinition"
+  | "EngineService"
+  | "OdagService"
+  | "PrintingService"
+  | "ProxyService"
+  | "RepositoryService"
+  | "SchedulerService"
+  | "ServerNodeConfiguration"
+  | "VirtualProxyConfig";
+// | string;
+
+export interface INotificationCreate {
+  name: NotificationObjectType;
+  uri: string;
+  id?: string;
+  filter?: string;
+  condition?: string;
+  changetype?: NotificationChangeType;
+  propretyname?: string;
+}
+
+export interface ChangesSinceOutputCondensed {
+  id?: string;
+  type?: string;
+  changeDate?: string;
+  changeType?: NotificationChangeType;
+  object?: {
+    [k: string]: any;
+  };
+}
