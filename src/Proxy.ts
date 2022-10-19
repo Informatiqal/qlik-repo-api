@@ -34,8 +34,8 @@ export class Proxy implements IClassProxy {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`proxyService/${this.#id}`)
-        .then((res) => res.data as IProxyService);
+        .Get<IProxyService>(`proxyService/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -81,8 +81,10 @@ export class Proxy implements IClassProxy {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Post(`proxyservice/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IProxyService);
+      .Post<IProxyService>(`proxyservice/${this.details.id}`, {
+        ...this.details,
+      })
+      .then((res) => res.data);
   }
 
   private validateRanges(arg: IProxyUpdate) {
@@ -126,10 +128,13 @@ export class Proxy implements IClassProxy {
       );
   }
 
+  // TODO: returning IVirtualProxyConfigCondensed[] but it should be IProxyService[]?
   private async parseVirtualProxies(
     vpArg: string[]
   ): Promise<IVirtualProxyConfigCondensed[]> {
-    let allVP = await this.#repoClient.Get(`proxyservice/full`);
+    let allVP = await this.#repoClient.Get<IVirtualProxyConfigCondensed[]>(
+      `proxyservice/full`
+    );
     let vpToAdd = allVP.data.filter((v: any) => {
       return vpArg.includes(v.prefix);
     });

@@ -13,15 +13,15 @@ import {
   ISystemRuleAuditGet,
 } from "./types/interfaces";
 
-import { IClassSystemRule, SystemRule } from "./SystemRule";
+import { SystemRule } from "./SystemRule";
 //TODO: why is no update method here?
 export interface IClassSystemRules {
-  get(arg: { id: string }): Promise<IClassSystemRule>;
-  getAll(): Promise<IClassSystemRule[]>;
+  get(arg: { id: string }): Promise<SystemRule>;
+  getAll(): Promise<SystemRule[]>;
   getAudit(arg: ISystemRuleAuditGet): Promise<IAudit>;
-  getFilter(arg: { filter: string }): Promise<IClassSystemRule[]>;
-  create(arg: ISystemRuleCreate): Promise<IClassSystemRule>;
-  licenseCreate(arg: ISystemRuleLicenseCreate): Promise<IClassSystemRule>;
+  getFilter(arg: { filter: string }): Promise<SystemRule[]>;
+  create(arg: ISystemRuleCreate): Promise<SystemRule>;
+  licenseCreate(arg: ISystemRuleLicenseCreate): Promise<SystemRule>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -42,8 +42,8 @@ export class SystemRules implements IClassSystemRules {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`systemrule/full`)
-      .then((res) => res.data as ISystemRule[])
+      .Get<ISystemRule[]>(`systemrule/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new SystemRule(this.#repoClient, t.id, t));
       });
@@ -51,8 +51,8 @@ export class SystemRules implements IClassSystemRules {
 
   public async getAudit(arg: ISystemRuleAuditGet): Promise<IAudit> {
     return await this.#repoClient
-      .Post(`systemrule/security/audit`, { ...arg })
-      .then((res) => res.data as IAudit);
+      .Post<IAudit>(`systemrule/security/audit`, { ...arg })
+      .then((res) => res.data);
   }
 
   public async getFilter(arg: { filter: string }) {
@@ -60,8 +60,10 @@ export class SystemRules implements IClassSystemRules {
       throw new Error(`systemRule.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`systemrule?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as ISystemRule[])
+      .Get<ISystemRule[]>(
+        `systemrule?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new SystemRule(this.#repoClient, t.id, t));
       });
@@ -104,8 +106,8 @@ export class SystemRules implements IClassSystemRules {
     }
 
     return await this.#repoClient
-      .Post(`systemrule`, { ...rule })
-      .then((res) => res.data as ISystemRule)
+      .Post<ISystemRule>(`systemrule`, { ...rule })
+      .then((res) => res.data)
       .then((r) => new SystemRule(this.#repoClient, r.id, r));
   }
 
@@ -136,7 +138,7 @@ export class SystemRules implements IClassSystemRules {
     rule.customProperties = props.customProperties;
     rule.tags = props.tags;
 
-    let accessGroup = await this.#repoClient.Post(
+    const accessGroup = await this.#repoClient.Post<{ id: string }>(
       `license/${arg.type}accessgroup`,
       { name: arg.name }
     );
@@ -144,7 +146,7 @@ export class SystemRules implements IClassSystemRules {
     rule.resourceFilter = `License.${arg.type}AccessGroup_${accessGroup.data.id}`;
 
     return await this.#repoClient
-      .Post(`systemrule`, rule)
+      .Post<ISystemRule>(`systemrule`, rule)
       .then((s) => new SystemRule(this.#repoClient, s.data.id, s.data));
   }
 
@@ -156,7 +158,7 @@ export class SystemRules implements IClassSystemRules {
 
     const srs = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      srs.map((sr: IClassSystemRule) =>
+      srs.map((sr) =>
         sr.remove().then((s) => ({ id: sr.details.id, status: s }))
       )
     );
@@ -167,7 +169,7 @@ export class SystemRules implements IClassSystemRules {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

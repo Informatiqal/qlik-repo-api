@@ -11,14 +11,14 @@ import {
   INodeUpdate,
 } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
-import { IClassNode, Node } from "./Node";
+import { Node } from "./Node";
 
 export interface IClassNodes {
   count(): Promise<number>;
-  get(arg: { id: string }): Promise<IClassNode>;
-  getAll(): Promise<IClassNode[]>;
-  getFilter(arg: { filter: string; full?: boolean }): Promise<IClassNode[]>;
-  create(arg: INodeCreate): Promise<IClassNode>;
+  get(arg: { id: string }): Promise<Node>;
+  getAll(): Promise<Node[]>;
+  getFilter(arg: { filter: string; full?: boolean }): Promise<Node[]>;
+  create(arg: INodeCreate): Promise<Node>;
   register(arg: INodeCreate): Promise<IHttpStatus>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
 }
@@ -36,8 +36,8 @@ export class Nodes implements IClassNodes {
 
   public async count(): Promise<number> {
     return await this.#repoClient
-      .Get(`servernodeconfiguration/count`)
-      .then((res) => res.data as number);
+      .Get<number>(`servernodeconfiguration/count`)
+      .then((res) => res.data);
   }
 
   public async create(arg: INodeCreate) {
@@ -87,8 +87,8 @@ export class Nodes implements IClassNodes {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`servernodeconfiguration/full`)
-      .then((res) => res.data as IServerNodeConfiguration[])
+      .Get<IServerNodeConfiguration[]>(`servernodeconfiguration/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Node(this.#repoClient, t.id, t));
       });
@@ -99,12 +99,12 @@ export class Nodes implements IClassNodes {
       throw new Error(`node.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(
+      .Get<IServerNodeConfiguration[]>(
         `servernodeconfiguration/full?filter=(${encodeURIComponent(
           arg.filter
         )})`
       )
-      .then((res) => res.data as IServerNodeConfiguration[])
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Node(this.#repoClient, t.id, t));
       });
@@ -114,8 +114,10 @@ export class Nodes implements IClassNodes {
     const node = await this.createNewNode(arg);
 
     const registration = await this.#repoClient
-      .Get(`servernoderegistration/start/${node.details.id}`)
-      .then((n) => n.data as IServerNodeConfiguration);
+      .Get<IServerNodeConfiguration>(
+        `servernoderegistration/start/${node.details.id}`
+      )
+      .then((n) => n.data);
 
     return await this.#genericClient
       .Post(`http://localhost:4570/certificateSetup`, registration)
@@ -128,7 +130,7 @@ export class Nodes implements IClassNodes {
 
     const nodes = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      nodes.map((node: IClassNode) =>
+      nodes.map((node) =>
         node.remove().then((s) => ({ id: node.details.id, status: s }))
       )
     );
@@ -139,11 +141,11 @@ export class Nodes implements IClassNodes {
     urlBuild.addParam("filter", filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
-  private async createNewNode(arg: INodeCreate): Promise<IClassNode> {
+  private async createNewNode(arg: INodeCreate): Promise<Node> {
     let nodeConfig = {
       hostName: arg.hostName,
       name: arg.name || arg.hostName,
@@ -174,14 +176,16 @@ export class Nodes implements IClassNodes {
     }
 
     const node = await this.#repoClient
-      .Post(`servernodeconfiguration/container`, nodeConfig)
-      // .then((c) => c.data.configuration as IServerNodeConfigurationCondensed);
+      .Post<IServerNodeResultContainer>(
+        `servernodeconfiguration/container`,
+        nodeConfig
+      )
       .then(
         (res) =>
           new Node(
             this.#repoClient,
-            (res.data as IServerNodeResultContainer).configuration.id,
-            (res.data as IServerNodeResultContainer).configuration
+            res.data.configuration.id,
+            res.data.configuration
           )
       );
 

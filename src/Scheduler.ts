@@ -33,8 +33,8 @@ export class Scheduler implements IClassScheduler {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`schedulerservice/${this.#id}`)
-        .then((res) => res.data as ISchedulerService);
+        .Get<ISchedulerService>(`schedulerservice/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -83,7 +83,10 @@ export class Scheduler implements IClassScheduler {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`schedulerservice/${this.details.id}`, this.details)
-      .then((res) => res.data as ISchedulerService);
+      .Put<ISchedulerService>(
+        `schedulerservice/${this.details.id}`,
+        this.details
+      )
+      .then((res) => res.data);
   }
 }

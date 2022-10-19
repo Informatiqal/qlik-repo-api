@@ -28,8 +28,8 @@ export class CustomProperty implements IClassCustomProperty {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`custompropertydefinition/${this.#id}`)
-        .then((res) => res.data as ICustomProperty);
+        .Get<ICustomProperty>(`custompropertydefinition/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -56,7 +56,10 @@ export class CustomProperty implements IClassCustomProperty {
     this.details.modifiedDate = modifiedDateTime();
 
     return await this.#repoClient
-      .Put(`custompropertydefinition/${this.details.id}`, this.details)
-      .then((res) => res.data as ICustomProperty);
+      .Put<ICustomProperty>(
+        `custompropertydefinition/${this.details.id}`,
+        this.details
+      )
+      .then((res) => res.data);
   }
 }

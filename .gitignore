@@ -1,6 +1,8 @@
 node_modules/
 dist/
 out/
+temp.js
+/temp.ts
 .env
 test/playground.spec.ts
 temp.md

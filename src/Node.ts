@@ -33,8 +33,8 @@ export class Node implements IClassNode {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`servernodeconfiguration/${this.#id}`)
-        .then((res) => res.data as IServerNodeConfiguration);
+        .Get<IServerNodeConfiguration>(`servernodeconfiguration/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -79,8 +79,11 @@ export class Node implements IClassNode {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`servernodeconfiguration/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IServerNodeConfiguration);
+      .Put<IServerNodeConfiguration>(
+        `servernodeconfiguration/${this.details.id}`,
+        { ...this.details }
+      )
+      .then((res) => res.data);
   }
 
   public async setCentral() {

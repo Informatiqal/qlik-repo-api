@@ -1,22 +1,19 @@
 import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
-import { IUpdateObjectOptions } from "./types/interfaces";
+import { IStream, IUpdateObjectOptions } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IApp, IAppUpdate } from "./types/interfaces";
 
 export interface IClassApp {
   details: IApp;
-  copy(arg: {
-    name?: string;
-    includeCustomProperties?: boolean;
-  }): Promise<IClassApp>;
+  copy(arg: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
   export(arg?: {
     token?: string;
     skipData?: boolean;
   }): Promise<{ file: Buffer; exportToken: string; name: string }>;
   remove(): Promise<IHttpStatus>;
-  publish(arg: { stream: string; name?: string }): Promise<IClassApp>;
+  publish(arg: { stream: string; name?: string }): Promise<IApp>;
   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
   update(arg: IAppUpdate, options?: IUpdateObjectOptions): Promise<IApp>;
 }
@@ -45,9 +42,10 @@ export class App implements IClassApp {
 
   async init() {
     if (!this.details) {
+      let a = this.#id;
       this.details = await this.#repoClient
-        .Get(`app/${this.#id}`)
-        .then((res) => res.data as IApp);
+        .Get<IApp>(`app/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -67,14 +65,14 @@ export class App implements IClassApp {
     urlBuild.addParam("skipdata", props.skipData);
 
     const downloadPath: string = await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
+      .Post<{ downloadPath: string }>(urlBuild.getUrl(), {})
       .then((response) => response.data)
       .then((data) => data.downloadPath.replace("/tempcontent", "tempcontent"));
 
     return await this.#genericClientWithPort
-      .Get(downloadPath, "", "arraybuffer")
+      .Get<Buffer>(downloadPath, "", "arraybuffer")
       .then((r) => ({
-        file: r.data as Buffer,
+        file: r.data,
         exportToken: props.token,
         name: `${this.details.id}.qvf`,
       }));
@@ -87,7 +85,7 @@ export class App implements IClassApp {
       urlBuild.addParam("includecustomproperties", arg.includeCustomProperties);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
+      .Post<IApp>(urlBuild.getUrl(), {})
       .then((res) => new App(this.#repoClient, res.data.id, res.data));
   }
 
@@ -101,7 +99,7 @@ export class App implements IClassApp {
     if (!arg.stream)
       throw new Error(`app.publish: "stream" parameter is required`);
 
-    let streamRes = await this.#repoClient.Get(
+    const streamRes = await this.#repoClient.Get<IStream[]>(
       `stream?filter=(name eq '${arg.stream}')`
     );
 
@@ -115,10 +113,12 @@ export class App implements IClassApp {
     urlBuild.addParam("stream", streamRes.data[0].id);
     urlBuild.addParam("name", arg.name);
 
-    return await this.#repoClient.Put(urlBuild.getUrl(), {}).then((res) => {
-      this.details = res.data;
-      return res.data;
-    });
+    return await this.#repoClient
+      .Put<IApp>(urlBuild.getUrl(), {})
+      .then((res) => {
+        this.details = res.data;
+        return res.data;
+      });
   }
 
   public async update(arg: IAppUpdate, options?: IUpdateObjectOptions) {
@@ -134,8 +134,8 @@ export class App implements IClassApp {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`app/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IApp);
+      .Put<IApp>(`app/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 
   public async switch(arg: { targetAppId: string }) {
@@ -143,7 +143,7 @@ export class App implements IClassApp {
       throw new Error(`app.switch: "targetAppId" parameter is required`);
 
     return await this.#repoClient
-      .Put(`app/${this.details.id}/replace?app=${arg.targetAppId}`, {})
+      .Put<IApp>(`app/${this.details.id}/replace?app=${arg.targetAppId}`, {})
       .then((res) => {
         this.details = res.data;
         return res.status;

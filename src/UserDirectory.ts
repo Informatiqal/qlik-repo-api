@@ -38,8 +38,8 @@ export class UserDirectory implements IClassUserDirectory {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`userdirectory/${this.#id}`)
-        .then((res) => res.data as IUserDirectory);
+        .Get<IUserDirectory>(`userdirectory/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -60,7 +60,7 @@ export class UserDirectory implements IClassUserDirectory {
   public async sync() {
     return await this.#repoClient
       .Post(`userdirectoryconnector/syncuserdirectories`, [this.details.id])
-      .then((res) => res.status as IHttpStatus);
+      .then((res) => res.status);
   }
 
   public async update(
@@ -85,7 +85,9 @@ export class UserDirectory implements IClassUserDirectory {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`userdirectory/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IUserDirectory);
+      .Put<IUserDirectory>(`userdirectory/${this.details.id}`, {
+        ...this.details,
+      })
+      .then((res) => res.data);
   }
 }

@@ -1,12 +1,12 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { IEntityRemove, ISelection, ITag } from "./types/interfaces";
-import { Tag, IClassTag } from "./Tag";
+import { Tag } from "./Tag";
 
 export interface IClassTags {
-  get(arg: { id: string }): Promise<IClassTag>;
-  getAll(): Promise<IClassTag[]>;
-  getFilter(arg: { filter: string; full?: boolean }): Promise<IClassTag[]>;
+  get(arg: { id: string }): Promise<Tag>;
+  getAll(): Promise<Tag[]>;
+  getFilter(arg: { filter: string; full?: boolean }): Promise<Tag[]>;
   create(arg: { name: string }): Promise<Tag>;
   createMany(arg: { names: string[] }): Promise<Tag[]>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
@@ -28,9 +28,9 @@ export class Tags implements IClassTags {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`tag/full`)
+      .Get<ITag[]>(`tag/full`)
       .then((res) => {
-        return res.data as ITag[];
+        return res.data;
       })
       .then((data) => {
         return data.map((t) => new Tag(this.#repoClient, t.id, t));
@@ -42,8 +42,8 @@ export class Tags implements IClassTags {
       throw new Error(`tag.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`tag?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as ITag[])
+      .Get<ITag[]>(`tag?filter=(${encodeURIComponent(arg.filter)})`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Tag(this.#repoClient, t.id, t));
       });
@@ -53,8 +53,8 @@ export class Tags implements IClassTags {
     if (!arg.name) throw new Error(`tag.create: "name" is required`);
 
     return await this.#repoClient
-      .Post(`tag`, { name: arg.name })
-      .then((res) => res.data as ITag)
+      .Post<ITag>(`tag`, { name: arg.name })
+      .then((res) => res.data)
       .then((t) => new Tag(this.#repoClient, t.id, t));
   }
 
@@ -67,8 +67,8 @@ export class Tags implements IClassTags {
     });
 
     return await this.#repoClient
-      .Post(`tag/many`, data)
-      .then((res) => res.data as ITag[])
+      .Post<ITag[]>(`tag/many`, data)
+      .then((res) => res.data)
       .then((tags) => tags.map((t) => new Tag(this.#repoClient, t.id, t)));
   }
 
@@ -81,7 +81,7 @@ export class Tags implements IClassTags {
       throw new Error(`tag.removeFilter: filter query return 0 items`);
 
     return await Promise.all<IEntityRemove>(
-      tags.map((tag: IClassTag) =>
+      tags.map((tag) =>
         tag.remove().then((s) => ({ id: tag.details.id, status: s }))
       )
     );
@@ -92,7 +92,7 @@ export class Tags implements IClassTags {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

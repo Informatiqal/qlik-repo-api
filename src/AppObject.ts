@@ -37,14 +37,14 @@ export class AppObject implements IClassAppObject {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`app/object/${this.#id}`)
-        .then((res) => res.data as IAppObject);
+        .Get<IAppObject>(`app/object/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
   public async publish() {
     return await this.#repoClient
-      .Put(`app/object/${this.details.id}/publish`, {})
+      .Put<IAppObject>(`app/object/${this.details.id}/publish`, {})
       .then((res) => {
         this.details = res.data;
         return res.status;
@@ -53,7 +53,7 @@ export class AppObject implements IClassAppObject {
 
   public async unPublish() {
     return await this.#repoClient
-      .Put(`app/object/${this.details.id}/unpublish`, {})
+      .Put<IAppObject>(`app/object/${this.details.id}/unpublish`, {})
       .then((res) => {
         this.details = res.data;
         return res.status;
@@ -78,7 +78,7 @@ export class AppObject implements IClassAppObject {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`app/object/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IAppObject);
+      .Put<IAppObject>(`app/object/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 }

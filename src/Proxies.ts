@@ -11,7 +11,7 @@ import {
 } from "./types/interfaces";
 
 import { IClassNode } from "./Node";
-import { IClassProxy, Proxy } from "./Proxy";
+import { Proxy } from "./Proxy";
 import { VirtualProxies } from "./VirtualProxies";
 import {
   parseAuthenticationMethod,
@@ -21,12 +21,12 @@ import {
 } from "./util/parseAttributeMap";
 
 export interface IClassProxies {
-  add(arg: { proxyId: string; virtualProxyId: string }): Promise<IClassProxy>;
+  add(arg: { proxyId: string; virtualProxyId: string }): Promise<Proxy>;
   // addVirtualProxy(virtualProxyId: string): Promise<IVirtualProxyConfig>;
-  get(arg: { id: string }): Promise<IClassProxy>;
-  getAll(): Promise<IClassProxy[]>;
-  getFilter(arg: { filter: string }): Promise<IClassProxy[]>;
-  create(arg: IProxyCreate): Promise<IClassProxy>;
+  get(arg: { id: string }): Promise<Proxy>;
+  getAll(): Promise<Proxy[]>;
+  getFilter(arg: { filter: string }): Promise<Proxy[]>;
+  create(arg: IProxyCreate): Promise<Proxy>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -52,8 +52,8 @@ export class Proxies implements IClassProxies {
     proxy.details.settings.virtualProxies.push(virtualProxy.details);
 
     return await this.#repoClient
-      .Post(`proxyservice/${arg.proxyId}`, proxy)
-      .then((res) => res.data as IProxyService)
+      .Post<IProxyService>(`proxyservice/${arg.proxyId}`, proxy)
+      .then((res) => res.data)
       .then((s) => new Proxy(this.#repoClient, s.id, s));
   }
 
@@ -67,8 +67,8 @@ export class Proxies implements IClassProxies {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`proxyservice/full`)
-      .then((res) => res.data as IProxyService[])
+      .Get<IProxyService[]>(`proxyservice/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Proxy(this.#repoClient, t.id, t));
       });
@@ -79,8 +79,10 @@ export class Proxies implements IClassProxies {
       throw new Error(`proxy.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`proxyservice/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IProxyService[])
+      .Get<IProxyService[]>(
+        `proxyservice/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Proxy(this.#repoClient, t.id, t));
       });
@@ -91,8 +93,8 @@ export class Proxies implements IClassProxies {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async create(arg: IProxyCreate) {
@@ -170,7 +172,7 @@ export class Proxies implements IClassProxies {
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
     const proxy = await this.#repoClient
-      .Post(`virtualproxyconfig`, { ...data })
+      .Post<IProxyService>(`virtualproxyconfig`, { ...data })
       .then((res) => new Proxy(this.#repoClient, res.data.id, res.data));
 
     if (arg.customProperties || arg.tags) {
@@ -205,7 +207,7 @@ export class Proxies implements IClassProxies {
     let existingNodes = await this.node.getAll();
 
     return nodes.map((n) => {
-      let nodeCondensed = (existingNodes as IClassNode[]).filter(
+      let nodeCondensed = existingNodes.filter(
         (n1) => n1.details.hostName == n
       );
 

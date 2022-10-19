@@ -94,7 +94,9 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
 
     if (arg.executionId) {
       resultId = await this.#repoClient
-        .Get(`/executionSession/${arg.executionId}`)
+        .Get<{ executionResult: { Id: string } }>(
+          `/executionSession/${arg.executionId}`
+        )
         .then((res) => {
           return res.data.executionResult.Id;
         });
@@ -103,12 +105,12 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
     let result: ITaskExecutionResult;
     while (taskStatusCode < 3) {
       result = await this.#repoClient
-        .Get(`/executionResult/${resultId}`)
+        .Get<ITaskExecutionResult>(`/executionResult/${resultId}`)
         .then((res) => {
           return res.data;
         });
 
-      taskStatusCode = (result as any).status;
+      taskStatusCode = result.status;
     }
 
     return result;
@@ -156,8 +158,8 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
 
         // if task id is not specified then find the id based on the provided name
         const task = await this.#repoClient
-          .Get(`task?filter=(name eq '${r.name}')`)
-          .then((t) => t.data as ITask[]);
+          .Get<ITask[]>(`task?filter=(name eq '${r.name}')`)
+          .then((t) => t.data);
 
         if (task.length > 1)
           throw new Error(
@@ -201,10 +203,8 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
 
     // TODO: capture error status
     const createResponse = await this.#repoClient
-      .Post(`ReloadTask/update`, updateObject)
-      .then((res) => {
-        return res.status as IHttpStatus;
-      });
+      .Post<number>(`reloadtask/update`, { ...updateObject })
+      .then((res) => res.status);
 
     const triggersDetails = [...this.triggersDetails].map((t) => t.details.id);
 
@@ -270,7 +270,7 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
 
     const createResponse = await this.#repoClient
       .Post(`schemaevent`, { ...createObj })
-      .then((res) => res.status as IHttpStatus);
+      .then((res) => res.status);
 
     const triggersDetails = [...this.triggersDetails].map((t) => t.details.id);
 

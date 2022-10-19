@@ -30,8 +30,8 @@ export class SystemRule implements IClassSystemRule {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`systemrule/${this.#id}`)
-        .then((res) => res.data as ISystemRule);
+        .Get<ISystemRule>(`systemrule/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -60,7 +60,7 @@ export class SystemRule implements IClassSystemRule {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`systemrule/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as ISystemRule);
+      .Put<ISystemRule>(`systemrule/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 }

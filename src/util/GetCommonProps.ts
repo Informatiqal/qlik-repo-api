@@ -63,7 +63,7 @@ export class GetCommonProperties {
           .then((tagsData) => {
             if (tagsData.length == 0)
               throw new Error(`Non existing tag "${tag}"`);
-            return tagsData[0].details as ITagCondensed;
+            return tagsData[0].details;
           });
       })
     );
@@ -74,11 +74,11 @@ export class GetCommonProperties {
 
     const filter = `userId eq '${userId}' and userDirectory eq '${userDirectory}'`;
     this.props.owner = await this.qlikUtil
-      .Get(`user/full?filter=(${encodeURIComponent(filter)})`)
+      .Get<IUser[]>(`user/full?filter=(${encodeURIComponent(filter)})`)
       .then((res) => {
         if (res.data.length == 0)
           throw new Error(`Non existing user "${userDirectory}\\${userId}"`);
-        return res.data[0].details as IUser;
+        return res.data[0];
       });
   }
 

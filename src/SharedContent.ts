@@ -38,8 +38,8 @@ export class SharedContent implements IClassSharedContent {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`sharedcontent/${this.#id}`)
-        .then((res) => res.data as ISharedContent);
+        .Get<ISharedContent>(`sharedcontent/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -66,8 +66,10 @@ export class SharedContent implements IClassSharedContent {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`sharedcontent/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as ISharedContent);
+      .Put<ISharedContent>(`sharedcontent/${this.details.id}`, {
+        ...this.details,
+      })
+      .then((res) => res.data);
   }
 
   public async uploadFile(arg: { file: Buffer; externalPath: string }) {

@@ -17,9 +17,7 @@ export class About implements IClassAbout {
   }
 
   public async get() {
-    return await this.#repoClient
-      .Get(`about`)
-      .then((res) => res.data as IAbout);
+    return await this.#repoClient.Get<IAbout>(`about`).then((res) => res.data);
   }
 
   public async enums() {
@@ -30,20 +28,20 @@ export class About implements IClassAbout {
 
   public async openApi() {
     return await this.#repoClient
-      .Get(`about/openapi`)
-      .then((res) => res.data as string[]);
+      .Get<string[]>(`about/openapi`)
+      .then((res) => res.data);
   }
 
   public async apiRelations() {
     return await this.#repoClient
-      .Get(`about/api/relations`)
-      .then((res) => res.data as string[]);
+      .Get<string[]>(`about/api/relations`)
+      .then((res) => res.data);
   }
 
   public async apiDescription() {
     return await this.#repoClient
-      .Get(`about/api/description`)
-      .then((res) => res.data as string[]);
+      .Get<string[]>(`about/api/description`)
+      .then((res) => res.data);
   }
 
   public async apiDefaults(arg: { path: string }) {

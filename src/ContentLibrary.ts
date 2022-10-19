@@ -62,8 +62,8 @@ export class ContentLibrary implements IClassContentLibrary {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`contentlibrary/${this.#id}`)
-        .then((res) => res.data as IContentLibrary);
+        .Get<IContentLibrary>(`contentlibrary/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -95,11 +95,12 @@ export class ContentLibrary implements IClassContentLibrary {
         ? file[0].logicalPath.substring(1)
         : file[0].logicalPath;
 
-    const fileContent = await this.#genericClient.Get(
+    const fileContent = await this.#genericClient.Get<Buffer>(
       logicalPath,
       "",
       "arraybuffer"
     );
+
     return {
       name: file[0].logicalPath.replace(/^.*[\\\/]/, ""),
       path: `/${file[0].logicalPath.split("/").slice(2).join("/")}`,
@@ -150,11 +151,14 @@ export class ContentLibrary implements IClassContentLibrary {
     // const mimeType = getMime(arg.file);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), arg.file)
+      .Post<{
+        status: IHttpStatus;
+        fileDetails: IStaticContentReferenceCondensed;
+      }>(urlBuild.getUrl(), arg.file)
       .then(async (res) => {
         this.details = await this.#repoClient
-          .Get(`contentlibrary/${this.#id}`)
-          .then((res) => res.data as IContentLibrary);
+          .Get<IContentLibrary>(`contentlibrary/${this.#id}`)
+          .then((res) => res.data);
 
         const toReplace = `/content/${this.details.name}/`;
         const fileDetails = this.details.references.filter(
@@ -222,7 +226,9 @@ export class ContentLibrary implements IClassContentLibrary {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`contentlibrary/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IContentLibrary);
+      .Put<IContentLibrary>(`contentlibrary/${this.details.id}`, {
+        ...this.details,
+      })
+      .then((res) => res.data);
   }
 }

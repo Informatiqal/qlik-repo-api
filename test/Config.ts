@@ -26,17 +26,17 @@ export class Config {
     });
 
     const repoApi = new QlikRepoApi.client({
-      host: process.env.TEST_HOST,
+      host: `${process.env.TEST_HOST}`,
       port: 4242,
       httpsAgent: httpsAgentCert,
       authentication: {
-        user_dir: process.env.TEST_USER_DIR,
-        user_name: process.env.TEST_USER_ID,
+        user_dir: `${process.env.TEST_USER_DIR}`,
+        user_name: `${process.env.TEST_USER_ID}`,
       },
     });
 
     const repoApiJWT = new QlikRepoApi.client({
-      host: process.env.TEST_HOST,
+      host: `${process.env.TEST_HOST}`,
       port: 443,
       proxy: "jwt",
       httpsAgent: httpsAgentReject,
@@ -46,7 +46,7 @@ export class Config {
     });
 
     const repoApiJWTNoAgent = new QlikRepoApi.client({
-      host: process.env.TEST_HOST,
+      host: `${process.env.TEST_HOST}`,
       port: 443,
       proxy: "jwt",
       // httpsAgent: httpsAgentReject,

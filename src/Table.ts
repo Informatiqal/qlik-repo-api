@@ -26,7 +26,7 @@ export class Table {
     urlBuild.addParam("sortColumn", arg.sortColumn);
     urlBuild.addParam("orderAscending", arg.orderAscending);
 
-    return await this.#repoClient.Post(`${urlBuild.getUrl()}`, {
+    return await this.#repoClient.Post<any>(`${urlBuild.getUrl()}`, {
       type: arg.type,
       columns: arg.columns,
     });

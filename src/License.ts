@@ -43,14 +43,16 @@ export class License implements IClassLicense {
   }
 
   public async accessTypeInfoGet() {
-    return await this.#repoClient.Get(`license/accesstypeinfo`).then((res) => {
-      return res.data as IAccessTypeInfo;
-    });
+    return await this.#repoClient
+      .Get<IAccessTypeInfo>(`license/accesstypeinfo`)
+      .then((res) => {
+        return res.data;
+      });
   }
 
   public async get() {
-    return await this.#repoClient.Get(`license`).then((res) => {
-      return res.data as ILicense;
+    return await this.#repoClient.Get<ILicense>(`license`).then((res) => {
+      return res.data;
     });
   }
 
@@ -84,8 +86,8 @@ export class License implements IClassLicense {
 
     url += `?control=${arg.control}`;
 
-    return await this.#repoClient[method](url, data).then((res) => {
-      return res.data as ILicense;
+    return await this.#repoClient[method]<ILicense>(url, data).then((res) => {
+      return res.data;
     });
   }
 
@@ -110,8 +112,8 @@ export class License implements IClassLicense {
 
     data["key"] = arg.key;
 
-    return await this.#repoClient[method](url, data).then((res) => {
-      return res.data as ILicense;
+    return await this.#repoClient[method]<ILicense>(url, data).then((res) => {
+      return res.data;
     });
   }
 
@@ -121,19 +123,21 @@ export class License implements IClassLicense {
     if (arg.resourceId) data.resourceFilter = `id eq ${arg.resourceId}`;
 
     return await this.#repoClient
-      .Post(`systemrule/license/audit`, data)
-      .then((res) => res.data as IAudit);
+      .Post<IAudit>(`systemrule/license/audit`, data)
+      .then((res) => res.data);
   }
 
   public async accessTypeGet(arg: { accessType: TAccessType; id?: string }) {
     let url = `license/${arg.accessType}AccessType`;
     if (arg.id) url += `/${arg.id}`;
 
-    return await this.#repoClient.Get(url).then((res: IHttpReturn) => {
-      if (res.data.length > 0) return res.data as ILicenseAccessTypeCondensed[];
+    return await this.#repoClient
+      .Get<ILicenseAccessTypeCondensed[]>(url)
+      .then((res: IHttpReturn) => {
+        if (res.data.length > 0) return res.data;
 
-      return [res.data];
-    });
+        return [res.data];
+      });
   }
 
   public async accessTypeRemove(arg: { accessType: TAccessType; id: string }) {
@@ -159,9 +163,11 @@ export class License implements IClassLicense {
       );
 
     return await this.#repoClient
-      .Post(`license/${arg.accessType}AccessGroup`, { name: arg.name })
+      .Post<ILicenseAccessGroup>(`license/${arg.accessType}AccessGroup`, {
+        name: arg.name,
+      })
       .then((res) => {
-        return res.data as ILicenseAccessGroup;
+        return res.data;
       });
   }
 }

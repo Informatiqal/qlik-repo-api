@@ -35,8 +35,8 @@ export class DataConnection implements IClassDataConnection {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`dataconnection/${this.#id}`)
-        .then((res) => res.data as IDataConnection);
+        .Get<IDataConnection>(`dataconnection/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -59,7 +59,9 @@ export class DataConnection implements IClassDataConnection {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`dataconnection/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IDataConnection);
+      .Put<IDataConnection>(`dataconnection/${this.details.id}`, {
+        ...this.details,
+      })
+      .then((res) => res.data);
   }
 }

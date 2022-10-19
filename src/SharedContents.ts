@@ -9,13 +9,13 @@ import {
   ISharedContentCreate,
 } from "./types/interfaces";
 
-import { IClassSharedContent, SharedContent } from "./SharedContent";
+import { SharedContent } from "./SharedContent";
 
 export interface IClassSharedContents {
-  get(arg: { id: string }): Promise<IClassSharedContent>;
-  getAll(): Promise<IClassSharedContent[]>;
-  getFilter(arg: { filter: string }): Promise<IClassSharedContent[]>;
-  create(arg: ISharedContentCreate): Promise<IClassSharedContent>;
+  get(arg: { id: string }): Promise<SharedContent>;
+  getAll(): Promise<SharedContent[]>;
+  getFilter(arg: { filter: string }): Promise<SharedContent[]>;
+  create(arg: ISharedContentCreate): Promise<SharedContent>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -37,8 +37,8 @@ export class SharedContents implements IClassSharedContents {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`sharedcontent/full`)
-      .then((res) => res.data as ISharedContent[])
+      .Get<ISharedContent[]>(`sharedcontent/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new SharedContent(this.#repoClient, t.id, t));
       });
@@ -51,8 +51,10 @@ export class SharedContents implements IClassSharedContents {
       );
 
     return await this.#repoClient
-      .Get(`sharedcontent/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as ISharedContent[])
+      .Get<ISharedContent[]>(
+        `sharedcontent/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new SharedContent(this.#repoClient, t.id, t));
       });
@@ -66,7 +68,7 @@ export class SharedContents implements IClassSharedContents {
 
     const shc = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      shc.map((sc: IClassSharedContent) =>
+      shc.map((sc) =>
         sc.remove().then((s) => ({ id: sc.details.id, status: s }))
       )
     );
@@ -77,8 +79,8 @@ export class SharedContents implements IClassSharedContents {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async create(arg: ISharedContentCreate) {
@@ -103,8 +105,11 @@ export class SharedContents implements IClassSharedContents {
     const commonProps = await getCommon.getAll();
 
     return await this.#repoClient
-      .Post(`sharedcontent`, { ...sharedContent, ...commonProps })
-      .then((res) => res.data as ISharedContent)
+      .Post<ISharedContent>(`sharedcontent`, {
+        ...sharedContent,
+        ...commonProps,
+      })
+      .then((res) => res.data)
       .then((s) => new SharedContent(this.#repoClient, s.id, s));
   }
 }

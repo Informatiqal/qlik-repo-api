@@ -23,9 +23,9 @@ export class Tasks implements IClassTasks {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`task/full`)
+      .Get<ITask[]>(`task/full`)
       .then((res) => {
-        return res.data as ITask[];
+        return res.data;
       })
       .then((data) => {
         return data.map((t) => new Task(this.#repoClient, t.id, t));
@@ -37,8 +37,8 @@ export class Tasks implements IClassTasks {
       throw new Error(`tasks.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`task?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as ITask[])
+      .Get<ITask[]>(`task?filter=(${encodeURIComponent(arg.filter)})`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Task(this.#repoClient, t.id, t));
       });

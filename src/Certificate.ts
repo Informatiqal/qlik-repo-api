@@ -15,9 +15,9 @@ export class Certificate implements IClassCertificate {
 
   public async distributionPathGet() {
     return await this.#repoClient
-      .Get(`certificatedistribution/exportcertificatespath`)
+      .Get<string>(`certificatedistribution/exportcertificatespath`)
       .then((res) => {
-        return res.data as string;
+        return res.data;
       });
   }
 

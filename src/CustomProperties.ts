@@ -7,13 +7,13 @@ import {
   ICustomPropertyCreate,
   ICustomProperty,
 } from "./types/interfaces";
-import { CustomProperty, IClassCustomProperty } from "./CustomProperty";
+import { CustomProperty } from "./CustomProperty";
 
 export interface IClassCustomProperties {
-  get(arg: { id: string }): Promise<IClassCustomProperty>;
-  getAll(): Promise<IClassCustomProperty[]>;
-  getFilter(arg: { filter: string }): Promise<IClassCustomProperty[]>;
-  create(arg: ICustomPropertyCreate): Promise<IClassCustomProperty>;
+  get(arg: { id: string }): Promise<CustomProperty>;
+  getAll(): Promise<CustomProperty[]>;
+  getFilter(arg: { filter: string }): Promise<CustomProperty[]>;
+  create(arg: ICustomPropertyCreate): Promise<CustomProperty>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -36,8 +36,8 @@ export class CustomProperties implements IClassCustomProperties {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`custompropertydefinition/full`)
-      .then((res) => res.data as ICustomProperty[])
+      .Get<ICustomProperty[]>(`custompropertydefinition/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new CustomProperty(this.#repoClient, t.id, t));
       });
@@ -50,12 +50,12 @@ export class CustomProperties implements IClassCustomProperties {
       );
 
     return await this.#repoClient
-      .Get(
+      .Get<ICustomProperty[]>(
         `custompropertydefinition/full?filter=(${encodeURIComponent(
           arg.filter
         )})`
       )
-      .then((res) => res.data as ICustomProperty[])
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new CustomProperty(this.#repoClient, t.id, t));
       });
@@ -71,7 +71,7 @@ export class CustomProperties implements IClassCustomProperties {
       );
 
     return await this.#repoClient
-      .Post(
+      .Post<ICustomProperty>(
         `custompropertydefinition`,
         {
           name: arg.name,
@@ -82,7 +82,7 @@ export class CustomProperties implements IClassCustomProperties {
         },
         "application/json"
       )
-      .then((res) => res.data as ICustomProperty)
+      .then((res) => res.data)
       .then((c) => new CustomProperty(this.#repoClient, c.id, c));
   }
 
@@ -94,7 +94,7 @@ export class CustomProperties implements IClassCustomProperties {
 
     const customProperties = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      customProperties.map((cp: IClassCustomProperty) =>
+      customProperties.map((cp) =>
         cp.remove().then((s) => ({ id: cp.details.id, status: s }))
       )
     );
@@ -105,7 +105,7 @@ export class CustomProperties implements IClassCustomProperties {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

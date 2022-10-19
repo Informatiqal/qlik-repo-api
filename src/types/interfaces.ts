@@ -95,6 +95,7 @@ export interface ISelection {
 export interface IUpdateObjectOptions {
   appendCustomProps?: boolean;
   appendTags?: boolean;
+  test?: string;
 }
 
 export interface IAppUpdate {
@@ -364,7 +365,7 @@ export interface ICertificateExportParameters {
 export interface IContentLibraryFile {
   name: string;
   path: string;
-  file: string;
+  file: Buffer;
 }
 
 export interface IContentLibraryUpdate {
@@ -779,7 +780,7 @@ export interface ISystemRuleApplicationItemCondensed {
 export interface IAudit {
   schemaPath?: string;
   users?: IAuditUserCondensed[];
-  resources?: IAuditResourceCondensed[];
+  resources: IAuditResourceCondensed[];
   rules?: IAuditRuleCondensed[];
   ruleApplication?: ISystemRuleApplicationItemCondensed[];
 }
@@ -1552,7 +1553,7 @@ export interface ITaskExecutionResult {
   id: string;
   privileges: string[];
   executingNodeName: string;
-  status: {};
+  status: number;
   startTime: string;
   stopTime: string;
   duration: number;
@@ -1571,7 +1572,7 @@ export interface ITaskOperational {
 }
 
 export interface ITaskCondensed {
-  id: string;
+  id?: string;
   name: string;
   taskType: number;
   enabled: boolean;
@@ -1589,6 +1590,18 @@ export interface ITask extends ITaskCondensed {
   createdDate: string;
   customProperties: ICustomPropertyCondensed[];
   modifiedDate: string;
+}
+
+export interface IReloadTaskBundle {
+  task: ITaskCondensed & {
+    app: {
+      id: string;
+    };
+    tags: ITagCondensed[];
+    customProperties: ICustomPropertyCondensed[];
+  };
+  compositeEvents: ICompositeEvent[];
+  schemaEvents: ISchemaEventCondensed[];
 }
 
 export interface ISelectionEvent {

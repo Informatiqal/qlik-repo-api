@@ -2,19 +2,16 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { IExtension, IExtensionImport, ISelection } from "./types/interfaces";
-import { Extension, IClassExtension } from "./Extension";
+import { Extension } from "./Extension";
 
 import { IEntityRemove } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassExtensions {
-  get(arg: { id: string }): Promise<IClassExtension>;
-  getAll(): Promise<IClassExtension[]>;
-  getFilter(arg: {
-    filter: string;
-    full?: boolean;
-  }): Promise<IClassExtension[]>;
-  import(arg: IExtensionImport): Promise<IClassExtension>;
+  get(arg: { id: string }): Promise<Extension>;
+  getAll(): Promise<Extension[]>;
+  getFilter(arg: { filter: string; full?: boolean }): Promise<Extension[]>;
+  import(arg: IExtensionImport): Promise<Extension>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -35,8 +32,8 @@ export class Extensions implements IClassExtensions {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`extension/full`)
-      .then((res) => res.data as IExtension[])
+      .Get<IExtension[]>(`extension/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Extension(this.#repoClient, t.id, t));
       });
@@ -47,8 +44,8 @@ export class Extensions implements IClassExtensions {
       throw new Error(`extension.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`extension?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IExtension[])
+      .Get<IExtension[]>(`extension?filter=(${encodeURIComponent(arg.filter)})`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Extension(this.#repoClient, t.id, t));
       });
@@ -62,7 +59,7 @@ export class Extensions implements IClassExtensions {
 
     const extensions = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      extensions.map((extension: IClassExtension) =>
+      extensions.map((extension) =>
         extension
           .remove()
           .then((s) => ({ id: extension.details.id, status: s }))
@@ -75,8 +72,8 @@ export class Extensions implements IClassExtensions {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async import(arg: IExtensionImport) {
@@ -87,13 +84,9 @@ export class Extensions implements IClassExtensions {
     if (arg.password) urlBuild.addParam("password", arg.password);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), arg.file)
+      .Post<IExtension>(urlBuild.getUrl(), arg.file)
       .then((res) => {
-        return new Extension(
-          this.#repoClient,
-          (res.data[0] as IExtension).id,
-          res.data[0]
-        );
+        return new Extension(this.#repoClient, res.data[0].id, res.data[0]);
       })
       .then(async (extension) => {
         if (arg.customProperties || arg.tags || arg.owner) {
@@ -117,8 +110,10 @@ export class Extensions implements IClassExtensions {
           extension.details = await updateCommon.updateAll();
 
           extension.details = await this.#repoClient
-            .Put(`extension/${extension.details.id}`, { ...extension.details })
-            .then((res) => res.data as IExtension);
+            .Put<IExtension>(`extension/${extension.details.id}`, {
+              ...extension.details,
+            })
+            .then((res) => res.data);
         }
         return extension;
       })

@@ -24,14 +24,14 @@ export class Task implements IClassTask {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`task/full?filter=(id eq ${this.#id})`)
+        .Get<ITask[]>(`task/full?filter=(id eq ${this.#id})`)
         .then((res) => {
           if (res.data.length == 0)
             throw new Error(
               `tasks.get: task with id "${this.#id}" was not found`
             );
 
-          return res.data[0] as ITask;
+          return res.data[0];
         });
     }
   }
