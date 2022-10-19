@@ -5,7 +5,7 @@ import {
   ISelection,
   IVirtualProxyUpdate,
 } from "./types/interfaces";
-import { IClassVirtualProxy, VirtualProxy } from "./VirtualProxy";
+import { VirtualProxy } from "./VirtualProxy";
 import { IVirtualProxyConfig, IVirtualProxyCreate } from "./types/interfaces";
 import {
   IServerNodeConfiguration,
@@ -22,12 +22,12 @@ import {
 } from "./util/parseAttributeMap";
 
 export interface IClassVirtualProxies {
-  get(arg: { id: string }): Promise<IClassVirtualProxy>;
-  getAll(): Promise<IClassVirtualProxy[]>;
-  getFilter(arg: { filter: string }): Promise<IClassVirtualProxy[]>;
+  get(arg: { id: string }): Promise<VirtualProxy>;
+  getAll(): Promise<VirtualProxy[]>;
+  getFilter(arg: { filter: string }): Promise<VirtualProxy[]>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  create(arg: IVirtualProxyCreate): Promise<IClassVirtualProxy>;
+  create(arg: IVirtualProxyCreate): Promise<VirtualProxy>;
 }
 
 export class VirtualProxies implements IClassVirtualProxies {
@@ -45,9 +45,9 @@ export class VirtualProxies implements IClassVirtualProxies {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`virtualproxyconfig/full`)
+      .Get<IVirtualProxyConfig[]>(`virtualproxyconfig/full`)
       .then((res) => {
-        return res.data as IVirtualProxyConfig[];
+        return res.data;
       })
       .then((data) => {
         return data.map((t) => new VirtualProxy(this.#repoClient, t.id, t));
@@ -61,8 +61,10 @@ export class VirtualProxies implements IClassVirtualProxies {
       );
 
     return await this.#repoClient
-      .Get(`virtualproxyconfig?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IVirtualProxyConfig[])
+      .Get<IVirtualProxyConfig[]>(
+        `virtualproxyconfig?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new VirtualProxy(this.#repoClient, t.id, t));
       });
@@ -81,7 +83,7 @@ export class VirtualProxies implements IClassVirtualProxies {
       );
 
     return await Promise.all<IEntityRemove>(
-      vps.map((vp: IClassVirtualProxy) =>
+      vps.map((vp) =>
         vp.remove().then((s) => ({ id: vp.details.id, status: s }))
       )
     );
@@ -92,8 +94,8 @@ export class VirtualProxies implements IClassVirtualProxies {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async create(arg: IVirtualProxyCreate) {
@@ -218,8 +220,8 @@ export class VirtualProxies implements IClassVirtualProxies {
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
 
     const vp = await this.#repoClient
-      .Post(`virtualproxyconfig`, { ...data })
-      .then((res) => res.data as IVirtualProxyConfig)
+      .Post<IVirtualProxyConfig>(`virtualproxyconfig`, { ...data })
+      .then((res) => res.data)
       .then((d) => new VirtualProxy(this.#repoClient, d.id, d));
 
     if (arg.customProperties || arg.tags) {
@@ -237,8 +239,8 @@ export class VirtualProxies implements IClassVirtualProxies {
     nodes: string[]
   ): Promise<IServerNodeConfigurationCondensed[]> {
     let existingNodes = await this.#repoClient
-      .Get(`servernodeconfiguration/full`)
-      .then((res) => res.data as IServerNodeConfiguration[])
+      .Get<IServerNodeConfiguration[]>(`servernodeconfiguration/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new Node(this.#repoClient, t.id, t);
@@ -246,7 +248,7 @@ export class VirtualProxies implements IClassVirtualProxies {
       });
 
     return nodes.map((n) => {
-      let nodeCondensed = (existingNodes as IClassNode[]).filter(
+      const nodeCondensed = existingNodes.filter(
         (n1) => n1.details.hostName == n
       );
 

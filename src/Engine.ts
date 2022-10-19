@@ -22,8 +22,8 @@ export class Engine implements IClassEngine {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`engineservice/${this.#id}`)
-        .then((res) => res.data as IEngine);
+        .Get<IEngine>(`engineservice/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -272,7 +272,7 @@ export class Engine implements IClassEngine {
     this.details.modifiedDate = modifiedDateTime();
 
     return await this.#repoClient
-      .Put(`engineservice/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IEngine);
+      .Put<IEngine>(`engineservice/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 }

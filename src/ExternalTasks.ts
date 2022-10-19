@@ -9,10 +9,10 @@ import {
   IExternalProgramTask,
 } from "./types/interfaces";
 
-import { IClassReloadTaskBase } from "./ReloadTaskBase";
+import { ReloadTaskBase } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";
 
-export interface IClassExternalTask extends IClassReloadTaskBase {}
+export interface IClassExternalTask extends ReloadTaskBase {}
 
 //TODO: why is no update method here?
 export interface IClassExternalTasks {
@@ -43,8 +43,8 @@ export class ExternalTasks implements IClassExternalTasks {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`externalprogramtask/full`)
-      .then((res) => res.data as IExternalProgramTask[])
+      .Get<IExternalProgramTask[]>(`externalprogramtask/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new ExternalTask(this.#repoClient, t.id, t);
@@ -57,10 +57,10 @@ export class ExternalTasks implements IClassExternalTasks {
       throw new Error(`externalTasks.getFilter: "path" parameter is required`);
 
     return await this.#repoClient
-      .Get(
+      .Get<IExternalProgramTask[]>(
         `externalprogramtask/full?filter=(${encodeURIComponent(arg.filter)})`
       )
-      .then((res) => res.data as IExternalProgramTask[])
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new ExternalTask(this.#repoClient, t.id, t);
@@ -73,8 +73,8 @@ export class ExternalTasks implements IClassExternalTasks {
     if (arg.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
 
     return await this.#repoClient
-      .Get(`${url}`)
-      .then((res) => res.data.value as number);
+      .Get<{ value: number }>(`${url}`)
+      .then((res) => res.data.value);
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -96,8 +96,8 @@ export class ExternalTasks implements IClassExternalTasks {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async create(arg: IExternalTaskCreate) {

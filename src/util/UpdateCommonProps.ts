@@ -25,6 +25,13 @@ export class UpdateCommonProperties {
   public obj: any;
   private appendCustomProps: boolean;
   private appendTags: boolean;
+  private options: {
+    appendCustomProps?: boolean;
+    appendTags?: boolean;
+    test?: string;
+  };
+  private tagsPath = "tags";
+  private customPropertiesPath = "customProperties";
   constructor(
     qlikUtil: QlikRepositoryClient,
     obj: any,
@@ -34,11 +41,16 @@ export class UpdateCommonProperties {
       | IStreamUpdate
       | ISystemRuleCreate
       | ITaskCreate,
-    options?: { appendCustomProps?: boolean; appendTags?: boolean }
+    options?: {
+      appendCustomProps?: boolean;
+      appendTags?: boolean;
+      test?: string;
+    }
   ) {
     this.qlikUtil = qlikUtil;
     this.obj = obj;
     this.arg = arg;
+    this.options = options;
     this.customPropertiesClass = new CustomProperties(this.qlikUtil);
     this.tagsClass = new Tags(this.qlikUtil);
 
@@ -48,29 +60,31 @@ export class UpdateCommonProperties {
     }
 
     if (options) {
-      if (options.hasOwnProperty("appendCustomProps")) {
-        this.appendCustomProps = options.appendCustomProps;
-      } else {
-        this.appendCustomProps = options.appendCustomProps;
-      }
+      this.appendTags = options.hasOwnProperty("appendCustomProps")
+        ? options.appendCustomProps
+        : false;
 
-      if (options.hasOwnProperty("appendTags")) {
-        this.appendTags = options.appendTags;
-      } else {
-        this.appendTags = options.appendTags;
+      this.appendTags = options.hasOwnProperty("appendTags")
+        ? options.appendTags
+        : false;
+
+      if (options.test) {
+        this.tagsPath = `${options.test}}.${this.tagsPath}`;
+        this.customPropertiesPath = `${options.test}}.${this.customPropertiesPath}`;
       }
     }
   }
 
   async updateCustomProperties() {
     if (this.arg.customProperties && this.arg.customProperties.length == 0)
-      this.obj.customProperties = [];
+      this.obj = this.setProperty(this.obj, "customProperties", []);
+    // this.obj.customProperties = [];
     if (this.arg.customProperties && this.arg.customProperties.length > 0) {
       // overwriting the existing (if any) custom properties
       if (this.appendCustomProps == false) {
         // get the custom properties values
         // if the custom property do not exists - throw an error
-        this.obj.customProperties = await Promise.all<ICustomPropertyValue>(
+        const c = await Promise.all<ICustomPropertyValue>(
           this.arg.customProperties.map(async (customProperty) => {
             let [cpName, cpValue] = customProperty.split("=");
             return await this.customPropertiesClass
@@ -93,12 +107,19 @@ export class UpdateCommonProperties {
               });
           })
         );
+
+        this.obj = this.setProperty(this.obj, this.customPropertiesPath, c);
       }
 
       // append the values to the existing (if any) custom properties (no duplications)
       if (this.appendCustomProps == true) {
         //get the values for the existing custom properties in the object
-        const existingValues: string[] = this.obj.customProperties.map(
+        const existingCustomPropsData = this.getProperty(
+          this.customPropertiesPath,
+          this.obj
+        );
+
+        const existingValues: string[] = existingCustomPropsData.map(
           (cp) => `${cp.definition.name}=${cp.value}`
         );
 
@@ -142,13 +163,17 @@ export class UpdateCommonProperties {
   }
 
   async updateTags() {
-    if (this.arg.tags && this.arg.tags.length == 0) this.obj.tags = [];
+    if (this.arg.tags && this.arg.tags.length == 0) {
+      this.obj = this.setProperty(this.obj, "tags", []);
+    }
+
     if (this.arg.tags && this.arg.tags.length > 0) {
       // overwriting the existing (if any) tags
       if (this.appendTags == false) {
         // get the tags objects for the tags that to be added
         // if the tag do not exists - throw an error
-        this.obj.tags = await Promise.all<ITagCondensed>(
+        // this.obj.tags =
+        const t = await Promise.all<ITagCondensed>(
           this.arg.tags.map(async (tag) => {
             return await this.tagsClass
               .getFilter({ filter: `name eq '${tag}'` })
@@ -161,12 +186,19 @@ export class UpdateCommonProperties {
               });
           })
         );
+
+        this.obj = this.setProperty(this.obj, this.tagsPath, t);
       }
 
       // append the values to the existing (if any) tags (no duplications)
       if (this.appendTags == true) {
         //get the values for the existing tags in the object
-        const existingValues: string[] = this.obj.tags.map((tag) => tag.name);
+        // this.obj = this.setProperty(this.obj, this.tagsPath, t);
+        const existingTagsData = this.getProperty(this.tagsPath, this.obj);
+
+        const existingValues: string[] = existingTagsData.map(
+          (tag) => tag.name
+        );
         // filter out the existing values from the requested values
         const tagsValuesToAppend = this.arg.tags.filter((argTag) => {
           return existingValues.includes(argTag) == false;
@@ -216,7 +248,7 @@ export class UpdateCommonProperties {
       .then((res) => res.data[0]);
   }
 
-  async updateAll() {
+  async updateAll<T>(): Promise<T> {
     const promises = [];
     if ((this.arg as IAppUpdate).stream) promises.push(this.updateAppStream());
     if ((this.arg as IAppUpdate).owner) promises.push(this.updateOwner());
@@ -228,5 +260,21 @@ export class UpdateCommonProperties {
     await Promise.all(promises);
 
     return this.obj;
+  }
+
+  private setProperty(obj, path, value) {
+    const [head, ...rest] = path.split(".");
+
+    return {
+      ...obj,
+      [head]: rest.length
+        ? this.setProperty(obj[head], rest.join("."), value)
+        : value,
+    };
+  }
+
+  private getProperty(path, obj = self, separator = ".") {
+    var properties = Array.isArray(path) ? path : path.split(separator);
+    return properties.reduce((prev, curr) => prev?.[curr], obj);
   }
 }

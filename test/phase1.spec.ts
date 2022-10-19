@@ -36,7 +36,7 @@ describe("Phase1", function () {
    */
   it("List apps", async function () {
     let allApps = await repoApi.apps.getAll();
-    let singleApp = await repoApi.apps.get({ id: allApps[0].details.id });
+    let singleApp = await repoApi.apps.get({ id: `${allApps[0].details.id}` });
     let filterApp = await repoApi.apps.getFilter({
       filter: `id eq ${singleApp.details.id}`,
     });
@@ -47,7 +47,7 @@ describe("Phase1", function () {
     expect(allApps.length).to.be.greaterThan(0) &&
       expect(singleApp.details.id).to.be.equal(allApps[0].details.id) &&
       expect(filterApp[0].details.id).to.be.equal(singleApp.details.id) &&
-      expect(selectApp.items.length).to.be.equal(1);
+      expect(selectApp.items?.length).to.be.equal(1);
   });
 
   /**
@@ -69,7 +69,7 @@ describe("Phase1", function () {
     let cpValues = [helpers.uuid(), helpers.uuid()];
     let tagNames = [helpers.uuid(), helpers.uuid()];
     let streamName = helpers.uuid();
-    let qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
+    let qvf = fs.readFileSync(`${process.env.IMPORT_APP_FILE}`);
 
     let uploadedApp = await repoApi.apps.upload({ name: appName, file: qvf });
 
@@ -166,7 +166,7 @@ describe("Phase1", function () {
    *               extension.getAll, customProperty.create, customProperty.remove
    */
   it("Extensions", async function () {
-    const extFile = fs.readFileSync(process.env.IMPORT_EXTENSION_FILE);
+    const extFile = fs.readFileSync(`${process.env.IMPORT_EXTENSION_FILE}`);
     const importExtension = await repoApi.extensions.import({
       file: extFile,
     });
@@ -273,7 +273,7 @@ describe("Phase1", function () {
    */
   it("Reload task", async function () {
     const appName = helpers.uuid();
-    const qvf = fs.readFileSync(process.env.IMPORT_APP_FILE);
+    const qvf = fs.readFileSync(`${process.env.IMPORT_APP_FILE}`);
     const uploadedApp = await repoApi.apps.upload({ name: appName, file: qvf });
 
     const newReloadTask1 = await repoApi.reloadTasks.create({
@@ -366,7 +366,7 @@ describe("Phase1", function () {
     const removeResponse = await importTempApp.remove();
     fs.unlinkSync(".\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf");
 
-    expect(Buffer.isBuffer(downloadApp.file)).to.be.true &&
+    expect(Buffer.isBuffer(downloadApp.file)).to.be.equal(true) &&
       expect(removeResponse).to.be.equal(204);
   });
 
@@ -402,7 +402,7 @@ describe("Phase1", function () {
 
     expect(clAll.length).to.be.greaterThan(0) &&
       expect(cl[0].details.references.length).to.be.equal(7) &&
-      expect(Buffer.isBuffer(singleFile.file)).to.be.true &&
+      expect(Buffer.isBuffer(singleFile.file)).to.be.equal(true) &&
       expect(allFiles.length).to.be.equal(7) &&
       expect(fewFiles.length).to.be.equal(4) &&
       expect(fewFilesWithMissing.length).to.be.equal(3);

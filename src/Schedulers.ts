@@ -6,12 +6,12 @@ import {
   ISchedulerService,
 } from "./types/interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { IClassScheduler, Scheduler } from "./Scheduler";
+import { Scheduler } from "./Scheduler";
 
 export interface IClassSchedulers {
-  get(arg: { id: string }): Promise<IClassScheduler>;
-  getAll(): Promise<IClassScheduler[]>;
-  getFilter(arg: { filter: string }): Promise<IClassScheduler[]>;
+  get(arg: { id: string }): Promise<Scheduler>;
+  getAll(): Promise<Scheduler[]>;
+  getFilter(arg: { filter: string }): Promise<Scheduler[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   // update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
@@ -33,8 +33,8 @@ export class Schedulers implements IClassSchedulers {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`schedulerservice/full`)
-      .then((res) => res.data as ISchedulerService[])
+      .Get<ISchedulerService[]>(`schedulerservice/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Scheduler(this.#repoClient, t.id, t));
       });
@@ -45,8 +45,10 @@ export class Schedulers implements IClassSchedulers {
       throw new Error(`scheduler.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`schedulerservice/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as ISchedulerService[])
+      .Get<ISchedulerService[]>(
+        `schedulerservice/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Scheduler(this.#repoClient, t.id, t));
       });
@@ -58,7 +60,7 @@ export class Schedulers implements IClassSchedulers {
 
     const schedulers = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      schedulers.map((scheduler: IClassScheduler) =>
+      schedulers.map((scheduler) =>
         scheduler
           .remove()
           .then((s) => ({ id: scheduler.details.id, status: s }))
@@ -71,7 +73,7 @@ export class Schedulers implements IClassSchedulers {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

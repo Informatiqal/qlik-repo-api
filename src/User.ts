@@ -25,8 +25,8 @@ export class User implements IClassUser {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`user/${this.#id}`)
-        .then((res) => res.data as IUser);
+        .Get<IUser>(`user/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -49,7 +49,7 @@ export class User implements IClassUser {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`user/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IUser);
+      .Put<IUser>(`user/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 }

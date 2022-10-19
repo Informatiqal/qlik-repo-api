@@ -20,22 +20,22 @@ export class ServiceStatus implements IClassServiceStatus {
 
   public async count(): Promise<number> {
     return await this.#repoClient
-      .Get(`ServiceStatus/count`)
-      .then((res) => res.data as number);
+      .Get<number>(`ServiceStatus/count`)
+      .then((res) => res.data);
   }
 
   public async get(arg: { id: string }) {
     if (!arg.id)
       throw new Error(`serviceStatus.get: "id" parameter is required`);
     return await this.#repoClient
-      .Get(`ServiceStatus/${arg.id}`)
-      .then((res) => res.data as IServiceStatus);
+      .Get<IServiceStatus>(`ServiceStatus/${arg.id}`)
+      .then((res) => res.data);
   }
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`ServiceStatus/full`)
-      .then((res) => res.data as IServiceStatusCondensed[]);
+      .Get<IServiceStatusCondensed[]>(`ServiceStatus/full`)
+      .then((res) => res.data);
   }
 
   public async getFilter(arg: { filter: string }) {
@@ -45,8 +45,10 @@ export class ServiceStatus implements IClassServiceStatus {
       );
 
     return await this.#repoClient
-      .Get(`ServiceStatus/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IServiceStatus[]);
+      .Get<IServiceStatus[]>(
+        `ServiceStatus/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data);
   }
 
   public async select(arg?: { filter: string }) {
@@ -54,7 +56,7 @@ export class ServiceStatus implements IClassServiceStatus {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

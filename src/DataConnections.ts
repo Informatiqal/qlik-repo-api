@@ -8,16 +8,16 @@ import {
   IDataConnectionCreate,
   IDataConnection,
 } from "./types/interfaces";
-import { IClassDataConnection, DataConnection } from "./DataConnection";
+import { DataConnection } from "./DataConnection";
 
 export interface IClassDataConnections {
-  get(arg: { id: string }): Promise<IClassDataConnection>;
-  getAll(): Promise<IClassDataConnection[]>;
+  get(arg: { id: string }): Promise<DataConnection>;
+  getAll(): Promise<DataConnection[]>;
   getFilter(arg: {
     filter: string;
     orderBy?: string;
-  }): Promise<IClassDataConnection[]>;
-  create(arg: IDataConnectionCreate): Promise<IClassDataConnection>;
+  }): Promise<DataConnection[]>;
+  create(arg: IDataConnectionCreate): Promise<DataConnection>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -44,8 +44,8 @@ export class DataConnections implements IClassDataConnections {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`dataconnection/full`)
-      .then((res) => res.data as IDataConnection[])
+      .Get<IDataConnection[]>(`dataconnection/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new DataConnection(this.#repoClient, t.id, t));
       });
@@ -62,8 +62,8 @@ export class DataConnections implements IClassDataConnections {
     urlBuild.addParam("orderby", arg.orderBy);
 
     return await this.#repoClient
-      .Get(urlBuild.getUrl())
-      .then((res) => res.data as IDataConnection[])
+      .Get<IDataConnection[]>(urlBuild.getUrl())
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new DataConnection(this.#repoClient, t.id, t));
       });
@@ -77,7 +77,7 @@ export class DataConnections implements IClassDataConnections {
 
     const dcs = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      dcs.map((dc: IClassDataConnection) =>
+      dcs.map((dc) =>
         dc.remove().then((s) => ({ id: dc.details.id, status: s }))
       )
     );
@@ -88,8 +88,8 @@ export class DataConnections implements IClassDataConnections {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async create(arg: IDataConnectionCreate) {
@@ -131,8 +131,8 @@ export class DataConnections implements IClassDataConnections {
     const d = { ...data, ...commonProps };
 
     return await this.#repoClient
-      .Post(`dataconnection`, { ...data, ...commonProps })
-      .then((res) => res.data as IDataConnection)
+      .Post<IDataConnection>(`dataconnection`, { ...data, ...commonProps })
+      .then((res) => res.data)
       .then((d) => new DataConnection(this.#repoClient, d.id, d));
   }
 }

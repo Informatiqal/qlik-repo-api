@@ -24,8 +24,8 @@ export class Tag implements IClassTag {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`tag/${this.#id}`)
-        .then((res) => res.data as ITag);
+        .Get<ITag>(`tag/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -42,9 +42,9 @@ export class Tag implements IClassTag {
     this.details.modifiedDate = modifiedDateTime();
 
     return await this.#repoClient
-      .Put(`tag/${this.#id}`, {
+      .Put<ITag>(`tag/${this.#id}`, {
         ...this.details,
       })
-      .then((res) => res.data as ITag);
+      .then((res) => res.data);
   }
 }

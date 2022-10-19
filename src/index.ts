@@ -1,72 +1,176 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
-import { About, IClassAbout } from "./About";
-import { Apps, IClassApps } from "./Apps";
-import { AppObjects, IClassAppObjects } from "./AppObjects";
-import { Certificate, IClassCertificate } from "./Certificate";
-import { ContentLibraries, IClassContentLibraries } from "./ContentLibraries";
-import { CustomProperties, IClassCustomProperties } from "./CustomProperties";
-import { DataConnections, IClassDataConnections } from "./DataConnections";
-import { Engines, IClassEngines } from "./Engines";
-import { Extensions, IClassExtensions } from "./Extensions";
-import { License, IClassLicense } from "./License";
-import { Nodes, IClassNodes } from "./Nodes";
-import { Privileges, IClassPrivileges } from "./Privileges";
-import { Proxies, IClassProxies } from "./Proxies";
-import { Schedulers, IClassSchedulers } from "./Schedulers";
-import { ServiceClusters, IClassServiceClusters } from "./ServiceClusters";
-import { ServiceStatus, IClassServiceStatus } from "./ServiceStatus";
-import { Selections, IClassSelections } from "./Selections";
-import { SharedContents, IClassSharedContents } from "./SharedContents";
-import { Streams, IClassStreams } from "./Streams";
-import { SystemRules, IClassSystemRules } from "./SystemRules";
-import { Table, IClassTable } from "./Table";
-import { Tags, IClassTags } from "./Tags";
-import { Tasks, IClassTasks } from "./Tasks";
-import { ReloadTasks, IClassReloadTasks } from "./ReloadTasks";
-import { ExternalTasks, IClassExternalTasks } from "./ExternalTasks";
-import { Users, IClassUsers } from "./Users";
-import { Notification, IClassNotifications } from "./Notification";
-import { VirtualProxies, IClassVirtualProxies } from "./VirtualProxies";
-import { UserDirectories, IClassUserDirectories } from "./UserDirectories";
+import { IConfig } from "qlik-rest-api/dist/interfaces/interfaces";
+import { About } from "./About";
+import { Apps } from "./Apps";
+import { AppObjects } from "./AppObjects";
+import { Certificate } from "./Certificate";
+import { ContentLibraries } from "./ContentLibraries";
+import { CustomProperties } from "./CustomProperties";
+import { DataConnections } from "./DataConnections";
+import { Engines } from "./Engines";
+import { Extensions } from "./Extensions";
+import { License } from "./License";
+import { Nodes } from "./Nodes";
+import { Privileges } from "./Privileges";
+import { Proxies } from "./Proxies";
+import { Schedulers } from "./Schedulers";
+import { ServiceClusters } from "./ServiceClusters";
+import { ServiceStatus } from "./ServiceStatus";
+import { Selections } from "./Selections";
+import { SharedContents } from "./SharedContents";
+import { Streams } from "./Streams";
+import { SystemRules } from "./SystemRules";
+import { Table } from "./Table";
+import { Tags } from "./Tags";
+import { Tasks } from "./Tasks";
+import { ReloadTasks } from "./ReloadTasks";
+import { ExternalTasks } from "./ExternalTasks";
+import { Users } from "./Users";
+import { Notification } from "./Notification";
+import { VirtualProxies } from "./VirtualProxies";
+import { UserDirectories } from "./UserDirectories";
 
 export namespace QlikRepoApi {
   export class client {
+    /**
+     * Instance of the underlying HTTP client bound to the repository config
+     */
     public repoClient: QlikRepositoryClient;
-    public genericClient: QlikGenericRestClient;
-    public genericClientWithPort: QlikGenericRestClient;
+    /**
+     * Instance of the underlying HTTP repo client but not bound to specific repository config
+     */
     public genericRepoClient: QlikRepositoryClient;
+    /**
+     * Instance of the underlying HTTP client that is not bound to the repository config
+     */
+    public genericClient: QlikGenericRestClient;
+    /**
+     * Instance of the underlying HTTP client that is not bound to the repository config but where port can be specified
+     */
+    public genericClientWithPort: QlikGenericRestClient;
+    /**
+     * HTTP client bound to "wes" endpoints. For example /api/wes/v1/extensions/export
+     */
     public genericWESClient: QlikRepositoryClient;
 
-    public about: IClassAbout;
-    public apps: IClassApps;
-    public appObjects: IClassAppObjects;
-    public certificate: IClassCertificate;
-    public contentLibraries: IClassContentLibraries;
-    public customProperties: IClassCustomProperties;
-    public dataConnections: IClassDataConnections;
-    public engines: IClassEngines;
-    public extensions: IClassExtensions;
-    public license: IClassLicense;
-    public privileges: IClassPrivileges;
-    public proxies: IClassProxies;
-    public nodes: IClassNodes;
-    public notification: IClassNotifications;
-    public schedulerServices: IClassSchedulers;
-    public serviceClusters: IClassServiceClusters;
-    public serviceStatus: IClassServiceStatus;
-    public selections: IClassSelections;
-    public sharedContents: IClassSharedContents;
-    public streams: IClassStreams;
-    public systemRules: IClassSystemRules;
-    public table: IClassTable;
-    public tags: IClassTags;
-    public tasks: IClassTasks;
-    public reloadTasks: IClassReloadTasks;
-    public externalTasks: IClassExternalTasks;
-    public users: IClassUsers;
-    public userDirectories: IClassUserDirectories;
-    public virtualProxies: IClassVirtualProxies;
-    constructor(public repoConfig: any) {
+    /**
+     * /qrs/about endpoints
+     */
+    public about: About;
+    /**
+     * /qrs/app endpoints
+     */
+    public apps: Apps;
+    /**
+     * /qrs/app/object endpoints
+     */
+    public appObjects: AppObjects;
+    /**
+     * /qrs/CertificateDistribution endpoints
+     */
+    public certificate: Certificate;
+    /**
+     * /qrs/contentLibrary endpoints
+     */
+    public contentLibraries: ContentLibraries;
+    /**
+     * /qrs/customPropertyDefinition endpoints
+     */
+    public customProperties: CustomProperties;
+    /**
+     * /qrs/dataConnection endpoints
+     */
+    public dataConnections: DataConnections;
+    /**
+     * /qrs/engineService endpoints
+     */
+    public engines: Engines;
+    /**
+     * /qrs/extension endpoints
+     */
+    public extensions: Extensions;
+    /**
+     * /qrs/license endpoints
+     */
+    public license: License;
+    /**
+     * Audit privileges for an object
+     */
+    public privileges: Privileges;
+    /**
+     * /qrs/proxyService endpoints
+     */
+    public proxies: Proxies;
+    /**
+     * /qrs/nodes endpoints
+     */
+    public nodes: Nodes;
+    /**
+     * /qrs/notification endpoints
+     */
+    public notification: Notification;
+    /**
+     * /qrs/schedulerService endpoints
+     */
+    public schedulerServices: Schedulers;
+    /**
+     * /qrs/serviceCluster endpoints
+     */
+    public serviceClusters: ServiceClusters;
+    /**
+     * /qrs/serviceStatus endpoints
+     */
+    public serviceStatus: ServiceStatus;
+    /**
+     * /qrs/selection endpoints
+     */
+    public selections: Selections;
+    /**
+     * /qrs/sharedContent endpoints
+     */
+    public sharedContents: SharedContents;
+    /**
+     * /qrs/stream endpoints
+     */
+    public streams: Streams;
+    /**
+     * /qrs/systemRule endpoints
+     * Note: this endpoints are service security, license and load balancing rules
+     */
+    public systemRules: SystemRules;
+    /**
+     * /qrs/table endpoints
+     */
+    public table: Table;
+    /**
+     * /qrs/tag endpoints
+     */
+    public tags: Tags;
+    /**
+     * /qrs/task endpoints
+     */
+    public tasks: Tasks;
+    /**
+     * /qrs/reloadTask endpoints
+     */
+    public reloadTasks: ReloadTasks;
+    /**
+     * /qrs/externalProgramTask endpoints
+     */
+    public externalTasks: ExternalTasks;
+    /**
+     * /qrs/user endpoints
+     */
+    public users: Users;
+    /**
+     * /qrs/userDirectory endpoints
+     */
+    public userDirectories: UserDirectories;
+    /**
+     * /qrs/virtualProxy endpoints
+     */
+    public virtualProxies: VirtualProxies;
+    constructor(public repoConfig: IConfig) {
       this.repoClient = new QlikRepositoryClient(repoConfig);
 
       const genericConfig = { ...repoConfig };

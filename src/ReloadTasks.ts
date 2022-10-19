@@ -4,23 +4,24 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import {
   IEntityRemove,
+  IReloadTaskBundle,
   ISelection,
   ITask,
   ITaskCreate,
 } from "./types/interfaces";
 
-import { IClassReloadTask, ReloadTask } from "./ReloadTask";
+import { ReloadTask } from "./ReloadTask";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
 
 //TODO: why is no update method here?
 export interface IClassReloadTasks {
-  get(arg: { id: string }): Promise<IClassReloadTask>;
-  getAll(): Promise<IClassReloadTask[]>;
-  getFilter(arg: { filter: string }): Promise<IClassReloadTask[]>;
+  get(arg: { id: string }): Promise<ReloadTask>;
+  getAll(): Promise<ReloadTask[]>;
+  getFilter(arg: { filter: string }): Promise<ReloadTask[]>;
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
-  create(arg: ITaskCreate): Promise<IClassReloadTask>;
+  create(arg: ITaskCreate): Promise<ReloadTask>;
 }
 
 export class ReloadTasks implements IClassReloadTasks {
@@ -41,8 +42,8 @@ export class ReloadTasks implements IClassReloadTasks {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`reloadtask/full`)
-      .then((res) => res.data as ITask[])
+      .Get<ITask[]>(`reloadtask/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
       });
@@ -60,13 +61,15 @@ export class ReloadTasks implements IClassReloadTasks {
       throw new Error(`reloadTasks.getFilter: "path" parameter is required`);
 
     return await this.#repoClient
-      .Get(`reloadtask/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as ITask[])
+      .Get<ITask[]>(
+        `reloadtask/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
       })
       .then(async (rt) => {
-        return await Promise.all<IClassReloadTask>(
+        return await Promise.all<ReloadTask>(
           rt.map((r) => {
             return r.init().then((r1) => r);
           })
@@ -80,8 +83,8 @@ export class ReloadTasks implements IClassReloadTasks {
     if (arg.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
 
     return await this.#repoClient
-      .Get(`${url}`)
-      .then((res) => res.data.value as number);
+      .Get<{ value: number }>(`${url}`)
+      .then((res) => res.data.value);
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -92,7 +95,7 @@ export class ReloadTasks implements IClassReloadTasks {
 
     const tasks = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      tasks.map((task: IClassReloadTask) =>
+      tasks.map((task) =>
         task.remove().then((s) => ({ id: task.details.id, status: s }))
       )
     );
@@ -103,8 +106,8 @@ export class ReloadTasks implements IClassReloadTasks {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async create(arg: ITaskCreate) {
@@ -116,38 +119,39 @@ export class ReloadTasks implements IClassReloadTasks {
       this.#repoClient
     );
 
-    let reloadTask: { [k: string]: any } = {};
-    reloadTask["schemaEvents"] = [];
-    reloadTask["compositeEvents"] = [];
-    reloadTask["task"] = {
-      name: arg.name,
-      app: { id: app.details.id },
-      taskType: 0,
-      enabled: true,
-      taskSessionTimeout: 1440,
-      maxRetries: 0,
-      isManuallyTriggered: false,
-      tags: [],
-      customProperties: [],
+    let reloadTask: IReloadTaskBundle = {
+      schemaEvents: [],
+      compositeEvents: [],
+      task: {
+        tags: [],
+        customProperties: [],
+        app: { id: app.details.id },
+        name: arg.name,
+        taskType: 0,
+        enabled: true,
+        taskSessionTimeout: 1440,
+        maxRetries: 0,
+      },
     };
 
-    let updateCommon = new UpdateCommonProperties(
+    const updateCommon = new UpdateCommonProperties(
       this.#repoClient,
       reloadTask,
       arg
     );
+
     reloadTask = await updateCommon.updateAll();
 
-    reloadTask.task.customProperties = (reloadTask as any).customProperties;
-    reloadTask.task.tags = (reloadTask as any).tags;
+    // reloadTask.task.customProperties = reloadTask.customProperties;
+    // reloadTask.task.tags = (reloadTask as any).tags;
 
-    delete (reloadTask as any).modifiedDate;
-    delete (reloadTask as any).customProperties;
-    delete (reloadTask as any).tags;
+    // delete (reloadTask as any).modifiedDate;
+    // delete (reloadTask as any).customProperties;
+    // delete (reloadTask as any).tags;
 
     return await this.#repoClient
-      .Post(`reloadtask/create`, { ...reloadTask })
-      .then((res) => res.data as ITask)
+      .Post<ITask>(`reloadtask/create`, { ...reloadTask })
+      .then((res) => res.data)
       .then(async (t) => {
         const rt = new ReloadTask(this.#repoClient, t.id, t);
         await rt.init();

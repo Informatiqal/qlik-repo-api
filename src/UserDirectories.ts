@@ -8,18 +8,18 @@ import {
   IUserDirectoryCreate,
 } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
-import { IClassUserDirectory, UserDirectory } from "./UserDirectory";
+import { UserDirectory } from "./UserDirectory";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 export interface IClassUserDirectories {
   count(): Promise<number>;
-  get(id: string): Promise<IClassUserDirectory>;
-  getAll(): Promise<IClassUserDirectory[]>;
-  getFilter(filter: string): Promise<IClassUserDirectory[]>;
+  get(id: string): Promise<UserDirectory>;
+  getAll(): Promise<UserDirectory[]>;
+  getFilter(filter: string): Promise<UserDirectory[]>;
   removeFilter(filter: string): Promise<IEntityRemove[]>;
   select(filter?: string): Promise<ISelection>;
   syncMany(userDirectoryIds: string[]): Promise<IHttpStatus>;
-  create(arg: IUserDirectoryCreate): Promise<IClassUserDirectory>;
+  create(arg: IUserDirectoryCreate): Promise<UserDirectory>;
 }
 
 export class UserDirectories implements IClassUserDirectories {
@@ -30,8 +30,8 @@ export class UserDirectories implements IClassUserDirectories {
 
   public async count() {
     return await this.#repoClient
-      .Get(`userdirectory/count`)
-      .then((res) => res.data as number);
+      .Get<number>(`userdirectory/count`)
+      .then((res) => res.data);
   }
 
   public async get(id: string) {
@@ -45,8 +45,8 @@ export class UserDirectories implements IClassUserDirectories {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`userdirectory/full`)
-      .then((res) => res.data as IUserDirectory[])
+      .Get<IUserDirectory[]>(`userdirectory/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new UserDirectory(this.#repoClient, t.id, t));
       });
@@ -59,8 +59,10 @@ export class UserDirectories implements IClassUserDirectories {
       );
 
     return await this.#repoClient
-      .Get(`userdirectory/full?filter=(${encodeURIComponent(filter)})`)
-      .then((res) => res.data as IUserDirectory[])
+      .Get<IUserDirectory[]>(
+        `userdirectory/full?filter=(${encodeURIComponent(filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new UserDirectory(this.#repoClient, t.id, t));
       });
@@ -74,7 +76,7 @@ export class UserDirectories implements IClassUserDirectories {
 
     const uds = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
-      uds.map((ud: IClassUserDirectory) =>
+      uds.map((ud) =>
         ud.remove().then((s) => ({ id: ud.details.id, status: s }))
       )
     );
@@ -85,8 +87,8 @@ export class UserDirectories implements IClassUserDirectories {
     urlBuild.addParam("filter", filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 
   public async syncMany(userDirectoryIds: string[]) {
@@ -95,7 +97,7 @@ export class UserDirectories implements IClassUserDirectories {
 
     return await this.#repoClient
       .Post(`userdirectoryconnector/syncuserdirectories`, [...userDirectoryIds])
-      .then((res) => res.status as IHttpStatus);
+      .then((res) => res.status);
   }
 
   public async create(arg: IUserDirectoryCreate) {
@@ -121,8 +123,8 @@ export class UserDirectories implements IClassUserDirectories {
     const commonProps = await getCommonProps.getAll();
 
     return await this.#repoClient
-      .Post(`userdirectory`, { ...obj, ...commonProps })
-      .then((res) => res.data as IUserDirectory)
+      .Post<IUserDirectory>(`userdirectory`, { ...obj, ...commonProps })
+      .then((res) => res.data)
       .then((ud) => new UserDirectory(this.#repoClient, ud.id, ud));
   }
 }

@@ -36,8 +36,8 @@ export class Extension implements IClassExtension {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`extension/${this.#id}`)
-        .then((res) => res.data as IExtension);
+        .Get<IExtension>(`extension/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -57,7 +57,7 @@ export class Extension implements IClassExtension {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`extension/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IExtension);
+      .Put<IExtension>(`extension/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 }

@@ -18,8 +18,8 @@ export class Privileges implements IClassPrivileges {
     let url = `${arg.item.schemaPath}`;
     if (arg.filter) url += `/?privilegesFilter=${arg.filter}`;
 
-    return await this.#repoClient.Post(url, arg.item).then((res) => {
-      return res.data as string[];
+    return await this.#repoClient.Post<string[]>(url, arg.item).then((res) => {
+      return res.data;
     });
   }
 

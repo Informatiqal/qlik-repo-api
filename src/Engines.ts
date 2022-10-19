@@ -8,12 +8,12 @@ import {
   IEngine,
 } from "./types/interfaces";
 
-import { Engine, IClassEngine } from "./Engine";
+import { Engine } from "./Engine";
 
 export interface IClassEngines {
-  get(arg: { id: string }): Promise<IClassEngine>;
-  getAll(): Promise<IClassEngine[]>;
-  getFilter(arg: { filter: string }): Promise<IClassEngine[]>;
+  get(arg: { id: string }): Promise<Engine>;
+  getAll(): Promise<Engine[]>;
+  getFilter(arg: { filter: string }): Promise<Engine[]>;
   getValid(arg?: IEngineGetValid): Promise<IEngineGetValidResult[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -34,8 +34,8 @@ export class Engines implements IClassEngines {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`engineservice/full`)
-      .then((res) => res.data as IEngine[])
+      .Get<IEngine[]>(`engineservice/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Engine(this.#repoClient, t.id, t));
       });
@@ -57,8 +57,8 @@ export class Engines implements IClassEngines {
     };
 
     return await this.#repoClient
-      .Post(`loadbalancing/validengines`, body)
-      .then((res) => res.data as IEngineGetValidResult[]);
+      .Post<IEngineGetValidResult[]>(`loadbalancing/validengines`, body)
+      .then((res) => res.data);
   }
 
   public async getFilter(arg: { filter: string }) {
@@ -67,8 +67,8 @@ export class Engines implements IClassEngines {
     let baseUrl = `engineservice/full`;
 
     return await this.#repoClient
-      .Get(`${baseUrl}?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IEngine[])
+      .Get<IEngine[]>(`${baseUrl}?filter=(${encodeURIComponent(arg.filter)})`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Engine(this.#repoClient, t.id, t));
       });
@@ -79,7 +79,7 @@ export class Engines implements IClassEngines {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

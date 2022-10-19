@@ -11,13 +11,13 @@ import {
 // import { ICustomPropertyCondensed } from "./CustomProperties";
 // import { ITagCondensed } from "./Tags";
 // import { IOwner } from "./Users";
-import { IClassStream, Stream } from "./Stream";
+import { Stream } from "./Stream";
 
 export interface IClassStreams {
-  get(arg: { id: string }): Promise<IClassStream>;
-  getAll(): Promise<IClassStream[]>;
-  getFilter(arg: { filter: string }): Promise<IClassStream[]>;
-  create(arg: IStreamCreate): Promise<IClassStream>;
+  get(arg: { id: string }): Promise<Stream>;
+  getAll(): Promise<Stream[]>;
+  getFilter(arg: { filter: string }): Promise<Stream[]>;
+  create(arg: IStreamCreate): Promise<Stream>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -38,8 +38,8 @@ export class Streams implements IClassStreams {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`stream/full`)
-      .then((res) => res.data as IStream[])
+      .Get<IStream[]>(`stream/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Stream(this.#repoClient, t.id, t));
       });
@@ -50,8 +50,8 @@ export class Streams implements IClassStreams {
       throw new Error(`stream.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
-      .Get(`stream/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IStream[])
+      .Get<IStream[]>(`stream/full?filter=(${encodeURIComponent(arg.filter)})`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new Stream(this.#repoClient, t.id, t));
       });
@@ -71,11 +71,11 @@ export class Streams implements IClassStreams {
     let commonProps = await getCommonProps.getAll();
 
     return await this.#repoClient
-      .Post(`stream`, {
+      .Post<IStream>(`stream`, {
         name: arg.name,
         ...commonProps,
       })
-      .then((res) => res.data as IStream)
+      .then((res) => res.data)
       .then((s) => new Stream(this.#repoClient, s.id, s));
   }
 
@@ -85,7 +85,7 @@ export class Streams implements IClassStreams {
 
     const streams = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      streams.map((stream: IClassStream) =>
+      streams.map((stream) =>
         stream.remove().then((s) => ({ id: stream.details.id, status: s }))
       )
     );
@@ -96,7 +96,7 @@ export class Streams implements IClassStreams {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

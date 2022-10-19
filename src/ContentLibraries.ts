@@ -10,22 +10,22 @@ import {
   IContentLibrary,
 } from "./types/interfaces";
 
-import { ContentLibrary, IClassContentLibrary } from "./ContentLibrary";
+import { ContentLibrary } from "./ContentLibrary";
 
 export interface IClassContentLibraries {
-  get(arg: { id: string }): Promise<IClassContentLibrary>;
-  getAll(): Promise<IClassContentLibrary[]>;
+  get(arg: { id: string }): Promise<ContentLibrary>;
+  getAll(): Promise<ContentLibrary[]>;
   getFilter(arg: {
     filter: string;
     orderBy?: string;
-  }): Promise<IClassContentLibrary[]>;
+  }): Promise<ContentLibrary[]>;
   importForApp(arg: {
     appId: string;
     file: Buffer;
     externalPath?: string;
     overwrite?: boolean;
-  }): Promise<IClassContentLibrary>;
-  create(arg: IContentLibraryCreate): Promise<IClassContentLibrary>;
+  }): Promise<ContentLibrary>;
+  create(arg: IContentLibraryCreate): Promise<ContentLibrary>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -55,8 +55,11 @@ export class ContentLibraries implements IClassContentLibraries {
     let commonProps = await getCommonProps.getAll();
 
     return await this.#repoClient
-      .Post(`contentlibrary`, { name: arg.name, ...commonProps })
-      .then((res) => res.data as IContentLibrary)
+      .Post<IContentLibrary>(`contentlibrary`, {
+        name: arg.name,
+        ...commonProps,
+      })
+      .then((res) => res.data)
       .then(
         (t) =>
           new ContentLibrary(this.#repoClient, t.id, t, this.#genericClient)
@@ -79,8 +82,8 @@ export class ContentLibraries implements IClassContentLibraries {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`contentlibrary/full`)
-      .then((res) => res.data as IContentLibrary[])
+      .Get<IContentLibrary[]>(`contentlibrary/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new ContentLibrary(
@@ -104,8 +107,8 @@ export class ContentLibraries implements IClassContentLibraries {
     urlBuild.addParam("orderby", arg.orderBy);
 
     return await this.#repoClient
-      .Get(urlBuild.getUrl())
-      .then((res) => res.data as IContentLibrary[])
+      .Get<IContentLibrary[]>(urlBuild.getUrl())
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new ContentLibrary(
@@ -135,8 +138,8 @@ export class ContentLibraries implements IClassContentLibraries {
 
     const mimeType = getMime(arg.file);
     return await this.#repoClient
-      .Put(urlBuild.getUrl(), {}, mimeType)
-      .then((res) => res.data as IContentLibrary)
+      .Put<IContentLibrary>(urlBuild.getUrl(), {}, mimeType)
+      .then((res) => res.data)
       .then(
         (a) =>
           new ContentLibrary(this.#repoClient, a.id, a, this.#genericClient)
@@ -150,7 +153,7 @@ export class ContentLibraries implements IClassContentLibraries {
       );
     const contentLibraries = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      contentLibraries.map((contentLib: IClassContentLibrary) =>
+      contentLibraries.map((contentLib) =>
         contentLib
           .remove()
           .then((s) => ({ id: contentLib.details.id, status: s }))
@@ -163,7 +166,7 @@ export class ContentLibraries implements IClassContentLibraries {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

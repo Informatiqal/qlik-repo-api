@@ -25,14 +25,14 @@ export class SchemaTrigger implements IClassSchemaTrigger {
 
     this.#id = id;
     this.#repoClient = repoClient;
-    if (details) this.details = details as ISchemaEvent;
+    if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`schemaevent/${this.#id}`)
-        .then((res) => res.data as ISchemaEvent);
+        .Get<ISchemaEvent>(`schemaevent/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -40,7 +40,7 @@ export class SchemaTrigger implements IClassSchemaTrigger {
     return await this.#repoClient
       .Delete(`schemaevent/${this.details.id}`)
       .then((r) => {
-        return { id: this.details.id, status: r.status } as IEntityRemove;
+        return { id: this.details.id, status: r.status };
       });
   }
 
@@ -68,7 +68,7 @@ export class SchemaTrigger implements IClassSchemaTrigger {
     }
 
     return await this.#repoClient
-      .Put(`schemaevent/${this.details.id}`, this.details)
-      .then((res) => res.data as ISchemaEvent);
+      .Put<ISchemaEvent>(`schemaevent/${this.details.id}`, this.details)
+      .then((res) => res.data);
   }
 }

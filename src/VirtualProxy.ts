@@ -6,7 +6,7 @@ import {
   IServerNodeConfiguration,
   IServerNodeConfigurationCondensed,
 } from "./types/interfaces";
-import { IClassNode, Node } from "./Node";
+import { Node } from "./Node";
 import {
   parseAnonymousAccessMode,
   parseAuthenticationMethod,
@@ -42,8 +42,8 @@ export class VirtualProxy implements IClassVirtualProxy {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`virtualproxyconfig/${this.#id}`)
-        .then((res) => res.data as IVirtualProxyConfig);
+        .Get<IVirtualProxyConfig>(`virtualproxyconfig/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -166,28 +166,33 @@ export class VirtualProxy implements IClassVirtualProxy {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`virtualproxyconfig/${this.details.id}`, this.details)
-      .then((res) => res.data as IVirtualProxyConfig);
+      .Put<IVirtualProxyConfig>(
+        `virtualproxyconfig/${this.details.id}`,
+        this.details
+      )
+      .then((res) => res.data);
   }
 
   public async metadataExport(arg?: { fileName: string }) {
     if (!arg.fileName) arg.fileName = `${this.details.prefix}_metadata_sp.xml`;
 
     let exportMetaData: string = await this.#repoClient
-      .Get(`virtualproxyconfig/${this.details.id}/generate/samlmetadata`)
-      .then((m) => m.data as string);
+      .Get<string>(
+        `virtualproxyconfig/${this.details.id}/generate/samlmetadata`
+      )
+      .then((m) => m.data);
 
     return await this.#repoClient
-      .Get(`download/samlmetadata/${exportMetaData}/${arg.fileName}`)
-      .then((m) => m.data as Buffer);
+      .Get<Buffer>(`download/samlmetadata/${exportMetaData}/${arg.fileName}`)
+      .then((m) => m.data);
   }
 
   private async parseLoadBalancingNodes(
     nodes: string[]
   ): Promise<IServerNodeConfigurationCondensed[]> {
     let existingNodes = await this.#repoClient
-      .Get(`servernodeconfiguration/full`)
-      .then((res) => res.data as IServerNodeConfiguration[])
+      .Get<IServerNodeConfiguration[]>(`servernodeconfiguration/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new Node(this.#repoClient, t.id, t);
@@ -195,7 +200,7 @@ export class VirtualProxy implements IClassVirtualProxy {
       });
 
     return nodes.map((n) => {
-      let nodeCondensed = (existingNodes as IClassNode[]).filter(
+      const nodeCondensed = existingNodes.filter(
         (n1) => n1.details.hostName == n
       );
 

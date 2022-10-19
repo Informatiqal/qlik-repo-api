@@ -25,8 +25,8 @@ export class Stream implements IClassStream {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`stream/${this.#id}`)
-        .then((res) => res.data as IStream);
+        .Get<IStream>(`stream/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -48,7 +48,7 @@ export class Stream implements IClassStream {
     this.details = await updateCommon.updateAll();
 
     return await this.#repoClient
-      .Put(`stream/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IStream);
+      .Put<IStream>(`stream/${this.details.id}`, { ...this.details })
+      .then((res) => res.data);
   }
 }

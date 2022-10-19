@@ -9,26 +9,66 @@ import {
   IAppUpdate,
   IAppUploadAndReplace,
 } from "./types/interfaces";
-import { App, IClassApp } from "./App";
+import { App } from "./App";
 
 export interface IClassApps {
-  get(arg: { id: string }): Promise<IClassApp>;
-  getAll(): Promise<IClassApp[]>;
-  getFilter(arg: { filter: string; orderBy?: string }): Promise<IClassApp[]>;
+  /**
+   * Get single app instance
+   */
+  get(arg: { id: string }): Promise<App>;
+  /**
+   * Get all available apps instance for a user
+   */
+  getAll(): Promise<App[]>;
+  /**
+   * Get array of apps instance based on the supplied filter
+   */
+  getFilter(arg: { filter: string; orderBy?: string }): Promise<App[]>;
+  /**
+   * Remove apps based on the supplied filter
+   */
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  /**
+   * Create selection based on the supplied filter
+   */
   select(arg?: { filter: string }): Promise<ISelection>;
+  /**
+   * Upload an qvf
+   */
   upload(arg: {
     name: string;
     file: Buffer;
     keepData?: boolean;
     excludeDataConnections?: boolean;
-  }): Promise<IClassApp>;
+  }): Promise<App>;
+  /**
+   * Upload multiple apps in a single method
+   */
+  uploadMany(arg: {
+    apps: [
+      {
+        name: string;
+        file: Buffer;
+        keepData?: boolean;
+        excludeDataConnections?: boolean;
+      }
+    ];
+    sequence?: Boolean;
+  }): Promise<App[]>;
+  /**
+   * EXPERIMENTAL
+   *
+   * Upload an qvf and replace an existing app with it
+   */
   uploadAndReplace(arg: {
     name: string;
     targetAppId: string;
     file: Buffer;
     keepData?: boolean;
-  }): Promise<IClassApp>;
+  }): Promise<App>;
+  /**
+   * Export multiple qvf to Buffer
+   */
   exportMany(arg?: {
     filter: string;
     skipData?: boolean;
@@ -65,8 +105,8 @@ export class Apps implements IClassApps {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`app/full`)
-      .then((res) => res.data as IApp[])
+      .Get<IApp[]>(`app/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map(
           (t) =>
@@ -90,8 +130,8 @@ export class Apps implements IClassApps {
     urlBuild.addParam("orderby", arg.orderBy);
 
     return await this.#repoClient
-      .Get(urlBuild.getUrl())
-      .then((res) => res.data as IApp[])
+      .Get<IApp[]>(urlBuild.getUrl())
+      .then((res) => res.data)
       .then((apps) => {
         return apps.map(
           (app) =>
@@ -127,12 +167,12 @@ export class Apps implements IClassApps {
     urlBuild.addParam("excludeconnections", arg.excludeDataConnections);
 
     const app = await this.#repoClient
-      .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
+      .Post<IApp>(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
           new App(
             this.#repoClient,
-            (res.data as IApp).id,
+            res.data.id,
             res.data,
             this.#genericClient,
             this.#genericClientWithPort
@@ -148,6 +188,24 @@ export class Apps implements IClassApps {
     }
 
     return app;
+  }
+
+  public async uploadMany(arg: {
+    apps: [
+      {
+        name: string;
+        file: Buffer;
+        keepData?: boolean;
+        excludeDataConnections?: boolean;
+      }
+    ];
+    sequence?: Boolean;
+  }): Promise<App[]> {
+    return await Promise.all(
+      arg.apps.map((a) => {
+        return this.upload(a);
+      })
+    );
   }
 
   public async uploadAndReplace(arg: IAppUploadAndReplace) {
@@ -166,12 +224,12 @@ export class Apps implements IClassApps {
     urlBuild.addParam("targetappid", arg.targetAppId);
 
     const app = await this.#repoClient
-      .Post(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
+      .Post<IApp>(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
       .then(
         (res) =>
           new App(
             this.#repoClient,
-            (res.data as IApp).id,
+            res.data.id,
             null,
             this.#genericClient,
             this.#genericClientWithPort
@@ -195,7 +253,7 @@ export class Apps implements IClassApps {
 
     const apps = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      apps.map((app: IClassApp) =>
+      apps.map((app: App) =>
         app.remove().then((s) => ({ id: app.details.id, status: s }))
       )
     );
@@ -206,7 +264,7 @@ export class Apps implements IClassApps {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

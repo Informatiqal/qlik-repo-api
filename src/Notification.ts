@@ -49,7 +49,7 @@ export class Notification implements IClassNotifications {
     if (arg.condition) urlBuild.addParam("condition", arg.condition);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), `"${arg.uri}"`, "application/json")
+      .Post<any>(urlBuild.getUrl(), `"${arg.uri}"`, "application/json")
       .then((res) => res.data.value);
   }
 
@@ -73,7 +73,7 @@ export class Notification implements IClassNotifications {
     urlBuild.addParam("types", arg.types);
 
     return await this.#repoClient
-      .Get(urlBuild.getUrl())
+      .Get<any>(urlBuild.getUrl())
       .then((res) => res.data);
   }
 }

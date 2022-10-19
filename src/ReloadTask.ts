@@ -16,6 +16,7 @@ export interface IClassReloadTask extends IClassReloadTaskBase {
 export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
   #repoClient: QlikRepositoryClient;
   #baseUrl: string;
+  details: ITask;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITask) {
     super(repoClient, id, "reloadtask", details);
   }
@@ -27,13 +28,13 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
       );
 
     return await this.#repoClient
-      .Get(
+      .Get<string>(
         `externalprogramtask/${
           this.details.id
         }/scriptlog?filereferenceid=${encodeURIComponent(arg.fileReferenceId)}
     `
       )
-      .then((res) => res.data as string);
+      .then((res) => res.data);
   }
 
   async scriptLogFileGet(arg: { executionResultId: string }) {
@@ -43,7 +44,7 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
       );
 
     return await this.#repoClient
-      .Get(
+      .Get<string>(
         `externalprogramtask/${
           this.details.id
         }/scriptlog?executionresultid =${encodeURIComponent(
@@ -51,7 +52,7 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
         )}
   `
       )
-      .then((res) => res.data as string);
+      .then((res) => res.data);
   }
 
   async update(arg: ITaskReloadUpdate, options?: IUpdateObjectOptions) {
@@ -67,10 +68,10 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
         arg.appFilter,
         this.#repoClient
       );
-      (this.details as ITask).app = app.details;
+      this.details.app = app.details;
     }
 
-    let updateCommon = new UpdateCommonProperties(
+    const updateCommon = new UpdateCommonProperties(
       this.#repoClient,
       this.details,
       arg,
@@ -80,6 +81,6 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
 
     return await this.#repoClient
       .Put(`${this.#baseUrl}/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as ITask);
+      .then((res) => res.data);
   }
 }

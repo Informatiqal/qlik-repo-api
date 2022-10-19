@@ -27,8 +27,8 @@ export class ServiceCluster implements IClassServiceCluster {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`ServiceCluster/${this.#id}`)
-        .then((res) => res.data as IServiceCluster);
+        .Get<IServiceCluster>(`ServiceCluster/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -75,7 +75,9 @@ export class ServiceCluster implements IClassServiceCluster {
         arg.failoverTimeout;
 
     return await this.#repoClient
-      .Post(`ServiceCluster/${this.details.id}`, { ...this.details })
-      .then((res) => res.data as IServiceCluster);
+      .Post<IServiceCluster>(`ServiceCluster/${this.details.id}`, {
+        ...this.details,
+      })
+      .then((res) => res.data);
   }
 }

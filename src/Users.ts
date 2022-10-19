@@ -7,13 +7,13 @@ import {
   IUserCreate,
   IUser,
 } from "./types/interfaces";
-import { IClassUser, User } from "./User";
+import { User } from "./User";
 
 export interface IClassUsers {
-  get(arg: { id: string }): Promise<IClassUser>;
-  getAll(): Promise<IClassUser[]>;
-  getFilter(arg: { filter: string }): Promise<IClassUser[]>;
-  create(arg: IUserCreate): Promise<IClassUser>;
+  get(arg: { id: string }): Promise<User>;
+  getAll(): Promise<User[]>;
+  getFilter(arg: { filter: string }): Promise<User[]>;
+  create(arg: IUserCreate): Promise<User>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -34,8 +34,8 @@ export class Users implements IClassUsers {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`user/full`)
-      .then((res) => res.data as IUser[])
+      .Get<IUser[]>(`user/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
           return new User(this.#repoClient, t.id, t);
@@ -47,8 +47,8 @@ export class Users implements IClassUsers {
     if (!arg.filter)
       throw new Error(`user.getFilter: "filter" parameter is required`);
     return await this.#repoClient
-      .Get(`user/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IUser[])
+      .Get<IUser[]>(`user/full?filter=(${encodeURIComponent(arg.filter)})`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new User(this.#repoClient, t.id, t));
       });
@@ -70,14 +70,14 @@ export class Users implements IClassUsers {
     const commonProps = await getCommonProps.getAll();
 
     return await this.#repoClient
-      .Post(`user`, {
+      .Post<IUser>(`user`, {
         userId: arg.userId,
         userDirectory: arg.userDirectory,
         name: arg.name || arg.userId,
         roles: arg.roles || [],
         ...commonProps,
       })
-      .then((res) => res.data as IUser)
+      .then((res) => res.data)
       .then((u) => new User(this.#repoClient, u.id, u));
   }
 
@@ -87,7 +87,7 @@ export class Users implements IClassUsers {
 
     const users = await this.getFilter({ filter: arg.filter });
     return await Promise.all<IEntityRemove>(
-      users.map((user: IClassUser) =>
+      users.map((user) =>
         user.remove().then((s) => ({ id: user.details.id, status: s }))
       )
     );
@@ -98,7 +98,7 @@ export class Users implements IClassUsers {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }

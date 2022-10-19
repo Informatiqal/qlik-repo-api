@@ -27,14 +27,14 @@ export class CompositeTrigger implements IClassCompositeTrigger {
 
     this.#id = id;
     this.#repoClient = repoClient;
-    if (details) this.details = details as ICompositeEvent;
+    if (details) this.details = details;
   }
 
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get(`compositeevent/${this.#id}`)
-        .then((res) => res.data as ICompositeEvent);
+        .Get<ICompositeEvent>(`compositeevent/${this.#id}`)
+        .then((res) => res.data);
     }
   }
 
@@ -42,7 +42,7 @@ export class CompositeTrigger implements IClassCompositeTrigger {
     return await this.#repoClient
       .Delete(`compositeevent/${this.details.id}`)
       .then((r) => {
-        return { id: this.details.id, status: r.status } as IEntityRemove;
+        return { id: this.details.id, status: r.status };
       });
   }
 
@@ -75,8 +75,8 @@ export class CompositeTrigger implements IClassCompositeTrigger {
 
           // if task id is not specified then find the id based on the provided name
           const task = await this.#repoClient
-            .Get(`task?filter=(name eq '${r.name}')`)
-            .then((t) => t.data as ITask[]);
+            .Get<ITask[]>(`task?filter=(name eq '${r.name}')`)
+            .then((t) => t.data);
 
           if (task.length > 1)
             throw new Error(
@@ -97,7 +97,7 @@ export class CompositeTrigger implements IClassCompositeTrigger {
     }
 
     return await this.#repoClient
-      .Post(`compositeevent/${this.details.id}`, this.details)
-      .then((res) => res.data as ICompositeEvent);
+      .Post<ICompositeEvent>(`compositeevent/${this.details.id}`, this.details)
+      .then((res) => res.data);
   }
 }

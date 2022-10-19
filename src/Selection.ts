@@ -15,7 +15,7 @@ export class Selection implements IClassSelection {
   constructor(repoClient: QlikRepositoryClient, area: string) {
     this.area = area;
     this.#repoClient = repoClient;
-    this.details = {} as ISelection;
+    this.details = {};
   }
 
   async init(filter: string) {
@@ -24,8 +24,8 @@ export class Selection implements IClassSelection {
       urlBuild.addParam("filter", filter);
 
       this.details = await this.#repoClient
-        .Post(`${urlBuild.getUrl()}`, {})
-        .then((res) => res.data as ISelection);
+        .Post<ISelection>(`${urlBuild.getUrl()}`, {})
+        .then((res) => res.data);
     }
   }
 

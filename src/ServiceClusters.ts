@@ -2,13 +2,13 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import { ISelection, IEntityRemove, IServiceCluster } from "./types/interfaces";
-import { IClassServiceCluster, ServiceCluster } from "./ServiceCluster";
+import { ServiceCluster } from "./ServiceCluster";
 
 export interface IClassServiceClusters {
   count(): Promise<number>;
-  get(arg: { id: string }): Promise<IClassServiceCluster>;
-  getAll(): Promise<IClassServiceCluster[]>;
-  getFilter(arg: { filter: string }): Promise<IClassServiceCluster[]>;
+  get(arg: { id: string }): Promise<ServiceCluster>;
+  getAll(): Promise<ServiceCluster[]>;
+  getFilter(arg: { filter: string }): Promise<ServiceCluster[]>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
@@ -21,8 +21,8 @@ export class ServiceClusters implements IClassServiceClusters {
 
   public async count() {
     return await this.#repoClient
-      .Get(`ServiceCluster/count`)
-      .then((res) => res.data as number);
+      .Get<number>(`ServiceCluster/count`)
+      .then((res) => res.data);
   }
 
   public async get(arg: { id: string }) {
@@ -37,8 +37,8 @@ export class ServiceClusters implements IClassServiceClusters {
 
   public async getAll() {
     return await this.#repoClient
-      .Get(`ServiceCluster/full`)
-      .then((res) => res.data as IServiceCluster[])
+      .Get<IServiceCluster[]>(`ServiceCluster/full`)
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new ServiceCluster(this.#repoClient, t.id, t));
       });
@@ -51,8 +51,10 @@ export class ServiceClusters implements IClassServiceClusters {
       );
 
     return await this.#repoClient
-      .Get(`ServiceCluster/full?filter=(${encodeURIComponent(arg.filter)})`)
-      .then((res) => res.data as IServiceCluster[])
+      .Get<IServiceCluster[]>(
+        `ServiceCluster/full?filter=(${encodeURIComponent(arg.filter)})`
+      )
+      .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new ServiceCluster(this.#repoClient, t.id, t));
       });
@@ -64,7 +66,7 @@ export class ServiceClusters implements IClassServiceClusters {
 
     const serviceClusters = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
-      serviceClusters.map((sc: IClassServiceCluster) =>
+      serviceClusters.map((sc) =>
         sc.remove().then((s) => ({ id: sc.details.id, status: s }))
       )
     );
@@ -75,7 +77,7 @@ export class ServiceClusters implements IClassServiceClusters {
     urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
-      .Post(urlBuild.getUrl(), {})
-      .then((res) => res.data as ISelection);
+      .Post<ISelection>(urlBuild.getUrl(), {})
+      .then((res) => res.data);
   }
 }
