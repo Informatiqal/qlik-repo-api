@@ -1,6 +1,10 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { modifiedDateTime } from "./util/generic";
-import { IVirtualProxyConfig, IVirtualProxyUpdate } from "./types/interfaces";
+import { AddRemoveSet, modifiedDateTime } from "./util/generic";
+import {
+  IUpdateVirtualProxyOptions,
+  IVirtualProxyConfig,
+  IVirtualProxyUpdate,
+} from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 import {
   IServerNodeConfiguration,
@@ -18,7 +22,10 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassVirtualProxy {
   remove(): Promise<IHttpStatus>;
-  update(arg: IVirtualProxyUpdate): Promise<IVirtualProxyConfig>;
+  update(
+    arg: IVirtualProxyUpdate,
+    options?: IUpdateVirtualProxyOptions
+  ): Promise<IVirtualProxyConfig>;
   metadataExport(arg?: { fileName: string }): Promise<Buffer>;
   details: IVirtualProxyConfig;
 }
@@ -53,7 +60,10 @@ export class VirtualProxy implements IClassVirtualProxy {
       .then((res) => res.status);
   }
 
-  public async update(arg: IVirtualProxyUpdate) {
+  public async update(
+    arg: IVirtualProxyUpdate,
+    options?: IUpdateVirtualProxyOptions
+  ) {
     this.details.modifiedDate = modifiedDateTime();
     if (arg.prefix) this.details.prefix = arg.prefix;
     if (arg.description) this.details.description = arg.description;
@@ -62,9 +72,14 @@ export class VirtualProxy implements IClassVirtualProxy {
     if (arg.authenticationModuleRedirectUri)
       this.details.authenticationModuleRedirectUri =
         arg.authenticationModuleRedirectUri;
+
     if (arg.websocketCrossOriginWhiteList)
-      this.details.websocketCrossOriginWhiteList =
-        arg.websocketCrossOriginWhiteList;
+      this.details.websocketCrossOriginWhiteList = AddRemoveSet(
+        options?.whitelistOperation,
+        this.details.websocketCrossOriginWhiteList,
+        arg.websocketCrossOriginWhiteList
+      );
+
     if (arg.additionalResponseHeaders)
       this.details.additionalResponseHeaders = arg.additionalResponseHeaders;
     if (arg.anonymousAccessMode)
@@ -157,7 +172,7 @@ export class VirtualProxy implements IClassVirtualProxy {
         arg.oidcAttributeMap
       );
 
-    const updateCommon = new UpdateCommonProperties(
+    const updateCommon = new UpdateCommonProperties<IVirtualProxyConfig>(
       this.#repoClient,
       this.details,
       arg,
@@ -190,7 +205,7 @@ export class VirtualProxy implements IClassVirtualProxy {
   private async parseLoadBalancingNodes(
     nodes: string[]
   ): Promise<IServerNodeConfigurationCondensed[]> {
-    let existingNodes = await this.#repoClient
+    const existingNodes = await this.#repoClient
       .Get<IServerNodeConfiguration[]>(`servernodeconfiguration/full`)
       .then((res) => res.data)
       .then((data) => {

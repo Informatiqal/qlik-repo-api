@@ -93,9 +93,18 @@ export interface ISelection {
 }
 
 export interface IUpdateObjectOptions {
-  appendCustomProps?: boolean;
-  appendTags?: boolean;
-  test?: string;
+  // appendCustomProps?: boolean;
+  // appendTags?: boolean;
+  customPropertyOperations?: TAddRemoveSet;
+  tagOperations?: TAddRemoveSet;
+}
+
+export interface IUpdateVirtualProxyOptions extends IUpdateObjectOptions {
+  whitelistOperation?: "set" | "add" | "remove";
+}
+
+export interface IUpdateProxyOptions extends IUpdateObjectOptions {
+  virtualProxyOperation?: "set" | "add" | "remove";
 }
 
 export interface IAppUpdate {
@@ -908,7 +917,7 @@ export interface IVirtualProxyCreate {
   authenticationModuleRedirectUri?: string;
   windowsAuthenticationEnabledDevicePattern?: string;
   loadBalancingServerNodes?: string[];
-  websocketCrossOriginWhiteList?: string;
+  websocketCrossOriginWhiteList?: string[];
   additionalResponseHeaders?: string;
   anonymousAccessMode?: "No anonymous" | "Allow anonymous" | "Always anonymous";
   authenticationMethod?:
@@ -1125,7 +1134,7 @@ export interface IVirtualProxyConfig extends IVirtualProxyConfigCondensed {
   modifiedDate?: string;
   modifiedByUserName?: string;
   schemaPath?: string;
-  customProperties: ICustomPropertyCondensed;
+  customProperties: ICustomPropertyValue[];
 }
 
 export interface IProxyServiceSettingsLogVerbosity {
@@ -1932,3 +1941,5 @@ export interface ChangesSinceOutputCondensed {
     [k: string]: any;
   };
 }
+
+export type TAddRemoveSet = "add" | "remove" | "set";

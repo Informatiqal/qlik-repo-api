@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2022-12-XX
+
+- options for update methods (mostly) now accepts `tagOperations` and `customPropertyOperations` = `set`/`remove`/`add`. Control the behavior of the update operation for tags and custom properties
+
+## [0.3.0] - 2022-10-19
+
+- internal change related to generics usage when calling `qlik-rest-api` methods. Related to [qlik-rest-api#81](https://github.com/Informatiqal/qlik-rest-api/issues/81)
+
 ## [0.2.21] - 2022-05-15
 
 - [fix] `serviceStatus.getAll` is returning the `full` data [#101](https://github.com/Informatiqal/qlik-repo-api/issues/101)

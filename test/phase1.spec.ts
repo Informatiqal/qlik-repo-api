@@ -416,4 +416,169 @@ describe("Phase1", function () {
 
     expect(monitoringApps.length).to.be.greaterThan(0);
   });
+
+  /**
+   * Test add/remove/set options when updating custom prop for an entity
+   * https://github.com/Informatiqal/qlik-repo-api/wiki/Options
+   */
+  it("Custom properties operations", async function () {
+    const newUserConfig = {
+      userDirectory: "TESTING",
+      userId: helpers.uuidString(),
+    };
+
+    const newCustomProperty = await repoApi.customProperties.create({
+      name: helpers.uuidString(),
+      choiceValues: [
+        helpers.uuid(),
+        helpers.uuid(),
+        helpers.uuid(),
+        helpers.uuid(),
+        helpers.uuid(),
+      ],
+      objectTypes: ["User"],
+    });
+    const newUser = await repoApi.users.create(newUserConfig);
+
+    // without options the default behavior will be to "set" the values
+    const updateUserCPSetDefault = await newUser.update({
+      customProperties: [
+        `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[0]}`,
+      ],
+    });
+
+    // explicitly set custom properties
+    const updateUserCPSet = await newUser.update(
+      {
+        customProperties: [
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[1]}`,
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[2]}`,
+        ],
+      },
+      {
+        customPropertyOperations: "set",
+      }
+    );
+
+    const updateUserCPSetRemove = await newUser.update(
+      {
+        customProperties: [
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[1]}`,
+        ],
+      },
+      {
+        customPropertyOperations: "remove",
+      }
+    );
+
+    const updateUserCPSetAdd = await newUser.update(
+      {
+        customProperties: [
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[0]}`,
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[1]}`,
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[3]}`,
+          `${newCustomProperty.details.name}=${newCustomProperty.details.choiceValues[4]}`,
+        ],
+      },
+      {
+        customPropertyOperations: "add",
+      }
+    );
+
+    const deleteNewUser = await newUser.remove();
+    const deleteCP = await newCustomProperty.remove();
+
+    expect(newUser.details.userDirectory).to.be.equal("TESTING") &&
+      expect(updateUserCPSetDefault.customProperties.length).to.be.equal(1) &&
+      expect(updateUserCPSetDefault.customProperties[0].value).to.be.equal(
+        newCustomProperty.details.choiceValues[0]
+      ) &&
+      expect(updateUserCPSet.customProperties.length).to.be.equal(2) &&
+      expect(updateUserCPSetRemove.customProperties.length).to.be.equal(1) &&
+      expect(updateUserCPSetRemove.customProperties[0].value).to.be.equal(
+        newCustomProperty.details.choiceValues[2]
+      ) &&
+      expect(updateUserCPSetAdd.customProperties.length).to.be.equal(5) &&
+      expect(deleteNewUser).to.be.equal(204);
+    expect(deleteCP).to.be.equal(204);
+  });
+
+  /**
+   * Test add/remove/set options when updating tags for an entity
+   * https://github.com/Informatiqal/qlik-repo-api/wiki/Options
+   */
+  it("Tags operations", async function () {
+    const newUserConfig = {
+      userDirectory: "TESTING",
+      userId: helpers.uuidString(),
+    };
+
+    const tags = await Promise.all(
+      [...Array(5)].map(async (x) => {
+        return await repoApi.tags.create({
+          name: helpers.uuidString(),
+        });
+      })
+    );
+
+    const newUser = await repoApi.users.create(newUserConfig);
+
+    // without options the default behavior will be to "set" the values
+    const updateUserTagSetDefault = await newUser.update({
+      tags: [tags[0].details.name],
+    });
+
+    // explicitly set tags
+    const updateUserTagSet = await newUser.update(
+      {
+        tags: [tags[1].details.name, tags[2].details.name],
+      },
+      {
+        tagOperations: "set",
+      }
+    );
+
+    const updateUserTagSetRemove = await newUser.update(
+      {
+        tags: [tags[1].details.name],
+      },
+      {
+        tagOperations: "remove",
+      }
+    );
+
+    const updateUserTagSetAdd = await newUser.update(
+      {
+        tags: [
+          tags[0].details.name,
+          tags[1].details.name,
+          tags[3].details.name,
+          tags[4].details.name,
+        ],
+      },
+      {
+        tagOperations: "add",
+      }
+    );
+
+    const deleteNewUser = await newUser.remove();
+    const deleteTags = await Promise.all(tags.map((tag) => tag.remove())).then(
+      (responses) => responses.reduce((prev, curr) => prev + curr)
+    );
+
+    expect(newUser.details.userDirectory).to.be.equal("TESTING") &&
+      expect(updateUserTagSetDefault.tags.length).to.be.equal(1) &&
+      expect(updateUserTagSetDefault.tags[0].name).to.be.equal(
+        tags[0].details.name
+      ) &&
+      expect(updateUserTagSet.tags.length).to.be.equal(2) &&
+      expect(updateUserTagSetRemove.tags.length).to.be.equal(1) &&
+      expect(updateUserTagSetRemove.tags[0].name).to.be.equal(
+        tags[2].details.name
+      ) &&
+      expect(updateUserTagSetAdd.tags.length).to.be.equal(5) &&
+      expect(deleteNewUser).to.be.equal(204) &&
+      // 5 remove request each returning status 204 = 1020
+      expect(deleteTags).to.be.equal(1020);
+  });
 });

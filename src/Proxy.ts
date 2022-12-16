@@ -4,7 +4,9 @@ import {
   IProxyService,
   IProxyUpdate,
   IVirtualProxyConfigCondensed,
+  IUpdateProxyOptions,
 } from "./types/interfaces";
+import { AddRemoveSet } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export interface IClassProxy {
@@ -39,7 +41,7 @@ export class Proxy implements IClassProxy {
     }
   }
 
-  public async update(arg: IProxyUpdate, options?: IUpdateObjectOptions) {
+  public async update(arg: IProxyUpdate, options?: IUpdateProxyOptions) {
     this.validateRanges(arg);
 
     if (arg.listenPort) this.details.settings.listenPort = arg.listenPort;
@@ -68,7 +70,9 @@ export class Proxy implements IClassProxy {
       this.details.settings.kerberosAuthentication = arg.kerberosAuthentication;
     if (!arg.virtualProxies) this.details.settings.virtualProxies = [];
     if (arg.virtualProxies)
-      this.details.settings.virtualProxies = await this.parseVirtualProxies(
+      AddRemoveSet(
+        options?.virtualProxyOperation,
+        this.details.settings.virtualProxies,
         arg.virtualProxies
       );
 

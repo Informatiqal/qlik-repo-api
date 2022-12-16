@@ -73,3 +73,19 @@ export function getRuleContext(context: TSystemRuleContext) {
     `systemRule.update: "${context}" is not a valid context. Valid context values are "both", "BothQlikSenseAndQMC", "hub" and "qmc"`
   );
 }
+
+export function AddRemoveSet(
+  optionsOperation: "set" | "add" | "remove",
+  detailsValues: any,
+  arg: any
+) {
+  if (arg && !optionsOperation) return arg;
+
+  if (optionsOperation == "set") return arg;
+
+  if (optionsOperation == "add")
+    return Array.from(new Set([...detailsValues, ...arg]));
+
+  if (optionsOperation == "remove")
+    return detailsValues.filter((l) => !arg.includes(l));
+}

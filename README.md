@@ -1,10 +1,10 @@
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T0148ZP)
-
-**NOT AFFILIATED WITH QLIK**
-
 # Qlik Sense Repo API (Beta)
 
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T0148ZP)
+
 Node.js/browser package to interact with Qlik Sense Repository API (QSEoW)
+
+## NOT AFFILIATED WITH QLIK
 
 ## Please check out the [Wiki section](https://github.com/Informatiqal/qlik-repo-api/wiki) for details and examples
 
@@ -27,6 +27,7 @@ But multiple authentication configuration can be provided:
 ## Initialization
 
 - JWT
+
   ```javascript
   const repoApi = new QlikRepoApi.client({
     host: "my-sense-server.com",
@@ -36,6 +37,7 @@ But multiple authentication configuration can be provided:
     },
   });
   ```
+
 - Certificates
 
   ```javascript

@@ -11,8 +11,9 @@ import {
   IStreamUpdate,
   ISystemRuleCreate,
   ICustomPropertyValue,
+  TAddRemoveSet,
 } from "../types/interfaces";
-export class UpdateCommonProperties {
+export class UpdateCommonProperties<T> {
   private qlikUtil: QlikRepositoryClient;
   private customPropertiesClass: IClassCustomProperties;
   private tagsClass: IClassTags;
@@ -23,18 +24,18 @@ export class UpdateCommonProperties {
     | ISystemRuleCreate
     | ITaskCreate;
   public obj: any;
-  private appendCustomProps: boolean;
-  private appendTags: boolean;
-  private options: {
-    appendCustomProps?: boolean;
-    appendTags?: boolean;
-    test?: string;
-  };
+  private customPropertyOperations?: TAddRemoveSet;
+  private tagOperations?: TAddRemoveSet;
+  // private options: {
+  //   test?: string;
+  //   customPropertyOperations?: TAddRemoveSet;
+  //   tagOperations?: TAddRemoveSet;
+  // };
   private tagsPath = "tags";
   private customPropertiesPath = "customProperties";
   constructor(
     qlikUtil: QlikRepositoryClient,
-    obj: any,
+    obj: T,
     arg:
       | IUserUpdate
       | IAppUpdate
@@ -42,31 +43,33 @@ export class UpdateCommonProperties {
       | ISystemRuleCreate
       | ITaskCreate,
     options?: {
-      appendCustomProps?: boolean;
-      appendTags?: boolean;
       test?: string;
+      customPropertyOperations?: TAddRemoveSet;
+      tagOperations?: TAddRemoveSet;
     }
   ) {
     this.qlikUtil = qlikUtil;
     this.obj = obj;
     this.arg = arg;
-    this.options = options;
+    // this.options = options;
     this.customPropertiesClass = new CustomProperties(this.qlikUtil);
     this.tagsClass = new Tags(this.qlikUtil);
 
     if (!options) {
-      this.appendCustomProps = false;
-      this.appendTags = false;
+      this.customPropertyOperations = "set";
+      this.tagOperations = "set";
     }
 
     if (options) {
-      this.appendTags = options.hasOwnProperty("appendCustomProps")
-        ? options.appendCustomProps
-        : false;
+      this.customPropertyOperations = options.hasOwnProperty(
+        "customPropertyOperations"
+      )
+        ? options.customPropertyOperations
+        : "set";
 
-      this.appendTags = options.hasOwnProperty("appendTags")
-        ? options.appendTags
-        : false;
+      this.tagOperations = options.hasOwnProperty("tagOperations")
+        ? options.tagOperations
+        : "set";
 
       if (options.test) {
         this.tagsPath = `${options.test}}.${this.tagsPath}`;
@@ -81,7 +84,7 @@ export class UpdateCommonProperties {
     // this.obj.customProperties = [];
     if (this.arg.customProperties && this.arg.customProperties.length > 0) {
       // overwriting the existing (if any) custom properties
-      if (this.appendCustomProps == false) {
+      if (this.customPropertyOperations == "set") {
         // get the custom properties values
         // if the custom property do not exists - throw an error
         const c = await Promise.all<ICustomPropertyValue>(
@@ -112,7 +115,7 @@ export class UpdateCommonProperties {
       }
 
       // append the values to the existing (if any) custom properties (no duplications)
-      if (this.appendCustomProps == true) {
+      if (this.customPropertyOperations == "add") {
         //get the values for the existing custom properties in the object
         const existingCustomPropsData = this.getProperty(
           this.customPropertiesPath,
@@ -159,6 +162,17 @@ export class UpdateCommonProperties {
           ...cpToAppend,
         ];
       }
+
+      if (this.customPropertyOperations == "remove") {
+        this.obj.customProperties = (
+          this.obj.customProperties as ICustomPropertyValue[]
+        ).filter(
+          (t) =>
+            !this.arg.customProperties.includes(
+              `${t.definition.name}=${t.value}`
+            )
+        );
+      }
     }
   }
 
@@ -169,7 +183,7 @@ export class UpdateCommonProperties {
 
     if (this.arg.tags && this.arg.tags.length > 0) {
       // overwriting the existing (if any) tags
-      if (this.appendTags == false) {
+      if (this.tagOperations == "set") {
         // get the tags objects for the tags that to be added
         // if the tag do not exists - throw an error
         // this.obj.tags =
@@ -191,7 +205,7 @@ export class UpdateCommonProperties {
       }
 
       // append the values to the existing (if any) tags (no duplications)
-      if (this.appendTags == true) {
+      if (this.tagOperations == "add") {
         //get the values for the existing tags in the object
         // this.obj = this.setProperty(this.obj, this.tagsPath, t);
         const existingTagsData = this.getProperty(this.tagsPath, this.obj);
@@ -222,6 +236,13 @@ export class UpdateCommonProperties {
 
         // append the new tags to the existing tags
         this.obj.tags = [...this.obj.tags, ...tagsToAppend];
+      }
+
+      // remove the provided tags from the existing ones
+      if (this.tagOperations == "remove") {
+        this.obj.tags = this.obj.tags.filter(
+          (t) => !this.arg.tags.includes(t.name)
+        );
       }
     }
   }

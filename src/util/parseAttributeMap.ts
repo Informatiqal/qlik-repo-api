@@ -46,28 +46,41 @@ export function parseSamlAttributeMap(
 export function parseAuthenticationMethod(
   authenticationMethod: string
 ): number {
-  if (authenticationMethod.toLowerCase() == "ticket") return 0;
-  if (authenticationMethod.toLowerCase() == "static") return 1;
-  if (authenticationMethod.toLowerCase() == "headerstaticuserdirectory")
-    return 1;
-  if (authenticationMethod.toLowerCase() == "dynamic") return 2;
-  if (authenticationMethod.toLowerCase() == "headerdynamicuserdirectory")
-    return 2;
-  if (authenticationMethod.toLowerCase() == "saml") return 3;
-  if (authenticationMethod.toLowerCase() == "jwt") return 4;
-
-  throw new Error(
-    `virtualProxy.create: "authenticationMethod" not found "${authenticationMethod}"`
-  );
+  switch (authenticationMethod.toLocaleLowerCase()) {
+    case "ticket":
+      return 0;
+    case "static":
+      return 1;
+    case "headerstaticuserdirectory":
+      return 1;
+    case "dynamic":
+      return 2;
+    case "headerdynamicuserdirectory":
+      return 2;
+    case "saml":
+      return 3;
+    case "jwt":
+      return 4;
+    default:
+      throw new Error(
+        `virtualProxy.create: "authenticationMethod" not found "${authenticationMethod}"`
+      );
+  }
 }
 
 export function parseSameSiteAttribute(sameSiteAttribute: string): number {
-  if (sameSiteAttribute.toLowerCase() == "no attribute") return 0;
-  if (sameSiteAttribute.toLowerCase() == "none") return 1;
-  if (sameSiteAttribute.toLowerCase() == "lax") return 2;
-  if (sameSiteAttribute.toLowerCase() == "strict") return 3;
-
-  return 0;
+  switch (sameSiteAttribute.toLowerCase()) {
+    case "no attribute":
+      return 0;
+    case "none":
+      return 1;
+    case "lax":
+      return 2;
+    case "strict":
+      return 3;
+    default:
+      return 0;
+  }
 }
 
 export function parseAnonymousAccessMode(anonymousAccessMode: string): number {
