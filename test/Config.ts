@@ -3,7 +3,9 @@ import path from "path";
 import https from "https";
 
 const dotEnvPath = path.resolve(".env");
-require("dotenv").config({ path: dotEnvPath });
+// require("dotenv").config({ path: dotEnvPath });
+import dotenv from "dotenv";
+dotenv.config({ path: dotEnvPath });
 
 import { QlikRepoApi } from "../src";
 

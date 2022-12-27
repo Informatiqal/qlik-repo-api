@@ -12,6 +12,9 @@ Node.js/browser package to interact with Qlik Sense Repository API (QSEoW)
 
 `npm install qlik-repo-api`
 
+> **Note**
+> Node version >= 16.0.0
+
 ## Authentication
 
 The package itself will **NOT** perform authentication. All authentication information is passed in the config (see next section).

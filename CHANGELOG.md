@@ -2,9 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.4.0] - 2022-12-XX
+## [0.4.1] - 2022-12-25
 
 - options for update methods (mostly) now accepts `tagOperations` and `customPropertyOperations` = `set`/`remove`/`add`. Control the behavior of the update operation for tags and custom properties
+- dependency updates
+- NodeJS version set to >= 16.0.0
 
 ## [0.3.0] - 2022-10-19
 
