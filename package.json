@@ -1,6 +1,6 @@
 {
   "name": "qlik-repo-api",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Interact with Qlik Sense Repository API (QSEoW)",
   "author": {
     "email": "info@informatiqal.com",
@@ -9,8 +9,9 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "start": "node dist/app.js",
     "prestart": "npm run build-tsc",
@@ -18,9 +19,13 @@
     "build": "rollup -c",
     "watch": "rollup -cw",
     "docs": "npx typedoc src/index.doc.ts --name \"Qlik Repo API\" --excludePrivate --hideGenerator --darkHighlightTheme dark-plus",
-    "test": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --require ts-node/register test/**/*.spec.ts --ignore test/playground.spec.ts",
+    "test": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --require ts-node/register test/**/*.spec.ts --loader=ts-node/esm --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --ignore test/playground.spec.ts",
     "test-badge": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --reporter .\\node_modules\\mocha-badge-generator\\src --reporter-options=badge_format=svg,badge_output=badge.svg --require ts-node/register test/**/*.spec.ts"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "engineStrict": true,
   "keywords": [
     "qlik",
     "sense",
@@ -49,23 +54,24 @@
   },
   "homepage": "https://informatiqal.com/qlik-repo-api/",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^10.0.1",
     "@types/chai": "4.3.4",
     "@types/mocha": "10.0.1",
-    "@types/node": "18.11.17",
+    "@types/node": "18.11.18",
     "chai": "4.3.7",
     "dotenv": "16.0.3",
+    "esm": "^3.2.25",
     "mocha": "10.2.0",
     "nyc": "15.1.0",
     "rollup": "3.8.1",
     "rollup-plugin-delete": "2.0.0",
-    "rollup-plugin-typescript2": "0.34.1",
     "ts-node": "10.9.1",
     "tslib": "2.4.1",
     "typedoc": "0.23.23",
-    "typescript": "4.6.4"
+    "typescript": "4.9.4"
   },
   "dependencies": {
     "name2mime": "^1.0.1",
-    "qlik-rest-api": "^1.6.0"
+    "qlik-rest-api": "^1.6.1"
   }
 }
