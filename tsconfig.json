@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "./dist",
-        "target": "ES2020",
+        "target": "ES6",
         "declaration": true,
         "module": "ES6",
         "noImplicitAny": false,
