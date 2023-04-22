@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.5.10] - 2023-04-XX
+## [0.5.1] - 2023-04-23
+
+- dependency updates (typescript 5)
+
+## [0.5.0] - 2023-04-23
 
 - Execution result endpoints implementation [#211](https://github.com/Informatiqal/qlik-repo-api/issues/211)
 
