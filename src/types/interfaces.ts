@@ -1550,14 +1550,6 @@ export interface ISchemaEvent extends ISchemaEventCondensed {
   userSyncTask: IExternalProgramTaskCondensed;
 }
 
-export interface IExecutionResultDetailCondensed {
-  privileges: string[];
-  detailsType: number;
-  id: string;
-  message: string;
-  detailCreatedDate: string;
-}
-
 export interface ITaskExecutionResult {
   id: string;
   privileges: string[];
@@ -1943,3 +1935,42 @@ export interface ChangesSinceOutputCondensed {
 }
 
 export type TAddRemoveSet = "add" | "remove" | "set";
+
+export interface IExecutionResultDetailCondensed {
+  id: string;
+  detailsType: number;
+  message: string;
+  detailCreatedDate: string;
+  privileges: string[];
+}
+
+export interface IExecutionResultDetail
+  extends IExecutionResultDetailCondensed {
+  createdDate: string;
+  modifiedByUserName: string;
+  schemaPath: string;
+  modifiedDate: string;
+}
+
+export interface IExecutionResult {
+  id: string;
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName: string;
+  taskID: string;
+  executionID: string;
+  appID: string;
+  executingNodeID: string;
+  executingNodeName: string;
+  status: number;
+  startTime: string;
+  stopTime: string;
+  duration: number;
+  fileReferenceID: string;
+  scriptLogAvailable: boolean;
+  details: IExecutionResultDetailCondensed[];
+  scriptLogLocation: string;
+  scriptLogSize: number;
+  privileges: string[];
+  schemaPath: string;
+}

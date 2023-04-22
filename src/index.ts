@@ -9,6 +9,7 @@ import { CustomProperties } from "./CustomProperties";
 import { DataConnections } from "./DataConnections";
 import { Engines } from "./Engines";
 import { Extensions } from "./Extensions";
+import { ExecutionResults } from "./ExecutionResults";
 import { License } from "./License";
 import { Nodes } from "./Nodes";
 import { Privileges } from "./Privileges";
@@ -38,6 +39,8 @@ export namespace QlikRepoApi {
     public repoClient: QlikRepositoryClient;
     /**
      * Instance of the underlying HTTP repo client but not bound to specific repository config
+     *
+     * Add /qrs in front of the required path
      */
     public genericRepoClient: QlikRepositoryClient;
     /**
@@ -89,6 +92,10 @@ export namespace QlikRepoApi {
      * /qrs/extension endpoints
      */
     public extensions: Extensions;
+    /**
+     * /qrs/executionresult endpoints
+     */
+    public executionResults: ExecutionResults;
     /**
      * /qrs/license endpoints
      */
@@ -178,13 +185,18 @@ export namespace QlikRepoApi {
       this.genericClient = new QlikGenericRestClient(genericConfig);
       this.genericClientWithPort = new QlikGenericRestClient(genericConfig);
 
+      // TODO: what is my purpose?
       let t = this.genericClientWithPort.configFull.baseUrl.split("/");
       t[2] = `${t[2]}:${this.repoClient.configFull.port}`;
       this.genericClientWithPort.configFull.baseUrl = t.join("/");
 
+      // const repoConfigPort = repoConfig.port;
       const genericRepoConfig = { ...repoConfig };
-      delete genericRepoConfig.port;
-      this.genericRepoClient = new QlikGenericRestClient(genericConfig);
+      // delete genericRepoConfig.port;
+      this.genericRepoClient = new QlikGenericRestClient({
+        ...genericConfig,
+        // port: repoConfigPort,
+      });
       this.about = new About(this.repoClient);
       this.apps = new Apps(
         this.repoClient,
@@ -201,6 +213,7 @@ export namespace QlikRepoApi {
       this.dataConnections = new DataConnections(this.repoClient);
       this.engines = new Engines(this.repoClient);
       this.extensions = new Extensions(this.repoClient);
+      this.executionResults = new ExecutionResults(this.repoClient);
       this.license = new License(this.repoClient);
       this.nodes = new Nodes(this.repoClient, this.genericClient);
       this.privileges = new Privileges(this.repoClient);

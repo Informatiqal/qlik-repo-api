@@ -15,6 +15,8 @@ export * from "./DataConnection";
 export * from "./DataConnections";
 export * from "./Engine";
 export * from "./Engines";
+export * from "./ExecutionResult";
+export * from "./ExecutionResults";
 export * from "./Extension";
 export * from "./Extensions";
 export * from "./ExternalTask";
