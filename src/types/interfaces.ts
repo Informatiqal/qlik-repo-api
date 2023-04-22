@@ -1,3 +1,4 @@
+import { ExecutionResultDetail } from "../ExecutionResultDetail";
 import {
   TRangeOf5,
   TRangeOf100,
@@ -1968,9 +1969,22 @@ export interface IExecutionResult {
   duration: number;
   fileReferenceID: string;
   scriptLogAvailable: boolean;
-  details: IExecutionResultDetailCondensed[];
+  details: ExecutionResultDetail[];
   scriptLogLocation: string;
   scriptLogSize: number;
   privileges: string[];
   schemaPath: string;
+}
+
+export interface IExecutionResultDetailCreate {
+  /**
+   * 0 - Error
+   * 
+   * 1 - Warning
+   * 
+   * 2 - Information
+   */
+  detailsType?: 0 | 1 | 2;
+  message?: string;
+  detailCreatedDate?: string;
 }

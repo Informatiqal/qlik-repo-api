@@ -1,5 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
+import { ExecutionResultDetail } from "./ExecutionResultDetail";
 import { IExecutionResult } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 
@@ -22,14 +23,38 @@ export class ExecutionResult implements IClassExecutionResult {
 
     this.#id = id;
     this.#repoClient = repoClient;
-    if (details) this.details = details;
+    if (details) {
+      if (details.details.length > 0) {
+        // TODO: "as any" should not be used here
+        details.details = details.details.map(
+          (d) =>
+            new ExecutionResultDetail(this.#repoClient, (d as any).id, d as any)
+        );
+      }
+      this.details = details;
+    }
   }
 
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
         .Get<IExecutionResult>(`executionresult/${this.#id}`)
-        .then((res) => res.data);
+        .then((res) => res.data)
+        .then((er) => {
+          // convert executionresult details into instance of ExecutionResultDetail
+          if (er.details.length > 0) {
+            er.details = er.details.map(
+              (d) =>
+                new ExecutionResultDetail(
+                  this.#repoClient,
+                  (d as any).id,
+                  d as any
+                )
+            );
+          }
+
+          return er;
+        });
     }
   }
 

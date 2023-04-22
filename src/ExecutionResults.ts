@@ -4,8 +4,11 @@ import {
   IEntityRemove,
   ISelection,
   IExecutionResult,
+  IExecutionResultDetail,
 } from "./types/interfaces";
 import { ExecutionResult } from "./ExecutionResult";
+import { ExecutionResultDetail } from "./ExecutionResultDetail";
+import { ExecutionResultDetails } from "./ExecutionResultDetails";
 
 export interface IClassExecutionResults {
   get(arg: { id: string }): Promise<ExecutionResult>;
@@ -21,8 +24,10 @@ export interface IClassExecutionResults {
 
 export class ExecutionResults implements IClassExecutionResults {
   #repoClient: QlikRepositoryClient;
+  executionResultDetails: ExecutionResultDetails;
   constructor(private mainRepoClient: QlikRepositoryClient) {
     this.#repoClient = mainRepoClient;
+    this.executionResultDetails = new ExecutionResultDetails(this.#repoClient);
   }
 
   public async get(arg: { id: string }) {
@@ -70,15 +75,21 @@ export class ExecutionResults implements IClassExecutionResults {
 
   public async removeFilter(arg: { filter: string }) {
     if (!arg.filter)
-      throw new Error(`executionresult.removeFilter: "filter" parameter is required`);
+      throw new Error(
+        `executionresult.removeFilter: "filter" parameter is required`
+      );
 
     const executionResults = await this.getFilter({ filter: arg.filter });
     if (executionResults.length == 0)
-      throw new Error(`executionResult.removeFilter: filter query return 0 items`);
+      throw new Error(
+        `executionResult.removeFilter: filter query return 0 items`
+      );
 
     return await Promise.all<IEntityRemove>(
       executionResults.map((executionResult) =>
-      executionResult.remove().then((s) => ({ id: executionResult.details.id, status: s }))
+        executionResult
+          .remove()
+          .then((s) => ({ id: executionResult.details.id, status: s }))
       )
     );
   }
@@ -91,4 +102,26 @@ export class ExecutionResults implements IClassExecutionResults {
       .Post<ISelection>(urlBuild.getUrl(), {})
       .then((res) => res.data);
   }
+
+  // public async detailsAll() {
+  //   return await this.#repoClient
+  //     .Get<IExecutionResultDetail[]>(`executionresult/detail/full`)
+  //     .then((res) => res.data)
+  //     .then((data) => {
+  //       return data.map(
+  //         (t) => new ExecutionResultDetail(this.#repoClient, t.id, t)
+  //       );
+  //     });
+  // }
+
+  // public async detailsFilter() {
+  //   return await this.#repoClient
+  //     .Get<IExecutionResultDetail[]>(`executionresult/detail/full`)
+  //     .then((res) => res.data)
+  //     .then((data) => {
+  //       return data.map(
+  //         (t) => new ExecutionResultDetail(this.#repoClient, t.id, t)
+  //       );
+  //     });
+  // }
 }
