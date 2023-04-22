@@ -1,3 +1,4 @@
+import { ExecutionResultDetail } from "../ExecutionResultDetail";
 import {
   TRangeOf5,
   TRangeOf100,
@@ -1550,14 +1551,6 @@ export interface ISchemaEvent extends ISchemaEventCondensed {
   userSyncTask: IExternalProgramTaskCondensed;
 }
 
-export interface IExecutionResultDetailCondensed {
-  privileges: string[];
-  detailsType: number;
-  id: string;
-  message: string;
-  detailCreatedDate: string;
-}
-
 export interface ITaskExecutionResult {
   id: string;
   privileges: string[];
@@ -1943,3 +1936,101 @@ export interface ChangesSinceOutputCondensed {
 }
 
 export type TAddRemoveSet = "add" | "remove" | "set";
+
+export interface IExecutionResultDetailCondensed {
+  id: string;
+  detailsType: number;
+  message: string;
+  detailCreatedDate: string;
+  privileges: string[];
+}
+
+export interface IExecutionResultDetail
+  extends IExecutionResultDetailCondensed {
+  createdDate: string;
+  modifiedByUserName: string;
+  schemaPath: string;
+  modifiedDate: string;
+}
+
+export interface IExecutionResult {
+  id: string;
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName: string;
+  taskID: string;
+  executionID: string;
+  appID: string;
+  executingNodeID: string;
+  executingNodeName: string;
+  status: number;
+  startTime: string;
+  stopTime: string;
+  duration: number;
+  fileReferenceID: string;
+  scriptLogAvailable: boolean;
+  details: ExecutionResultDetail[];
+  scriptLogLocation: string;
+  scriptLogSize: number;
+  privileges: string[];
+  schemaPath: string;
+}
+
+export interface IExecutionResultDetailCreate {
+  /**
+   * 0:Error
+   *
+   * 1: Warning
+   *
+   * 2: Information
+   */
+  detailsType?: 0 | 1 | 2;
+  message?: string;
+  detailCreatedDate?: string;
+}
+
+export interface IExecutionResultCreate {
+  taskID?: string;
+  appID?: string;
+  executingNodeID?: string;
+  executingNodeName?: string;
+  /**
+   * 0: NeverStarted
+   *
+   * 1: Triggered
+   *
+   * 2: Started
+   *
+   * 3: Queued
+   *
+   * 4: AbortInitiated
+   *
+   * 5: Aborting
+   *
+   * 6: Aborted
+   *
+   * 7: FinishedSuccess
+   *
+   * 8: FinishedFail
+   *
+   * 9: Skipped
+   *
+   * 10: Retry
+   *
+   * 11: Error
+   *
+   * 12: Reset
+   *
+   * 13: DistributionQueue
+   *
+   * 14: DistributionRunning
+   */
+  status?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
+  startTime?: string;
+  stopTime?: string;
+  duration?: number;
+  scriptLogAvailable?: boolean;
+  scriptLogLocation?: string;
+  scriptLogSize?: number;
+  details?: IExecutionResultDetailCreate[];
+}
