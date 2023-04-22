@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.10] - 2023-04-XX
+
+- Execution result endpoints implementation [#211](https://github.com/Informatiqal/qlik-repo-api/issues/211)
+
 ## [0.4.1] - 2022-12-25
 
 - options for update methods (mostly) now accepts `tagOperations` and `customPropertyOperations` = `set`/`remove`/`add`. Control the behavior of the update operation for tags and custom properties
@@ -50,7 +54,7 @@ All notable changes to this project will be documented in this file.
 
 - [added] `reloadTask.removeAllTriggers` and `externalTask.removeAllTriggers` methods are implemented
 
-- [fix[ `reloadTask.update` and `externalTask.update` will update the task name as well (`name` was missing from the logic)
+- [fix] `reloadTask.update` and `externalTask.update` will update the task name as well (`name` was missing from the logic)
 
 ## [0.2.13] - 2022-02-21
 
