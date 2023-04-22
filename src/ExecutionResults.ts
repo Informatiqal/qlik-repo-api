@@ -1,10 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { URLBuild } from "./util/generic";
+import { URLBuild, uuid } from "./util/generic";
 import {
   IEntityRemove,
   ISelection,
   IExecutionResult,
   IExecutionResultDetail,
+  IExecutionResultCreate,
 } from "./types/interfaces";
 import { ExecutionResult } from "./ExecutionResult";
 import { ExecutionResultDetail } from "./ExecutionResultDetail";
@@ -20,6 +21,8 @@ export interface IClassExecutionResults {
   count(): Promise<number>;
   removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
+  create(arg: IExecutionResultCreate): Promise<ExecutionResult>;
+  createMany(arg: IExecutionResultCreate[]): Promise<ExecutionResult[]>;
 }
 
 export class ExecutionResults implements IClassExecutionResults {
@@ -103,25 +106,40 @@ export class ExecutionResults implements IClassExecutionResults {
       .then((res) => res.data);
   }
 
-  // public async detailsAll() {
-  //   return await this.#repoClient
-  //     .Get<IExecutionResultDetail[]>(`executionresult/detail/full`)
-  //     .then((res) => res.data)
-  //     .then((data) => {
-  //       return data.map(
-  //         (t) => new ExecutionResultDetail(this.#repoClient, t.id, t)
-  //       );
-  //     });
-  // }
+  public async create(arg: IExecutionResultCreate) {
+    const a = { ...arg };
+    if (a.details) a.details = a.details.map((d) => ({ ...d, id: uuid() }));
 
-  // public async detailsFilter() {
-  //   return await this.#repoClient
-  //     .Get<IExecutionResultDetail[]>(`executionresult/detail/full`)
-  //     .then((res) => res.data)
-  //     .then((data) => {
-  //       return data.map(
-  //         (t) => new ExecutionResultDetail(this.#repoClient, t.id, t)
-  //       );
-  //     });
-  // }
+    return await this.#repoClient
+      .Post<IExecutionResult>(`/executionresult`, {
+        ...a,
+        id: uuid(),
+      })
+      .then((res) => res.data)
+      .then((t) => new ExecutionResult(this.#repoClient, t.id, t));
+  }
+
+  public async createMany(arg: IExecutionResultCreate[]) {
+    let a = { ...arg };
+
+    a = a.map((b) => {
+      if (b.details) b.details = b.details.map((d) => ({ ...d, id: uuid() }));
+      return b;
+    });
+
+    return await this.#repoClient
+      .Post<IExecutionResult[]>(
+        `/executionresult/many`,
+        arg.map((a) => ({
+          ...a,
+          id: uuid(),
+        }))
+      )
+      .then((res) => res.data)
+      .then((results) => {
+        return results.map(
+          (result) => new ExecutionResult(this.#repoClient, result.id, result)
+        );
+      });
+  }
 }

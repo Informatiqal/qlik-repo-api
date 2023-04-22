@@ -45,8 +45,8 @@ export class ExecutionResultDetail implements IClassExecutionResultDetail {
   public async update(arg: IExecutionResultDetailCreate) {
     this.details.modifiedDate = modifiedDateTime();
 
-    this.details.message = arg.message;
-    this.details.detailsType = arg.detailsType;
+    if (arg.message) this.details.message = arg.message;
+    if (arg.detailsType) this.details.detailsType = arg.detailsType;
 
     return await this.#repoClient
       .Put<IExecutionResultDetail>(`executionresult/detail/${this.#id}`, {

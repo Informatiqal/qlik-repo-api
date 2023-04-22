@@ -1,12 +1,12 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { modifiedDateTime } from "./util/generic";
 import { ExecutionResultDetail } from "./ExecutionResultDetail";
-import { IExecutionResult } from "./types/interfaces";
+import { IExecutionResult, IExecutionResultCreate } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 
 export interface IClassExecutionResult {
   remove(): Promise<IHttpStatus>;
-  update(arg: { name: string }): Promise<IExecutionResult>;
+  update(arg: IExecutionResultCreate): Promise<IExecutionResult>;
   details: IExecutionResult;
 }
 
@@ -64,8 +64,25 @@ export class ExecutionResult implements IClassExecutionResult {
       .then((res) => res.status);
   }
 
-  public async update(arg: { name: string }) {
+  public async update(arg: IExecutionResultCreate) {
     this.details.modifiedDate = modifiedDateTime();
+
+    // TODO: how to approach "details" property?
+    // TODO: to be tested. its not tested at all atm!
+    if (arg.appID) this.details.appID = arg.appID;
+    if (arg.duration) this.details.duration = arg.duration;
+    if (arg.executingNodeID) this.details.executingNodeID = arg.executingNodeID;
+    if (arg.executingNodeName)
+      this.details.executingNodeName = arg.executingNodeName;
+    if (arg.scriptLogAvailable)
+      this.details.scriptLogAvailable = arg.scriptLogAvailable;
+    if (arg.scriptLogLocation)
+      this.details.scriptLogLocation = arg.scriptLogLocation;
+    if (arg.scriptLogSize) this.details.scriptLogSize = arg.scriptLogSize;
+    if (arg.startTime) this.details.startTime = arg.startTime;
+    if (arg.status) this.details.status = arg.status;
+    if (arg.stopTime) this.details.stopTime = arg.stopTime;
+    if (arg.taskID) this.details.taskID = arg.taskID;
 
     return await this.#repoClient
       .Put<IExecutionResult>(`executionresult/${this.#id}`, {

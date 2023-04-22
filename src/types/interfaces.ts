@@ -1978,13 +1978,59 @@ export interface IExecutionResult {
 
 export interface IExecutionResultDetailCreate {
   /**
-   * 0 - Error
-   * 
-   * 1 - Warning
-   * 
-   * 2 - Information
+   * 0:Error
+   *
+   * 1: Warning
+   *
+   * 2: Information
    */
   detailsType?: 0 | 1 | 2;
   message?: string;
   detailCreatedDate?: string;
+}
+
+export interface IExecutionResultCreate {
+  taskID?: string;
+  appID?: string;
+  executingNodeID?: string;
+  executingNodeName?: string;
+  /**
+   * 0: NeverStarted
+   *
+   * 1: Triggered
+   *
+   * 2: Started
+   *
+   * 3: Queued
+   *
+   * 4: AbortInitiated
+   *
+   * 5: Aborting
+   *
+   * 6: Aborted
+   *
+   * 7: FinishedSuccess
+   *
+   * 8: FinishedFail
+   *
+   * 9: Skipped
+   *
+   * 10: Retry
+   *
+   * 11: Error
+   *
+   * 12: Reset
+   *
+   * 13: DistributionQueue
+   *
+   * 14: DistributionRunning
+   */
+  status?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14;
+  startTime?: string;
+  stopTime?: string;
+  duration?: number;
+  scriptLogAvailable?: boolean;
+  scriptLogLocation?: string;
+  scriptLogSize?: number;
+  details?: IExecutionResultDetailCreate[];
 }
