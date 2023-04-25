@@ -12,3 +12,4 @@ src/main.doc.ts
 test/Test.zip
 *.qvf
 .vscode/settings.json
+Notes.md

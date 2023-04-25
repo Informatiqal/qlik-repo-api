@@ -100,7 +100,7 @@ export namespace QlikRepoApi {
     /**
      * /qrs/executionsession endpoints
      */
-    public executionSessions: ExecutionSessions;    
+    public executionSessions: ExecutionSessions;
     /**
      * /qrs/license endpoints
      */
@@ -186,7 +186,6 @@ export namespace QlikRepoApi {
       this.repoClient = new QlikRepositoryClient(repoConfig);
 
       const genericConfig = { ...repoConfig };
-      delete genericConfig.port;
       this.genericClient = new QlikGenericRestClient(genericConfig);
       this.genericClientWithPort = new QlikGenericRestClient(genericConfig);
 
@@ -195,12 +194,9 @@ export namespace QlikRepoApi {
       t[2] = `${t[2]}:${this.repoClient.configFull.port}`;
       this.genericClientWithPort.configFull.baseUrl = t.join("/");
 
-      // const repoConfigPort = repoConfig.port;
-      const genericRepoConfig = { ...repoConfig };
-      // delete genericRepoConfig.port;
-      this.genericRepoClient = new QlikGenericRestClient({
+      this.genericRepoClient = new QlikRepositoryClient({
         ...genericConfig,
-        // port: repoConfigPort,
+        port: genericConfig.port || 4242,
       });
       this.about = new About(this.repoClient);
       this.apps = new Apps(
