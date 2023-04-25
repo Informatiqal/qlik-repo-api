@@ -19,6 +19,8 @@ export * from "./ExecutionResult";
 export * from "./ExecutionResults";
 export * from "./ExecutionResultDetail";
 export * from "./ExecutionResultDetails";
+export * from "./ExecutionSession";
+export * from "./ExecutionSessions";
 export * from "./Extension";
 export * from "./Extensions";
 export * from "./ExternalTask";

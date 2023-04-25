@@ -10,6 +10,7 @@ import { DataConnections } from "./DataConnections";
 import { Engines } from "./Engines";
 import { Extensions } from "./Extensions";
 import { ExecutionResults } from "./ExecutionResults";
+import { ExecutionSessions } from "./ExecutionSessions";
 import { License } from "./License";
 import { Nodes } from "./Nodes";
 import { Privileges } from "./Privileges";
@@ -96,6 +97,10 @@ export namespace QlikRepoApi {
      * /qrs/executionresult endpoints
      */
     public executionResults: ExecutionResults;
+    /**
+     * /qrs/executionsession endpoints
+     */
+    public executionSessions: ExecutionSessions;    
     /**
      * /qrs/license endpoints
      */
@@ -214,6 +219,7 @@ export namespace QlikRepoApi {
       this.engines = new Engines(this.repoClient);
       this.extensions = new Extensions(this.repoClient);
       this.executionResults = new ExecutionResults(this.repoClient);
+      this.executionSessions = new ExecutionSessions(this.repoClient);
       this.license = new License(this.repoClient);
       this.nodes = new Nodes(this.repoClient, this.genericClient);
       this.privileges = new Privileges(this.repoClient);

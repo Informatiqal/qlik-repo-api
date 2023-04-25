@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2023-04-25
+
+- Execution sessions endpoints implementation [#212](https://github.com/Informatiqal/qlik-repo-api/issues/212)
+
 ## [0.5.1] - 2023-04-23
 
 - dependency updates (typescript 5)

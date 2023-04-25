@@ -2034,3 +2034,29 @@ export interface IExecutionResultCreate {
   scriptLogSize?: number;
   details?: IExecutionResultDetailCreate[];
 }
+
+export interface IExecutingNode {
+  id: string;
+  privileges: string[];
+}
+
+export interface IExecutionSession {
+  id: string;
+  executingNode: IExecutingNode;
+  executionResult: IExecutionResult;
+  abortAt: string;
+  /**
+   * 0: Undefined
+   *
+   * 1: Manual
+   *
+   * 2: Timeout
+   *
+   * 3: DeletedTask
+   */
+  abortReason: number;
+  reloadTask: IExternalProgramTaskCondensed;
+  userSyncTask: IExternalProgramTaskCondensed;
+  externalProgramTask: IExternalProgramTaskCondensed;
+  privileges: string[];
+}
