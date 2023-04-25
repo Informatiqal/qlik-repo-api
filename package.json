@@ -43,7 +43,8 @@
     "CHANGELOG.md",
     "!tsconfig.json",
     "!tsconfig.test.json",
-    "!renovate.json"
+    "!renovate.json",
+    "!Notes.md"
   ],
   "repository": {
     "type": "git",
