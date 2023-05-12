@@ -59,7 +59,7 @@
     "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-typescript": "^11.1.0",
-    "@types/node": "18.16.0",
+    "@types/node": "20.1.3",
     "dotenv": "16.0.3",
     "esm": "^3.2.25",
     "nyc": "15.1.0",
@@ -67,12 +67,12 @@
     "rollup-plugin-delete": "2.0.0",
     "ts-node": "10.9.1",
     "tslib": "2.5.0",
-    "typedoc": "0.24.6",
+    "typedoc": "0.24.7",
     "typescript": "5.0.4",
     "vitest": "^0.31.0"
   },
   "dependencies": {
     "name2mime": "^1.0.1",
-    "qlik-rest-api": "^1.7.3"
+    "qlik-rest-api": "^1.7.5"
   }
 }
