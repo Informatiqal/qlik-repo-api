@@ -45,10 +45,15 @@ export class ExternalTasks implements IClassExternalTasks {
     return await this.#repoClient
       .Get<IExternalProgramTask[]>(`externalprogramtask/full`)
       .then((res) => res.data)
-      .then((data) => {
-        return data.map((t) => {
-          return new ExternalTask(this.#repoClient, t.id, t);
-        });
+      .then(async (data) => {
+        return await Promise.all(
+          data.map(async (t) => {
+            const task = new ExternalTask(this.#repoClient, t.id, t);
+            await task.init();
+
+            return task;
+          })
+        );
       });
   }
 
@@ -61,10 +66,15 @@ export class ExternalTasks implements IClassExternalTasks {
         `externalprogramtask/full?filter=(${encodeURIComponent(arg.filter)})`
       )
       .then((res) => res.data)
-      .then((data) => {
-        return data.map((t) => {
-          return new ExternalTask(this.#repoClient, t.id, t);
-        });
+      .then(async (data) => {
+        return Promise.all(
+          data.map(async (t) => {
+            const task = new ExternalTask(this.#repoClient, t.id, t);
+            await task.init();
+
+            return task;
+          })
+        );
       });
   }
 

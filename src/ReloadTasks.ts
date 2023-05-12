@@ -44,8 +44,15 @@ export class ReloadTasks implements IClassReloadTasks {
     return await this.#repoClient
       .Get<ITask[]>(`reloadtask/full`)
       .then((res) => res.data)
-      .then((data) => {
-        return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
+      .then(async (data) => {
+        return await Promise.all(
+          data.map(async (t) => {
+            const task = new ReloadTask(this.#repoClient, t.id, t);
+            await task.init();
+
+            return task;
+          })
+        );
       });
   }
 
@@ -65,17 +72,24 @@ export class ReloadTasks implements IClassReloadTasks {
         `reloadtask/full?filter=(${encodeURIComponent(arg.filter)})`
       )
       .then((res) => res.data)
-      .then((data) => {
-        return data.map((t) => new ReloadTask(this.#repoClient, t.id, t));
-      })
-      .then(async (rt) => {
-        return await Promise.all<ReloadTask>(
-          rt.map((r) => {
-            return r.init().then((r1) => r);
+      .then(async (data) => {
+        return await Promise.all(
+          data.map(async (t) => {
+            const task = new ReloadTask(this.#repoClient, t.id, t);
+            await task.init();
+
+            return task;
           })
         );
-      })
-      .then((r) => r);
+      });
+    // .then(async (rt) => {
+    //   return await Promise.all<ReloadTask>(
+    //     rt.map((r) => {
+    //       return r.init().then((r1) => r);
+    //     })
+    //   );
+    // })
+    // .then((r) => r);
   }
 
   public async count(arg?: { filter: string }) {

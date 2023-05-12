@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2023-05-11
+
 ## [0.6.1] - 2023-04-25
 
 - Not sure why port was deleted. It should not be [#213](https://github.com/Informatiqal/qlik-repo-api/issues/213)

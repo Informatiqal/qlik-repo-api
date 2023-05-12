@@ -9,6 +9,8 @@ export * from "./AppObjects";
 export * from "./Certificate";
 export * from "./ContentLibrary";
 export * from "./ContentLibraries";
+export * from "./CompositeTrigger";
+export * from "./CompositeTriggers";
 export * from "./CustomProperty";
 export * from "./CustomProperties";
 export * from "./DataConnection";
@@ -50,8 +52,11 @@ export * from "./Tags";
 export * from "./Task";
 export * from "./Tasks";
 export * from "./ReloadTask";
+export * from "./ReloadTaskBase";
+export * from "./ReloadTaskBase_Triggers";
 export * from "./Notification";
 export { IClassReloadTaskBase } from "./ReloadTaskBase";
+export { ReloadTaskBaseTriggersActions } from "./ReloadTaskBase_Triggers";
 export * from "./ReloadTasks";
 export * from "./ExternalTask";
 export * from "./ExternalTasks";
@@ -62,7 +67,9 @@ export * from "./UserDirectories";
 export * from "./VirtualProxies";
 export * from "./VirtualProxy";
 export * from "./SchemaTrigger";
+export * from "./SchemaTriggers";
 export * from "./CompositeTrigger";
+export * from "./CompositeTriggers";
 export {
   IHttpReturn,
   IConfig,

@@ -42,7 +42,6 @@ export class App implements IClassApp {
 
   async init() {
     if (!this.details) {
-      let a = this.#id;
       this.details = await this.#repoClient
         .Get<IApp>(`app/${this.#id}`)
         .then((res) => res.data);
@@ -69,7 +68,7 @@ export class App implements IClassApp {
       .then((response) => response.data)
       .then((data) => data.downloadPath.replace("/tempcontent", "tempcontent"));
 
-    return await this.#genericClientWithPort
+    return await this.#genericClient
       .Get<Buffer>(downloadPath, "", "arraybuffer")
       .then((r) => ({
         file: r.data,
