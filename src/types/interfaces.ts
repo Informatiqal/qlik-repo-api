@@ -1403,7 +1403,7 @@ export type TaskIdOrFilter =
   | { id: string; filter?: never }
   | { id?: never; filter: string };
 
-type EventTasks = {
+export type EventTasks = {
   state: TTaskTriggerCompositeState;
   // taskType?: TaskType;
 } & TaskIdOrFilter;
