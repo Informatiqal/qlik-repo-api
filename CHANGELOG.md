@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.7.0] - 2023-05-11
+## [0.7.0] - 2023-05-12
+
+- Add composite and schema triggers methods [#69](https://github.com/Informatiqal/qlik-repo-api/issues/69)
+- refactor a bit the reload task base class in regards to the new composite and schema triggers
+- `vitest` replaced `mocha` and `chai`
 
 ## [0.6.1] - 2023-04-25
 
