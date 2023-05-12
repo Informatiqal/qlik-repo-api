@@ -1,6 +1,6 @@
 {
   "name": "qlik-repo-api",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Interact with Qlik Sense Repository API (QSEoW)",
   "author": {
     "email": "info@informatiqal.com",
@@ -19,7 +19,7 @@
     "build": "rollup -c",
     "watch": "rollup -cw",
     "docs": "npx typedoc src/index.doc.ts --name \"Qlik Repo API\" --excludePrivate --hideGenerator --darkHighlightTheme dark-plus",
-    "test": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --require ts-node/register test/**/*.spec.ts --loader=ts-node/esm --no-warnings=ExperimentalWarning --experimental-specifier-resolution=node --ignore test/playground.spec.ts",
+    "test": "vitest run",
     "test-badge": "set TS_NODE_PROJECT=tsconfig.test.json&mocha --reporter .\\node_modules\\mocha-badge-generator\\src --reporter-options=badge_format=svg,badge_output=badge.svg --require ts-node/register test/**/*.spec.ts"
   },
   "engines": {
@@ -55,21 +55,21 @@
   },
   "homepage": "https://informatiqal.com/qlik-repo-api/",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.1.0",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-typescript": "^11.1.0",
-    "@types/chai": "4.3.4",
-    "@types/mocha": "10.0.1",
     "@types/node": "18.16.0",
-    "chai": "4.3.7",
     "dotenv": "16.0.3",
     "esm": "^3.2.25",
-    "mocha": "10.2.0",
     "nyc": "15.1.0",
     "rollup": "3.21.0",
     "rollup-plugin-delete": "2.0.0",
     "ts-node": "10.9.1",
     "tslib": "2.5.0",
     "typedoc": "0.24.6",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "vitest": "^0.31.0"
   },
   "dependencies": {
     "name2mime": "^1.0.1",

@@ -6,6 +6,7 @@ import { AppObjects } from "./AppObjects";
 import { Certificate } from "./Certificate";
 import { ContentLibraries } from "./ContentLibraries";
 import { CustomProperties } from "./CustomProperties";
+import { CompositeTriggers } from "./CompositeTriggers";
 import { DataConnections } from "./DataConnections";
 import { Engines } from "./Engines";
 import { Extensions } from "./Extensions";
@@ -16,6 +17,7 @@ import { Nodes } from "./Nodes";
 import { Privileges } from "./Privileges";
 import { Proxies } from "./Proxies";
 import { Schedulers } from "./Schedulers";
+import { SchemaTriggers } from "./SchemaTriggers";
 import { ServiceClusters } from "./ServiceClusters";
 import { ServiceStatus } from "./ServiceStatus";
 import { Selections } from "./Selections";
@@ -82,6 +84,10 @@ export namespace QlikRepoApi {
      */
     public customProperties: CustomProperties;
     /**
+     * /qrs/compositEevent endpoints
+     */
+    public compositeTriggers: CompositeTriggers;
+    /**
      * /qrs/dataConnection endpoints
      */
     public dataConnections: DataConnections;
@@ -125,6 +131,10 @@ export namespace QlikRepoApi {
      * /qrs/schedulerService endpoints
      */
     public schedulerServices: Schedulers;
+    /**
+     * /qrs/schemaevent endpoints
+     */
+    public schemaTriggers: SchemaTriggers;
     /**
      * /qrs/serviceCluster endpoints
      */
@@ -211,6 +221,7 @@ export namespace QlikRepoApi {
         this.genericClient
       );
       this.customProperties = new CustomProperties(this.repoClient);
+      this.compositeTriggers = new CompositeTriggers(this.repoClient);
       this.dataConnections = new DataConnections(this.repoClient);
       this.engines = new Engines(this.repoClient);
       this.extensions = new Extensions(this.repoClient);
@@ -220,6 +231,7 @@ export namespace QlikRepoApi {
       this.nodes = new Nodes(this.repoClient, this.genericClient);
       this.privileges = new Privileges(this.repoClient);
       this.proxies = new Proxies(this.repoClient, this.nodes);
+      this.schemaTriggers = new SchemaTriggers(this.repoClient);
       this.schedulerServices = new Schedulers(this.repoClient);
       this.serviceClusters = new ServiceClusters(this.repoClient);
       this.serviceStatus = new ServiceStatus(this.repoClient);

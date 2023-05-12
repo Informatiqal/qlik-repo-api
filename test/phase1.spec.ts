@@ -1,25 +1,22 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 import fs from "fs";
-import chai from "chai";
+import { describe, it, expect } from "vitest";
 import { Config, Helpers } from "./Config";
 
-const expect = chai.expect;
 const config = new Config();
 const repoApi = config.repoApi;
 const repoApiJWT = config.repoApiJWT;
 
 const helpers = new Helpers();
 
+// TODO: low priority but split the tests into different files or test sections
 /**
  * Phase1 tests:
  * About, App, Content library, Custom property, Engine,
  * Extension, Stream, System rule, Table, Tag, Task, User
  */
 describe("Phase1", function () {
-  this.timeout(30000);
-  this.slow(1000);
-
   /**
    * Get about
    * Used methods: about.get
@@ -275,47 +272,40 @@ describe("Phase1", function () {
     const appName = helpers.uuid();
     const qvf = fs.readFileSync(`${process.env.IMPORT_APP_FILE}`);
     const uploadedApp = await repoApi.apps.upload({ name: appName, file: qvf });
-
     const newReloadTask1 = await repoApi.reloadTasks.create({
       name: "New reload task 1",
       appId: uploadedApp.details.id,
     });
-
     const newReloadTask2 = await repoApi.reloadTasks.create({
       name: "New reload task 2",
       appId: uploadedApp.details.id,
     });
-
-    await newReloadTask2.addTriggerComposite({
+    await newReloadTask2.triggers.addComposite({
       name: "Reload on task event",
       eventTasks: [
         {
+          id: `${newReloadTask1.details.id}`,
           state: "success",
-          id: newReloadTask1.details.id,
         },
       ],
     });
-
-    await newReloadTask2.addTriggerSchema({
+    await newReloadTask2.triggers.addSchema({
       name: "Reload every day",
       repeat: "Daily",
       repeatEvery: 1,
     });
-
     const allTasksCountBefore = await repoApi.tasks
       .getAll()
       .then((t) => t.length);
-
-    await newReloadTask2.triggersDetails[0].remove();
-    // await newReloadTask2.triggersDetails[1].remove();
+    await Promise.all(newReloadTask2.triggers.details.map((t) => t.remove()));
     await newReloadTask1.remove();
     await newReloadTask2.remove();
     await uploadedApp.remove();
-
     const allTasksCountAfter = await repoApi.tasks
       .getAll()
       .then((t) => t.length);
 
+    // TODO: add more checks. Simple count is not enough. The actual data should be checked as well
     expect(allTasksCountBefore).to.be.greaterThan(allTasksCountAfter);
   });
 
@@ -325,24 +315,21 @@ describe("Phase1", function () {
       path: "c:\\ProgramFiles\\Qlik\\Sense\\ServiceDispatcher\\Node\\node.exe",
       parameters: "d:\\dev\\temp\\index.js",
     });
-
-    await newExternalTask.addTriggerSchema({
+    await newExternalTask.triggers.addSchema({
       name: "Reload every day",
       repeat: "Daily",
       repeatEvery: 1,
     });
-
     const allTasksCountBefore = await repoApi.tasks
       .getAll()
       .then((t) => t.length);
-
-    await newExternalTask.triggersDetails[0].remove();
+    await newExternalTask.triggers.details[0].remove();
     await newExternalTask.remove();
-
     const allTasksCountAfter = await repoApi.tasks
       .getAll()
       .then((t) => t.length);
 
+    // TODO: add more checks. Simple count is not enough. The actual data should be checked as well
     expect(allTasksCountBefore).to.be.greaterThan(allTasksCountAfter);
   });
 

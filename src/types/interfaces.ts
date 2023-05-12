@@ -1393,14 +1393,36 @@ export interface ITaskExternalUpdate {
   parameters?: string;
 }
 
-export interface ITaskCreateTriggerComposite {
-  enabled?: boolean;
+export type TaskType = "reload" | "userSync" | "external";
+export type TaskTypeFull =
+  | "reloadTask"
+  | "userSyncTask"
+  | "externalProgramTask";
+
+export type TaskIdOrFilter =
+  | { id: string; filter?: never }
+  | { id?: never; filter: string };
+
+type EventTasks = {
+  state: TTaskTriggerCompositeState;
+  // taskType?: TaskType;
+} & TaskIdOrFilter;
+
+export interface ITaskCreateTriggerCompositeBase {
   name: string;
-  eventTasks: {
-    id?: string;
-    name?: string;
-    state: TTaskTriggerCompositeState;
-  }[];
+  eventTasks: EventTasks[];
+  enabled?: boolean;
+  timeConstraint?: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  };
+}
+
+export interface ITaskCreateTriggerComposite
+  extends ITaskCreateTriggerCompositeBase {
+  task: TaskIdOrFilter;
 }
 
 export interface ITaskUpdateTriggerComposite {
@@ -1415,7 +1437,7 @@ export interface ITaskUpdateTriggerComposite {
   /**
    * (Composite events) Array of Reload task(s) on which this trigger is depending
    */
-  eventTasks?: {
+  eventTask?: {
     /**
      * Reload task ID
      */
@@ -1431,7 +1453,7 @@ export interface ITaskUpdateTriggerComposite {
   }[];
 }
 
-export interface ITaskCreateTriggerSchema {
+export interface ITaskCreateTriggerSchemaBase {
   // reloadTaskId: string;
   enabled?: boolean;
   name: string;
@@ -1443,6 +1465,10 @@ export interface ITaskCreateTriggerSchema {
   daysOfMonth?: TDaysOfMonth[];
   timeZone?: TTimeZones;
   daylightSavingTime?: boolean;
+}
+
+export interface ITaskCreateTriggerSchema extends ITaskCreateTriggerSchemaBase {
+  task: TaskIdOrFilter;
 }
 
 export interface ITaskUpdateTriggerSchema {

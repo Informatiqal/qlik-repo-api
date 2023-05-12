@@ -49,9 +49,9 @@ export class CompositeTrigger implements IClassCompositeTrigger {
   async update(arg: ITaskUpdateTriggerComposite) {
     if (arg.enabled) this.details.enabled = arg.enabled;
     if (arg.name) this.details.name = arg.name;
-    if (arg.eventTasks) {
+    if (arg.eventTask) {
       this.details.compositeRules = await Promise.all(
-        arg.eventTasks.map(async (r) => {
+        arg.eventTask.map(async (r) => {
           if (!r.id && !r.name)
             throw new Error(
               `task.createCompositeTrigger: "eventTasks.id" or "eventTasks.name" parameter is required`
