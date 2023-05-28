@@ -24,12 +24,12 @@ export class UpdateCommonProperties<T> {
     | ISystemRuleCreate
     | ITaskCreate;
   public obj: any;
-  private customPropertyOperations?: TAddRemoveSet;
-  private tagOperations?: TAddRemoveSet;
+  private customPropertyOperation?: TAddRemoveSet;
+  private tagOperation?: TAddRemoveSet;
   // private options: {
   //   test?: string;
-  //   customPropertyOperations?: TAddRemoveSet;
-  //   tagOperations?: TAddRemoveSet;
+  //   customPropertyOperation?: TAddRemoveSet;
+  //   tagOperation?: TAddRemoveSet;
   // };
   private tagsPath = "tags";
   private customPropertiesPath = "customProperties";
@@ -44,8 +44,8 @@ export class UpdateCommonProperties<T> {
       | ITaskCreate,
     options?: {
       test?: string;
-      customPropertyOperations?: TAddRemoveSet;
-      tagOperations?: TAddRemoveSet;
+      customPropertyOperation?: TAddRemoveSet;
+      tagOperation?: TAddRemoveSet;
     }
   ) {
     this.qlikUtil = qlikUtil;
@@ -56,19 +56,19 @@ export class UpdateCommonProperties<T> {
     this.tagsClass = new Tags(this.qlikUtil);
 
     if (!options) {
-      this.customPropertyOperations = "set";
-      this.tagOperations = "set";
+      this.customPropertyOperation = "set";
+      this.tagOperation = "set";
     }
 
     if (options) {
-      this.customPropertyOperations = options.hasOwnProperty(
-        "customPropertyOperations"
+      this.customPropertyOperation = options.hasOwnProperty(
+        "customPropertyOperation"
       )
-        ? options.customPropertyOperations
+        ? options.customPropertyOperation
         : "set";
 
-      this.tagOperations = options.hasOwnProperty("tagOperations")
-        ? options.tagOperations
+      this.tagOperation = options.hasOwnProperty("tagOperation")
+        ? options.tagOperation
         : "set";
 
       if (options.test) {
@@ -84,7 +84,7 @@ export class UpdateCommonProperties<T> {
     // this.obj.customProperties = [];
     if (this.arg.customProperties && this.arg.customProperties.length > 0) {
       // overwriting the existing (if any) custom properties
-      if (this.customPropertyOperations == "set") {
+      if (this.customPropertyOperation == "set") {
         // get the custom properties values
         // if the custom property do not exists - throw an error
         const c = await Promise.all<ICustomPropertyValue>(
@@ -115,7 +115,7 @@ export class UpdateCommonProperties<T> {
       }
 
       // append the values to the existing (if any) custom properties (no duplications)
-      if (this.customPropertyOperations == "add") {
+      if (this.customPropertyOperation == "add") {
         //get the values for the existing custom properties in the object
         const existingCustomPropsData = this.getProperty(
           this.customPropertiesPath,
@@ -163,7 +163,7 @@ export class UpdateCommonProperties<T> {
         ];
       }
 
-      if (this.customPropertyOperations == "remove") {
+      if (this.customPropertyOperation == "remove") {
         this.obj.customProperties = (
           this.obj.customProperties as ICustomPropertyValue[]
         ).filter(
@@ -183,7 +183,7 @@ export class UpdateCommonProperties<T> {
 
     if (this.arg.tags && this.arg.tags.length > 0) {
       // overwriting the existing (if any) tags
-      if (this.tagOperations == "set") {
+      if (this.tagOperation == "set") {
         // get the tags objects for the tags that to be added
         // if the tag do not exists - throw an error
         // this.obj.tags =
@@ -205,7 +205,7 @@ export class UpdateCommonProperties<T> {
       }
 
       // append the values to the existing (if any) tags (no duplications)
-      if (this.tagOperations == "add") {
+      if (this.tagOperation == "add") {
         //get the values for the existing tags in the object
         // this.obj = this.setProperty(this.obj, this.tagsPath, t);
         const existingTagsData = this.getProperty(this.tagsPath, this.obj);
@@ -239,7 +239,7 @@ export class UpdateCommonProperties<T> {
       }
 
       // remove the provided tags from the existing ones
-      if (this.tagOperations == "remove") {
+      if (this.tagOperation == "remove") {
         this.obj.tags = this.obj.tags.filter(
           (t) => !this.arg.tags.includes(t.name)
         );

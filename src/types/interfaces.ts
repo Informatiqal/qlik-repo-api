@@ -96,8 +96,8 @@ export interface ISelection {
 export interface IUpdateObjectOptions {
   // appendCustomProps?: boolean;
   // appendTags?: boolean;
-  customPropertyOperations?: TAddRemoveSet;
-  tagOperations?: TAddRemoveSet;
+  customPropertyOperation?: TAddRemoveSet;
+  tagOperation?: TAddRemoveSet;
 }
 
 export interface IUpdateVirtualProxyOptions extends IUpdateObjectOptions {

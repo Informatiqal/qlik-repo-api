@@ -443,7 +443,7 @@ describe("Phase1", function () {
         ],
       },
       {
-        customPropertyOperations: "set",
+        customPropertyOperation: "set",
       }
     );
 
@@ -454,7 +454,7 @@ describe("Phase1", function () {
         ],
       },
       {
-        customPropertyOperations: "remove",
+        customPropertyOperation: "remove",
       }
     );
 
@@ -468,7 +468,7 @@ describe("Phase1", function () {
         ],
       },
       {
-        customPropertyOperations: "add",
+        customPropertyOperation: "add",
       }
     );
 
@@ -521,7 +521,7 @@ describe("Phase1", function () {
         tags: [tags[1].details.name, tags[2].details.name],
       },
       {
-        tagOperations: "set",
+        tagOperation: "set",
       }
     );
 
@@ -530,7 +530,7 @@ describe("Phase1", function () {
         tags: [tags[1].details.name],
       },
       {
-        tagOperations: "remove",
+        tagOperation: "remove",
       }
     );
 
@@ -544,7 +544,7 @@ describe("Phase1", function () {
         ],
       },
       {
-        tagOperations: "add",
+        tagOperation: "add",
       }
     );
 

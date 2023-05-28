@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.2] - 2023-05-28
+
+- `tagOperations` is now `tagOperation`
+- `customPropertyOperations` is now `customPropertyOperation`
+
 ## [0.7.0] - 2023-05-12
 
 - Add composite and schema triggers methods [#69](https://github.com/Informatiqal/qlik-repo-api/issues/69)
