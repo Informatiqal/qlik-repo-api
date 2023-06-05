@@ -63,7 +63,7 @@
     "dotenv": "16.1.4",
     "esm": "^3.2.25",
     "nyc": "15.1.0",
-    "rollup": "3.23.0",
+    "rollup": "3.23.1",
     "rollup-plugin-delete": "2.0.0",
     "ts-node": "10.9.1",
     "tslib": "2.5.3",
