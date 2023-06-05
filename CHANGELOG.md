@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.3] - 2023-06-05
+
+- `app.export` returns both `id` and `name` properties
+
 ## [0.7.2] - 2023-05-28
 
 - `tagOperations` is now `tagOperation`

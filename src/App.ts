@@ -73,7 +73,8 @@ export class App implements IClassApp {
       .then((r) => ({
         file: r.data,
         exportToken: props.token,
-        name: `${this.details.id}.qvf`,
+        id: `${this.details.id}`,
+        name: `${this.details.name}.qvf`,
       }));
   }
 

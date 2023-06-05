@@ -1,6 +1,6 @@
 {
   "name": "qlik-repo-api",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Interact with Qlik Sense Repository API (QSEoW)",
   "author": {
     "email": "info@informatiqal.com",
@@ -57,9 +57,9 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.0",
     "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
+    "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-typescript": "^11.1.1",
-    "@types/node": "20.1.4",
+    "@types/node": "20.2.5",
     "dotenv": "16.1.4",
     "esm": "^3.2.25",
     "nyc": "15.1.0",
