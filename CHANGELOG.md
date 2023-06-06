@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.4] - 2023-06-06
+
+- updated `qlik-rest-api` to latest version
+- the type of `file` property (where available) now can be `ReadStream`
+
 ## [0.7.3] - 2023-06-05
 
 - `app.export` returns both `id` and `name` properties

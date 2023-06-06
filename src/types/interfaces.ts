@@ -1,3 +1,4 @@
+import { ReadStream } from "fs";
 import { ExecutionResultDetail } from "../ExecutionResultDetail";
 import {
   TRangeOf5,
@@ -138,7 +139,7 @@ export interface IAppUpdate {
 export interface IAppUploadAndReplace {
   name: string;
   targetAppId: string;
-  file: Buffer;
+  file: Buffer | ReadStream;
   keepData?: boolean;
   customProperties?: string[];
   tags?: string[];
@@ -146,7 +147,7 @@ export interface IAppUploadAndReplace {
 
 export interface IAppUpload {
   name: string;
-  file: Buffer;
+  file: Buffer | ReadStream;
   keepData?: boolean;
   excludeDataConnections?: boolean;
   tags?: string[];
@@ -411,7 +412,7 @@ export interface IContentLibraryCreate {
 }
 
 export interface IContentLibraryImport {
-  file: Buffer;
+  file: Buffer | ReadStream;
   externalPath: string;
   overwrite?: boolean;
 }
@@ -702,7 +703,7 @@ export interface IExtensionUpdate {
 }
 
 export interface IExtensionImport {
-  file: Buffer;
+  file: Buffer | ReadStream;
   password?: string;
   tags?: string[];
   customProperties?: string[];
