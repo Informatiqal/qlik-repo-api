@@ -10,6 +10,7 @@ import {
   IAppUploadAndReplace,
 } from "./types/interfaces";
 import { App } from "./App";
+import { IncomingMessage } from "http";
 
 export interface IClassApps {
   /**
@@ -72,7 +73,7 @@ export interface IClassApps {
   exportMany(arg?: {
     filter: string;
     skipData?: boolean;
-  }): Promise<{ file: Buffer; exportToken: string; name: string }[]>;
+  }): Promise<{ file: IncomingMessage; exportToken: string; name: string }[]>;
 }
 
 export class Apps implements IClassApps {

@@ -3,6 +3,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 import fs from "fs";
 import { describe, it, expect } from "vitest";
 import { Config, Helpers } from "./Config";
+import { IncomingMessage } from "http";
 
 const config = new Config();
 const repoApi = config.repoApi;
@@ -345,15 +346,29 @@ describe("Phase1", function () {
 
     const downloadApp = await importTempApp.export();
 
-    fs.writeFileSync(
-      ".\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf",
-      downloadApp.file
+    const writeToFile = fs.createWriteStream(
+      ".\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf"
     );
+
+    // Start piping the chunks of incoming data to the stream writer
+    downloadApp.file.pipe(writeToFile);
+
+    // we have to wait for all the data to be received and written
+    // for this reason we'll "listen" for the "end" event on the stream writer
+    await new Promise((resolve, reject) => {
+      downloadApp.file.on("end", () => {
+        resolve("");
+      });
+
+      downloadApp.file.on("error", () => {
+        reject();
+      });
+    });
 
     const removeResponse = await importTempApp.remove();
     fs.unlinkSync(".\\93124a11-6a7b-43e0-a6ae-30831a799513.qvf");
 
-    expect(Buffer.isBuffer(downloadApp.file)).to.be.equal(true) &&
+    expect(downloadApp.file instanceof IncomingMessage).to.be.equal(true) &&
       expect(removeResponse).to.be.equal(204);
   });
 
@@ -389,7 +404,7 @@ describe("Phase1", function () {
 
     expect(clAll.length).to.be.greaterThan(0) &&
       expect(cl[0].details.references.length).to.be.equal(7) &&
-      expect(Buffer.isBuffer(singleFile.file)).to.be.equal(true) &&
+      expect(singleFile.file instanceof IncomingMessage).to.be.equal(true) &&
       expect(allFiles.length).to.be.equal(7) &&
       expect(fewFiles.length).to.be.equal(4) &&
       expect(fewFilesWithMissing.length).to.be.equal(3);

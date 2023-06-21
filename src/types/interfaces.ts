@@ -23,6 +23,7 @@ import {
   TTaskTriggerCompositeState,
   TSchedulerServiceType,
 } from "./ranges";
+import { IncomingMessage } from "http";
 
 export interface IHttpReturn {
   status: number;
@@ -147,7 +148,7 @@ export interface IAppUploadAndReplace {
 
 export interface IAppUpload {
   name: string;
-  file: Buffer | ReadStream;
+  file: Buffer | ReadStream | IncomingMessage;
   keepData?: boolean;
   excludeDataConnections?: boolean;
   tags?: string[];
@@ -376,7 +377,7 @@ export interface ICertificateExportParameters {
 export interface IContentLibraryFile {
   name: string;
   path: string;
-  file: Buffer;
+  file: Buffer | IncomingMessage;
 }
 
 export interface IContentLibraryUpdate {

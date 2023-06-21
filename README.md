@@ -205,4 +205,87 @@ Once all apps are updated the `updateResults` variable will be:
 
 As a "side effect" details for each app in `licenseMonitorApps` will also be updated in the variable and there is no need to call `getFilter` to retrieve the updated information.
 
+### Download files
+
+When downloading content (mainly because of apps) the return data is in stream format (instead of buffer). This for performance reasons. If the apps are small then its not an issue to have them as buffer but some Qlik apps can be few GB in size. Because of this the data have to be streamed.
+
+```js
+// get instance of the app
+const app = await repoApi.apps.get({
+  id: "1111111-2222-3333-4444-555555555555",
+});
+
+// export the app request
+// at this point "stream" variable will have "file" property
+// "file" property will be of type IncomingStream
+const stream = await app.export();
+
+// prepare the writer. it will write the incoming data to the provided path
+const writeToFile = fs.createWriteStream("location/to/write/some-app.qvf");
+
+// Start piping the chunks of incoming data to the stream writer
+stream.file.pipe(writeToFile);
+
+// we have to wait for all the data to be received and written
+// for this reason we'll "listen" for the "end" event on the stream writer
+await new Promise((resolve, reject) => {
+  stream.file.on("end", () => {
+    resolve("");
+  });
+
+  stream.file.on("error", () => {
+    reject();
+  });
+});
+
+// at this point the app is completely downloaded
+let a = 1;
+```
+
+### Upload files
+
+For performance reasons uploading files should be made through streams.
+
+```js
+const streamContent = fs.createReadStream("path/to/some-file.qvf");
+
+const app = await repoApi.apps.upload({
+  name: "Some app name",
+  file: streamContent,
+});
+```
+
+### Stream data between servers
+
+Corner case but it is possible to stream apps/content from one QS cluster to another (or to multiple).
+
+Since both download and upload app operations are based on streams then we can start downloading an app and at the same time upload it to the destination cluster(s). This way the app/data stays in memory and there is no need to write the output to a local file and then upload it.
+
+```js
+// repoApi - source QS cluster. From where the app will be exported
+// repoApiDestination - destination QS cluster. Where the app will be imported
+
+
+// get instance of the app
+const sourceApp = await repoApi.apps.get({
+  id: "1111111-2222-3333-4444-555555555555",
+});
+
+// export the app request
+// at this point "stream" variable will have "file" property
+// "file" property will be of type IncomingStream
+const streamSourceApp = await sourceApp.export();
+
+// push the stream (chunked) data to the upload method
+// "file" property accepts Buffer or IncomingMessage or createReadStream
+// and streamSourceApp.file is of type IncomingMessage
+const destinationApp = await repoApiDestination.apps.upload({
+  name: "some name", // or if we want the same name - sourceApp.details.name
+  file: streamSourceApp.file,
+});
+
+//at this point the app is uploaded without being saved locally
+let a = 1;
+```
+
 More examples to follow

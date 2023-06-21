@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2023-06-21
+
+- dependency updates
+- `app.export`, `apps.exportMany`, `contentLibrary.export` will now return stream of data instead of buffer. Check out the readme `Download files`, `Upload files` and `Stream data between servers` for code examples.
+
 ## [0.7.4] - 2023-06-06
 
 - updated `qlik-rest-api` to latest version

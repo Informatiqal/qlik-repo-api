@@ -13,6 +13,7 @@ import {
 } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { URLBuild } from "./util/generic";
+import { IncomingMessage } from "http";
 
 export interface IClassContentLibrary {
   export(arg: { sourceFileName?: string }): Promise<IContentLibraryFile>;
@@ -95,10 +96,10 @@ export class ContentLibrary implements IClassContentLibrary {
         ? file[0].logicalPath.substring(1)
         : file[0].logicalPath;
 
-    const fileContent = await this.#genericClient.Get<Buffer>(
+    const fileContent = await this.#genericClient.Get<IncomingMessage>(
       logicalPath,
       "",
-      "arraybuffer"
+      "stream"
     );
 
     return {

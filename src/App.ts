@@ -4,6 +4,7 @@ import { IStream, IUpdateObjectOptions } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IApp, IAppUpdate } from "./types/interfaces";
+import { IncomingMessage } from "http";
 
 export interface IClassApp {
   details: IApp;
@@ -11,7 +12,7 @@ export interface IClassApp {
   export(arg?: {
     token?: string;
     skipData?: boolean;
-  }): Promise<{ file: Buffer; exportToken: string; name: string }>;
+  }): Promise<{ file: IncomingMessage; exportToken: string; name: string }>;
   remove(): Promise<IHttpStatus>;
   publish(arg: { stream: string; name?: string }): Promise<IApp>;
   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
@@ -69,7 +70,7 @@ export class App implements IClassApp {
       .then((data) => data.downloadPath.replace("/tempcontent", "tempcontent"));
 
     return await this.#genericClient
-      .Get<Buffer>(downloadPath, "", "arraybuffer")
+      .Get<IncomingMessage>(downloadPath, "", "stream")
       .then((r) => ({
         file: r.data,
         exportToken: props.token,
