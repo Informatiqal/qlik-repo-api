@@ -24,7 +24,7 @@
 <ul class="tsd-hierarchy">
 <li><a href="../classes/Apps.html" class="tsd-signature-type tsd-kind-class">Apps</a></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L14">src/Apps.ts:14</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L15">src/Apps.ts:15</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -47,7 +47,7 @@
 <section class="tsd-panel tsd-member"><a id="exportMany" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>export<wbr/>Many</span><a href="#exportMany" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><g stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" id="icon-anchor"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path></g></svg></a></h3>
 <ul class="tsd-signatures">
-<li class="tsd-signature tsd-anchor-link" id="exportMany.exportMany-1"><span class="tsd-kind-call-signature">export<wbr/>Many</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">arg</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">exportToken</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">file</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Buffer</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#exportMany.exportMany-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
+<li class="tsd-signature tsd-anchor-link" id="exportMany.exportMany-1"><span class="tsd-kind-call-signature">export<wbr/>Many</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">arg</span><span class="tsd-signature-symbol">?</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">exportToken</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">file</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">IncomingMessage</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span><a href="#exportMany.exportMany-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Export multiple qvf to Buffer</p>
 </div>
@@ -61,10 +61,10 @@
 <h5><span class="tsd-kind-property">filter</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5></li>
 <li class="tsd-parameter">
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-property">skip<wbr/>Data</span><span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5></li></ul></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">exportToken</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">file</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Buffer</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span><span class="tsd-kind-property">exportToken</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">file</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">IncomingMessage</span><span class="tsd-signature-symbol">; </span><br/><span>    </span><span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L72">src/Apps.ts:72</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L73">src/Apps.ts:73</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="get" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get</span><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -83,7 +83,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/App.html" class="tsd-signature-type tsd-kind-class">App</a><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L18">src/Apps.ts:18</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L19">src/Apps.ts:19</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getAll" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>All</span><a href="#getAll" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -94,7 +94,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/App.html" class="tsd-signature-type tsd-kind-class">App</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L22">src/Apps.ts:22</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L23">src/Apps.ts:23</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="getFilter" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Filter</span><a href="#getFilter" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -115,7 +115,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/App.html" class="tsd-signature-type tsd-kind-class">App</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L26">src/Apps.ts:26</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L27">src/Apps.ts:27</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="removeFilter" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>remove<wbr/>Filter</span><a href="#removeFilter" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -134,7 +134,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="IEntityRemove.html" class="tsd-signature-type tsd-kind-interface">IEntityRemove</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L30">src/Apps.ts:30</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L31">src/Apps.ts:31</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="select" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>select</span><a href="#select" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -153,7 +153,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="ISelection.html" class="tsd-signature-type tsd-kind-interface">ISelection</a><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L34">src/Apps.ts:34</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L35">src/Apps.ts:35</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="upload" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>upload</span><a href="#upload" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -178,7 +178,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/App.html" class="tsd-signature-type tsd-kind-class">App</a><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L38">src/Apps.ts:38</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L39">src/Apps.ts:39</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="uploadAndReplace" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>upload<wbr/>And<wbr/>Replace</span><a href="#uploadAndReplace" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -204,7 +204,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/App.html" class="tsd-signature-type tsd-kind-class">App</a><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L63">src/Apps.ts:63</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L64">src/Apps.ts:64</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="uploadMany" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>upload<wbr/>Many</span><a href="#uploadMany" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -225,7 +225,7 @@
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/App.html" class="tsd-signature-type tsd-kind-class">App</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/f5364c6/src/Apps.ts#L47">src/Apps.ts:47</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/Informatiqal/qlik-repo-api/blob/289b9cd/src/Apps.ts#L48">src/Apps.ts:48</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
