@@ -2120,3 +2120,59 @@ export interface ICustomBannerCreate {
   isActive: boolean;
   duration: number;
 }
+
+export interface IODAGService {
+  id: string;
+  privileges: string[];
+  createdDate: string;
+  modifiedByUserName: string;
+  schemaPath: string;
+  modifiedDate: string;
+  settings: {
+    dynamicViewEnabled: boolean;
+    schemaPath: string;
+    anonymousAppCleanup: number;
+    anonymousProxyUser: {
+      privileges: string[];
+      userDirectory: string;
+      userDirectoryConnectorName: string;
+      name: string;
+      id: string;
+      userId: string;
+    };
+    maxConcurrentRequests: number;
+    enabled: boolean;
+    createdDate: string;
+    modifiedByUserName: string;
+    logLevel: number;
+    modifiedDate: string;
+    allowAnonymousUser: boolean;
+    id: string;
+    purgeOlderThan: number;
+  };
+}
+
+export interface IODAGServiceUpdate {
+  enabled?: boolean;
+  dynamicViewEnabled?: boolean;
+  /**
+   * 0: Off
+   * 1: Fatal
+   * 2: Error
+   * 3: Warning
+   * 4: Info
+   * 5: Debug
+   * 6: Trace
+   */
+  logLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+  maxConcurrentRequests?: number;
+  purgeOlderThan?: number;
+  allowAnonymousUser?: boolean;
+  anonymousAppCleanup?: number;
+  anonymousProxyUser?: {
+    userId: string;
+    userDirectory: string;
+    userDirectoryConnectorName?: string;
+    name?: string;
+  };
+}

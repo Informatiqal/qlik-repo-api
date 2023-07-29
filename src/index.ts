@@ -15,6 +15,7 @@ import { ExecutionResults } from "./ExecutionResults";
 import { ExecutionSessions } from "./ExecutionSessions";
 import { License } from "./License";
 import { Nodes } from "./Nodes";
+import { ODAG } from "./ODAGServices";
 import { Privileges } from "./Privileges";
 import { Proxies } from "./Proxies";
 import { Schedulers } from "./Schedulers";
@@ -130,6 +131,10 @@ export namespace QlikRepoApi {
      */
     public nodes: Nodes;
     /**
+     * /qrs/odagservice endpoints
+     */
+    public odag: ODAG;
+    /**
      * /qrs/notification endpoints
      */
     public notification: Notification;
@@ -236,6 +241,7 @@ export namespace QlikRepoApi {
       this.executionSessions = new ExecutionSessions(this.repoClient);
       this.license = new License(this.repoClient);
       this.nodes = new Nodes(this.repoClient, this.genericClient);
+      this.odag = new ODAG(this.repoClient);
       this.privileges = new Privileges(this.repoClient);
       this.proxies = new Proxies(this.repoClient, this.nodes);
       this.schemaTriggers = new SchemaTriggers(this.repoClient);

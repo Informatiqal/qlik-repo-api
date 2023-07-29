@@ -32,6 +32,8 @@ export * from "./ExternalTasks";
 export * from "./License";
 export * from "./Node";
 export * from "./Nodes";
+export * from "./ODAGService";
+export * from "./ODAGServices";
 export * from "./Privileges";
 export * from "./Proxy";
 export * from "./Proxies";
