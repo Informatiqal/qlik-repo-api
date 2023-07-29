@@ -33,7 +33,7 @@ export class ODAGService {
       .then((res) => res.status);
   }
 
-  public async update(arg: IODAGServiceUpdate): Promise<number> {
+  public async update(arg: IODAGServiceUpdate): Promise<IODAGService> {
     if (arg.anonymousProxyUser && !arg.anonymousProxyUser.userId)
       throw new Error(
         `odag.update: "anonymousProxyUser.userId" value is missing`
@@ -52,7 +52,7 @@ export class ODAGService {
           this.details[n] = v;
         });
 
-        return res.status;
+        return res.data;
       });
   }
 }
