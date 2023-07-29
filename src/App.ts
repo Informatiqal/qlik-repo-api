@@ -71,12 +71,14 @@ export class App implements IClassApp {
 
     return await this.#genericClient
       .Get<IncomingMessage>(downloadPath, "", "stream")
-      .then((r) => ({
-        file: r.data,
-        exportToken: props.token,
-        id: `${this.details.id}`,
-        name: `${this.details.name}.qvf`,
-      }));
+      .then((r) => {
+        return {
+          file: r.data,
+          exportToken: props.token,
+          id: `${this.details.id}`,
+          name: `${this.details.name}.qvf`,
+        };
+      });
   }
 
   public async copy(arg: { name?: string; includeCustomProperties?: boolean }) {

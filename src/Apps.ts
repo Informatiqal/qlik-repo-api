@@ -1,3 +1,4 @@
+import { info } from "console";
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
@@ -166,6 +167,12 @@ export class Apps implements IClassApps {
     urlBuild.addParam("name", arg.name);
     urlBuild.addParam("keepdata", arg.keepData);
     urlBuild.addParam("excludeconnections", arg.excludeDataConnections);
+
+    // (arg.file as IncomingMessage).on("data", function () {
+    //   //
+    //   // info("Uploading");
+    //   info("Uploading");
+    // });
 
     const app = await this.#repoClient
       .Post<IApp>(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")

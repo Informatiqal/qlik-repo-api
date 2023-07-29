@@ -148,7 +148,7 @@ export interface IAppUploadAndReplace {
 
 export interface IAppUpload {
   name: string;
-  file: Buffer | ReadStream | IncomingMessage;
+  file: Buffer | ReadStream | IncomingMessage | WritableStream;
   keepData?: boolean;
   excludeDataConnections?: boolean;
   tags?: string[];
