@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.1] - 2023-07-29
+
+- odag service endpoints implemented
+
+## [0.9.0] - 2023-07-29
+
+- dependency updates
+- custom banner message endpoints implemented
+
 ## [0.8.0] - 2023-06-21
 
 - dependency updates
