@@ -11,6 +11,8 @@ export * from "./ContentLibrary";
 export * from "./ContentLibraries";
 export * from "./CompositeTrigger";
 export * from "./CompositeTriggers";
+export * from "./CustomBannerMessage";
+export * from "./CustomBannerMessages";
 export * from "./CustomProperty";
 export * from "./CustomProperties";
 export * from "./DataConnection";

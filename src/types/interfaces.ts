@@ -2088,3 +2088,35 @@ export interface IExecutionSession {
   externalProgramTask: IExternalProgramTaskCondensed;
   privileges: string[];
 }
+
+export interface ICustomBannerMessage {
+  id?: string;
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName?: string;
+  schemaPath: string;
+  privileges: string[];
+  name: string;
+  message: string;
+  /**
+   * 0: Standard
+   *
+   * 1: Info
+   *
+   * 2: Warning
+   *
+   * 3: Error
+   */
+  messageType: 0 | 1 | 2 | 3;
+  isActive: boolean;
+  duration: number;
+  tags: ITagCondensed[];
+}
+
+export interface ICustomBannerCreate {
+  name: string;
+  message: string;
+  messageType: 0 | 1 | 2 | 3;
+  isActive: boolean;
+  duration: number;
+}

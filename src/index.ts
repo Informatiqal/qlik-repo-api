@@ -5,6 +5,7 @@ import { Apps } from "./Apps";
 import { AppObjects } from "./AppObjects";
 import { Certificate } from "./Certificate";
 import { ContentLibraries } from "./ContentLibraries";
+import { CustomBannerMessages } from "./CustomBannerMessages";
 import { CustomProperties } from "./CustomProperties";
 import { CompositeTriggers } from "./CompositeTriggers";
 import { DataConnections } from "./DataConnections";
@@ -79,6 +80,11 @@ export namespace QlikRepoApi {
      * /qrs/contentLibrary endpoints
      */
     public contentLibraries: ContentLibraries;
+    /**
+     * /qrs/customBannerMessage endpoints
+     */
+    public customBannerMessages: CustomBannerMessages;
+
     /**
      * /qrs/customPropertyDefinition endpoints
      */
@@ -220,6 +226,7 @@ export namespace QlikRepoApi {
         this.repoClient,
         this.genericClient
       );
+      this.customBannerMessages = new CustomBannerMessages(this.repoClient);
       this.customProperties = new CustomProperties(this.repoClient);
       this.compositeTriggers = new CompositeTriggers(this.repoClient);
       this.dataConnections = new DataConnections(this.repoClient);
