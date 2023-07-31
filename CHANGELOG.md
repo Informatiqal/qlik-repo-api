@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.11.0] - 2023-07-31
+
+- odag request endpoints implemented
+
 ## [0.10.1] - 2023-07-29
 
 - odag service endpoints implemented

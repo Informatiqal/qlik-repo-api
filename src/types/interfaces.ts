@@ -2176,3 +2176,232 @@ export interface IODAGServiceUpdate {
     name?: string;
   };
 }
+
+/**
+ * 0: NotApplicable
+ * 1: Available
+ * 2: NoActiveRoute
+ * 3: NoConfiguredRoute
+ * 4: NotSynced
+ * 5: NotMigrated
+ */
+export type IOdagRequestAvailabilityStatus = 0 | 1 | 2 | 3 | 4 | 5;
+
+/**
+ * 0: single
+ * 1: multiple
+ * 2: singlesub
+ */
+export type IOdagRequestKind = 0 | 1 | 2;
+
+/**
+ * 0: validating
+ * 1: queued
+ * 2: invalid
+ * 3: hold
+ * 4: loading
+ * 5: canceled
+ * 6: failed
+ * 7: succeeded
+ * 8 : canceling
+ * 9: canceledAck
+ * 10: failedAck
+ */
+export type IOdagRequestState = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+/**
+ * 0: active
+ * 1: disabled
+ * 2: decommissioned
+ * 3: incomplete
+ */
+export type IOdagRequestLinkStatus = 0 | 1 | 2 | 3;
+
+/**
+ * 0: pending
+ * 1: success
+ * 2: warnings
+ * 3: failed
+ */
+export type IOdagRequestLoadStatus = 0 | 1 | 2 | 3;
+
+export interface IOdagRequestCondensed {
+  privileges: string[];
+  selectionAppId: string;
+  generatedApp: {
+    privileges: string[];
+    publishTime: string;
+    migrationHash: string;
+    stream: {
+      privileges: string[];
+      name: string;
+      id: string;
+    };
+    appId: string;
+    name: string;
+    savedInProductVersion: string;
+    id: string;
+    published: boolean;
+    availabilityStatus: {};
+  };
+  createdByAnonymousUser: string;
+  link: {
+    owner: {
+      privileges: string[];
+      userDirectory: string;
+      userDirectoryConnectorName: string;
+      name: string;
+      id: string;
+      userId: string;
+    };
+    privileges: string[];
+    isView: boolean;
+    name: string;
+    templateAppOrigName: string;
+    rowEstExpr: string;
+    id: string;
+    templateApp: {
+      privileges: string[];
+      publishTime: string;
+      migrationHash: string;
+      stream: {
+        privileges: string[];
+        name: string;
+        id: string;
+      };
+      appId: string;
+      name: string;
+      savedInProductVersion: string;
+      id: string;
+      published: boolean;
+      availabilityStatus: {};
+    };
+    odagLinkStatus: IOdagRequestLinkStatus;
+  };
+  startedAt: string;
+  odagRequestLoadStatus: IOdagRequestLoadStatus;
+  selectionStateHash: number;
+  bindingStateHash: number;
+  finishedAt: string;
+  selectionAppOrigName: string;
+  parentRequestId: string;
+  timeToLive: number;
+  engine: string;
+  sheetname: string;
+  id: string;
+  odagRequestState: IOdagRequestState;
+  purgeAfter: string;
+  clientContextHandle: string;
+  targetSheet: string;
+  odagRequestKind: IOdagRequestKind;
+}
+
+/**
+ * 0: active
+ * 1: disabled
+ * 2: decommissioned
+ */
+export type IOdagRequestEngineStatus = 0 | 1 | 2;
+
+export interface IOdagRequest {
+  privileges: string[];
+  generatedAppOrigName: string;
+  createdByAnonymousUser: string;
+  link: {
+    owner: {
+      privileges: string[];
+      userDirectory: string;
+      userDirectoryConnectorName: string;
+      name: string;
+      id: string;
+      userId: string;
+    };
+    privileges: string[];
+    isView: boolean;
+    name: string;
+    templateAppOrigName: string;
+    rowEstExpr: string;
+    id: string;
+    templateApp: {
+      privileges: string[];
+      publishTime: string;
+      migrationHash: string;
+      stream: {
+        privileges: string[];
+        name: string;
+        id: string;
+      };
+      appId: string;
+      name: string;
+      savedInProductVersion: string;
+      id: string;
+      published: boolean;
+      availabilityStatus: IOdagRequestAvailabilityStatus;
+    };
+    odagLinkStatus: IOdagRequestLinkStatus;
+  };
+  startedAt: string;
+  engineGroup: {
+    owner: {
+      userDirectory: string;
+      userDirectoryConnectorName: string;
+      name: string;
+      id: string;
+      userId: string;
+    };
+    privileges: string[];
+    name: string;
+    id: string;
+    odagEngineGroupStatus: IOdagRequestEngineStatus;
+  };
+  selectionAppOrigName: string;
+  parentRequestId: string;
+  timeToLive: number;
+  modifiedByUserName: string;
+  engine: string;
+  sheetname: string;
+  id: string;
+  odagRequestState: IOdagRequestState;
+  purgeAfter: string;
+  targetSheet: string;
+  odagRequestKind: IOdagRequestKind;
+  owner: {
+    userDirectory: string;
+    userDirectoryConnectorName: string;
+    name: string;
+    id: string;
+    userId: string;
+  };
+  curRowEstExpr: string;
+  bindingState: string;
+  curRowEstLowBound: number;
+  selectionAppId: string;
+  generatedApp: {
+    privileges: string[];
+    publishTime: string;
+    migrationHash: string;
+    stream: {
+      privileges: string[];
+      name: string;
+      id: string;
+    };
+    appId: string;
+    name: string;
+    savedInProductVersion: string;
+    id: string;
+    published: boolean;
+    availabilityStatus: IOdagRequestAvailabilityStatus;
+  };
+  schemaPath: string;
+  odagRequestLoadStatus: IOdagRequestLoadStatus;
+  selectionStateHash: number;
+  bindingStateHash: number;
+  finishedAt: string;
+  selectionState: string;
+  createdDate: string;
+  modifiedDate: string;
+  actualRowEst: number;
+  messages: string;
+  curRowEstHighBound: number;
+  clientContextHandle: string;
+}

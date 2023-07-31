@@ -34,6 +34,8 @@ export * from "./Node";
 export * from "./Nodes";
 export * from "./ODAGService";
 export * from "./ODAGServices";
+export * from "./ODAGRequest";
+export * from "./ODAGRequests";
 export * from "./Privileges";
 export * from "./Proxy";
 export * from "./Proxies";
