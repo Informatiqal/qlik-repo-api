@@ -30,6 +30,7 @@ export class SharedContent implements IClassSharedContent {
   ) {
     if (!id) throw new Error(`sharedContent.get: "id" parameter is required`);
 
+    this.details = {} as ISharedContent;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

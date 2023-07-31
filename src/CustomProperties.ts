@@ -102,7 +102,7 @@ export class CustomProperties implements IClassCustomProperties {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/custompropertydefinition`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

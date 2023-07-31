@@ -50,7 +50,9 @@ export class VirtualProxies implements IClassVirtualProxies {
         return res.data;
       })
       .then((data) => {
-        return data.map((t) => new VirtualProxy(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new VirtualProxy(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -66,7 +68,9 @@ export class VirtualProxies implements IClassVirtualProxies {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new VirtualProxy(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new VirtualProxy(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -84,14 +88,14 @@ export class VirtualProxies implements IClassVirtualProxies {
 
     return await Promise.all<IEntityRemove>(
       vps.map((vp) =>
-        vp.remove().then((s) => ({ id: vp.details.id, status: s }))
+        vp.remove().then((s) => ({ id: vp.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/virtualproxyconfig`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -222,7 +226,7 @@ export class VirtualProxies implements IClassVirtualProxies {
     const vp = await this.#repoClient
       .Post<IVirtualProxyConfig>(`virtualproxyconfig`, { ...data })
       .then((res) => res.data)
-      .then((d) => new VirtualProxy(this.#repoClient, d.id, d));
+      .then((d) => new VirtualProxy(this.#repoClient, d.id ?? "", d));
 
     if (arg.customProperties || arg.tags) {
       const options: IVirtualProxyUpdate = {};
@@ -243,7 +247,7 @@ export class VirtualProxies implements IClassVirtualProxies {
       .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
-          return new Node(this.#repoClient, t.id, t);
+          return new Node(this.#repoClient, t.id ?? "", t);
         });
       });
 

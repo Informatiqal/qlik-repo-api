@@ -25,6 +25,7 @@ export class Scheduler implements IClassScheduler {
     if (!id)
       throw new Error(`schedulerservice.get: "id" parameter is required`);
 
+    this.details = {} as ISchedulerService;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

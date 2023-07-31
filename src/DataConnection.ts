@@ -27,6 +27,7 @@ export class DataConnection implements IClassDataConnection {
   ) {
     if (!id) throw new Error(`dataConnections.get: "id" parameter is required`);
 
+    this.details = {} as IDataConnection;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

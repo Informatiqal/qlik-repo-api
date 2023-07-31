@@ -30,6 +30,7 @@ export class UserDirectory implements IClassUserDirectory {
   ) {
     if (!id) throw new Error(`userDirectory.get: "id" parameter is required`);
 
+    this.details = {} as IUserDirectory;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

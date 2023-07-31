@@ -29,6 +29,7 @@ export class AppObject implements IClassAppObject {
   ) {
     if (!id) throw new Error(`appObjects.get: "id" parameter is required`);
 
+    this.details = {} as IAppObject;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

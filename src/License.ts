@@ -64,7 +64,7 @@ export class License implements IClassLicense {
     data["name"] = arg.name;
     data["organization"] = arg.organization || "";
 
-    let method: "Post" | "Put";
+    let method: "Post" | "Put" = "Post";
 
     let currentLicense = await this.get();
     if (currentLicense.key != "")
@@ -99,7 +99,7 @@ export class License implements IClassLicense {
     data["name"] = arg.name;
     data["organization"] = arg.organization || "";
 
-    let method: "Post" | "Put";
+    let method: "Post" | "Put" = "Post";
 
     let currentLicense = await this.get();
     if (!currentLicense) method = "Post";

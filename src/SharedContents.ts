@@ -40,7 +40,9 @@ export class SharedContents implements IClassSharedContents {
       .Get<ISharedContent[]>(`sharedcontent/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new SharedContent(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new SharedContent(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -56,7 +58,9 @@ export class SharedContents implements IClassSharedContents {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new SharedContent(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new SharedContent(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -69,14 +73,14 @@ export class SharedContents implements IClassSharedContents {
     const shc = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       shc.map((sc) =>
-        sc.remove().then((s) => ({ id: sc.details.id, status: s }))
+        sc.remove().then((s) => ({ id: sc.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/sharedcontent`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -110,6 +114,6 @@ export class SharedContents implements IClassSharedContents {
         ...commonProps,
       })
       .then((res) => res.data)
-      .then((s) => new SharedContent(this.#repoClient, s.id, s));
+      .then((s) => new SharedContent(this.#repoClient, s.id ?? "", s));
   }
 }

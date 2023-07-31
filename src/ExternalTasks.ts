@@ -48,7 +48,7 @@ export class ExternalTasks implements IClassExternalTasks {
       .then(async (data) => {
         return await Promise.all(
           data.map(async (t) => {
-            const task = new ExternalTask(this.#repoClient, t.id, t);
+            const task = new ExternalTask(this.#repoClient, t.id ?? "", t);
             await task.init();
 
             return task;
@@ -69,7 +69,7 @@ export class ExternalTasks implements IClassExternalTasks {
       .then(async (data) => {
         return Promise.all(
           data.map(async (t) => {
-            const task = new ExternalTask(this.#repoClient, t.id, t);
+            const task = new ExternalTask(this.#repoClient, t.id ?? "", t);
             await task.init();
 
             return task;
@@ -80,7 +80,7 @@ export class ExternalTasks implements IClassExternalTasks {
 
   public async count(arg?: { filter: string }) {
     let url: string = `externalprogramtask/count`;
-    if (arg.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
+    if (arg?.filter) url += `${url}?filter=(${encodeURIComponent(arg.filter)})`;
 
     return await this.#repoClient
       .Get<{ value: number }>(`${url}`)
@@ -96,14 +96,14 @@ export class ExternalTasks implements IClassExternalTasks {
     const tasks = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       tasks.map((task: IClassExternalTask) =>
-        task.remove().then((s) => ({ id: task.details.id, status: s }))
+        task.remove().then((s) => ({ id: task.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/externalprogramtask`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -150,7 +150,7 @@ export class ExternalTasks implements IClassExternalTasks {
       .Post(`externalprogramtask`, { ...externalTask })
       .then((res) => res.data as IExternalProgramTask)
       .then(async (t) => {
-        const et = new ExternalTask(this.#repoClient, t.id, t);
+        const et = new ExternalTask(this.#repoClient, t.id ?? "", t);
         await et.init();
 
         return et;

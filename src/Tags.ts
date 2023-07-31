@@ -89,7 +89,7 @@ export class Tags implements IClassTags {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/tag`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

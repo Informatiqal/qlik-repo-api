@@ -20,7 +20,7 @@ export class Selections implements IClassSelections {
       throw new Error(`select.create: "area" parameter is required`);
 
     const selection: Selection = new Selection(this.#repoClient, arg.area);
-    await selection.init(arg.filter);
+    await selection.init(arg?.filter ?? "");
 
     return selection;
   }

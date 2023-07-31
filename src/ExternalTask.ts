@@ -9,7 +9,9 @@ import {
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 export class ExternalTask extends ReloadTaskBase {
+  // @ts-ignore
   #repoClient: QlikRepositoryClient;
+  // @ts-ignore
   #baseUrl: string;
   constructor(
     repoClient: QlikRepositoryClient,
@@ -30,6 +32,7 @@ export class ExternalTask extends ReloadTaskBase {
       (this.details as IExternalProgramTask).maxRetries = arg.maxRetries;
     if (arg.path) (this.details as IExternalProgramTask).path = arg.path;
     if (arg.path)
+      // @ts-ignore
       (this.details as IExternalProgramTask).parameters = arg.parameters;
 
     let updateCommon = new UpdateCommonProperties(

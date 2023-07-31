@@ -9,10 +9,12 @@ import { IncomingMessage } from "http";
 export interface IClassApp {
   details: IApp;
   copy(arg: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
-  export(arg?: {
-    token?: string;
-    skipData?: boolean;
-  }): Promise<{ file: IncomingMessage; exportToken: string; name: string }>;
+  export(arg?: { token?: string; skipData?: boolean }): Promise<{
+    file: IncomingMessage;
+    exportToken: string | undefined;
+    name: string;
+    id: string;
+  }>;
   remove(): Promise<IHttpStatus>;
   publish(arg: { stream: string; name?: string }): Promise<IApp>;
   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
@@ -34,10 +36,12 @@ export class App implements IClassApp {
   ) {
     if (!id) throw new Error(`app.get: "id" parameter is required`);
 
+    this.details = {} as IApp;
     this.#id = id;
     this.#repoClient = repoClient;
-    this.#genericClient = genericClient;
-    this.#genericClientWithPort = genericClientWithPort;
+    this.#genericClient = genericClient ?? ({} as QlikGenericRestClient);
+    this.#genericClientWithPort =
+      genericClientWithPort ?? ({} as QlikGenericRestClient);
     if (details) this.details = details;
   }
 

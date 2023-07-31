@@ -18,6 +18,7 @@ export class CustomBannerMessage {
     if (!id)
       throw new Error(`customBannerMessage.get: "id" parameter is required`);
 
+    this.details = {} as ICustomBannerMessage;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

@@ -28,6 +28,7 @@ export class Extension implements IClassExtension {
   ) {
     if (!id) throw new Error(`extension.get: "id" parameter is required`);
 
+    this.details = {} as IExtension;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

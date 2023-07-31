@@ -22,6 +22,7 @@ export class SystemRule implements IClassSystemRule {
   ) {
     if (!id) throw new Error(`systemRules.get: "id" parameter is required`);
 
+    this.details = {} as ISystemRule;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

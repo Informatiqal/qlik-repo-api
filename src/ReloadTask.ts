@@ -14,8 +14,11 @@ export interface IClassReloadTask extends IClassReloadTaskBase {
 }
 
 export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
+  // @ts-ignore
   #repoClient: QlikRepositoryClient;
+  // @ts-ignore
   #baseUrl: string;
+  // @ts-ignore
   details: ITask;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITask) {
     super(repoClient, id, "reloadtask", details);
@@ -64,8 +67,8 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
 
     if (arg.appId || arg.appFilter) {
       const app = await getAppForReloadTask(
-        arg.appId,
-        arg.appFilter,
+        arg.appId ?? "",
+        arg.appFilter ?? "",
         this.#repoClient
       );
       this.details.app = app.details;

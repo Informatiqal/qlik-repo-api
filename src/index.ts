@@ -224,6 +224,8 @@ export namespace QlikRepoApi {
       this.genericClient = new QlikGenericRestClient(genericConfig);
       this.genericClientWithPort = new QlikGenericRestClient(genericConfig);
 
+      this.genericWESClient = this.repoClient;
+
       // TODO: what is my purpose?
       let t = this.genericClientWithPort.configFull.baseUrl.split("/");
       t[2] = `${t[2]}:${this.repoClient.configFull.port}`;

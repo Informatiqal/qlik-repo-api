@@ -40,7 +40,9 @@ export class ServiceClusters implements IClassServiceClusters {
       .Get<IServiceCluster[]>(`ServiceCluster/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new ServiceCluster(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new ServiceCluster(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -56,7 +58,9 @@ export class ServiceClusters implements IClassServiceClusters {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new ServiceCluster(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new ServiceCluster(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -67,14 +71,14 @@ export class ServiceClusters implements IClassServiceClusters {
     const serviceClusters = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       serviceClusters.map((sc) =>
-        sc.remove().then((s) => ({ id: sc.details.id, status: s }))
+        sc.remove().then((s) => ({ id: sc.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/ServiceCluster`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

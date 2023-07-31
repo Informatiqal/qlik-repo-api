@@ -18,7 +18,11 @@ export class AppObjects implements IClassAppObjects {
   }
 
   public async get(arg: { id: string }) {
-    const appObject: AppObject = new AppObject(this.#repoClient, arg.id, null);
+    const appObject: AppObject = new AppObject(
+      this.#repoClient,
+      arg.id,
+      undefined
+    );
     await appObject.init();
 
     return appObject;
@@ -30,7 +34,7 @@ export class AppObjects implements IClassAppObjects {
       .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
-          return new AppObject(this.#repoClient, t.id, t);
+          return new AppObject(this.#repoClient, t.id ?? "", t);
         });
       });
   }
@@ -46,7 +50,7 @@ export class AppObjects implements IClassAppObjects {
       .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
-          return new AppObject(this.#repoClient, t.id, t);
+          return new AppObject(this.#repoClient, t.id ?? "", t);
         });
       });
   }
@@ -69,14 +73,14 @@ export class AppObjects implements IClassAppObjects {
       appObjects.map((appObject) =>
         appObject
           .remove()
-          .then((s) => ({ id: appObject.details.id, status: s }))
+          .then((s) => ({ id: appObject.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/app/object`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

@@ -85,9 +85,12 @@ export class GetCommonProperties {
   async getAll() {
     let promises = [];
 
+    // @ts-ignore
     if (this.owner) promises.push(this.getOwner());
+    // @ts-ignore
     if (this.tags && this.tags.length > 0) promises.push(this.getTags());
     if (this.customProperties && this.customProperties.length > 0)
+      // @ts-ignore
       promises.push(this.getCustomProperties());
 
     await Promise.all(promises);

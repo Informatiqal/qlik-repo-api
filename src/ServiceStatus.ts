@@ -53,7 +53,7 @@ export class ServiceStatus implements IClassServiceStatus {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/ServiceStatus`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

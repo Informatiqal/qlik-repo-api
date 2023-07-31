@@ -17,6 +17,7 @@ export class Stream implements IClassStream {
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IStream) {
     if (!id) throw new Error(`stream.get: "id" parameter is required`);
 
+    this.details = {} as IStream;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

@@ -8,7 +8,7 @@ export async function getAppForReloadTask(
   repoClient: QlikRepositoryClient
 ): Promise<App> {
   let returnAppId: string = "";
-  let returnAppsFilter: App;
+  let returnAppsFilter: App = {} as App;
 
   // without appId and appFilter - throw error
   if (!appId && !appFilter)
@@ -16,7 +16,7 @@ export async function getAppForReloadTask(
       `task.create: "appId" or "appFilter" parameter is required`
     );
 
-  const apps = new Apps(repoClient, undefined);
+  const apps = new Apps(repoClient, {} as QlikRepositoryClient);
   const appsFilter = await apps.getFilter({
     filter: appFilter || `id eq ${appId}`,
   });

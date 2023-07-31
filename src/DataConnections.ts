@@ -35,7 +35,7 @@ export class DataConnections implements IClassDataConnections {
     const dc: DataConnection = new DataConnection(
       this.#repoClient,
       arg.id,
-      null
+      undefined
     );
     await dc.init();
 
@@ -47,7 +47,9 @@ export class DataConnections implements IClassDataConnections {
       .Get<IDataConnection[]>(`dataconnection/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new DataConnection(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new DataConnection(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -65,7 +67,9 @@ export class DataConnections implements IClassDataConnections {
       .Get<IDataConnection[]>(urlBuild.getUrl())
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new DataConnection(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new DataConnection(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -78,14 +82,14 @@ export class DataConnections implements IClassDataConnections {
     const dcs = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       dcs.map((dc) =>
-        dc.remove().then((s) => ({ id: dc.details.id, status: s }))
+        dc.remove().then((s) => ({ id: dc.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/dataconnection`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -122,9 +126,9 @@ export class DataConnections implements IClassDataConnections {
 
     const getCommonProps = new GetCommonProperties(
       this.#repoClient,
-      arg.customProperties,
-      arg.tags,
-      arg.owner
+      arg.customProperties ?? [],
+      arg.tags ?? [],
+      arg.owner ?? ""
     );
 
     const commonProps = await getCommonProps.getAll();
@@ -133,6 +137,6 @@ export class DataConnections implements IClassDataConnections {
     return await this.#repoClient
       .Post<IDataConnection>(`dataconnection`, { ...data, ...commonProps })
       .then((res) => res.data)
-      .then((d) => new DataConnection(this.#repoClient, d.id, d));
+      .then((d) => new DataConnection(this.#repoClient, d.id ?? "", d));
   }
 }

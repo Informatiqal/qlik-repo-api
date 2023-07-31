@@ -41,6 +41,7 @@ export class VirtualProxy implements IClassVirtualProxy {
   ) {
     if (!id) throw new Error(`virtualProxy.get: "id" parameter is required`);
 
+    this.details = {} as IVirtualProxyConfig;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;
@@ -75,7 +76,7 @@ export class VirtualProxy implements IClassVirtualProxy {
 
     if (arg.websocketCrossOriginWhiteList)
       this.details.websocketCrossOriginWhiteList = AddRemoveSet(
-        options?.whitelistOperation,
+        options?.whitelistOperation || "add",
         this.details.websocketCrossOriginWhiteList,
         arg.websocketCrossOriginWhiteList
       );
@@ -189,7 +190,8 @@ export class VirtualProxy implements IClassVirtualProxy {
   }
 
   public async metadataExport(arg?: { fileName: string }) {
-    if (!arg.fileName) arg.fileName = `${this.details.prefix}_metadata_sp.xml`;
+    if (!arg) arg = { fileName: "" };
+    if (!arg?.fileName) arg.fileName = `${this.details.prefix}_metadata_sp.xml`;
 
     let exportMetaData: string = await this.#repoClient
       .Get<string>(
@@ -198,7 +200,7 @@ export class VirtualProxy implements IClassVirtualProxy {
       .then((m) => m.data);
 
     return await this.#repoClient
-      .Get<Buffer>(`download/samlmetadata/${exportMetaData}/${arg.fileName}`)
+      .Get<Buffer>(`download/samlmetadata/${exportMetaData}/${arg?.fileName}`)
       .then((m) => m.data);
   }
 
@@ -210,7 +212,7 @@ export class VirtualProxy implements IClassVirtualProxy {
       .then((res) => res.data)
       .then((data) => {
         return data.map((t) => {
-          return new Node(this.#repoClient, t.id, t);
+          return new Node(this.#repoClient, t.id ?? "", t);
         });
       });
 

@@ -14,6 +14,7 @@ export class Engine implements IClassEngine {
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IEngine) {
     if (!id) throw new Error(`engine.get: "id" parameter is required`);
 
+    this.details = {} as IEngine
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

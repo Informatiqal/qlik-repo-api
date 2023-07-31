@@ -19,6 +19,7 @@ export class ExecutionSession implements IClassExecutionSession {
     if (!id)
       throw new Error(`executionsession.get: "id" parameter is required`);
 
+    this.details = {} as IExecutionSession;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

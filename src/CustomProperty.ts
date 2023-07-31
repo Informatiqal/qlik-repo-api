@@ -20,6 +20,7 @@ export class CustomProperty implements IClassCustomProperty {
   ) {
     if (!id) throw new Error(`customProperty.get: "id" parameter is required`);
 
+    this.details = {} as ICustomProperty;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

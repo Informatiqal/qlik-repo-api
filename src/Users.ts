@@ -62,8 +62,8 @@ export class Users implements IClassUsers {
 
     const getCommonProps = new GetCommonProperties(
       this.#repoClient,
-      arg.customProperties,
-      arg.tags,
+      arg.customProperties ?? [],
+      arg.tags ?? [],
       ""
     );
 
@@ -95,7 +95,7 @@ export class Users implements IClassUsers {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/user`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

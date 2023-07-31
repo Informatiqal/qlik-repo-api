@@ -100,7 +100,7 @@ export class ExecutionResultDetails implements IClassExecutionResultDetails {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/executionresult/detail`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

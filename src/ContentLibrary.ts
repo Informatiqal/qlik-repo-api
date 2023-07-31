@@ -1,5 +1,5 @@
 // import { getMime } from "name2mime";
-import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
+import { QlikRepositoryClient, QlikGenericRestClient, QlikEngineClient } from "qlik-rest-api";
 import {
   IStaticContentReferenceCondensed,
   IUpdateObjectOptions,
@@ -54,9 +54,10 @@ export class ContentLibrary implements IClassContentLibrary {
   ) {
     if (!id) throw new Error(`contentLibrary.get: "id" parameter is required`);
 
+    this.details = {} as IContentLibrary;
     this.#id = id;
     this.#repoClient = repoClient;
-    this.#genericClient = genericClient;
+    this.#genericClient = genericClient ?? {} as QlikGenericRestClient;
     if (details) this.details = details;
   }
 

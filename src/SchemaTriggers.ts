@@ -40,7 +40,9 @@ export class SchemaTriggers implements IClassSchemaTriggers {
         return res.data;
       })
       .then((data) => {
-        return data.map((t) => new SchemaTrigger(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new SchemaTrigger(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -56,7 +58,9 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new SchemaTrigger(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new SchemaTrigger(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -69,7 +73,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
     return await this.#repoClient
       .Post<ISchemaEvent>(`schemaevent`, { ...createObj })
       .then((res) => res.data)
-      .then((t) => new SchemaTrigger(this.#repoClient, t.id, t));
+      .then((t) => new SchemaTrigger(this.#repoClient, t.id ?? "", t));
   }
 
   public async createMany(arg: ITaskCreateTriggerSchema[]) {
@@ -83,7 +87,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       .Post<ISchemaEvent[]>(`schemaevent/many`, events)
       .then((res) => res.data)
       .then((triggers) =>
-        triggers.map((t) => new SchemaTrigger(this.#repoClient, t.id, t))
+        triggers.map((t) => new SchemaTrigger(this.#repoClient, t.id ?? "", t))
       );
   }
 
@@ -101,14 +105,14 @@ export class SchemaTriggers implements IClassSchemaTriggers {
 
     return await Promise.all<IEntityRemove>(
       triggers.map((st) =>
-        st.remove().then((s) => ({ id: st.details.id, status: s.status }))
+        st.remove().then((s) => ({ id: st.details.id ?? "", status: s.status }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/schemaevent`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -148,7 +152,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
     };
 
     details.type = taskTypes[tasks[0].taskType];
-    details.id = tasks[0].id;
+    details.id = tasks[0].id ?? "";
 
     return details;
   }

@@ -16,6 +16,7 @@ export class Tag implements IClassTag {
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITag) {
     if (!id) throw new Error(`tags.get: "id" parameter is required`);
 
+    this.details = {} as ITag;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

@@ -158,7 +158,7 @@ export interface IAppUpload {
 export interface IAppCondensed {
   appId: string;
   availabilityStatus: {};
-  id?: string;
+  id: string;
   migrationHash: string;
   name: string;
   privileges?: string[];

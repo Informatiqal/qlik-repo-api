@@ -29,7 +29,7 @@ export class CustomBannerMessages {
       .Get<ICustomBannerMessage[]>(`custombannermessage/full`)
       .then((res) => {
         return res.data.map(
-          (t) => new CustomBannerMessage(this.#repoClient, t.id, t)
+          (t) => new CustomBannerMessage(this.#repoClient, t.id ?? "", t)
         );
       });
   }
@@ -47,7 +47,7 @@ export class CustomBannerMessages {
       .then((res) => res.data)
       .then((data) => {
         return data.map(
-          (t) => new CustomBannerMessage(this.#repoClient, t.id, t)
+          (t) => new CustomBannerMessage(this.#repoClient, t.id ?? "", t)
         );
       });
   }
@@ -68,7 +68,7 @@ export class CustomBannerMessages {
       .Post<ICustomBannerMessage>(`custombannermessage`, { name: arg.name })
       .then(
         (res) =>
-          new CustomBannerMessage(this.#repoClient, res.data.id, res.data)
+          new CustomBannerMessage(this.#repoClient, res.data.id ?? "", res.data)
       );
   }
 
@@ -97,14 +97,16 @@ export class CustomBannerMessages {
 
     return await Promise.all<IEntityRemove>(
       customBannerMessages.map((message) =>
-        message.remove().then((s) => ({ id: message.details.id, status: s }))
+        message
+          .remove()
+          .then((s) => ({ id: message.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/3`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -113,7 +115,7 @@ export class CustomBannerMessages {
 
   public async count(arg?: { filter: string }): Promise<number> {
     const urlBuild = new URLBuild(`custombannermessage/count`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient.Get<number>(urlBuild.getUrl()).then((res) => {
       return res.data;

@@ -63,9 +63,9 @@ export class Streams implements IClassStreams {
 
     const getCommonProps = new GetCommonProperties(
       this.#repoClient,
-      arg.customProperties,
-      arg.tags,
-      arg.owner
+      arg.customProperties ?? [],
+      arg.tags ?? [],
+      arg.owner ?? ""
     );
 
     let commonProps = await getCommonProps.getAll();
@@ -93,7 +93,7 @@ export class Streams implements IClassStreams {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/stream`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

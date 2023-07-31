@@ -23,6 +23,7 @@ export class SchemaTrigger implements IClassSchemaTrigger {
   ) {
     if (!id) throw new Error(`schemaTrigger.get: "id" parameter is required`);
 
+    this.details = {} as ISchemaEvent;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;
@@ -40,7 +41,7 @@ export class SchemaTrigger implements IClassSchemaTrigger {
     return await this.#repoClient
       .Delete(`schemaevent/${this.details.id}`)
       .then((r) => {
-        return { id: this.details.id, status: r.status };
+        return { id: this.details.id ?? "", status: r.status };
       });
   }
 

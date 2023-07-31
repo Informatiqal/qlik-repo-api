@@ -49,12 +49,12 @@ export class Proxies implements IClassProxies {
       id: arg.virtualProxyId,
     });
 
-    proxy.details.settings.virtualProxies.push(virtualProxy.details);
+    proxy.details.settings?.virtualProxies?.push(virtualProxy.details);
 
     return await this.#repoClient
       .Post<IProxyService>(`proxyservice/${arg.proxyId}`, proxy)
       .then((res) => res.data)
-      .then((s) => new Proxy(this.#repoClient, s.id, s));
+      .then((s) => new Proxy(this.#repoClient, s.id ?? "", s));
   }
 
   public async get(arg: { id: string }) {
@@ -70,7 +70,7 @@ export class Proxies implements IClassProxies {
       .Get<IProxyService[]>(`proxyservice/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new Proxy(this.#repoClient, t.id, t));
+        return data.map((t) => new Proxy(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -84,13 +84,13 @@ export class Proxies implements IClassProxies {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new Proxy(this.#repoClient, t.id, t));
+        return data.map((t) => new Proxy(this.#repoClient, t.id ?? "", t));
       });
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/proxyservice`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -173,7 +173,7 @@ export class Proxies implements IClassProxies {
 
     const proxy = await this.#repoClient
       .Post<IProxyService>(`virtualproxyconfig`, { ...data })
-      .then((res) => new Proxy(this.#repoClient, res.data.id, res.data));
+      .then((res) => new Proxy(this.#repoClient, res.data.id ?? "", res.data));
 
     if (arg.customProperties || arg.tags) {
       const options: IProxyUpdate = {};

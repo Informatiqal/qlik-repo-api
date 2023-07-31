@@ -12,19 +12,18 @@ export class ODAGService {
   ) {
     if (!id) throw new Error(`odag.get: "id" parameter is required`);
 
+    this.details = {} as IODAGService;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;
   }
 
-  async init(): Promise<IODAGService> {
+  async init(): Promise<void> {
     if (!this.details) {
       this.details = await this.#repoClient
         .Get<IODAGService>(`odagservice/${this.#id}`)
         .then((res) => res.data);
     }
-
-    return;
   }
 
   public async remove(): Promise<number> {

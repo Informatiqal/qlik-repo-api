@@ -55,7 +55,7 @@ export class ODAG {
 
   public async select(arg?: { filter: string }): Promise<ISelection> {
     const urlBuild = new URLBuild(`selection/odagservice`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

@@ -54,6 +54,9 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
   ) {
     if (!id) throw new Error(`reloadTasks.get: "id" parameter is required`);
 
+    this.details = {} as ITask | IExternalProgramTask;
+    this.#triggersDetails = [];
+    this.triggers = {} as ReloadTaskBaseTriggersActions;
     this.#id = id;
     this.#repoClient = repoClient;
     this.#baseUrl = baseUrl;
@@ -62,6 +65,7 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
 
   async init() {
     if (!this.details) {
+      // @ts-ignore
       [this.details, this.#triggersDetails] = await this.getTaskDetails();
 
       this.triggers = new ReloadTaskBaseTriggersActions(
@@ -72,6 +76,7 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
     }
 
     if (!this.#triggersDetails) {
+      // @ts-ignore
       this.#triggersDetails = await this.triggersGetAll();
 
       this.triggers = new ReloadTaskBaseTriggersActions(
@@ -103,22 +108,22 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
 
   async waitExecution(arg?: { executionId: string }) {
     let taskStatusCode = -1;
-    let resultId: string;
+    let resultId: string | undefined = "";
 
-    if (!arg.executionId)
-      resultId = this.details.operational.lastExecutionResult.id;
+    if (!arg?.executionId)
+      resultId = this.details.operational?.lastExecutionResult.id ?? undefined;
 
-    if (arg.executionId) {
+    if (arg?.executionId) {
       resultId = await this.#repoClient
         .Get<{ executionResult: { Id: string } }>(
           `/executionSession/${arg.executionId}`
         )
-        .then((res) => {
-          return res.data.executionResult.Id;
-        });
+        .then((res) => res.data.executionResult.Id);
     }
 
-    let result: ITaskExecutionResult;
+    if (!resultId) throw new Error(`waitExecution: no result was found`);
+
+    let result: ITaskExecutionResult = {} as ITaskExecutionResult;
     while (taskStatusCode < 3) {
       result = await this.#repoClient
         .Get<ITaskExecutionResult>(`/executionResult/${resultId}`)
@@ -391,7 +396,7 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
             if (s1.eventType == 0) {
               const t: SchemaTrigger = new SchemaTrigger(
                 this.#repoClient,
-                s1.id
+                s1.id ?? ""
               );
               await t.init();
 
@@ -401,7 +406,7 @@ export abstract class ReloadTaskBase implements IClassReloadTaskBase {
             if (s1.eventType == 1) {
               const t: CompositeTrigger = new CompositeTrigger(
                 this.#repoClient,
-                s1.id
+                s1.id ?? ""
               );
               await t.init();
 

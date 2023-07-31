@@ -73,6 +73,7 @@
   },
   "dependencies": {
     "name2mime": "^1.0.1",
-    "qlik-rest-api": "^1.7.6"
+    "qlik-rest-api": "^1.7.6",
+    "zod": "^3.21.4"
   }
 }

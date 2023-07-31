@@ -1,6 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import {
   ICompositeEvent,
+  ICompositeEventRule,
   IEntityRemove,
   ISelection,
   ITask,
@@ -42,7 +43,9 @@ export class CompositeTriggers implements IClassCompositeTriggers {
         return res.data;
       })
       .then((data) => {
-        return data.map((t) => new CompositeTrigger(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new CompositeTrigger(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -58,7 +61,9 @@ export class CompositeTriggers implements IClassCompositeTriggers {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new CompositeTrigger(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new CompositeTrigger(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -68,7 +73,7 @@ export class CompositeTriggers implements IClassCompositeTriggers {
     return await this.#repoClient
       .Post<ICompositeEvent>(`compositeevent`, compositeEvent)
       .then((res) => res.data)
-      .then((t) => new CompositeTrigger(this.#repoClient, t.id, t));
+      .then((t) => new CompositeTrigger(this.#repoClient, t.id ?? "", t));
   }
 
   public async createMany(arg: ITaskCreateTriggerComposite[]) {
@@ -80,7 +85,9 @@ export class CompositeTriggers implements IClassCompositeTriggers {
       .Post<ICompositeEvent[]>(`compositeevent/many`, compositeEvents)
       .then((res) => res.data)
       .then((triggers) =>
-        triggers.map((t) => new CompositeTrigger(this.#repoClient, t.id, t))
+        triggers.map(
+          (t) => new CompositeTrigger(this.#repoClient, t.id ?? "", t)
+        )
       );
   }
 
@@ -98,14 +105,14 @@ export class CompositeTriggers implements IClassCompositeTriggers {
 
     return await Promise.all<IEntityRemove>(
       triggers.map((ct) =>
-        ct.remove().then((s) => ({ id: ct.details.id, status: s.status }))
+        ct.remove().then((s) => ({ id: ct.details.id ?? "", status: s.status }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/compositeevent`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -176,7 +183,7 @@ export class CompositeTriggers implements IClassCompositeTriggers {
     };
 
     details.type = taskTypes[tasks[0].taskType];
-    details.id = tasks[0].id;
+    details.id = tasks[0].id ?? "";
 
     return details;
   }
@@ -188,7 +195,7 @@ export class CompositeTriggers implements IClassCompositeTriggers {
     const compositeEvent = {
       name: ev.name,
       enabled: ev.hasOwnProperty("enabled") ? ev.enabled : true,
-      compositeRules: [],
+      compositeRules: [] as ICompositeEventRule[],
       timeConstraint: ev.timeConstraint
         ? ev.timeConstraint
         : {
@@ -221,7 +228,7 @@ export class CompositeTriggers implements IClassCompositeTriggers {
       })
     );
 
-    compositeEvent.compositeRules = eventTasks;
+    compositeEvent.compositeRules = [...eventTasks];
 
     return compositeEvent;
   }

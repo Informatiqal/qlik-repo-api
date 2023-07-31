@@ -24,7 +24,7 @@ export class Extensions implements IClassExtensions {
 
   public async get(arg: { id: string }) {
     if (!arg.id) throw new Error(`extension.get: "id" parameter is required`);
-    const extension: Extension = new Extension(this.#repoClient, arg.id, null);
+    const extension: Extension = new Extension(this.#repoClient, arg.id, undefined);
     await extension.init();
 
     return extension;
@@ -69,7 +69,7 @@ export class Extensions implements IClassExtensions {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/extension`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

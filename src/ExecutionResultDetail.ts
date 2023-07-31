@@ -23,6 +23,7 @@ export class ExecutionResultDetail implements IClassExecutionResultDetail {
   ) {
     if (!id) throw new Error(`executionResult.get: "id" parameter is required`);
 
+    this.details = {} as IExecutionResultDetail;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

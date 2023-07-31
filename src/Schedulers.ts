@@ -36,7 +36,7 @@ export class Schedulers implements IClassSchedulers {
       .Get<ISchedulerService[]>(`schedulerservice/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new Scheduler(this.#repoClient, t.id, t));
+        return data.map((t) => new Scheduler(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -50,7 +50,7 @@ export class Schedulers implements IClassSchedulers {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new Scheduler(this.#repoClient, t.id, t));
+        return data.map((t) => new Scheduler(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -63,14 +63,14 @@ export class Schedulers implements IClassSchedulers {
       schedulers.map((scheduler) =>
         scheduler
           .remove()
-          .then((s) => ({ id: scheduler.details.id, status: s }))
+          .then((s) => ({ id: scheduler.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/schedulerservice`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

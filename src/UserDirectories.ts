@@ -48,7 +48,9 @@ export class UserDirectories implements IClassUserDirectories {
       .Get<IUserDirectory[]>(`userdirectory/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new UserDirectory(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new UserDirectory(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -64,7 +66,9 @@ export class UserDirectories implements IClassUserDirectories {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new UserDirectory(this.#repoClient, t.id, t));
+        return data.map(
+          (t) => new UserDirectory(this.#repoClient, t.id ?? "", t)
+        );
       });
   }
 
@@ -77,7 +81,7 @@ export class UserDirectories implements IClassUserDirectories {
     const uds = await this.getFilter(filter);
     return Promise.all<IEntityRemove>(
       uds.map((ud) =>
-        ud.remove().then((s) => ({ id: ud.details.id, status: s }))
+        ud.remove().then((s) => ({ id: ud.details.id ?? "", status: s }))
       )
     );
   }
@@ -116,7 +120,7 @@ export class UserDirectories implements IClassUserDirectories {
     const getCommonProps = new GetCommonProperties(
       this.#repoClient,
       [],
-      arg.tags,
+      arg.tags ?? [],
       ""
     );
 
@@ -125,6 +129,6 @@ export class UserDirectories implements IClassUserDirectories {
     return await this.#repoClient
       .Post<IUserDirectory>(`userdirectory`, { ...obj, ...commonProps })
       .then((res) => res.data)
-      .then((ud) => new UserDirectory(this.#repoClient, ud.id, ud));
+      .then((ud) => new UserDirectory(this.#repoClient, ud.id ?? "", ud));
   }
 }

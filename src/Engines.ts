@@ -50,9 +50,9 @@ export class Engines implements IClassEngines {
     if (arg && arg.loadBalancingPurpose == "Any") loadBalancingPurpose = 2;
 
     const body = {
-      proxyId: arg.proxyID || "",
-      proxyPrefix: arg.proxyPrefix || "",
-      appId: arg.appId || "",
+      proxyId: arg?.proxyID || "",
+      proxyPrefix: arg?.proxyPrefix || "",
+      appId: arg?.appId || "",
       loadBalancingPurpose: loadBalancingPurpose,
     };
 
@@ -76,7 +76,7 @@ export class Engines implements IClassEngines {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/engineservice`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

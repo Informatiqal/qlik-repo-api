@@ -45,7 +45,7 @@ export class SystemRules implements IClassSystemRules {
       .Get<ISystemRule[]>(`systemrule/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new SystemRule(this.#repoClient, t.id, t));
+        return data.map((t) => new SystemRule(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -65,7 +65,7 @@ export class SystemRules implements IClassSystemRules {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new SystemRule(this.#repoClient, t.id, t));
+        return data.map((t) => new SystemRule(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -108,7 +108,7 @@ export class SystemRules implements IClassSystemRules {
     return await this.#repoClient
       .Post<ISystemRule>(`systemrule`, { ...rule })
       .then((res) => res.data)
-      .then((r) => new SystemRule(this.#repoClient, r.id, r));
+      .then((r) => new SystemRule(this.#repoClient, r.id ?? "", r));
   }
 
   public async licenseCreate(arg: ISystemRuleLicenseCreate) {
@@ -147,7 +147,7 @@ export class SystemRules implements IClassSystemRules {
 
     return await this.#repoClient
       .Post<ISystemRule>(`systemrule`, rule)
-      .then((s) => new SystemRule(this.#repoClient, s.data.id, s.data));
+      .then((s) => new SystemRule(this.#repoClient, s.data?.id ?? "", s.data));
   }
 
   public async removeFilter(arg: { filter: string }) {
@@ -159,14 +159,14 @@ export class SystemRules implements IClassSystemRules {
     const srs = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       srs.map((sr) =>
-        sr.remove().then((s) => ({ id: sr.details.id, status: s }))
+        sr.remove().then((s) => ({ id: sr.details.id ?? "", status: s }))
       )
     );
   }
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/systemrule`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

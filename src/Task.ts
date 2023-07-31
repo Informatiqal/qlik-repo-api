@@ -16,6 +16,7 @@ export class Task implements IClassTask {
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITask) {
     if (!id) throw new Error(`tasks.get: "id" parameter is required`);
 
+    this.details = {} as ITask;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

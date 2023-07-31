@@ -27,6 +27,7 @@ export class ReloadTaskBaseTriggersActions {
     this.#taskDetails = taskDetails;
     this.#compositeTriggers = new CompositeTriggers(this.#repoClient);
     this.#schemaTriggers = new SchemaTriggers(this.#repoClient);
+    // @ts-ignore
     this.details = details;
   }
 
@@ -36,6 +37,7 @@ export class ReloadTaskBaseTriggersActions {
   async addComposite(arg: ITaskCreateTriggerCompositeBase) {
     const fullData: ITaskCreateTriggerComposite = {
       ...arg,
+      // @ts-ignore
       task: { id: this.#taskDetails.id },
     };
 
@@ -53,6 +55,7 @@ export class ReloadTaskBaseTriggersActions {
   async addSchema(arg: ITaskCreateTriggerSchemaBase) {
     const fullData: ITaskCreateTriggerSchema = {
       ...arg,
+      // @ts-ignore
       task: { id: this.#taskDetails.id },
     };
 
@@ -75,6 +78,7 @@ export class ReloadTaskBaseTriggersActions {
       .map((t) => {
         const fullData: ITaskCreateTriggerComposite = {
           ...t,
+          // @ts-ignore
           task: { id: this.#taskDetails.id },
         };
 
@@ -85,6 +89,7 @@ export class ReloadTaskBaseTriggersActions {
       .map((t) => {
         const fullData: ITaskCreateTriggerSchema = {
           ...t,
+          // @ts-ignore
           task: { id: this.#taskDetails.id },
         };
 

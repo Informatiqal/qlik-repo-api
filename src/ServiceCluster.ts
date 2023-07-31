@@ -19,6 +19,7 @@ export class ServiceCluster implements IClassServiceCluster {
   ) {
     if (!id) throw new Error(`serviceClusters.get: "id" parameter is required`);
 
+    this.details = {} as IServiceCluster;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

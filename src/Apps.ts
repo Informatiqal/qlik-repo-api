@@ -74,7 +74,14 @@ export interface IClassApps {
   exportMany(arg?: {
     filter: string;
     skipData?: boolean;
-  }): Promise<{ file: IncomingMessage; exportToken: string; name: string }[]>;
+  }): Promise<
+    {
+      file: IncomingMessage;
+      exportToken: string | undefined;
+      name: string;
+      id: string;
+    }[]
+  >;
 }
 
 export class Apps implements IClassApps {
@@ -96,7 +103,7 @@ export class Apps implements IClassApps {
     const app: App = new App(
       this.#repoClient,
       arg.id,
-      null,
+      undefined,
       this.#genericClient,
       this.#genericClientWithPort
     );
@@ -238,7 +245,7 @@ export class Apps implements IClassApps {
           new App(
             this.#repoClient,
             res.data.id,
-            null,
+            undefined,
             this.#genericClient,
             this.#genericClientWithPort
           )
@@ -269,7 +276,7 @@ export class Apps implements IClassApps {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/app`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

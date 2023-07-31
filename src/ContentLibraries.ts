@@ -72,7 +72,7 @@ export class ContentLibraries implements IClassContentLibraries {
     const cl: ContentLibrary = new ContentLibrary(
       this.#repoClient,
       arg.id,
-      null,
+      undefined,
       this.#genericClient
     );
     await cl.init();
@@ -163,7 +163,7 @@ export class ContentLibraries implements IClassContentLibraries {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/contentlibrary`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})

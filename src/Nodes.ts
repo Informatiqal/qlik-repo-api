@@ -72,7 +72,7 @@ export class Nodes implements IClassNodes {
 
     const container = await this.createNewNode(nodeConfig);
 
-    const node = new Node(this.#repoClient, container.details.id);
+    const node = new Node(this.#repoClient, container.details.id ?? "");
     await node.init();
     return node;
   }
@@ -90,7 +90,7 @@ export class Nodes implements IClassNodes {
       .Get<IServerNodeConfiguration[]>(`servernodeconfiguration/full`)
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new Node(this.#repoClient, t.id, t));
+        return data.map((t) => new Node(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -106,7 +106,7 @@ export class Nodes implements IClassNodes {
       )
       .then((res) => res.data)
       .then((data) => {
-        return data.map((t) => new Node(this.#repoClient, t.id, t));
+        return data.map((t) => new Node(this.#repoClient, t.id ?? "", t));
       });
   }
 
@@ -131,7 +131,7 @@ export class Nodes implements IClassNodes {
     const nodes = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
       nodes.map((node) =>
-        node.remove().then((s) => ({ id: node.details.id, status: s }))
+        node.remove().then((s) => ({ id: node.details.id ?? "", status: s }))
       )
     );
   }
@@ -184,7 +184,7 @@ export class Nodes implements IClassNodes {
         (res) =>
           new Node(
             this.#repoClient,
-            res.data.configuration.id,
+            res.data.configuration?.id ?? "",
             res.data.configuration
           )
       );

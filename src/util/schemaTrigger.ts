@@ -6,43 +6,36 @@ export function schemaRepeat(
   daysOfWeek: TDaysOfWeek[],
   daysOfMonth: TDaysOfMonth[]
 ): { incrementDescr: string; schemaFilterDescr: string } {
-  if (repeat == "Once")
-    return {
+  const schemas = {
+    Once: {
       incrementDescr: "0 0 0 0",
       schemaFilterDescr: "* * - * * * * *",
-    };
-
-  if (repeat == "Minute")
-    return {
+    },
+    Minute: {
       incrementDescr: `${repeatEvery} 0 0 0`,
       schemaFilterDescr: "* * - * * * * *",
-    };
-
-  if (repeat == "Hourly")
-    return {
+    },
+    Hourly: {
       incrementDescr: `0 ${repeatEvery} 0 0`,
       schemaFilterDescr: "* * - * * * * *",
-    };
-
-  if (repeat == "Daily")
-    return {
+    },
+    Daily: {
       incrementDescr: `0 0 ${repeatEvery} 0`,
       schemaFilterDescr: "* * - * * * * *",
-    };
-
-  if (repeat == "Weekly") {
-    let weekDay = getWeekDayNumber(daysOfWeek);
-    return {
+    },
+    Weekly: {
       incrementDescr: `0 0 1 0`,
-      schemaFilterDescr: `* * - ${weekDay} ${repeatEvery} * * *`,
-    };
-  }
-
-  if (repeat == "Monthly")
-    return {
+      schemaFilterDescr: `* * - ${getWeekDayNumber(
+        daysOfWeek
+      )} ${repeatEvery} * * *`,
+    },
+    Monthly: {
       incrementDescr: `0 0 1 0`,
       schemaFilterDescr: `* * - * * ${daysOfMonth} * *`,
-    };
+    },
+  };
+
+  return schemas[repeat];
 }
 
 export function getWeekDayNumber(daysOfWeek: TDaysOfWeek[]): number[] {
@@ -54,5 +47,7 @@ export function getWeekDayNumber(daysOfWeek: TDaysOfWeek[]): number[] {
     if (d == "Thursday") return 4;
     if (d == "Friday") return 5;
     if (d == "Saturday") return 6;
+
+    return 0;
   });
 }

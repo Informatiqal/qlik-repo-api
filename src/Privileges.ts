@@ -26,16 +26,18 @@ export class Privileges implements IClassPrivileges {
   public async assert(arg: { item: IObject; privileges?: string[] }) {
     const access = await this.get(arg.item);
 
-    arg.privileges.filter((p) => {
-      if (!access.includes(p))
-        throw new Error(
-          `privileges.assert: Expected "${p}" to ber found in collection "${access.join(
-            ", "
-          )}. ${arg.item.schemaPath} - ${arg.item.id}"`
-        );
+    if (arg.privileges) {
+      arg.privileges.filter((p) => {
+        if (!access.includes(p))
+          throw new Error(
+            `privileges.assert: Expected "${p}" to ber found in collection "${access.join(
+              ", "
+            )}. ${arg.item.schemaPath} - ${arg.item.id}"`
+          );
 
-      return p;
-    });
+        return p;
+      });
+    }
 
     return true;
   }

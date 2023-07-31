@@ -25,6 +25,7 @@ export class CompositeTrigger implements IClassCompositeTrigger {
     if (!id)
       throw new Error(`compositeTrigger.get: "id" parameter is required`);
 
+    this.details = {} as ICompositeEvent;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;
@@ -42,7 +43,7 @@ export class CompositeTrigger implements IClassCompositeTrigger {
     return await this.#repoClient
       .Delete(`compositeevent/${this.details.id}`)
       .then((r) => {
-        return { id: this.details.id, status: r.status };
+        return { id: this.details.id ?? "", status: r.status };
       });
   }
 

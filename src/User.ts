@@ -17,6 +17,7 @@ export class User implements IClassUser {
   constructor(repoClient: QlikRepositoryClient, id: string, details?: IUser) {
     if (!id) throw new Error(`users.get: "id" parameter is required`);
 
+    this.details = {} as IUser;
     this.#id = id;
     this.#repoClient = repoClient;
     if (details) this.details = details;

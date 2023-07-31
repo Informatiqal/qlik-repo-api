@@ -168,6 +168,7 @@ export class UpdateCommonProperties<T> {
           this.obj.customProperties as ICustomPropertyValue[]
         ).filter(
           (t) =>
+            // @ts-ignore
             !this.arg.customProperties.includes(
               `${t.definition.name}=${t.value}`
             )
@@ -241,6 +242,7 @@ export class UpdateCommonProperties<T> {
       // remove the provided tags from the existing ones
       if (this.tagOperation == "remove") {
         this.obj.tags = this.obj.tags.filter(
+          // @ts-ignore
           (t) => !this.arg.tags.includes(t.name)
         );
       }
@@ -252,12 +254,14 @@ export class UpdateCommonProperties<T> {
   }
 
   async updateOwner() {
+    // @ts-ignore
     let [userDirectory, userId] = (this.arg as IAppUpdate).owner.split("\\");
 
     const filter = `userId  eq '${userId}' and userDirectory eq '${userDirectory}'`;
 
     this.obj.owner = this.qlikUtil
       .Get(`user/full?filter=(${encodeURIComponent(filter)})`)
+      // @ts-ignore
       .then((res) => res.data[0]);
   }
 
@@ -266,16 +270,22 @@ export class UpdateCommonProperties<T> {
 
     this.obj.stream = await this.qlikUtil
       .Get(`stream/full?filter=(${encodeURIComponent(filter)})`)
+      // @ts-ignore
       .then((res) => res.data[0]);
   }
 
   async updateAll<T>(): Promise<T> {
     const promises = [];
+    // @ts-ignore
     if ((this.arg as IAppUpdate).stream) promises.push(this.updateAppStream());
+    // @ts-ignore
     if ((this.arg as IAppUpdate).owner) promises.push(this.updateOwner());
+    // @ts-ignore
     if (this.arg.customProperties) promises.push(this.updateCustomProperties());
+    // @ts-ignore
     if (this.arg.tags) promises.push(this.updateTags());
 
+    // @ts-ignore
     promises.push(this.updateModifiedTimeStamp());
 
     await Promise.all(promises);
