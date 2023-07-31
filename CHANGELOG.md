@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.12.0] - 2023-07-31
+
+- load balancing endpoints implemented
+
 ## [0.11.0] - 2023-07-31
 
 - odag request endpoints implemented

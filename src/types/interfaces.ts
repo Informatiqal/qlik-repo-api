@@ -2405,3 +2405,58 @@ export interface IOdagRequest {
   curRowEstHighBound: number;
   clientContextHandle: string;
 }
+
+export interface ILoadBalancingResult {
+  schemaPath: string;
+  appID: string;
+  validEngines: string[];
+  /**
+   * 0: Ok
+   * 1: AppNotFound
+   * 2: ProxyNotFound
+   * 3: ProxyPrefixNotFound
+   * 4: AppNotEnabled
+   */
+  loadBalancingResultCode: number;
+}
+
+export interface ILoadBalancingResultExtended {
+  schemaPath: string;
+  appID: string;
+  validEngines: {}[];
+  /**
+   * 0: Ok
+   * 1: AppNotFound
+   * 2: ProxyNotFound
+   * 3: ProxyPrefixNotFound
+   * 4: AppNotEnabled
+   */
+  loadBalancingResultCode: number;
+}
+
+export interface ILoadBalancingNodeResult {
+  schemaPath: string;
+  appID: string;
+  hosts: string[];
+  /**
+   * 0: Ok
+   * 1: AppNotFound
+   * 2: ProxyNotFound
+   * 3: ProxyPrefixNotFound
+   * 4: AppNotEnabled
+   */
+  loadBalancingResultCode: number;
+}
+
+export interface ILoadBalancingRequest {
+  schemaPath?: string;
+  proxyID?: string;
+  proxyPrefix?: string;
+  appID: string;
+  /**
+   * 0: Production
+   * 1: Development
+   * 2: Any
+   */
+  loadBalancingPurpose: number;
+}

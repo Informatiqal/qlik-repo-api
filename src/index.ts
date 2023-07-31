@@ -14,6 +14,7 @@ import { Extensions } from "./Extensions";
 import { ExecutionResults } from "./ExecutionResults";
 import { ExecutionSessions } from "./ExecutionSessions";
 import { License } from "./License";
+import { LoadBalancing } from "./LoadBalancing";
 import { Nodes } from "./Nodes";
 import { ODAG } from "./ODAGServices";
 import { ODAGRequests } from "./ODAGRequests";
@@ -119,6 +120,10 @@ export namespace QlikRepoApi {
      * /qrs/license endpoints
      */
     public license: License;
+    /**
+     * /qrs/loadBalancing endpoints
+     */
+    public loadBalancing: LoadBalancing;
     /**
      * Audit privileges for an object
      */
@@ -249,6 +254,7 @@ export namespace QlikRepoApi {
       this.executionResults = new ExecutionResults(this.repoClient);
       this.executionSessions = new ExecutionSessions(this.repoClient);
       this.license = new License(this.repoClient);
+      this.loadBalancing = new LoadBalancing(this.repoClient);
       this.nodes = new Nodes(this.repoClient, this.genericClient);
       this.odag = new ODAG(this.repoClient);
       this.odagRequest = new ODAGRequests(this.repoClient);

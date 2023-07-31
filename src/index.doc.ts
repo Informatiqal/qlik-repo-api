@@ -30,6 +30,7 @@ export * from "./Extensions";
 export * from "./ExternalTask";
 export * from "./ExternalTasks";
 export * from "./License";
+export * from "./LoadBalancing";
 export * from "./Node";
 export * from "./Nodes";
 export * from "./ODAGService";
