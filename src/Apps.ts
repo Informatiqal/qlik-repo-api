@@ -1,6 +1,15 @@
-import { info } from "console";
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
+import { ArgValidationError } from "./util/CustomErrors";
+import {
+  zodGetByIdSchema,
+  zodGetByFilterSchema,
+  zodAppExportManySchema,
+  zodOnlyFilterSchema,
+  zodAppUpload,
+  zodAppUploadAndReplace,
+  zodAppUploadMany,
+} from "./types/ZodSchemas";
 
 import {
   ISelection,
@@ -13,78 +22,7 @@ import {
 import { App } from "./App";
 import { IncomingMessage } from "http";
 
-export interface IClassApps {
-  /**
-   * Get single app instance
-   */
-  get(arg: { id: string }): Promise<App>;
-  /**
-   * Get all available apps instance for a user
-   */
-  getAll(): Promise<App[]>;
-  /**
-   * Get array of apps instance based on the supplied filter
-   */
-  getFilter(arg: { filter: string; orderBy?: string }): Promise<App[]>;
-  /**
-   * Remove apps based on the supplied filter
-   */
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
-  /**
-   * Create selection based on the supplied filter
-   */
-  select(arg?: { filter: string }): Promise<ISelection>;
-  /**
-   * Upload an qvf
-   */
-  upload(arg: {
-    name: string;
-    file: Buffer;
-    keepData?: boolean;
-    excludeDataConnections?: boolean;
-  }): Promise<App>;
-  /**
-   * Upload multiple apps in a single method
-   */
-  uploadMany(arg: {
-    apps: [
-      {
-        name: string;
-        file: Buffer;
-        keepData?: boolean;
-        excludeDataConnections?: boolean;
-      }
-    ];
-    sequence?: Boolean;
-  }): Promise<App[]>;
-  /**
-   * EXPERIMENTAL
-   *
-   * Upload an qvf and replace an existing app with it
-   */
-  uploadAndReplace(arg: {
-    name: string;
-    targetAppId: string;
-    file: Buffer;
-    keepData?: boolean;
-  }): Promise<App>;
-  /**
-   * Export multiple qvf to Buffer
-   */
-  exportMany(arg?: {
-    filter: string;
-    skipData?: boolean;
-  }): Promise<
-    {
-      file: IncomingMessage;
-      exportToken: string | undefined;
-      name: string;
-      id: string;
-    }[]
-  >;
-}
-
-export class Apps implements IClassApps {
+export class Apps {
   #repoClient: QlikRepositoryClient;
   #genericClient: QlikGenericRestClient;
   #genericClientWithPort?: QlikGenericRestClient;
@@ -98,8 +36,14 @@ export class Apps implements IClassApps {
     this.#genericClientWithPort = mainGenericClientWithPort;
   }
 
-  public async get(arg: { id: string }) {
-    if (!arg.id) throw new Error(`apps.get: "id" parameter is required`);
+  /**
+   * Get single app instance
+   */
+  public async get(arg: { id: string }): Promise<App> {
+    const argParse = zodGetByIdSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("apps.get", argParse.error.issues);
+
     const app: App = new App(
       this.#repoClient,
       arg.id,
@@ -112,7 +56,10 @@ export class Apps implements IClassApps {
     return app;
   }
 
-  public async getAll() {
+  /**
+   * Get all available apps instance for a user
+   */
+  public async getAll(): Promise<App[]> {
     return await this.#repoClient
       .Get<IApp[]>(`app/full`)
       .then((res) => res.data)
@@ -130,9 +77,16 @@ export class Apps implements IClassApps {
       });
   }
 
-  public async getFilter(arg: { filter: string; orderBy?: string }) {
-    if (!arg.filter)
-      throw new Error(`app.getFilter: "filter" parameter is required`);
+  /**
+   * Get array of apps instance based on the supplied filter
+   */
+  public async getFilter(arg: {
+    filter: string;
+    orderBy?: string;
+  }): Promise<App[]> {
+    const argParse = zodGetByFilterSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("apps.getFilter", argParse.error.issues);
 
     const urlBuild = new URLBuild(`app/full`);
     urlBuild.addParam("filter", arg.filter);
@@ -155,9 +109,20 @@ export class Apps implements IClassApps {
       });
   }
 
-  public async exportMany(arg: { filter: string; skipData?: boolean }) {
-    if (!arg.filter)
-      throw new Error(`app.exportMany: "filter" parameter is required`);
+  /**
+   * Export multiple qvf to Buffer
+   */
+  public async exportMany(arg: { filter: string; skipData?: boolean }): Promise<
+    {
+      file: IncomingMessage;
+      exportToken: string | undefined;
+      name: string;
+      id: string;
+    }[]
+  > {
+    const argParse = zodAppExportManySchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("apps.exportMany", argParse.error.issues);
 
     const apps = await this.getFilter(arg);
 
@@ -166,20 +131,18 @@ export class Apps implements IClassApps {
     );
   }
 
-  public async upload(arg: IAppUpload) {
-    if (!arg.name) throw new Error(`app.upload: "name" parameter is required`);
-    if (!arg.file) throw new Error(`app.upload: "file" parameter is required`);
+  /**
+   * Upload an qvf
+   */
+  public async upload(arg: IAppUpload): Promise<App> {
+    const argParse = zodAppUpload.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("apps.upload", argParse.error.issues);
 
     const urlBuild = new URLBuild("app/upload");
     urlBuild.addParam("name", arg.name);
     urlBuild.addParam("keepdata", arg.keepData);
     urlBuild.addParam("excludeconnections", arg.excludeDataConnections);
-
-    // (arg.file as IncomingMessage).on("data", function () {
-    //   //
-    //   // info("Uploading");
-    //   info("Uploading");
-    // });
 
     const app = await this.#repoClient
       .Post<IApp>(urlBuild.getUrl(), arg.file, "application/vnd.qlik.sense.app")
@@ -205,6 +168,9 @@ export class Apps implements IClassApps {
     return app;
   }
 
+  /**
+   * Upload multiple apps in a single method
+   */
   public async uploadMany(arg: {
     apps: [
       {
@@ -216,6 +182,10 @@ export class Apps implements IClassApps {
     ];
     sequence?: Boolean;
   }): Promise<App[]> {
+    const argParse = zodAppUploadMany.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("apps.upload", argParse.error.issues);
+
     return await Promise.all(
       arg.apps.map((a) => {
         return this.upload(a);
@@ -223,14 +193,17 @@ export class Apps implements IClassApps {
     );
   }
 
-  public async uploadAndReplace(arg: IAppUploadAndReplace) {
-    if (!arg.name)
-      throw new Error(`app.uploadAndReplace: "name" parameter is required`);
-    if (!arg.file)
-      throw new Error(`app.uploadAndReplace: "file" parameter is required`);
-    if (!arg.targetAppId)
-      throw new Error(
-        `app.uploadAndReplace: "targetAppId" parameter is required`
+  /**
+   * EXPERIMENTAL
+   *
+   * Upload an qvf and replace an existing app with it
+   */
+  public async uploadAndReplace(arg: IAppUploadAndReplace): Promise<App> {
+    const argParse = zodAppUploadAndReplace.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError(
+        "apps.uploadAndReplace",
+        argParse.error.issues
       );
 
     const urlBuild = new URLBuild("app/upload/replace");
@@ -262,9 +235,13 @@ export class Apps implements IClassApps {
     return app;
   }
 
-  public async removeFilter(arg: { filter: string }) {
-    if (!arg.filter)
-      throw new Error(`app.removeFilter: "filter" parameter is required`);
+  /**
+   * Remove apps based on the supplied filter
+   */
+  public async removeFilter(arg: { filter: string }): Promise<IEntityRemove[]> {
+    const argParse = zodOnlyFilterSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("apps.removeFilter", argParse.error.issues);
 
     const apps = await this.getFilter({ filter: arg.filter });
     return Promise.all<IEntityRemove>(
@@ -274,7 +251,16 @@ export class Apps implements IClassApps {
     );
   }
 
-  public async select(arg?: { filter: string }) {
+  /**
+   * Create selection based on the supplied filter
+   */
+  public async select(arg?: { filter: string }): Promise<ISelection> {
+    if (arg) {
+      const argParse = zodOnlyFilterSchema.safeParse(arg);
+      if (!argParse.success)
+        throw new ArgValidationError("apps.select", argParse.error.issues);
+    }
+
     const urlBuild = new URLBuild(`selection/app`);
     urlBuild.addParam("filter", arg?.filter);
 

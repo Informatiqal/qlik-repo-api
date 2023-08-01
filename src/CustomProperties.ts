@@ -58,7 +58,7 @@ export class CustomProperties implements IClassCustomProperties {
       .then((res) => res.data)
       .then((data) => {
         return data.map((t) => new CustomProperty(this.#repoClient, t.id, t));
-      });
+    });
   }
 
   public async create(arg: ICustomPropertyCreate) {

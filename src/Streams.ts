@@ -1,34 +1,35 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
+import { Stream } from "./Stream";
+import { ArgValidationError } from "./util/CustomErrors";
 
+import {
+  zodGetByFilterSchema,
+  zodGetByIdSchema,
+  zodStreamCreate,
+} from "./types/ZodSchemas";
 import {
   IEntityRemove,
   ISelection,
   IStream,
   IStreamCreate,
 } from "./types/interfaces";
-// import { ICustomPropertyCondensed } from "./CustomProperties";
-// import { ITagCondensed } from "./Tags";
-// import { IOwner } from "./Users";
-import { Stream } from "./Stream";
 
-export interface IClassStreams {
-  get(arg: { id: string }): Promise<Stream>;
-  getAll(): Promise<Stream[]>;
-  getFilter(arg: { filter: string }): Promise<Stream[]>;
-  create(arg: IStreamCreate): Promise<Stream>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
-  select(arg?: { filter: string }): Promise<ISelection>;
-}
-
-export class Streams implements IClassStreams {
+export class Streams {
   #repoClient: QlikRepositoryClient;
-  constructor(private mainRepoClient: QlikRepositoryClient) {
+  constructor(mainRepoClient: QlikRepositoryClient) {
     this.#repoClient = mainRepoClient;
   }
 
+  /**
+   * Get stream instance by providing an ID
+   */
   public async get(arg: { id: string }) {
+    const argParse = zodGetByIdSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("streams.get", argParse.error.issues);
+
     if (!arg.id) throw new Error(`steam.get: "id" parameter is required`);
     const stream: Stream = new Stream(this.#repoClient, arg.id);
     await stream.init();
@@ -36,6 +37,9 @@ export class Streams implements IClassStreams {
     return stream;
   }
 
+  /**
+   * Get all streams
+   */
   public async getAll() {
     return await this.#repoClient
       .Get<IStream[]>(`stream/full`)
@@ -45,7 +49,14 @@ export class Streams implements IClassStreams {
       });
   }
 
+  /**
+   * Get stream instances from the specified filter
+   */
   public async getFilter(arg: { filter: string }) {
+    const argParse = zodGetByFilterSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("streams.getFilter", argParse.error.issues);
+
     if (!arg.filter)
       throw new Error(`stream.getFilter: "filter" parameter is required`);
 
@@ -57,7 +68,14 @@ export class Streams implements IClassStreams {
       });
   }
 
+  /**
+   * Create new stream
+   */
   public async create(arg: IStreamCreate) {
+    const argParse = zodStreamCreate.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("streams.create", argParse.error.issues);
+
     if (!arg.name)
       throw new Error(`stream.create: "path" parameter is required`);
 
@@ -79,7 +97,17 @@ export class Streams implements IClassStreams {
       .then((s) => new Stream(this.#repoClient, s.id, s));
   }
 
+  /**
+   * Search for streams from the provided filter and remove them
+   */
   public async removeFilter(arg: { filter: string }) {
+    const argParse = zodGetByIdSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError(
+        "streams.removeFilter",
+        argParse.error.issues
+      );
+
     if (!arg.filter)
       throw new Error(`stream.removeFilter: "filter" parameter is required`);
 
@@ -91,7 +119,14 @@ export class Streams implements IClassStreams {
     );
   }
 
+  /**
+   * Select streams from the provided filter
+   */
   public async select(arg?: { filter: string }) {
+    const argParse = zodGetByIdSchema.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("streams.select", argParse.error.issues);
+
     const urlBuild = new URLBuild(`selection/stream`);
     urlBuild.addParam("filter", arg?.filter);
 

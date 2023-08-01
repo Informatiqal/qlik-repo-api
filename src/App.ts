@@ -5,23 +5,30 @@ import { IHttpStatus } from "./types/ranges";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { IApp, IAppUpdate } from "./types/interfaces";
 import { IncomingMessage } from "http";
+import {
+  zodAppPublish,
+  zodAppSwitch,
+  zodAppUpdate,
+  zodUpdateObjectOptions,
+} from "./types/ZodSchemas";
+import { ArgValidationError } from "./util/CustomErrors";
 
-export interface IClassApp {
-  details: IApp;
-  copy(arg: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
-  export(arg?: { token?: string; skipData?: boolean }): Promise<{
-    file: IncomingMessage;
-    exportToken: string | undefined;
-    name: string;
-    id: string;
-  }>;
-  remove(): Promise<IHttpStatus>;
-  publish(arg: { stream: string; name?: string }): Promise<IApp>;
-  switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
-  update(arg: IAppUpdate, options?: IUpdateObjectOptions): Promise<IApp>;
-}
+// export interface IClassApp {
+//   details: IApp;
+//   copy(arg: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
+//   export(arg?: { token?: string; skipData?: boolean }): Promise<{
+//     file: IncomingMessage;
+//     exportToken: string | undefined;
+//     name: string;
+//     id: string;
+//   }>;
+//   remove(): Promise<IHttpStatus>;
+//   publish(arg: { stream: string; name?: string }): Promise<IApp>;
+//   switch(arg: { targetAppId: string }): Promise<IHttpStatus>;
+//   update(arg: IAppUpdate, options?: IUpdateObjectOptions): Promise<IApp>;
+// }
 
-export class App implements IClassApp {
+export class App {
   #id: string;
   #repoClient: QlikRepositoryClient;
   #genericClient: QlikGenericRestClient;
@@ -53,6 +60,9 @@ export class App implements IClassApp {
     }
   }
 
+  /**
+   * Export the current app
+   */
   public async export(arg?: { token?: string; skipData?: boolean }) {
     const token = uuid();
 
@@ -85,6 +95,9 @@ export class App implements IClassApp {
       });
   }
 
+  /**
+   * Duplicate the current app
+   */
   public async copy(arg: { name?: string; includeCustomProperties?: boolean }) {
     const urlBuild = new URLBuild(`app/${this.details.id}/copy`);
     if (arg.name) urlBuild.addParam("name", arg.name);
@@ -96,15 +109,26 @@ export class App implements IClassApp {
       .then((res) => new App(this.#repoClient, res.data.id, res.data));
   }
 
+  /**
+   * Delete the current app
+   */
   public async remove() {
     return await this.#repoClient
       .Delete(`app/${this.details.id}`)
       .then((res) => res.status);
   }
 
+  /**
+   * Publish to app to a stream, identified by a name
+   *
+   * WARNING! This will publish the given app but will not overwrite an existing app
+   *
+   * To overwrite an existing app please use the "switch" method
+   */
   public async publish(arg: { stream: string; name?: string }) {
-    if (!arg.stream)
-      throw new Error(`app.publish: "stream" parameter is required`);
+    const argParse = zodAppPublish.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("app.publish", argParse.error.issues);
 
     const streamRes = await this.#repoClient.Get<IStream[]>(
       `stream?filter=(name eq '${arg.stream}')`
@@ -128,7 +152,21 @@ export class App implements IClassApp {
       });
   }
 
+  /**
+   * Update meta-data for the current app
+   */
   public async update(arg: IAppUpdate, options?: IUpdateObjectOptions) {
+    const argParse = zodAppUpdate.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("app.update", argParse.error.issues);
+
+    // if options are provided then validate them as well
+    if (options) {
+      const optionsParse = zodUpdateObjectOptions.safeParse(options);
+      if (!optionsParse.success)
+        throw new ArgValidationError("app.update", optionsParse.error.issues);
+    }
+
     if (arg.name) this.details.name = arg.name;
     if (arg.description) this.details.description = arg.description;
 
@@ -145,9 +183,13 @@ export class App implements IClassApp {
       .then((res) => res.data);
   }
 
+  /**
+   * Overwrite an existing app with the current app
+   */
   public async switch(arg: { targetAppId: string }) {
-    if (!arg.targetAppId)
-      throw new Error(`app.switch: "targetAppId" parameter is required`);
+    const argParse = zodAppSwitch.safeParse(arg);
+    if (!argParse.success)
+      throw new ArgValidationError("app.switch", argParse.error.issues);
 
     return await this.#repoClient
       .Put<IApp>(`app/${this.details.id}/replace?app=${arg.targetAppId}`, {})
