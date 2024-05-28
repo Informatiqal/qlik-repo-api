@@ -8,7 +8,7 @@ import { IncomingMessage } from "http";
 
 export interface IClassApp {
   details: IApp;
-  copy(arg: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
+  copy(arg?: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
   export(arg?: {
     token?: string;
     skipData?: boolean;
@@ -81,10 +81,10 @@ export class App implements IClassApp {
       });
   }
 
-  public async copy(arg: { name?: string; includeCustomProperties?: boolean }) {
+  public async copy(arg?: { name?: string; includeCustomProperties?: boolean }) {
     const urlBuild = new URLBuild(`app/${this.details.id}/copy`);
-    if (arg.name) urlBuild.addParam("name", arg.name);
-    if (arg.includeCustomProperties)
+    if (arg?.name) urlBuild.addParam("name", arg.name);
+    if (arg?.includeCustomProperties)
       urlBuild.addParam("includecustomproperties", arg.includeCustomProperties);
 
     return await this.#repoClient

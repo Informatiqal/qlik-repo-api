@@ -55,24 +55,24 @@
   },
   "homepage": "https://informatiqal.com/qlik-repo-api/",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.3",
-    "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.1.0",
-    "@rollup/plugin-typescript": "^11.1.2",
-    "@types/node": "20.4.5",
-    "dotenv": "16.3.1",
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "20.12.12",
+    "dotenv": "16.4.5",
     "esm": "^3.2.25",
     "nyc": "15.1.0",
-    "rollup": "3.27.0",
+    "rollup": "4.18.0",
     "rollup-plugin-delete": "2.0.0",
-    "ts-node": "10.9.1",
-    "tslib": "2.6.1",
-    "typedoc": "0.24.8",
+    "ts-node": "10.9.2",
+    "tslib": "2.6.2",
+    "typedoc": "0.25.13",
     "typescript": "5.0.4",
     "vitest": "^0.33.0"
   },
   "dependencies": {
     "name2mime": "^1.0.1",
-    "qlik-rest-api": "^1.7.6"
+    "qlik-rest-api": "^1.8.3"
   }
 }

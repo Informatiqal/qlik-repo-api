@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.12.1] - 2024-05-28
+
+- `app.copy` wont throw an error when called without arguments
+- dependency updates
+
 ## [0.12.0] - 2023-07-31
 
 - load balancing endpoints implemented
