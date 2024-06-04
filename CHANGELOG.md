@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.12.2] - 2024-06-04
+
+- `app.uploadMany` supports `ReadStream`s as an input
+- dependency updates
+
 ## [0.12.1] - 2024-05-28
 
 - `app.copy` wont throw an error when called without arguments

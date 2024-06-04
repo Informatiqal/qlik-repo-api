@@ -12,6 +12,7 @@ import {
 } from "./types/interfaces";
 import { App } from "./App";
 import { IncomingMessage } from "http";
+import { ReadStream } from "fs";
 
 export interface IClassApps {
   /**
@@ -202,7 +203,7 @@ export class Apps implements IClassApps {
     apps: [
       {
         name: string;
-        file: Buffer;
+        file: Buffer | ReadStream | IncomingMessage | WritableStream;
         keepData?: boolean;
         excludeDataConnections?: boolean;
       }
