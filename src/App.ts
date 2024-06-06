@@ -8,7 +8,10 @@ import { IncomingMessage } from "http";
 
 export interface IClassApp {
   details: IApp;
-  copy(arg?: { name?: string; includeCustomProperties?: boolean }): Promise<App>;
+  copy(arg?: {
+    name?: string;
+    includeCustomProperties?: boolean;
+  }): Promise<App>;
   export(arg?: {
     token?: string;
     skipData?: boolean;
@@ -81,15 +84,31 @@ export class App implements IClassApp {
       });
   }
 
-  public async copy(arg?: { name?: string; includeCustomProperties?: boolean }) {
+  public async copy(
+    arg?: {
+      name?: string;
+      includeCustomProperties?: boolean;
+    },
+    options?: IUpdateObjectOptions
+  ) {
     const urlBuild = new URLBuild(`app/${this.details.id}/copy`);
     if (arg?.name) urlBuild.addParam("name", arg.name);
     if (arg?.includeCustomProperties)
       urlBuild.addParam("includecustomproperties", arg.includeCustomProperties);
 
-    return await this.#repoClient
+    const newAppInstance = await this.#repoClient
       .Post<IApp>(urlBuild.getUrl(), {})
       .then((res) => new App(this.#repoClient, res.data.id, res.data));
+
+    let updateCommon = new UpdateCommonProperties(
+      this.#repoClient,
+      newAppInstance.details,
+      arg,
+      options
+    );
+    newAppInstance.details = await updateCommon.updateAll();
+
+    return newAppInstance;
   }
 
   public async remove() {

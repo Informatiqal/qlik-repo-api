@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.12.3] - 2024-06-06
+
+- `apps.uploadMany` accepts only an array
+- `app.copy` supports updating of custom properties and tags on the same call
+- fix a small issue with external and reload tasks
+- dependency updates
+
+
 ## [0.12.2] - 2024-06-04
 
 - `app.uploadMany` supports `ReadStream`s as an input

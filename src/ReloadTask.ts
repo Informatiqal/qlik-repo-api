@@ -19,6 +19,8 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
   details: ITask;
   constructor(repoClient: QlikRepositoryClient, id: string, details?: ITask) {
     super(repoClient, id, "reloadtask", details);
+    this.#baseUrl = "reloadtask";
+    this.#repoClient = repoClient;
   }
 
   async scriptLogGet(arg: { fileReferenceId: string }) {

@@ -47,17 +47,14 @@ export interface IClassApps {
   /**
    * Upload multiple apps in a single method
    */
-  uploadMany(arg: {
-    apps: [
-      {
-        name: string;
-        file: Buffer;
-        keepData?: boolean;
-        excludeDataConnections?: boolean;
-      }
-    ];
-    sequence?: Boolean;
-  }): Promise<App[]>;
+  uploadMany(
+    arg: {
+      name: string;
+      file: Buffer;
+      keepData?: boolean;
+      excludeDataConnections?: boolean;
+    }[]
+  ): Promise<App[]>;
   /**
    * EXPERIMENTAL
    *
@@ -199,19 +196,21 @@ export class Apps implements IClassApps {
     return app;
   }
 
-  public async uploadMany(arg: {
-    apps: [
-      {
-        name: string;
-        file: Buffer | ReadStream | IncomingMessage | WritableStream;
-        keepData?: boolean;
-        excludeDataConnections?: boolean;
-      }
-    ];
-    sequence?: Boolean;
-  }): Promise<App[]> {
+  public async uploadMany(
+    arg: {
+      name: string;
+      file: Buffer | ReadStream | IncomingMessage | WritableStream;
+      keepData?: boolean;
+      excludeDataConnections?: boolean;
+    }[]
+  ): Promise<App[]> {
+    if (!Array.isArray(arg))
+      throw new Error(
+        `apps.uploadMany: the provided parameter should be an array`
+      );
+
     return await Promise.all(
-      arg.apps.map((a) => {
+      arg.map((a) => {
         return this.upload(a);
       })
     );

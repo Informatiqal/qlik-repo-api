@@ -17,6 +17,8 @@ export class ExternalTask extends ReloadTaskBase {
     details?: IExternalProgramTask
   ) {
     super(repoClient, id, "externalprogramtask", details);
+    this.#baseUrl = "externalprogramtask"
+    this.#repoClient = repoClient;
   }
 
   async update(arg: ITaskExternalUpdate, options?: IUpdateObjectOptions) {
