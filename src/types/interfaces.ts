@@ -1707,14 +1707,22 @@ export interface ICompositeEvent {
 //   schemaEventsToDelete?: string[];
 // }
 
+export type ITableColumnType =
+  | "Undefined"
+  | "Property"
+  | "Function"
+  | "List"
+  | "Privileges"
+  | string;
+
 export interface ITableColumnBase {
-  columnType: string;
+  columnType: ITableColumnType;
   definition: string;
   name?: string;
 }
 
 export interface ITableColumn {
-  columnType: string;
+  columnType: ITableColumnType;
   definition: string;
   name?: string;
   list?: ITableColumnBase[];
@@ -1728,6 +1736,20 @@ export interface ITableCreate {
   take?: number;
   sortColumn?: string;
   orderAscending?: boolean;
+}
+
+export interface ITable<T> {
+  id: string;
+  columnNames: string[];
+  rows: T[];
+  schemaPath: string;
+}
+
+export interface ITableRaw {
+  id: string;
+  columnNames: string[];
+  rows: [][];
+  schemaPath: string;
 }
 
 export interface ISchedulerServiceUpdate {

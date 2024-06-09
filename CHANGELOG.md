@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.0] - 2024-06-10
+
+- `table.create` supports filtering. The filter follows the standard QS syntax
+- dependency update
+
 ## [0.12.3] - 2024-06-06
 
 - `apps.uploadMany` accepts only an array
