@@ -49,8 +49,50 @@ export class Tags implements IClassTags {
       });
   }
 
-  public async create(arg: { name: string }) {
+  public async create(
+    arg: { name: string },
+    options?: { multiple?: boolean }
+  ) {
     if (!arg.name) throw new Error(`tag.create: "name" is required`);
+    if (!options) {
+      options = {};
+      options.multiple = false;
+    }
+
+    const encodedName = encodeURIComponent(`name eq '${arg.name}'`);
+    const existingTag = await this.#repoClient.Get<ITag[]>(
+      `tag?filter=(${encodedName})`
+    );
+
+    // if one and only one tag with the same name exists
+    // and multiple option is either missing or set to false
+    // then return that tag
+    if (
+      existingTag.data &&
+      existingTag.data.length == 1 &&
+      options.multiple == false
+    )
+      return new Tag(
+        this.#repoClient,
+        existingTag.data[0].id,
+        existingTag.data[0]
+      );
+
+    // if there are more tags with the same name
+    if (existingTag.data && existingTag.data.length > 1) {
+      // if multiple is explicitly set to true then create new one
+      if (options.multiple == true) {
+        return await this.#repoClient
+          .Post<ITag>(`tag`, { name: arg.name })
+          .then((res) => res.data)
+          .then((t) => new Tag(this.#repoClient, t.id, t));
+      } else {
+        // else ... dont know should be done, so throw an error
+        throw new Error(
+          `tag.create: multiple tags with the same name exists and allowMultiple is missing or set to false`
+        );
+      }
+    }
 
     return await this.#repoClient
       .Post<ITag>(`tag`, { name: arg.name })

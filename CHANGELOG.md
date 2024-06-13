@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.1] - 2024-06-13
+
+- `tag.create` - if tag already exists it will not create new one. Options to overwrite that logic
+
 ## [0.13.0] - 2024-06-10
 
 - `table.create` supports filtering. The filter follows the standard QS syntax
@@ -13,7 +17,6 @@ All notable changes to this project will be documented in this file.
 - `app.copy` supports updating of custom properties and tags on the same call
 - fix a small issue with external and reload tasks
 - dependency updates
-
 
 ## [0.12.2] - 2024-06-04
 
