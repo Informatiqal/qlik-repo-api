@@ -67,7 +67,7 @@
     "rollup-plugin-delete": "2.0.0",
     "ts-node": "10.9.2",
     "tslib": "2.6.3",
-    "typedoc": "0.25.13",
+    "typedoc": "0.26.6",
     "typescript": "5.0.4",
     "vitest": "^0.33.0"
   },
