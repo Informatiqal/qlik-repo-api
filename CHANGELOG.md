@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.2] - 2024-08-22
+
+- dependency updates
+
 ## [0.13.1] - 2024-06-13
 
 - `tag.create` - if tag already exists it will not create new one. Options to overwrite that logic
