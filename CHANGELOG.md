@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.3] - 2024-09-06
+
+- updates related to `daylightSavingTime` values for schema triggers
+- dependency updates
+
 ## [0.13.2] - 2024-08-22
 
 - dependency updates

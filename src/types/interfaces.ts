@@ -1466,7 +1466,10 @@ export interface ITaskCreateTriggerSchemaBase {
   daysOfWeek?: TDaysOfWeek[];
   daysOfMonth?: TDaysOfMonth[];
   timeZone?: TTimeZones;
-  daylightSavingTime?: boolean;
+  daylightSavingTime?:
+    | "ObserveDaylightSavingTime"
+    | "PermanentStandardTime"
+    | "PermanentDaylightSavingTime";
 }
 
 export interface ITaskCreateTriggerSchema extends ITaskCreateTriggerSchemaBase {
@@ -1513,7 +1516,10 @@ export interface ITaskUpdateTriggerSchema {
   /**
    * (Schema events) use daylight saving time. true or false, Default is "true"
    */
-  daylightSavingTime?: boolean;
+  daylightSavingTime?:
+    | "ObserveDaylightSavingTime"
+    | "PermanentStandardTime"
+    | "PermanentDaylightSavingTime";
 }
 
 export interface ISchemaEventOperationalCondensed {

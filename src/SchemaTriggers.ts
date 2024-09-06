@@ -10,30 +10,20 @@ import { SchemaTrigger } from "./SchemaTrigger";
 import { URLBuild } from "./util/generic";
 import { schemaRepeat } from "./util/schemaTrigger";
 
-export interface IClassSchemaTriggers {
-  get(arg: { id: string }): Promise<SchemaTrigger>;
-  getAll(): Promise<SchemaTrigger[]>;
-  getFilter(arg: { filter: string; full?: boolean }): Promise<SchemaTrigger[]>;
-  create(arg: ITaskCreateTriggerSchema): Promise<SchemaTrigger>;
-  createMany(arg: ITaskCreateTriggerSchema[]): Promise<SchemaTrigger[]>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
-  select(arg?: { filter: string }): Promise<ISelection>;
-}
-
-export class SchemaTriggers implements IClassSchemaTriggers {
+export class SchemaTriggers {
   #repoClient: QlikRepositoryClient;
   constructor(private mainRepoClient: QlikRepositoryClient) {
     this.#repoClient = mainRepoClient;
   }
 
-  public async get(arg: { id: string }) {
+  public async get(arg: { id: string }): Promise<SchemaTrigger> {
     const ct: SchemaTrigger = new SchemaTrigger(this.#repoClient, arg.id);
     await ct.init();
 
     return ct;
   }
 
-  public async getAll() {
+  public async getAll(): Promise<SchemaTrigger[]> {
     return await this.#repoClient
       .Get<ISchemaEvent[]>(`schemaevent/full`)
       .then((res) => {
@@ -44,7 +34,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       });
   }
 
-  public async getFilter(arg: { filter: string }) {
+  public async getFilter(arg: { filter: string }): Promise<SchemaTrigger[]> {
     if (!arg.filter)
       throw new Error(
         `compositeTrigger.getFilter: "filter" parameter is required`
@@ -52,7 +42,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
 
     return await this.#repoClient
       .Get<ISchemaEvent[]>(
-        `schemaevent?filter=(${encodeURIComponent(arg.filter)})`
+        `schemaevent/full?filter=(${encodeURIComponent(arg.filter)})`
       )
       .then((res) => res.data)
       .then((data) => {
@@ -60,7 +50,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       });
   }
 
-  public async create(arg: ITaskCreateTriggerSchema) {
+  public async create(arg: ITaskCreateTriggerSchema): Promise<SchemaTrigger> {
     if (!arg.name)
       throw new Error(`schemaTrigger.create: "name" parameter is required`);
 
@@ -72,7 +62,9 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       .then((t) => new SchemaTrigger(this.#repoClient, t.id, t));
   }
 
-  public async createMany(arg: ITaskCreateTriggerSchema[]) {
+  public async createMany(
+    arg: ITaskCreateTriggerSchema[]
+  ): Promise<SchemaTrigger[]> {
     const events = await Promise.all(
       arg.map(async (s) => {
         return await this.createSchemaEventObject(s);
@@ -87,7 +79,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       );
   }
 
-  public async removeFilter(arg: { filter: string }) {
+  public async removeFilter(arg: { filter: string }): Promise<IEntityRemove[]> {
     if (!arg.filter)
       throw new Error(
         `schemaTrigger.removeFilter: "filter" parameter is required`
@@ -106,7 +98,7 @@ export class SchemaTriggers implements IClassSchemaTriggers {
     );
   }
 
-  public async select(arg?: { filter: string }) {
+  public async select(arg?: { filter: string }): Promise<ISelection> {
     const urlBuild = new URLBuild(`selection/schemaevent`);
     urlBuild.addParam("filter", arg.filter);
 
@@ -163,9 +155,21 @@ export class SchemaTriggers implements IClassSchemaTriggers {
       s.daysOfMonth || [1]
     );
 
-    let daylightSaving = 1;
-    if (s.daylightSavingTime != undefined)
-      daylightSaving = s.daylightSavingTime ? 0 : 1;
+    let daylightSaving = 0;
+    if (s.daylightSavingTime) {
+      const mapping = {
+        ObserveDaylightSavingTime: 0,
+        PermanentStandardTime: 1,
+        PermanentDaylightSavingTime: 2,
+      };
+
+      if (!mapping.hasOwnProperty(s.daylightSavingTime))
+        throw new Error(
+          `compositeTrigger.create: invalid value for "daylightSavingTime". Valid values are: ObserveDaylightSavingTime, PermanentStandardTime, PermanentDaylightSavingTime. Provided was "${s.daylightSavingTime}`
+        );
+
+      daylightSaving = mapping[s.daylightSavingTime];
+    }
 
     const eventObj: { [k: string]: any } = {};
     eventObj["name"] = s.name;

@@ -50,8 +50,20 @@ export class SchemaTrigger implements IClassSchemaTrigger {
     if (arg.startDate) this.details.startDate = arg.startDate;
     if (arg.expirationDate) this.details.expirationDate = arg.expirationDate;
     if (arg.timeZone) this.details.timeZone = arg.timeZone;
-    if (arg.daylightSavingTime)
-      this.details.daylightSavingTime = arg.daylightSavingTime ? 1 : 0;
+    if (arg.daylightSavingTime) {
+      const mapping = {
+        ObserveDaylightSavingTime: 0,
+        PermanentStandardTime: 1,
+        PermanentDaylightSavingTime: 2,
+      };
+
+      if (!mapping.hasOwnProperty(arg.daylightSavingTime))
+        throw new Error(
+          `schemaTrigger.update: invalid value for "daylightSavingTime". Valid values are: ObserveDaylightSavingTime, PermanentStandardTime, PermanentDaylightSavingTime. Provided was "${arg.daylightSavingTime}`
+        );
+
+      this.details.daylightSavingTime = mapping[arg.daylightSavingTime];
+    }
 
     let schemaRepeatOpt = schemaRepeat(
       arg.repeat || "Daily",
