@@ -2,19 +2,14 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import {
   ISelection,
   IHttpReturn,
-  IEntityRemove,
-  ICompositeEvent,
   IExternalProgramTask,
   ISchemaEvent,
-  ITask,
-  ITaskCreateTriggerComposite,
-  ITaskCreateTriggerSchema,
   ITaskExecutionResult,
+  ITask,
 } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 import { IClassSchemaTrigger, SchemaTrigger } from "./SchemaTrigger";
 import { CompositeTrigger, IClassCompositeTrigger } from "./CompositeTrigger";
-import { schemaRepeat } from "./util/schemaTrigger";
 import { ReloadTaskBaseTriggersActions } from "./ReloadTaskBase_Triggers";
 
 export interface IClassReloadTaskBase {
