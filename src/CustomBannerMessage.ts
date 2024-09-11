@@ -26,8 +26,10 @@ export class CustomBannerMessage {
   async init() {
     if (!this.details) {
       this.details = await this.#repoClient
-        .Get<ICustomBannerMessage>(`custombannermessage/${this.#id}/full`)
-        .then((res) => res.data);
+        .Get<ICustomBannerMessage>(
+          `custombannermessage/full?filter=id eq ${this.#id}`
+        )
+        .then((res) => res.data[0]);
     }
   }
 
@@ -48,8 +50,8 @@ export class CustomBannerMessage {
     if (arg.name) this.details.name = arg.name;
     if (arg.message) this.details.message = arg.message;
     if (arg.messageType) this.details.messageType = arg.messageType;
-    if (arg.isActive) this.details.isActive = arg.isActive;
-    if (arg.duration) this.details.duration = arg.duration;
+    if (arg.hasOwnProperty("isActive")) this.details.isActive = arg.isActive;
+    if (arg.hasOwnProperty("duration")) this.details.duration = arg.duration;
 
     const updateCommon = new UpdateCommonProperties(
       this.#repoClient,

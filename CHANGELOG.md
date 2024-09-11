@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.13.4] - 2024-09-11
+
+- fixes related to `custombannermessage` endpoints (now that i can properly test them)
+- dependency updates
+
 ## [0.13.3] - 2024-09-06
 
 - updates related to `daylightSavingTime` values for schema triggers
