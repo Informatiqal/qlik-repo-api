@@ -57,15 +57,15 @@ export class CustomBannerMessages {
       throw new Error(`customBannerMessage.create: "name" is required`);
     if (!arg.message)
       throw new Error(`customBannerMessage.create: "message" is required`);
-    if (!arg.messageType)
+    if (!arg.hasOwnProperty("messageType"))
       throw new Error(`customBannerMessage.create: "messageType" is required`);
     if (!arg.isActive)
       throw new Error(`customBannerMessage.create: "isActive" is required`);
-    if (!arg.duration)
+    if (!arg.hasOwnProperty("duration"))
       throw new Error(`customBannerMessage.create: "duration" is required`);
 
     return await this.#repoClient
-      .Post<ICustomBannerMessage>(`custombannermessage`, { name: arg.name })
+      .Post<ICustomBannerMessage>(`custombannermessage`, arg)
       .then(
         (res) =>
           new CustomBannerMessage(this.#repoClient, res.data.id, res.data)

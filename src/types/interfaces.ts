@@ -2137,6 +2137,9 @@ export interface ICustomBannerMessage {
    */
   messageType: 0 | 1 | 2 | 3;
   isActive: boolean;
+  /**
+   * duration in seconds
+   */
   duration: number;
   tags: ITagCondensed[];
 }
@@ -2144,8 +2147,20 @@ export interface ICustomBannerMessage {
 export interface ICustomBannerCreate {
   name: string;
   message: string;
+  /**
+   * 0: Standard
+   *
+   * 1: Info
+   *
+   * 2: Warning
+   *
+   * 3: Error
+   */
   messageType: 0 | 1 | 2 | 3;
   isActive: boolean;
+  /**
+   * duration in seconds
+   */
   duration: number;
 }
 
