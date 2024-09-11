@@ -617,6 +617,8 @@ export interface IServerNodeConfiguration {
     definition: number;
     privileges: string[];
   }[];
+  schedulerReloadEnabled: boolean;
+  schedulerPreloadEnabled: boolean;
 }
 
 export interface IServerNodeResultContainer {
@@ -661,6 +663,8 @@ export interface INodeUpdate {
   failoverCandidate?: boolean;
   tags?: string[];
   customProperties?: string[];
+  schedulerReloadEnabled?: boolean;
+  schedulerPreloadEnabled?: boolean;
 }
 
 export interface INodeCreate {
@@ -678,6 +682,8 @@ export interface INodeCreate {
   failoverCandidate?: boolean;
   tags?: string[];
   customProperties?: string[];
+  schedulerReloadEnabled?: boolean;
+  schedulerPreloadEnabled?: boolean;
 }
 
 export interface IExtensionCondensed {
@@ -1359,6 +1365,9 @@ export interface ITaskCreate {
   appFilter?: string;
   tags?: string[];
   customProperties?: string[];
+  preloadNodes?: string[];
+  timeToLive?: number;
+  isPartialReload?: boolean;
 }
 
 export interface IExternalTaskCreate {
@@ -1380,6 +1389,9 @@ export interface ITaskReloadUpdate {
   owner?: string;
   appId?: string;
   appFilter?: string;
+  preloadNodes?: string[];
+  timeToLive?: number;
+  isPartialReload?: boolean;
 }
 
 export interface ITaskExternalUpdate {
@@ -1624,8 +1636,12 @@ export interface ITask extends ITaskCondensed {
   operational: ITaskOperational;
   tags: ITagCondensed[];
   createdDate: string;
+  modifiedByUserName: string;
   customProperties: ICustomPropertyCondensed[];
   modifiedDate: string;
+  isPartialReload: boolean;
+  timeToLive: number;
+  preloadNodes: string[];
 }
 
 export interface IReloadTaskBundle {

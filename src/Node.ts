@@ -47,20 +47,30 @@ export class Node implements IClassNode {
   public async update(arg: INodeUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name;
     if (arg.nodePurpose) {
-      if (arg.nodePurpose == "Production") this.details.nodePurpose = 0;
-      if (arg.nodePurpose == "Development") this.details.nodePurpose = 1;
-      if (arg.nodePurpose == "ProductionAndDevelopment")
-        this.details.nodePurpose = 2;
-      if (arg.nodePurpose == "Both") this.details.nodePurpose = 2;
+      const map = {
+        Production: 0,
+        Development: 1,
+        ProductionAndDevelopment: 2,
+        Both: 2,
+      };
+
+      if (!map[arg.nodePurpose])
+        throw new Error(
+          `node.update: Unknown "nodePurpose" value of "${arg.nodePurpose}"`
+        );
+      this.details.nodePurpose = map[arg.nodePurpose];
     }
 
-    if (arg.engineEnabled) this.details.engineEnabled = arg.engineEnabled;
-    if (arg.proxyEnabled) this.details.proxyEnabled = arg.proxyEnabled;
-    if (arg.schedulerEnabled)
+    if (arg.hasOwnProperty("engineEnabled"))
+      this.details.engineEnabled = arg.engineEnabled;
+    if (arg.hasOwnProperty("proxyEnabled"))
+      this.details.proxyEnabled = arg.proxyEnabled;
+    if (arg.hasOwnProperty("schedulerEnabled"))
       this.details.schedulerEnabled = arg.schedulerEnabled;
-    if (arg.printingEnabled) this.details.printingEnabled = arg.printingEnabled;
+    if (arg.hasOwnProperty("printingEnabled"))
+      this.details.printingEnabled = arg.printingEnabled;
 
-    if (arg.failoverCandidate) {
+    if (arg.hasOwnProperty("arg.failoverCandidate")) {
       this.details.failoverCandidate = this.details.failoverCandidate;
       if (this.details.failoverCandidate == true) {
         this.details.engineEnabled = true;
@@ -69,6 +79,11 @@ export class Node implements IClassNode {
         this.details.printingEnabled = true;
       }
     }
+
+    if (arg.hasOwnProperty("schedulerReloadEnabled"))
+      this.details.schedulerReloadEnabled = arg.schedulerReloadEnabled;
+    if (arg.hasOwnProperty("schedulerPreloadEnabled"))
+      this.details.schedulerPreloadEnabled = arg.schedulerPreloadEnabled;
 
     let updateCommon = new UpdateCommonProperties(
       this.#repoClient,

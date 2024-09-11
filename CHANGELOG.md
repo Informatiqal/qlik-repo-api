@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.14.0] - 2024-09-11
+
+- methods changes in relation with preload [#295](https://github.com/Informatiqal/qlik-repo-api/issues/295)
+
 ## [0.13.4] - 2024-09-11
 
 - fixes related to `custombannermessage` endpoints (now that i can properly test them)

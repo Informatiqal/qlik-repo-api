@@ -59,10 +59,14 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
 
   async update(arg: ITaskReloadUpdate, options?: IUpdateObjectOptions) {
     if (arg.name) this.details.name = arg.name;
-    if (arg.enabled) this.details.enabled = arg.enabled;
+    if (arg.hasOwnProperty("enabled")) this.details.enabled = arg.enabled;
     if (arg.taskSessionTimeout)
       this.details.taskSessionTimeout = arg.taskSessionTimeout;
     if (arg.maxRetries) this.details.maxRetries = arg.maxRetries;
+    if (arg.hasOwnProperty("isPartialReload"))
+      this.details.isPartialReload = arg.isPartialReload;
+    if (arg.preloadNodes) this.details.preloadNodes = arg.preloadNodes;
+    if (arg.timeToLive) this.details.timeToLive = arg.timeToLive;
 
     if (arg.appId || arg.appFilter) {
       const app = await getAppForReloadTask(
