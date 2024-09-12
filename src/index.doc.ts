@@ -19,6 +19,8 @@ export * from "./DataConnection";
 export * from "./DataConnections";
 export * from "./Engine";
 export * from "./Engines";
+export * from "./EngineHealth";
+export * from "./EngineHealths";
 export * from "./ExecutionResult";
 export * from "./ExecutionResults";
 export * from "./ExecutionResultDetail";

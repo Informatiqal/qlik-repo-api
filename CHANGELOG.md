@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.15.0] - 2024-09-12
+
+- engine health endpoints [#296](https://github.com/Informatiqal/qlik-repo-api/issues/296)
+
 ## [0.14.0] - 2024-09-11
 
 - methods changes in relation with preload [#295](https://github.com/Informatiqal/qlik-repo-api/issues/295)

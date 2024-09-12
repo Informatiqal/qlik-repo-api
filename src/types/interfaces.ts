@@ -2519,3 +2519,58 @@ export interface ILoadBalancingRequest {
    */
   loadBalancingPurpose: number;
 }
+
+export interface IEngineHealth {
+  id: string;
+  createdDate: string;
+  modifiedDate: string;
+  modifiedByUserName: string;
+  schemaPath: string;
+  privileges: string[];
+  name: string;
+  version: string;
+  started: string;
+  commited_mem: number;
+  allocated_mem: number;
+  free_mem: number;
+  total_cpu: number;
+  active_sessions: number;
+  total_sessions: number;
+  active_docs: string[];
+  in_memory_docs: string[];
+  loaded_docs: string[];
+  calls: number;
+  selections: number;
+  active_users: number;
+  total_users: number;
+  hits_cache: number;
+  lookups_cache: number;
+  added_cache: number;
+  replaced_cache: number;
+  bytes_added: number;
+  saturated: boolean;
+  responded_to_latest: boolean;
+  totalPhysical: number;
+  totalStaticByteSize: number;
+}
+
+export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
+
+export type IEngineHealthCreate = Omit<
+  Optional<
+    IEngineHealth,
+    | "active_sessions"
+    | "total_sessions"
+    | "active_docs"
+    | "in_memory_docs"
+    | "loaded_docs"
+  >,
+  | "id"
+  | "createdDate"
+  | "modifiedDate"
+  | "modifiedByUserName"
+  | "schemaPath"
+  | "privileges"
+>;
+
+export type IEngineHealthUpdate = Partial<IEngineHealthCreate>;
