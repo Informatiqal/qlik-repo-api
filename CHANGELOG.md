@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.15.1] - 2024-09-12
+
+- load balancing properties for virtual proxies[#297](https://github.com/Informatiqal/qlik-repo-api/issues/297)
+
 ## [0.15.0] - 2024-09-12
 
 - engine health endpoints [#296](https://github.com/Informatiqal/qlik-repo-api/issues/296)

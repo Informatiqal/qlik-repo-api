@@ -54,7 +54,7 @@ export class VirtualProxies implements IClassVirtualProxies {
       });
   }
 
-  public async getFilter(arg: { filter: string }) {
+  public async getFilter(arg: { filter: string }): Promise<VirtualProxy[]> {
     if (!arg.filter)
       throw new Error(
         `virtualProxies.getFilter: "filter" parameter is required`
@@ -218,6 +218,25 @@ export class VirtualProxies implements IClassVirtualProxies {
     if (arg.oidcScope) data["oidcScope"] = arg.oidcScope;
     if (arg.oidcAttributeMap)
       data["oidcAttributeMap"] = parseOidcAttributeMap(arg.oidcAttributeMap);
+    if (arg.enableEngineSaturationCheck)
+      data["enableEngineSaturationCheck"] = arg.enableEngineSaturationCheck;
+    if (arg.enableEngineHealthCheckData)
+      data["enableEngineHealthCheckData"] = arg.enableEngineHealthCheckData;
+    if (arg.hasOwnProperty("useStickyLoadBalancing"))
+      data["useStickyLoadBalancing"] = arg.useStickyLoadBalancing;
+    if (arg.loadBalancingAlgorithm) {
+      const map = {
+        RoundRobin: 0,
+        MemoryAllocation: 1,
+      };
+
+      if (!map[arg.loadBalancingAlgorithm])
+        throw new Error(
+          "virtualProxy.create: invalid value for loadBalancingAlgorithm"
+        );
+
+      data["loadBalancingAlgorithm"] = map[arg.loadBalancingAlgorithm];
+    }
 
     const vp = await this.#repoClient
       .Post<IVirtualProxyConfig>(`virtualproxyconfig`, { ...data })

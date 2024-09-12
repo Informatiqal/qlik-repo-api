@@ -914,6 +914,10 @@ export interface IVirtualProxyUpdate {
   oidcAttributePicture?: string;
   oidcScope?: string;
   oidcAttributeMap?: string[];
+  enableEngineSaturationCheck?: boolean;
+  enableEngineHealthCheckData?: boolean;
+  useStickyLoadBalancing?: boolean;
+  loadBalancingAlgorithm?: "RoundRobin" | "MemoryAllocation";
 }
 
 export interface IVirtualProxyCreate {
@@ -969,6 +973,10 @@ export interface IVirtualProxyCreate {
   oidcAttributePicture?: string;
   oidcScope?: string;
   oidcAttributeMap?: string[];
+  enableEngineSaturationCheck?: boolean;
+  enableEngineHealthCheckData?: boolean;
+  useStickyLoadBalancing?: boolean;
+  loadBalancingAlgorithm?: "RoundRobin" | "MemoryAllocation";
 }
 export interface IProxyCreate {
   prefix?: string;
@@ -1136,6 +1144,9 @@ export interface IVirtualProxyConfigCondensed {
   oidcAttributePicture?: string;
   oidcScope?: string;
   oidcAttributeMap?: IVirtualProxyConfigOidcAttributeMapItem[];
+  enableEngineSaturationCheck?: boolean;
+  enableEngineHealthCheckData?: boolean;
+  loadBalancingAlgorithm?: number;
 }
 
 export interface IVirtualProxyConfig extends IVirtualProxyConfigCondensed {

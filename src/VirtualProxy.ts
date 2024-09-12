@@ -171,6 +171,27 @@ export class VirtualProxy implements IClassVirtualProxy {
       this.details.oidcAttributeMap = parseOidcAttributeMap(
         arg.oidcAttributeMap
       );
+    if (arg.enableEngineSaturationCheck)
+      this.details.enableEngineSaturationCheck =
+        arg.enableEngineSaturationCheck;
+    if (arg.enableEngineHealthCheckData)
+      this.details.enableEngineHealthCheckData =
+        arg.enableEngineHealthCheckData;
+    if (arg.hasOwnProperty("useStickyLoadBalancing"))
+      this.details.useStickyLoadBalancing = arg.useStickyLoadBalancing;
+    if (arg.loadBalancingAlgorithm) {
+      const map = {
+        RoundRobin: 0,
+        MemoryAllocation: 1,
+      };
+
+      if (!map[arg.loadBalancingAlgorithm])
+        throw new Error(
+          "virtualProxy.update: invalid value for loadBalancingAlgorithm"
+        );
+
+      this.details.loadBalancingAlgorithm = map[arg.loadBalancingAlgorithm];
+    }
 
     const updateCommon = new UpdateCommonProperties<IVirtualProxyConfig>(
       this.#repoClient,
