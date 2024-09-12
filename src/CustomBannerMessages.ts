@@ -104,7 +104,7 @@ export class CustomBannerMessages {
 
   public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/3`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
@@ -113,7 +113,7 @@ export class CustomBannerMessages {
 
   public async count(arg?: { filter: string }): Promise<number> {
     const urlBuild = new URLBuild(`custombannermessage/count`);
-    urlBuild.addParam("filter", arg.filter);
+    urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient.Get<number>(urlBuild.getUrl()).then((res) => {
       return res.data;

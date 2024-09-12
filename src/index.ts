@@ -10,6 +10,7 @@ import { CustomProperties } from "./CustomProperties";
 import { CompositeTriggers } from "./CompositeTriggers";
 import { DataConnections } from "./DataConnections";
 import { Engines } from "./Engines";
+import { EngineHealths } from "./EngineHealths";
 import { Extensions } from "./Extensions";
 import { ExecutionResults } from "./ExecutionResults";
 import { ExecutionSessions } from "./ExecutionSessions";
@@ -104,6 +105,10 @@ export namespace QlikRepoApi {
      * /qrs/engineService endpoints
      */
     public engines: Engines;
+    /**
+     * /qrs/engineHealth endpoints
+     */
+    public engineHealths: EngineHealths;
     /**
      * /qrs/extension endpoints
      */
@@ -250,6 +255,7 @@ export namespace QlikRepoApi {
       this.compositeTriggers = new CompositeTriggers(this.repoClient);
       this.dataConnections = new DataConnections(this.repoClient);
       this.engines = new Engines(this.repoClient);
+      this.engineHealths = new EngineHealths(this.repoClient);
       this.extensions = new Extensions(this.repoClient);
       this.executionResults = new ExecutionResults(this.repoClient);
       this.executionSessions = new ExecutionSessions(this.repoClient);
