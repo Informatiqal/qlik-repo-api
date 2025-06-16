@@ -1,5 +1,6 @@
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
-import { IConfig } from "qlik-rest-api/dist/interfaces/interfaces";
+// import { IConfig } from "qlik-rest-api/dist/interfaces/interfaces";
+// export { IConfig } from "qlik-rest-api/dist/interfaces/interfaces";
 import { About } from "./About";
 import { Apps } from "./Apps";
 import { AppObjects } from "./AppObjects";
@@ -222,7 +223,7 @@ export namespace QlikRepoApi {
      * /qrs/virtualProxy endpoints
      */
     public virtualProxies: VirtualProxies;
-    constructor(public repoConfig: IConfig) {
+    constructor(public repoConfig: any) {
       this.repoClient = new QlikRepositoryClient(repoConfig);
 
       const genericConfig = { ...repoConfig };

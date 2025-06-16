@@ -2004,8 +2004,8 @@ export interface INotificationCreate {
   id?: string;
   filter?: string;
   condition?: string;
-  changetype?: NotificationChangeType;
-  propretyname?: string;
+  changeType?: NotificationChangeType;
+  propertyName?: string;
 }
 
 export interface ChangesSinceOutputCondensed {

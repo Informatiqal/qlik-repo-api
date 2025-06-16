@@ -30,26 +30,28 @@ export class Notification implements IClassNotifications {
     const urlBuild = new URLBuild(`notification`);
 
     const changeTypes = {
-      1: "Add",
-      2: "Update",
-      3: "Delete",
+      Add: 1,
+      Update: 2,
+      Delete: 3,
     };
 
     urlBuild.addParam("name", arg.name);
 
-    if (arg.changetype) {
-      if (!changeTypes[arg.changetype])
+    if (arg.changeType) {
+      if (!changeTypes[arg.changeType])
         throw new Error(
-          `notifications.create: "${arg.changetype}" is not a valid value. Valid values are Add, Update or Delete`
+          `notifications.create: "${arg.changeType}" is not a valid value. Valid values are Add, Update or Delete`
         );
-      urlBuild.addParam("changeType", changeTypes[arg.changetype]);
+      urlBuild.addParam("changeType", changeTypes[arg.changeType]);
     }
     if (arg.filter) urlBuild.addParam("filter", arg.filter);
-    if (arg.propretyname) urlBuild.addParam("propretyname", arg.propretyname);
+    if (arg.propertyName) urlBuild.addParam("propertyName", arg.propertyName);
     if (arg.condition) urlBuild.addParam("condition", arg.condition);
 
+    const url = urlBuild.getUrl();
+
     return await this.#repoClient
-      .Post<any>(urlBuild.getUrl(), `"${arg.uri}"`, "application/json")
+      .Post<any>(url, `${arg.uri}`, "application/json")
       .then((res) => res.data.value);
   }
 

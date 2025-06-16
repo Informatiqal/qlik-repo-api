@@ -59,7 +59,7 @@ export class ExternalTasks implements IClassExternalTasks {
 
   public async getFilter(arg: { filter: string }) {
     if (!arg.filter)
-      throw new Error(`externalTasks.getFilter: "path" parameter is required`);
+      throw new Error(`externalTasks.getFilter: "filter" parameter is required`);
 
     return await this.#repoClient
       .Get<IExternalProgramTask[]>(
