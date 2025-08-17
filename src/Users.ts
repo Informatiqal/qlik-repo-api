@@ -3,19 +3,18 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 import {
   ISelection,
-  IEntityRemove,
   IUserCreate,
   IUser,
 } from "./types/interfaces";
 import { User } from "./User";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassUsers {
   get(arg: { id: string }): Promise<User>;
   getAll(): Promise<User[]>;
   getFilter(arg: { filter: string }): Promise<User[]>;
   create(arg: IUserCreate): Promise<User>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

@@ -4,20 +4,19 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
   ISharedContent,
-  IEntityRemove,
   ISelection,
   ISharedContentCreate,
 } from "./types/interfaces";
 
 import { SharedContent } from "./SharedContent";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassSharedContents {
   get(arg: { id: string }): Promise<SharedContent>;
   getAll(): Promise<SharedContent[]>;
   getFilter(arg: { filter: string }): Promise<SharedContent[]>;
   create(arg: ISharedContentCreate): Promise<SharedContent>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

@@ -4,16 +4,15 @@ import { URLBuild } from "./util/generic";
 import { IExtension, IExtensionImport, ISelection } from "./types/interfaces";
 import { Extension } from "./Extension";
 
-import { IEntityRemove } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExtensions {
   get(arg: { id: string }): Promise<Extension>;
   getAll(): Promise<Extension[]>;
   getFilter(arg: { filter: string; full?: boolean }): Promise<Extension[]>;
   import(arg: IExtensionImport): Promise<Extension>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

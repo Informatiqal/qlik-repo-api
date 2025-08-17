@@ -2,17 +2,15 @@ import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   INodeCreate,
   IServerNodeConfiguration,
-  IServerNodeConfigurationCondensed,
   IServerNodeResultContainer,
   INodeUpdate,
 } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 import { Node } from "./Node";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassNodes {
   count(): Promise<number>;
@@ -21,7 +19,7 @@ export interface IClassNodes {
   getFilter(arg: { filter: string; full?: boolean }): Promise<Node[]>;
   create(arg: INodeCreate): Promise<Node>;
   register(arg: INodeCreate): Promise<IHttpStatus>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
 }
 
 export class Nodes implements IClassNodes {

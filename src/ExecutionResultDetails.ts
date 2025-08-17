@@ -1,13 +1,12 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
 import {
-  IEntityRemove,
   ISelection,
   IExecutionResultDetail,
   IExecutionResultDetailCreate,
 } from "./types/interfaces";
 import { ExecutionResultDetail } from "./ExecutionResultDetail";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExecutionResultDetails {
   get(arg: { id: string }): Promise<ExecutionResultDetail>;
@@ -17,7 +16,7 @@ export interface IClassExecutionResultDetails {
     full?: boolean;
   }): Promise<ExecutionResultDetail[]>;
   count(): Promise<number>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IExecutionResultDetailCreate): Promise<ExecutionResultDetail>;
   createMany(

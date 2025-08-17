@@ -3,7 +3,6 @@ import { URLBuild } from "./util/generic";
 import {
   ICustomBannerCreate,
   ICustomBannerMessage,
-  IEntityRemove,
   ISelection,
 } from "./types/interfaces";
 import { CustomBannerMessage } from "./CustomBannerMessage";

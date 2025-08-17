@@ -11,7 +11,7 @@ import {
 } from "./types/interfaces";
 
 import { ContentLibrary } from "./ContentLibrary";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassContentLibraries {
   get(arg: { id: string }): Promise<ContentLibrary>;
@@ -27,7 +27,7 @@ export interface IClassContentLibraries {
     overwrite?: boolean;
   }): Promise<ContentLibrary>;
   create(arg: IContentLibraryCreate): Promise<ContentLibrary>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

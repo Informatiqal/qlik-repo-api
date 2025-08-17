@@ -3,7 +3,6 @@ import { URLBuild } from "./util/generic";
 
 import {
   ISelection,
-  IEntityRemove,
   IApp,
   IAppUpload,
   IAppUpdate,
@@ -12,7 +11,7 @@ import {
 import { App } from "./App";
 import { IncomingMessage } from "http";
 import { ReadStream } from "fs";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassApps {
   /**
@@ -30,7 +29,7 @@ export interface IClassApps {
   /**
    * Remove apps based on the supplied filter
    */
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   /**
    * Create selection based on the supplied filter
    */

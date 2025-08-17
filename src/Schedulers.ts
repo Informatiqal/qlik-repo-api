@@ -1,20 +1,19 @@
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   ISchedulerService,
 } from "./types/interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { Scheduler } from "./Scheduler";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassSchedulers {
   get(arg: { id: string }): Promise<Scheduler>;
   getAll(): Promise<Scheduler[]>;
   getFilter(arg: { filter: string }): Promise<Scheduler[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   // update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
 }
 

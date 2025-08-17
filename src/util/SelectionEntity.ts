@@ -2,6 +2,17 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { ISelection } from "../types/interfaces";
 import { URLBuild } from "./generic";
 
+export interface SelectionEntityCondensed {
+  id: string;
+  objectId: string;
+  type: string;
+}
+
+export interface RemoveItemsResponse {
+  status: number;
+  entities: SelectionEntityCondensed[];
+}
+
 export class SelectionEntity {
   #repoClient: QlikRepositoryClient;
   details: ISelection;
@@ -60,10 +71,20 @@ export class SelectionEntity {
     return removeStatus;
   }
 
-  public async removeAllItems(arg?: { keepSelection: boolean }) {
+  public async removeAllItems(arg?: {
+    keepSelection: boolean;
+  }): Promise<RemoveItemsResponse> {
+    const removedEntities: SelectionEntityCondensed[] = this.details.items.map(
+      (i) => ({
+        id: i.id,
+        objectId: i.objectID,
+        type: i.type,
+      })
+    );
+
     const data = await this.#repoClient
       .Delete(`selection/${this.details.id}/${this.area}`)
-      .then((res) => res.status);
+      .then((res) => ({ status: res.status, entities: removedEntities }));
 
     // if keepSelection is not explicitly set as "true"
     // then remove the selection
@@ -81,7 +102,7 @@ export class SelectionEntity {
     return data;
   }
 
-  public async counts() {
+  public async counts(): Promise<{ value: number }> {
     return this.#repoClient
       .Get<number>(`selection/${this.details.id}/${this.area}/count`)
       .then((res) => res.data);

@@ -3,7 +3,6 @@ import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import {
-  IEntityRemove,
   ISelection,
   IExternalTaskCreate,
   IExternalProgramTask,
@@ -11,7 +10,7 @@ import {
 
 import { ReloadTaskBase } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExternalTask extends ReloadTaskBase {}
 
@@ -22,7 +21,7 @@ export interface IClassExternalTasks {
   getFilter(arg: { filter: string }): Promise<IClassExternalTask[]>;
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   create(arg: IExternalTaskCreate): Promise<IClassExternalTask>;
 }
 

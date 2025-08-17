@@ -1,6 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import {
-  IEntityRemove,
   ISchemaEvent,
   ISelection,
   ITask,
@@ -9,7 +8,7 @@ import {
 import { SchemaTrigger } from "./SchemaTrigger";
 import { URLBuild } from "./util/generic";
 import { schemaRepeat } from "./util/schemaTrigger";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export class SchemaTriggers {
   #repoClient: QlikRepositoryClient;
@@ -80,7 +79,7 @@ export class SchemaTriggers {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<number> {
+  public async removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `schemaTrigger.removeFilter: "filter" parameter is required`

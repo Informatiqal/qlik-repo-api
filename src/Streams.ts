@@ -3,7 +3,6 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   IStream,
   IStreamCreate,
@@ -12,14 +11,14 @@ import {
 // import { ITagCondensed } from "./Tags";
 // import { IOwner } from "./Users";
 import { Stream } from "./Stream";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassStreams {
   get(arg: { id: string }): Promise<Stream>;
   getAll(): Promise<Stream[]>;
   getFilter(arg: { filter: string }): Promise<Stream[]>;
   create(arg: IStreamCreate): Promise<Stream>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

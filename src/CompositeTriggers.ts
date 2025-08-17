@@ -8,7 +8,7 @@ import {
 } from "./types/interfaces";
 import { CompositeTrigger } from "./CompositeTrigger";
 import { URLBuild } from "./util/generic";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassCompositeTriggers {
   get(arg: { id: string }): Promise<CompositeTrigger>;
@@ -19,7 +19,7 @@ export interface IClassCompositeTriggers {
   }): Promise<CompositeTrigger[]>;
   create(arg: ITaskCreateTriggerComposite): Promise<CompositeTrigger>;
   createMany(arg: ITaskCreateTriggerComposite[]): Promise<CompositeTrigger[]>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

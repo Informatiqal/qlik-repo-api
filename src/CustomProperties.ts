@@ -2,20 +2,19 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   ICustomPropertyCreate,
   ICustomProperty,
 } from "./types/interfaces";
 import { CustomProperty } from "./CustomProperty";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassCustomProperties {
   get(arg: { id: string }): Promise<CustomProperty>;
   getAll(): Promise<CustomProperty[]>;
   getFilter(arg: { filter: string }): Promise<CustomProperty[]>;
   create(arg: ICustomPropertyCreate): Promise<CustomProperty>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

@@ -3,7 +3,6 @@ import { URLBuild } from "./util/generic";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 
 import {
-  IEntityRemove,
   IReloadTaskBundle,
   ISelection,
   ITask,
@@ -12,7 +11,7 @@ import {
 
 import { ReloadTask } from "./ReloadTask";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 //TODO: why is no update method here?
 export interface IClassReloadTasks {
@@ -21,7 +20,7 @@ export interface IClassReloadTasks {
   getFilter(arg: { filter: string }): Promise<ReloadTask[]>;
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   create(arg: ITaskCreate): Promise<ReloadTask>;
 }
 

@@ -1,16 +1,16 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
-import { ISelection, IEntityRemove, IServiceCluster } from "./types/interfaces";
+import { ISelection, IServiceCluster } from "./types/interfaces";
 import { ServiceCluster } from "./ServiceCluster";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassServiceClusters {
   count(): Promise<number>;
   get(arg: { id: string }): Promise<ServiceCluster>;
   getAll(): Promise<ServiceCluster[]>;
   getFilter(arg: { filter: string }): Promise<ServiceCluster[]>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

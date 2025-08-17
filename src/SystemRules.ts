@@ -4,7 +4,6 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
-  IEntityRemove,
   ISelection,
   IAudit,
   ISystemRule,
@@ -14,7 +13,7 @@ import {
 } from "./types/interfaces";
 
 import { SystemRule } from "./SystemRule";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 //TODO: why is no update method here?
 export interface IClassSystemRules {
   get(arg: { id: string }): Promise<SystemRule>;
@@ -23,7 +22,7 @@ export interface IClassSystemRules {
   getFilter(arg: { filter: string }): Promise<SystemRule[]>;
   create(arg: ISystemRuleCreate): Promise<SystemRule>;
   licenseCreate(arg: ISystemRuleLicenseCreate): Promise<SystemRule>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

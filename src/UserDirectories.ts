@@ -2,7 +2,6 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   IUserDirectory,
   IUserDirectoryCreate,
@@ -10,14 +9,14 @@ import {
 import { IHttpStatus } from "./types/ranges";
 import { UserDirectory } from "./UserDirectory";
 import { GetCommonProperties } from "./util/GetCommonProps";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassUserDirectories {
   count(): Promise<number>;
   get(arg: { id: string }): Promise<UserDirectory>;
   getAll(): Promise<UserDirectory[]>;
   getFilter(arg: { filter: string }): Promise<UserDirectory[]>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
   syncMany(arg: { userDirectoryIds: string[] }): Promise<IHttpStatus>;
   create(arg: IUserDirectoryCreate): Promise<UserDirectory>;

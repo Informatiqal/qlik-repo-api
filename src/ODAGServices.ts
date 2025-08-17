@@ -2,8 +2,8 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { ODAGService } from "./ODAGService";
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection, IODAGService } from "./types/interfaces";
-import { SelectionEntity } from "./util/SelectionEntity";
+import {  ISelection, IODAGService } from "./types/interfaces";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export class ODAG {
   #repoClient: QlikRepositoryClient;
@@ -42,7 +42,7 @@ export class ODAG {
       });
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<number> {
+  public async removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(`odag.removeFilter: "filter" parameter is required`);
 

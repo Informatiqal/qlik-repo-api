@@ -1,15 +1,15 @@
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection, IAppObject } from "./types/interfaces";
+import { ISelection, IAppObject } from "./types/interfaces";
 import { AppObject } from "./AppObject";
 import { QlikRepositoryClient } from "qlik-rest-api";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassAppObjects {
   get(arg: { id: string }): Promise<AppObject>;
   getAll(): Promise<AppObject[]>;
   getFilter(arg?: { filter: string }): Promise<AppObject[]>;
-  removeFilter(arg?: { filter: string }): Promise<number>;
+  removeFilter(arg?: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 export class AppObjects implements IClassAppObjects {

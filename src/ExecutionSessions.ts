@@ -1,12 +1,11 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import {
-  IEntityRemove,
   ISelection,
   IExecutionSession,
 } from "./types/interfaces";
 import { ExecutionSession } from "./ExecutionSession";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExecutionSessions {
   get(arg: { id: string }): Promise<ExecutionSession>;
@@ -17,7 +16,7 @@ export interface IClassExecutionSessions {
   }): Promise<ExecutionSession[]>;
   count(): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
 }
 
 export class ExecutionSessions implements IClassExecutionSessions {

@@ -3,13 +3,12 @@ import { URLBuild } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
-  IEntityRemove,
   ISelection,
   IDataConnectionCreate,
   IDataConnection,
 } from "./types/interfaces";
 import { DataConnection } from "./DataConnection";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassDataConnections {
   get(arg: { id: string }): Promise<DataConnection>;
@@ -19,7 +18,7 @@ export interface IClassDataConnections {
     orderBy?: string;
   }): Promise<DataConnection[]>;
   create(arg: IDataConnectionCreate): Promise<DataConnection>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

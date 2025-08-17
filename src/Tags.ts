@@ -2,7 +2,7 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import { IEntityRemove, ISelection, ITag } from "./types/interfaces";
 import { Tag } from "./Tag";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassTags {
   get(arg: { id: string }): Promise<Tag>;
@@ -10,7 +10,7 @@ export interface IClassTags {
   getFilter(arg: { filter: string; full?: boolean }): Promise<Tag[]>;
   create(arg: { name: string }): Promise<Tag>;
   createMany(arg: { names: string[] }): Promise<Tag[]>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 

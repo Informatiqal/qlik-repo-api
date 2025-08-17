@@ -1,7 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import {
-  IEntityRemove,
   ISelection,
   IVirtualProxyUpdate,
 } from "./types/interfaces";
@@ -20,13 +19,13 @@ import {
   parseSameSiteAttribute,
   parseSamlAttributeMap,
 } from "./util/parseAttributeMap";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassVirtualProxies {
   get(arg: { id: string }): Promise<VirtualProxy>;
   getAll(): Promise<VirtualProxy[]>;
   getFilter(arg: { filter: string }): Promise<VirtualProxy[]>;
-  removeFilter(arg: { filter: string }): Promise<number>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IVirtualProxyCreate): Promise<VirtualProxy>;
 }

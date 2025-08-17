@@ -1,13 +1,12 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import {
-  IEntityRemove,
   ISelection,
   IEngineHealth,
   IEngineHealthCreate,
 } from "./types/interfaces";
 import { EngineHealth } from "./EngineHealth";
-import { SelectionEntity } from "./util/SelectionEntity";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export class EngineHealths {
   #repoClient: QlikRepositoryClient;
@@ -71,7 +70,7 @@ export class EngineHealths {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<number> {
+  public async removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `engineHealth.removeFilter: "filter" parameter is required`
