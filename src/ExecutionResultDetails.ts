@@ -17,6 +17,7 @@ export interface IClassExecutionResultDetails {
   }): Promise<ExecutionResultDetail[]>;
   count(): Promise<number>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IExecutionResultDetailCreate): Promise<ExecutionResultDetail>;
   createMany(
@@ -83,8 +84,22 @@ export class ExecutionResultDetails implements IClassExecutionResultDetails {
         `executionresultDetails.removeFilter: "filter" parameter is required`
       );
 
-    const selection = new SelectionEntity(this.#repoClient, "executionresult/detail");
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "executionresult/detail"
+    );
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`executionResultDEtails.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "executionresult/detail");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

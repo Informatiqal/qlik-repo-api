@@ -4,7 +4,6 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   IContentLibraryCreate,
   IContentLibrary,
@@ -28,6 +27,7 @@ export interface IClassContentLibraries {
   }): Promise<ContentLibrary>;
   create(arg: IContentLibraryCreate): Promise<ContentLibrary>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg?: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -155,6 +155,19 @@ export class ContentLibraries implements IClassContentLibraries {
 
     const selection = new SelectionEntity(this.#repoClient, "contentlibrary");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `contentLibrary.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "contentlibrary");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

@@ -42,7 +42,9 @@ export class ODAGRequests {
       });
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse> {
+  public async removeFilter(arg: {
+    filter: string;
+  }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `odagRequest.removeFilter: "filter" parameter is required`
@@ -50,6 +52,17 @@ export class ODAGRequests {
 
     const selection = new SelectionEntity(this.#repoClient, "odagrequest");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`odagRequest.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "odagrequest");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

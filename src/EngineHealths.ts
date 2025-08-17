@@ -70,7 +70,9 @@ export class EngineHealths {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse> {
+  public async removeFilter(arg: {
+    filter: string;
+  }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `engineHealth.removeFilter: "filter" parameter is required`
@@ -78,6 +80,17 @@ export class EngineHealths {
 
     const selection = new SelectionEntity(this.#repoClient, "enginehealth");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`engineHealth.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "enginehealth");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

@@ -20,6 +20,7 @@ export interface IClassCompositeTriggers {
   create(arg: ITaskCreateTriggerComposite): Promise<CompositeTrigger>;
   createMany(arg: ITaskCreateTriggerComposite[]): Promise<CompositeTrigger[]>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg?: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -93,6 +94,17 @@ export class CompositeTriggers implements IClassCompositeTriggers {
 
     const selection = new SelectionEntity(this.#repoClient, "compositeevent");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`compositeTrigger.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "compositeevent");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

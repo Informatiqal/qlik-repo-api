@@ -13,6 +13,7 @@ export interface IClassExtensions {
   getFilter(arg: { filter: string; full?: boolean }): Promise<Extension[]>;
   import(arg: IExtensionImport): Promise<Extension>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -59,6 +60,17 @@ export class Extensions implements IClassExtensions {
 
     const selection = new SelectionEntity(this.#repoClient, "extension");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`extensions.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "extension");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

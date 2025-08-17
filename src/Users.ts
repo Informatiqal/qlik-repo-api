@@ -1,11 +1,7 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
-import {
-  ISelection,
-  IUserCreate,
-  IUser,
-} from "./types/interfaces";
+import { ISelection, IUserCreate, IUser } from "./types/interfaces";
 import { User } from "./User";
 import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
@@ -15,6 +11,7 @@ export interface IClassUsers {
   getFilter(arg: { filter: string }): Promise<User[]>;
   create(arg: IUserCreate): Promise<User>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -87,6 +84,17 @@ export class Users implements IClassUsers {
 
     const selection = new SelectionEntity(this.#repoClient, "user");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`user.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "user");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

@@ -11,6 +11,7 @@ export interface IClassServiceClusters {
   getAll(): Promise<ServiceCluster[]>;
   getFilter(arg: { filter: string }): Promise<ServiceCluster[]>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -67,6 +68,19 @@ export class ServiceClusters implements IClassServiceClusters {
 
     const selection = new SelectionEntity(this.#repoClient, "servicecluster");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `serviceCluster.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "servicecluster");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

@@ -23,6 +23,7 @@ export interface IClassSystemRules {
   create(arg: ISystemRuleCreate): Promise<SystemRule>;
   licenseCreate(arg: ISystemRuleLicenseCreate): Promise<SystemRule>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -158,6 +159,17 @@ export class SystemRules implements IClassSystemRules {
 
     const selection = new SelectionEntity(this.#repoClient, "systemrule");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`systemRule.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "systemrule");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

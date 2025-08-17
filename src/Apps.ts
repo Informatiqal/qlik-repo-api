@@ -31,6 +31,10 @@ export interface IClassApps {
    */
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
   /**
+   * Remove apps based on the supplied app ids
+   */  
+  removeList(arg?: { items: string[] }): Promise<RemoveItemsResponse>;
+  /**
    * Create selection based on the supplied filter
    */
   select(arg?: { filter: string }): Promise<ISelection>;
@@ -260,6 +264,17 @@ export class Apps implements IClassApps {
 
     const selection = new SelectionEntity(this.#repoClient, "app");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`app.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "app");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

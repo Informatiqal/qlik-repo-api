@@ -1,9 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import {
-  ISelection,
-  IExecutionSession,
-} from "./types/interfaces";
+import { ISelection, IExecutionSession } from "./types/interfaces";
 import { ExecutionSession } from "./ExecutionSession";
 import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
@@ -17,6 +14,7 @@ export interface IClassExecutionSessions {
   count(): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
 }
 
 export class ExecutionSessions implements IClassExecutionSessions {
@@ -70,6 +68,19 @@ export class ExecutionSessions implements IClassExecutionSessions {
 
     const selection = new SelectionEntity(this.#repoClient, "executionsession");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `executionsessions.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "executionsession");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

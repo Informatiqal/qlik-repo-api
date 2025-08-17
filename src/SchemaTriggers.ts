@@ -79,7 +79,9 @@ export class SchemaTriggers {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse> {
+  public async removeFilter(arg: {
+    filter: string;
+  }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `schemaTrigger.removeFilter: "filter" parameter is required`
@@ -87,6 +89,19 @@ export class SchemaTriggers {
 
     const selection = new SelectionEntity(this.#repoClient, "schemaevent");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `schemaTrigger.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "schemaevent");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

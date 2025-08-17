@@ -19,6 +19,7 @@ export interface IClassDataConnections {
   }): Promise<DataConnection[]>;
   create(arg: IDataConnectionCreate): Promise<DataConnection>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -77,6 +78,19 @@ export class DataConnections implements IClassDataConnections {
 
     const selection = new SelectionEntity(this.#repoClient, "dataconnection");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `dataConnection.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "dataconnection");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;
