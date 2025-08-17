@@ -89,8 +89,22 @@ export class CustomBannerMessages {
         `customBannerMessage.removeFilter: "filter" parameter is required`
       );
 
-    const selection = new SelectionEntity(this.#repoClient, "custombannermessage");
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "custombannermessage"
+    );
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`customBannerMessage.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "custombannermessage");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

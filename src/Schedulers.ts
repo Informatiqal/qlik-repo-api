@@ -1,9 +1,6 @@
 import { URLBuild } from "./util/generic";
 
-import {
-  ISelection,
-  ISchedulerService,
-} from "./types/interfaces";
+import { ISelection, ISchedulerService } from "./types/interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { Scheduler } from "./Scheduler";
 import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
@@ -14,6 +11,7 @@ export interface IClassSchedulers {
   getFilter(arg: { filter: string }): Promise<Scheduler[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   // update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
 }
 
@@ -60,6 +58,17 @@ export class Schedulers implements IClassSchedulers {
 
     const selection = new SelectionEntity(this.#repoClient, "schedulerservice");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`scheduler.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "schedulerservice");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

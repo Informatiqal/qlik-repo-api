@@ -21,6 +21,7 @@ export interface IClassReloadTasks {
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   create(arg: ITaskCreate): Promise<ReloadTask>;
 }
 
@@ -109,6 +110,17 @@ export class ReloadTasks implements IClassReloadTasks {
 
     const selection = new SelectionEntity(this.#repoClient, "reloadtask");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`reloadTask.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "reloadtask");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

@@ -22,6 +22,7 @@ export interface IClassExternalTasks {
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   create(arg: IExternalTaskCreate): Promise<IClassExternalTask>;
 }
 
@@ -95,8 +96,27 @@ export class ExternalTasks implements IClassExternalTasks {
         `externalTasks.removeFilter: "filter" parameter is required`
       );
 
-    const selection = new SelectionEntity(this.#repoClient, "externalprogramtask");
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "externalprogramtask"
+    );
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `externalTasks.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "externalprogramtask"
+    );
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

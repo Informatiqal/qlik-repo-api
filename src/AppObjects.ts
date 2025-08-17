@@ -10,6 +10,7 @@ export interface IClassAppObjects {
   getAll(): Promise<AppObject[]>;
   getFilter(arg?: { filter: string }): Promise<AppObject[]>;
   removeFilter(arg?: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg?: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 export class AppObjects implements IClassAppObjects {
@@ -58,6 +59,17 @@ export class AppObjects implements IClassAppObjects {
 
     const selection = new SelectionEntity(this.#repoClient, "app/object");
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`appObject.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "app/object");
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

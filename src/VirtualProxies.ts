@@ -1,9 +1,6 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import {
-  ISelection,
-  IVirtualProxyUpdate,
-} from "./types/interfaces";
+import { ISelection, IVirtualProxyUpdate } from "./types/interfaces";
 import { VirtualProxy } from "./VirtualProxy";
 import { IVirtualProxyConfig, IVirtualProxyCreate } from "./types/interfaces";
 import {
@@ -26,6 +23,7 @@ export interface IClassVirtualProxies {
   getAll(): Promise<VirtualProxy[]>;
   getFilter(arg: { filter: string }): Promise<VirtualProxy[]>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IVirtualProxyCreate): Promise<VirtualProxy>;
 }
@@ -76,8 +74,27 @@ export class VirtualProxies implements IClassVirtualProxies {
         `virtualProxies.removeFilter: "filter" parameter is required`
       );
 
-    const selection = new SelectionEntity(this.#repoClient, "virtualproxyconfig");
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "virtualproxyconfig"
+    );
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `virtualProxies.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "virtualproxyconfig"
+    );
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;

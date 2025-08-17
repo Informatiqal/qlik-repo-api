@@ -20,6 +20,7 @@ export interface IClassNodes {
   create(arg: INodeCreate): Promise<Node>;
   register(arg: INodeCreate): Promise<IHttpStatus>;
   removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
 }
 
 export class Nodes implements IClassNodes {
@@ -132,6 +133,20 @@ export class Nodes implements IClassNodes {
       "servernodeconfiguration"
     );
     await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`node.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "servernodeconfiguration"
+    );
+    await selection.init({ items: arg.items });
     const removeStatus = await selection.removeAllItems();
 
     return removeStatus;
