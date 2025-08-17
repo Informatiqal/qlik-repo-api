@@ -2,23 +2,20 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { GetCommonProperties } from "./util/GetCommonProps";
 import { URLBuild } from "./util/generic";
 
-import {
-  IEntityRemove,
-  ISelection,
-  IStream,
-  IStreamCreate,
-} from "./types/interfaces";
+import { ISelection, IStream, IStreamCreate } from "./types/interfaces";
 // import { ICustomPropertyCondensed } from "./CustomProperties";
 // import { ITagCondensed } from "./Tags";
 // import { IOwner } from "./Users";
 import { Stream } from "./Stream";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassStreams {
   get(arg: { id: string }): Promise<Stream>;
   getAll(): Promise<Stream[]>;
   getFilter(arg: { filter: string }): Promise<Stream[]>;
   create(arg: IStreamCreate): Promise<Stream>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -83,12 +80,22 @@ export class Streams implements IClassStreams {
     if (!arg.filter)
       throw new Error(`stream.removeFilter: "filter" parameter is required`);
 
-    const streams = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      streams.map((stream) =>
-        stream.remove().then((s) => ({ id: stream.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "stream");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`stream.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "stream");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

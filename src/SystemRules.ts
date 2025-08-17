@@ -4,7 +4,6 @@ import { UpdateCommonProperties } from "./util/UpdateCommonProps";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
-  IEntityRemove,
   ISelection,
   IAudit,
   ISystemRule,
@@ -14,6 +13,7 @@ import {
 } from "./types/interfaces";
 
 import { SystemRule } from "./SystemRule";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 //TODO: why is no update method here?
 export interface IClassSystemRules {
   get(arg: { id: string }): Promise<SystemRule>;
@@ -22,7 +22,8 @@ export interface IClassSystemRules {
   getFilter(arg: { filter: string }): Promise<SystemRule[]>;
   create(arg: ISystemRuleCreate): Promise<SystemRule>;
   licenseCreate(arg: ISystemRuleLicenseCreate): Promise<SystemRule>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -156,12 +157,22 @@ export class SystemRules implements IClassSystemRules {
         `systemRule.removeFilter: "filter" parameter is required`
       );
 
-    const srs = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      srs.map((sr) =>
-        sr.remove().then((s) => ({ id: sr.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "systemrule");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`systemRule.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "systemrule");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

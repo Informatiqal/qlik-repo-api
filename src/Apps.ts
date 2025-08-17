@@ -1,10 +1,8 @@
-import { info } from "console";
 import { QlikRepositoryClient, QlikGenericRestClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import {
   ISelection,
-  IEntityRemove,
   IApp,
   IAppUpload,
   IAppUpdate,
@@ -13,6 +11,7 @@ import {
 import { App } from "./App";
 import { IncomingMessage } from "http";
 import { ReadStream } from "fs";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassApps {
   /**
@@ -30,7 +29,11 @@ export interface IClassApps {
   /**
    * Remove apps based on the supplied filter
    */
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  /**
+   * Remove apps based on the supplied app ids
+   */  
+  removeList(arg?: { items: string[] }): Promise<RemoveItemsResponse>;
   /**
    * Create selection based on the supplied filter
    */
@@ -259,12 +262,22 @@ export class Apps implements IClassApps {
     if (!arg.filter)
       throw new Error(`app.removeFilter: "filter" parameter is required`);
 
-    const apps = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      apps.map((app: App) =>
-        app.remove().then((s) => ({ id: app.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "app");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`app.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "app");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

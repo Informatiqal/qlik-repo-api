@@ -2,7 +2,8 @@ import { QlikRepositoryClient } from "qlik-rest-api";
 import { ODAGRequest } from "./ODAGRequest";
 import { URLBuild } from "./util/generic";
 
-import { IEntityRemove, ISelection, IOdagRequest } from "./types/interfaces";
+import { ISelection, IOdagRequest } from "./types/interfaces";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export class ODAGRequests {
   #repoClient: QlikRepositoryClient;
@@ -43,18 +44,28 @@ export class ODAGRequests {
 
   public async removeFilter(arg: {
     filter: string;
-  }): Promise<{ id: string; status: number }[]> {
+  }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `odagRequest.removeFilter: "filter" parameter is required`
       );
 
-    const odagRequest = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      odagRequest.map((o) =>
-        o.remove().then((s) => ({ id: o.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "odagrequest");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`odagRequest.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "odagrequest");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }): Promise<ISelection> {

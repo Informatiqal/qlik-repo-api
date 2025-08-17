@@ -1,15 +1,13 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild, uuid } from "./util/generic";
 import {
-  IEntityRemove,
   ISelection,
   IExecutionResult,
-  IExecutionResultDetail,
   IExecutionResultCreate,
 } from "./types/interfaces";
 import { ExecutionResult } from "./ExecutionResult";
-import { ExecutionResultDetail } from "./ExecutionResultDetail";
 import { ExecutionResultDetails } from "./ExecutionResultDetails";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExecutionResults {
   get(arg: { id: string }): Promise<ExecutionResult>;
@@ -19,7 +17,8 @@ export interface IClassExecutionResults {
     full?: boolean;
   }): Promise<ExecutionResult[]>;
   count(): Promise<number>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IExecutionResultCreate): Promise<ExecutionResult>;
   createMany(arg: IExecutionResultCreate[]): Promise<ExecutionResult[]>;
@@ -82,19 +81,24 @@ export class ExecutionResults implements IClassExecutionResults {
         `executionresult.removeFilter: "filter" parameter is required`
       );
 
-    const executionResults = await this.getFilter({ filter: arg.filter });
-    if (executionResults.length == 0)
+    const selection = new SelectionEntity(this.#repoClient, "executionresult");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
       throw new Error(
-        `executionResult.removeFilter: filter query return 0 items`
+        `executionResult.removeList: "items" parameter is required`
       );
 
-    return await Promise.all<IEntityRemove>(
-      executionResults.map((executionResult) =>
-        executionResult
-          .remove()
-          .then((s) => ({ id: executionResult.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "executionresult");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

@@ -1,6 +1,5 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import {
-  IEntityRemove,
   ISchemaEvent,
   ISelection,
   ITask,
@@ -9,6 +8,7 @@ import {
 import { SchemaTrigger } from "./SchemaTrigger";
 import { URLBuild } from "./util/generic";
 import { schemaRepeat } from "./util/schemaTrigger";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export class SchemaTriggers {
   #repoClient: QlikRepositoryClient;
@@ -79,23 +79,32 @@ export class SchemaTriggers {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<IEntityRemove[]> {
+  public async removeFilter(arg: {
+    filter: string;
+  }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `schemaTrigger.removeFilter: "filter" parameter is required`
       );
 
-    const triggers = await this.getFilter({ filter: arg.filter });
-    if (triggers.length == 0)
+    const selection = new SelectionEntity(this.#repoClient, "schemaevent");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
       throw new Error(
-        `schemaTriggers.removeFilter: filter query return 0 items`
+        `schemaTrigger.removeList: "items" parameter is required`
       );
 
-    return await Promise.all<IEntityRemove>(
-      triggers.map((st) =>
-        st.remove().then((s) => ({ id: st.details.id, status: s.status }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "schemaevent");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }): Promise<ISelection> {

@@ -3,10 +3,10 @@ import { URLBuild } from "./util/generic";
 import {
   ICustomBannerCreate,
   ICustomBannerMessage,
-  IEntityRemove,
   ISelection,
 } from "./types/interfaces";
 import { CustomBannerMessage } from "./CustomBannerMessage";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export class CustomBannerMessages {
   #repoClient: QlikRepositoryClient;
@@ -89,21 +89,29 @@ export class CustomBannerMessages {
         `customBannerMessage.removeFilter: "filter" parameter is required`
       );
 
-    const customBannerMessages = await this.getFilter({ filter: arg.filter });
-    if (customBannerMessages.length == 0)
-      throw new Error(
-        `customBannerMessage.removeFilter: filter query return 0 items`
-      );
-
-    return await Promise.all<IEntityRemove>(
-      customBannerMessages.map((message) =>
-        message.remove().then((s) => ({ id: message.details.id, status: s }))
-      )
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "custombannermessage"
     );
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`customBannerMessage.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "custombannermessage");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {
-    const urlBuild = new URLBuild(`selection/3`);
+    const urlBuild = new URLBuild(`selection/custombannermessage`);
     urlBuild.addParam("filter", arg?.filter);
 
     return await this.#repoClient

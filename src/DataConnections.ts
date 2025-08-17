@@ -3,12 +3,12 @@ import { URLBuild } from "./util/generic";
 import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
-  IEntityRemove,
   ISelection,
   IDataConnectionCreate,
   IDataConnection,
 } from "./types/interfaces";
 import { DataConnection } from "./DataConnection";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassDataConnections {
   get(arg: { id: string }): Promise<DataConnection>;
@@ -18,7 +18,8 @@ export interface IClassDataConnections {
     orderBy?: string;
   }): Promise<DataConnection[]>;
   create(arg: IDataConnectionCreate): Promise<DataConnection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -75,12 +76,24 @@ export class DataConnections implements IClassDataConnections {
         `dataConnection.removeFilter: "filter" parameter is required`
       );
 
-    const dcs = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      dcs.map((dc) =>
-        dc.remove().then((s) => ({ id: dc.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "dataconnection");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `dataConnection.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "dataconnection");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

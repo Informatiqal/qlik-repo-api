@@ -1,11 +1,8 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import {
-  IEntityRemove,
-  ISelection,
-  IExecutionSession,
-} from "./types/interfaces";
+import { ISelection, IExecutionSession } from "./types/interfaces";
 import { ExecutionSession } from "./ExecutionSession";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExecutionSessions {
   get(arg: { id: string }): Promise<ExecutionSession>;
@@ -16,7 +13,8 @@ export interface IClassExecutionSessions {
   }): Promise<ExecutionSession[]>;
   count(): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
 }
 
 export class ExecutionSessions implements IClassExecutionSessions {
@@ -68,19 +66,24 @@ export class ExecutionSessions implements IClassExecutionSessions {
         `executionsessions.removeFilter: "filter" parameter is required`
       );
 
-    const executionsessions = await this.getFilter({ filter: arg.filter });
-    if (executionsessions.length == 0)
+    const selection = new SelectionEntity(this.#repoClient, "executionsession");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
       throw new Error(
-        `executionsessions.removeFilter: filter query return 0 items`
+        `executionsessions.removeList: "items" parameter is required`
       );
 
-    return await Promise.all<IEntityRemove>(
-      executionsessions.map((executionsession) =>
-        executionsession
-          .remove()
-          .then((s) => ({ id: executionsession.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "executionsession");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async count() {

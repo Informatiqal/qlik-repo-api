@@ -2,16 +2,15 @@ import { QlikGenericRestClient, QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 
 import {
-  IEntityRemove,
   ISelection,
   INodeCreate,
   IServerNodeConfiguration,
-  IServerNodeConfigurationCondensed,
   IServerNodeResultContainer,
   INodeUpdate,
 } from "./types/interfaces";
 import { IHttpStatus } from "./types/ranges";
 import { Node } from "./Node";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassNodes {
   count(): Promise<number>;
@@ -20,7 +19,8 @@ export interface IClassNodes {
   getFilter(arg: { filter: string; full?: boolean }): Promise<Node[]>;
   create(arg: INodeCreate): Promise<Node>;
   register(arg: INodeCreate): Promise<IHttpStatus>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
 }
 
 export class Nodes implements IClassNodes {
@@ -128,12 +128,28 @@ export class Nodes implements IClassNodes {
     if (!arg.filter)
       throw new Error(`node.removeFilter: "filter" parameter is required`);
 
-    const nodes = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      nodes.map((node) =>
-        node.remove().then((s) => ({ id: node.details.id, status: s }))
-      )
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "servernodeconfiguration"
     );
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`node.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "servernodeconfiguration"
+    );
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(filter?: string) {

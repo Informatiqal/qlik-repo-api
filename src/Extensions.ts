@@ -4,15 +4,16 @@ import { URLBuild } from "./util/generic";
 import { IExtension, IExtensionImport, ISelection } from "./types/interfaces";
 import { Extension } from "./Extension";
 
-import { IEntityRemove } from "./types/interfaces";
 import { UpdateCommonProperties } from "./util/UpdateCommonProps";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExtensions {
   get(arg: { id: string }): Promise<Extension>;
   getAll(): Promise<Extension[]>;
   getFilter(arg: { filter: string; full?: boolean }): Promise<Extension[]>;
   import(arg: IExtensionImport): Promise<Extension>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -57,14 +58,22 @@ export class Extensions implements IClassExtensions {
         `extensions.removeFilter: "filter" parameter is required`
       );
 
-    const extensions = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      extensions.map((extension) =>
-        extension
-          .remove()
-          .then((s) => ({ id: extension.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "extension");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`extensions.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "extension");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

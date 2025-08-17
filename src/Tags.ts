@@ -1,7 +1,8 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
-import { IEntityRemove, ISelection, ITag } from "./types/interfaces";
+import { ISelection, ITag } from "./types/interfaces";
 import { Tag } from "./Tag";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassTags {
   get(arg: { id: string }): Promise<Tag>;
@@ -9,7 +10,8 @@ export interface IClassTags {
   getFilter(arg: { filter: string; full?: boolean }): Promise<Tag[]>;
   create(arg: { name: string }): Promise<Tag>;
   createMany(arg: { names: string[] }): Promise<Tag[]>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg?: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -49,10 +51,7 @@ export class Tags implements IClassTags {
       });
   }
 
-  public async create(
-    arg: { name: string },
-    options?: { multiple?: boolean }
-  ) {
+  public async create(arg: { name: string }, options?: { multiple?: boolean }) {
     if (!arg.name) throw new Error(`tag.create: "name" is required`);
     if (!options) {
       options = {};
@@ -118,18 +117,25 @@ export class Tags implements IClassTags {
     if (!arg.filter)
       throw new Error(`tag.removeFilter: "filter" parameter is required`);
 
-    const tags = await this.getFilter({ filter: arg.filter });
-    if (tags.length == 0)
-      throw new Error(`tag.removeFilter: filter query return 0 items`);
+    const selection = new SelectionEntity(this.#repoClient, "tag");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      tags.map((tag) =>
-        tag.remove().then((s) => ({ id: tag.details.id, status: s }))
-      )
-    );
+    return removeStatus;
   }
 
-  public async select(arg?: { filter: string }) {
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`tag.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "tag");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async select(arg?: { filter: string }): Promise<ISelection> {
     const urlBuild = new URLBuild(`selection/tag`);
     urlBuild.addParam("filter", arg.filter);
 

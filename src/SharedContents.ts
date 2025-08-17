@@ -4,19 +4,20 @@ import { GetCommonProperties } from "./util/GetCommonProps";
 
 import {
   ISharedContent,
-  IEntityRemove,
   ISelection,
   ISharedContentCreate,
 } from "./types/interfaces";
 
 import { SharedContent } from "./SharedContent";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassSharedContents {
   get(arg: { id: string }): Promise<SharedContent>;
   getAll(): Promise<SharedContent[]>;
   getFilter(arg: { filter: string }): Promise<SharedContent[]>;
   create(arg: ISharedContentCreate): Promise<SharedContent>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<RemoveItemsResponse>;
+  removeList(arg: { items: string[] }): Promise<RemoveItemsResponse>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -66,12 +67,24 @@ export class SharedContents implements IClassSharedContents {
         `sharedContent.removeFilter: "filter" parameter is required`
       );
 
-    const shc = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      shc.map((sc) =>
-        sc.remove().then((s) => ({ id: sc.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "sharedcontent");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(
+        `sharedContent.removeList: "items" parameter is required`
+      );
+
+    const selection = new SelectionEntity(this.#repoClient, "sharedcontent");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

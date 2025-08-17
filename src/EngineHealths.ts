@@ -1,12 +1,12 @@
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { URLBuild } from "./util/generic";
 import {
-  IEntityRemove,
   ISelection,
   IEngineHealth,
   IEngineHealthCreate,
 } from "./types/interfaces";
 import { EngineHealth } from "./EngineHealth";
+import { RemoveItemsResponse, SelectionEntity } from "./util/SelectionEntity";
 
 export class EngineHealths {
   #repoClient: QlikRepositoryClient;
@@ -70,21 +70,30 @@ export class EngineHealths {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<IEntityRemove[]> {
+  public async removeFilter(arg: {
+    filter: string;
+  }): Promise<RemoveItemsResponse> {
     if (!arg.filter)
       throw new Error(
         `engineHealth.removeFilter: "filter" parameter is required`
       );
 
-    const engineHealths = await this.getFilter({ filter: arg.filter });
-    if (engineHealths.length == 0)
-      throw new Error(`engineHealth.removeFilter: filter query return 0 items`);
+    const selection = new SelectionEntity(this.#repoClient, "enginehealth");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      engineHealths.map((health) =>
-        health.remove().then((s) => ({ id: health.details.id, status: s }))
-      )
-    );
+    return removeStatus;
+  }
+
+  public async removeList(arg: { items: string[] }) {
+    if (!arg.items)
+      throw new Error(`engineHealth.removeList: "items" parameter is required`);
+
+    const selection = new SelectionEntity(this.#repoClient, "enginehealth");
+    await selection.init({ items: arg.items });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }): Promise<ISelection> {
