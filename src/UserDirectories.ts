@@ -10,15 +10,16 @@ import {
 import { IHttpStatus } from "./types/ranges";
 import { UserDirectory } from "./UserDirectory";
 import { GetCommonProperties } from "./util/GetCommonProps";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassUserDirectories {
   count(): Promise<number>;
-  get(id: string): Promise<UserDirectory>;
+  get(arg: { id: string }): Promise<UserDirectory>;
   getAll(): Promise<UserDirectory[]>;
-  getFilter(filter: string): Promise<UserDirectory[]>;
-  removeFilter(filter: string): Promise<IEntityRemove[]>;
-  select(filter?: string): Promise<ISelection>;
-  syncMany(userDirectoryIds: string[]): Promise<IHttpStatus>;
+  getFilter(arg: { filter: string }): Promise<UserDirectory[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
+  select(arg?: { filter: string }): Promise<ISelection>;
+  syncMany(arg: { userDirectoryIds: string[] }): Promise<IHttpStatus>;
   create(arg: IUserDirectoryCreate): Promise<UserDirectory>;
 }
 
@@ -34,10 +35,11 @@ export class UserDirectories implements IClassUserDirectories {
       .then((res) => res.data);
   }
 
-  public async get(id: string) {
-    if (!id) throw new Error(`userDirectories.get: "id" parameter is required`);
+  public async get(arg: { id: string }) {
+    if (!arg.id)
+      throw new Error(`userDirectories.get: "id" parameter is required`);
 
-    const ud: UserDirectory = new UserDirectory(this.#repoClient, id);
+    const ud: UserDirectory = new UserDirectory(this.#repoClient, arg.id);
     await ud.init();
 
     return ud;
@@ -52,15 +54,15 @@ export class UserDirectories implements IClassUserDirectories {
       });
   }
 
-  public async getFilter(filter: string) {
-    if (!filter)
+  public async getFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `userDirectory.getFilter: "filter" parameter is required`
       );
 
     return await this.#repoClient
       .Get<IUserDirectory[]>(
-        `userdirectory/full?filter=(${encodeURIComponent(filter)})`
+        `userdirectory/full?filter=(${encodeURIComponent(arg.filter)})`
       )
       .then((res) => res.data)
       .then((data) => {
@@ -68,35 +70,36 @@ export class UserDirectories implements IClassUserDirectories {
       });
   }
 
-  public async removeFilter(filter: string) {
-    if (!filter)
+  public async removeFilter(arg: { filter: string }) {
+    if (!arg.filter)
       throw new Error(
         `userDirectory.removeFilter: "filter" parameter is required`
       );
 
-    const uds = await this.getFilter(filter);
-    return Promise.all<IEntityRemove>(
-      uds.map((ud) =>
-        ud.remove().then((s) => ({ id: ud.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "userdirectory");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
-  public async select(filter?: string) {
+  public async select(arg?: { filter: string }) {
     const urlBuild = new URLBuild(`selection/userdirectory`);
-    urlBuild.addParam("filter", filter);
+    urlBuild.addParam("filter", arg.filter);
 
     return await this.#repoClient
       .Post<ISelection>(urlBuild.getUrl(), {})
       .then((res) => res.data);
   }
 
-  public async syncMany(userDirectoryIds: string[]) {
-    if (!userDirectoryIds)
+  public async syncMany(arg: { userDirectoryIds: string[] }) {
+    if (!arg.userDirectoryIds)
       throw new Error(`userDirectory.sync: "ids" parameter is required`);
 
     return await this.#repoClient
-      .Post(`userdirectoryconnector/syncuserdirectories`, [...userDirectoryIds])
+      .Post(`userdirectoryconnector/syncuserdirectories`, [
+        ...arg.userDirectoryIds,
+      ])
       .then((res) => res.status);
   }
 

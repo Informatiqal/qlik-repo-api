@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.16.0] - 2025-08-17
+
+- internal change - all `removeFilter` methods are using `selection` instead of loop and delete each [#306](https://github.com/Informatiqal/qlik-repo-api/issues/306)
+- dependency updates
+
 ## [0.15.2] - 2025-06-16
 
 - Notifications endpoints - make sure that the `create` endpoint uses the correct properties names and mapping

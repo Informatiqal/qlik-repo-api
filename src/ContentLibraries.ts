@@ -11,6 +11,7 @@ import {
 } from "./types/interfaces";
 
 import { ContentLibrary } from "./ContentLibrary";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassContentLibraries {
   get(arg: { id: string }): Promise<ContentLibrary>;
@@ -26,7 +27,7 @@ export interface IClassContentLibraries {
     overwrite?: boolean;
   }): Promise<ContentLibrary>;
   create(arg: IContentLibraryCreate): Promise<ContentLibrary>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -151,14 +152,12 @@ export class ContentLibraries implements IClassContentLibraries {
       throw new Error(
         `contentLibrary.removeFilter: "filter" parameter is required`
       );
-    const contentLibraries = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      contentLibraries.map((contentLib) =>
-        contentLib
-          .remove()
-          .then((s) => ({ id: contentLib.details.id, status: s }))
-      )
-    );
+
+    const selection = new SelectionEntity(this.#repoClient, "contentlibrary");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

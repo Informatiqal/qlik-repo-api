@@ -7,13 +7,14 @@ import {
 } from "./types/interfaces";
 import { QlikRepositoryClient } from "qlik-rest-api";
 import { Scheduler } from "./Scheduler";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassSchedulers {
   get(arg: { id: string }): Promise<Scheduler>;
   getAll(): Promise<Scheduler[]>;
   getFilter(arg: { filter: string }): Promise<Scheduler[]>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   // update(arg: ISchedulerServiceUpdate): Promise<ISchedulerService>;
 }
 
@@ -58,14 +59,11 @@ export class Schedulers implements IClassSchedulers {
     if (!arg.filter)
       throw new Error(`scheduler.removeFilter: "filter" parameter is required`);
 
-    const schedulers = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      schedulers.map((scheduler) =>
-        scheduler
-          .remove()
-          .then((s) => ({ id: scheduler.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "schedulerservice");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

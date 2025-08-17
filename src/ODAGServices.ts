@@ -3,6 +3,7 @@ import { ODAGService } from "./ODAGService";
 import { URLBuild } from "./util/generic";
 
 import { IEntityRemove, ISelection, IODAGService } from "./types/interfaces";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export class ODAG {
   #repoClient: QlikRepositoryClient;
@@ -41,16 +42,15 @@ export class ODAG {
       });
   }
 
-  public async removeFilter(arg: {
-    filter: string;
-  }): Promise<{ id: string; status: number }[]> {
+  public async removeFilter(arg: { filter: string }): Promise<number> {
     if (!arg.filter)
       throw new Error(`odag.removeFilter: "filter" parameter is required`);
 
-    const odag = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      odag.map((o) => o.remove().then((s) => ({ id: o.details.id, status: s })))
-    );
+    const selection = new SelectionEntity(this.#repoClient, "odagservice");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }): Promise<ISelection> {

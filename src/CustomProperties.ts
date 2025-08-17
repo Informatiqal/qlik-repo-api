@@ -8,13 +8,14 @@ import {
   ICustomProperty,
 } from "./types/interfaces";
 import { CustomProperty } from "./CustomProperty";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassCustomProperties {
   get(arg: { id: string }): Promise<CustomProperty>;
   getAll(): Promise<CustomProperty[]>;
   getFilter(arg: { filter: string }): Promise<CustomProperty[]>;
   create(arg: ICustomPropertyCreate): Promise<CustomProperty>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -92,12 +93,14 @@ export class CustomProperties implements IClassCustomProperties {
         `customProperty.removeFilter: "filter" parameter is required`
       );
 
-    const customProperties = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      customProperties.map((cp) =>
-        cp.remove().then((s) => ({ id: cp.details.id, status: s }))
-      )
+    const selection = new SelectionEntity(
+      this.#repoClient,
+      "custompropertydefinition"
     );
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

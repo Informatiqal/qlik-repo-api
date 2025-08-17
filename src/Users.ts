@@ -8,13 +8,14 @@ import {
   IUser,
 } from "./types/interfaces";
 import { User } from "./User";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassUsers {
   get(arg: { id: string }): Promise<User>;
   getAll(): Promise<User[]>;
   getFilter(arg: { filter: string }): Promise<User[]>;
   create(arg: IUserCreate): Promise<User>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -85,12 +86,11 @@ export class Users implements IClassUsers {
     if (!arg.filter)
       throw new Error(`user.removeFilter: "filter" parameter is required`);
 
-    const users = await this.getFilter({ filter: arg.filter });
-    return await Promise.all<IEntityRemove>(
-      users.map((user) =>
-        user.remove().then((s) => ({ id: user.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "user");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

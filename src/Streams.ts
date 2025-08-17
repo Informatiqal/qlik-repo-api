@@ -12,13 +12,14 @@ import {
 // import { ITagCondensed } from "./Tags";
 // import { IOwner } from "./Users";
 import { Stream } from "./Stream";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassStreams {
   get(arg: { id: string }): Promise<Stream>;
   getAll(): Promise<Stream[]>;
   getFilter(arg: { filter: string }): Promise<Stream[]>;
   create(arg: IStreamCreate): Promise<Stream>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -83,12 +84,11 @@ export class Streams implements IClassStreams {
     if (!arg.filter)
       throw new Error(`stream.removeFilter: "filter" parameter is required`);
 
-    const streams = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      streams.map((stream) =>
-        stream.remove().then((s) => ({ id: stream.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "stream");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

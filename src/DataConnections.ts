@@ -9,6 +9,7 @@ import {
   IDataConnection,
 } from "./types/interfaces";
 import { DataConnection } from "./DataConnection";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassDataConnections {
   get(arg: { id: string }): Promise<DataConnection>;
@@ -18,7 +19,7 @@ export interface IClassDataConnections {
     orderBy?: string;
   }): Promise<DataConnection[]>;
   create(arg: IDataConnectionCreate): Promise<DataConnection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -75,12 +76,11 @@ export class DataConnections implements IClassDataConnections {
         `dataConnection.removeFilter: "filter" parameter is required`
       );
 
-    const dcs = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      dcs.map((dc) =>
-        dc.remove().then((s) => ({ id: dc.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "dataconnection");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

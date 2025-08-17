@@ -11,6 +11,7 @@ import {
 
 import { ReloadTaskBase } from "./ReloadTaskBase";
 import { ExternalTask } from "./ExternalTask";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExternalTask extends ReloadTaskBase {}
 
@@ -21,7 +22,7 @@ export interface IClassExternalTasks {
   getFilter(arg: { filter: string }): Promise<IClassExternalTask[]>;
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   create(arg: IExternalTaskCreate): Promise<IClassExternalTask>;
 }
 
@@ -59,7 +60,9 @@ export class ExternalTasks implements IClassExternalTasks {
 
   public async getFilter(arg: { filter: string }) {
     if (!arg.filter)
-      throw new Error(`externalTasks.getFilter: "filter" parameter is required`);
+      throw new Error(
+        `externalTasks.getFilter: "filter" parameter is required`
+      );
 
     return await this.#repoClient
       .Get<IExternalProgramTask[]>(
@@ -93,12 +96,11 @@ export class ExternalTasks implements IClassExternalTasks {
         `externalTasks.removeFilter: "filter" parameter is required`
       );
 
-    const tasks = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      tasks.map((task: IClassExternalTask) =>
-        task.remove().then((s) => ({ id: task.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "externalprogramtask");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

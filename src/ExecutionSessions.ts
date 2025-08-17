@@ -6,6 +6,7 @@ import {
   IExecutionSession,
 } from "./types/interfaces";
 import { ExecutionSession } from "./ExecutionSession";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExecutionSessions {
   get(arg: { id: string }): Promise<ExecutionSession>;
@@ -16,7 +17,7 @@ export interface IClassExecutionSessions {
   }): Promise<ExecutionSession[]>;
   count(): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
 }
 
 export class ExecutionSessions implements IClassExecutionSessions {
@@ -68,19 +69,11 @@ export class ExecutionSessions implements IClassExecutionSessions {
         `executionsessions.removeFilter: "filter" parameter is required`
       );
 
-    const executionsessions = await this.getFilter({ filter: arg.filter });
-    if (executionsessions.length == 0)
-      throw new Error(
-        `executionsessions.removeFilter: filter query return 0 items`
-      );
+    const selection = new SelectionEntity(this.#repoClient, "executionsession");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      executionsessions.map((executionsession) =>
-        executionsession
-          .remove()
-          .then((s) => ({ id: executionsession.details.id, status: s }))
-      )
-    );
+    return removeStatus;
   }
 
   public async count() {

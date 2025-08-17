@@ -8,6 +8,7 @@ import {
 } from "./types/interfaces";
 import { CompositeTrigger } from "./CompositeTrigger";
 import { URLBuild } from "./util/generic";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassCompositeTriggers {
   get(arg: { id: string }): Promise<CompositeTrigger>;
@@ -18,7 +19,7 @@ export interface IClassCompositeTriggers {
   }): Promise<CompositeTrigger[]>;
   create(arg: ITaskCreateTriggerComposite): Promise<CompositeTrigger>;
   createMany(arg: ITaskCreateTriggerComposite[]): Promise<CompositeTrigger[]>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -90,17 +91,11 @@ export class CompositeTriggers implements IClassCompositeTriggers {
         `compositeTrigger.removeFilter: "filter" parameter is required`
       );
 
-    const triggers = await this.getFilter({ filter: arg.filter });
-    if (triggers.length == 0)
-      throw new Error(
-        `compositeTriggers.removeFilter: filter query return 0 items`
-      );
+    const selection = new SelectionEntity(this.#repoClient, "compositeevent");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      triggers.map((ct) =>
-        ct.remove().then((s) => ({ id: ct.details.id, status: s.status }))
-      )
-    );
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

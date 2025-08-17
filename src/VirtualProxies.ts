@@ -20,12 +20,13 @@ import {
   parseSameSiteAttribute,
   parseSamlAttributeMap,
 } from "./util/parseAttributeMap";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassVirtualProxies {
   get(arg: { id: string }): Promise<VirtualProxy>;
   getAll(): Promise<VirtualProxy[]>;
   getFilter(arg: { filter: string }): Promise<VirtualProxy[]>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IVirtualProxyCreate): Promise<VirtualProxy>;
 }
@@ -76,17 +77,11 @@ export class VirtualProxies implements IClassVirtualProxies {
         `virtualProxies.removeFilter: "filter" parameter is required`
       );
 
-    const vps = await this.getFilter({ filter: arg.filter });
-    if (vps.length == 0)
-      throw new Error(
-        `virtualProxies.removeFilter: filter query return 0 items`
-      );
+    const selection = new SelectionEntity(this.#repoClient, "virtualproxyconfig");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      vps.map((vp) =>
-        vp.remove().then((s) => ({ id: vp.details.id, status: s }))
-      )
-    );
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

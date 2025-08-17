@@ -7,6 +7,7 @@ import {
   IExecutionResultDetailCreate,
 } from "./types/interfaces";
 import { ExecutionResultDetail } from "./ExecutionResultDetail";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassExecutionResultDetails {
   get(arg: { id: string }): Promise<ExecutionResultDetail>;
@@ -16,7 +17,7 @@ export interface IClassExecutionResultDetails {
     full?: boolean;
   }): Promise<ExecutionResultDetail[]>;
   count(): Promise<number>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
   create(arg: IExecutionResultDetailCreate): Promise<ExecutionResultDetail>;
   createMany(
@@ -83,19 +84,11 @@ export class ExecutionResultDetails implements IClassExecutionResultDetails {
         `executionresultDetails.removeFilter: "filter" parameter is required`
       );
 
-    const executionResultDetails = await this.getFilter({ filter: arg.filter });
-    if (executionResultDetails.length == 0)
-      throw new Error(
-        `executionResultDetails.removeFilter: filter query return 0 items`
-      );
+    const selection = new SelectionEntity(this.#repoClient, "executionresult/detail");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      executionResultDetails.map((executionResultDetail) =>
-        executionResultDetail
-          .remove()
-          .then((s) => ({ id: executionResultDetail.details.id, status: s }))
-      )
-    );
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

@@ -12,6 +12,7 @@ import {
 
 import { ReloadTask } from "./ReloadTask";
 import { getAppForReloadTask } from "./util/ReloadTaskUtil";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 //TODO: why is no update method here?
 export interface IClassReloadTasks {
@@ -20,7 +21,7 @@ export interface IClassReloadTasks {
   getFilter(arg: { filter: string }): Promise<ReloadTask[]>;
   count(arg?: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   create(arg: ITaskCreate): Promise<ReloadTask>;
 }
 
@@ -107,12 +108,11 @@ export class ReloadTasks implements IClassReloadTasks {
         `reloadTasks.removeFilter: "filter" parameter is required`
       );
 
-    const tasks = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      tasks.map((task) =>
-        task.remove().then((s) => ({ id: task.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "reloadtask");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

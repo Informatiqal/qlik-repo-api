@@ -3,13 +3,14 @@ import { URLBuild } from "./util/generic";
 
 import { ISelection, IEntityRemove, IServiceCluster } from "./types/interfaces";
 import { ServiceCluster } from "./ServiceCluster";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export interface IClassServiceClusters {
   count(): Promise<number>;
   get(arg: { id: string }): Promise<ServiceCluster>;
   getAll(): Promise<ServiceCluster[]>;
   getFilter(arg: { filter: string }): Promise<ServiceCluster[]>;
-  removeFilter(arg: { filter: string }): Promise<IEntityRemove[]>;
+  removeFilter(arg: { filter: string }): Promise<number>;
   select(arg?: { filter: string }): Promise<ISelection>;
 }
 
@@ -64,12 +65,11 @@ export class ServiceClusters implements IClassServiceClusters {
     if (!arg.filter)
       throw new Error(`serviceCluster.filter: "filter" parameter is required`);
 
-    const serviceClusters = await this.getFilter({ filter: arg.filter });
-    return Promise.all<IEntityRemove>(
-      serviceClusters.map((sc) =>
-        sc.remove().then((s) => ({ id: sc.details.id, status: s }))
-      )
-    );
+    const selection = new SelectionEntity(this.#repoClient, "servicecluster");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
+
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }) {

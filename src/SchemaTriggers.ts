@@ -9,6 +9,7 @@ import {
 import { SchemaTrigger } from "./SchemaTrigger";
 import { URLBuild } from "./util/generic";
 import { schemaRepeat } from "./util/schemaTrigger";
+import { SelectionEntity } from "./util/SelectionEntity";
 
 export class SchemaTriggers {
   #repoClient: QlikRepositoryClient;
@@ -79,23 +80,17 @@ export class SchemaTriggers {
       );
   }
 
-  public async removeFilter(arg: { filter: string }): Promise<IEntityRemove[]> {
+  public async removeFilter(arg: { filter: string }): Promise<number> {
     if (!arg.filter)
       throw new Error(
         `schemaTrigger.removeFilter: "filter" parameter is required`
       );
 
-    const triggers = await this.getFilter({ filter: arg.filter });
-    if (triggers.length == 0)
-      throw new Error(
-        `schemaTriggers.removeFilter: filter query return 0 items`
-      );
+    const selection = new SelectionEntity(this.#repoClient, "schemaevent");
+    await selection.init({ filter: arg.filter });
+    const removeStatus = await selection.removeAllItems();
 
-    return await Promise.all<IEntityRemove>(
-      triggers.map((st) =>
-        st.remove().then((s) => ({ id: st.details.id, status: s.status }))
-      )
-    );
+    return removeStatus;
   }
 
   public async select(arg?: { filter: string }): Promise<ISelection> {
