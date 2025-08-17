@@ -13,7 +13,6 @@ All notable changes to this project will be documented in this file.
 - dependency updates
 - exclude some packages from renovate bot updates
 
-
 ## [0.15.1] - 2024-09-12
 
 - load balancing properties for virtual proxies[#297](https://github.com/Informatiqal/qlik-repo-api/issues/297)
