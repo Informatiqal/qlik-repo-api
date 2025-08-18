@@ -27,6 +27,8 @@ import { SchemaTriggers } from "./SchemaTriggers";
 import { ServiceClusters } from "./ServiceClusters";
 import { ServiceStatus } from "./ServiceStatus";
 import { Selections } from "./Selections";
+export { SelectionArea } from "./SelectionArea";
+export { SelectionItems } from "./SelectionItems";
 import { SharedContents } from "./SharedContents";
 import { Streams } from "./Streams";
 import { SystemRules } from "./SystemRules";

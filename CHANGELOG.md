@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.18.0] - 2025-08-18
+
+- `Selections` methods are re-written. Handle creation and deletion of selection items based on area/type and item ids [#308](https://github.com/Informatiqal/qlik-repo-api/issues/308)
+- dependency updates
+
 ## [0.17.0] - 2025-08-17
 
 - new method `removeList`. Similar to `removeFilter` but remove entities by providing list of ids [#307](https://github.com/Informatiqal/qlik-repo-api/issues/307)
