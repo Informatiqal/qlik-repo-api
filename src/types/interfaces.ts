@@ -22,6 +22,7 @@ import {
   TSystemRuleType,
   TTaskTriggerCompositeState,
   TSchedulerServiceType,
+  TSelectionAreas,
 } from "./ranges";
 import { IncomingMessage } from "http";
 
@@ -2585,3 +2586,13 @@ export type IEngineHealthCreate = Omit<
 >;
 
 export type IEngineHealthUpdate = Partial<IEngineHealthCreate>;
+
+export interface SelectionItem {
+  type: TSelectionAreas | string;
+  objectID: string;
+}
+
+export interface SelectionItem1 {
+  type: TSelectionAreas | string;
+  objectId: string;
+}
