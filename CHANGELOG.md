@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.18.1] - 2026-11-24
+- fix: for `reloadTask` the methods `scriptLogGet` and `scriptLogFileGet` correctly call `reloadtask` endpoint instead of `externalprogramtask
+- dependency updates
+
 ## [0.18.0] - 2025-08-18
 
 - `Selections` methods are re-written. Handle creation and deletion of selection items based on area/type and item ids [#308](https://github.com/Informatiqal/qlik-repo-api/issues/308)

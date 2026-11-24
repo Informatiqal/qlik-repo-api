@@ -31,7 +31,7 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
 
     return await this.#repoClient
       .Get<string>(
-        `externalprogramtask/${
+        `reloadtask/${
           this.details.id
         }/scriptlog?filereferenceid=${encodeURIComponent(arg.fileReferenceId)}
     `
@@ -47,7 +47,7 @@ export class ReloadTask extends ReloadTaskBase implements IClassReloadTask {
 
     return await this.#repoClient
       .Get<string>(
-        `externalprogramtask/${
+        `reloadtask/${
           this.details.id
         }/scriptlog?executionresultid =${encodeURIComponent(
           arg.executionResultId
